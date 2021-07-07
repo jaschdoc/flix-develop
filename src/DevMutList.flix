@@ -1,4 +1,9 @@
 namespace DevMutList {
+    ////////////////////////////////////////////////////////////////
+    // 1. Change minimum size to be 8                             //
+    // 2. Change toImm to use directly tail recursive function    //
+    ////////////////////////////////////////////////////////////////
+
     def minSize(): Int32 = 8
     
     pub def range(b: Int32, e: Int32): MutList[Int32] & Impure =
