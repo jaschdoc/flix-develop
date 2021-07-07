@@ -5,16 +5,18 @@ namespace DevMutList {
     /////////////////////////////////////////////////////////////////////
 
     def minSize(): Int32 = 8
+
+    pub def new(): MutList[a] & Impure = MutList(ref [default; minSize()], ref 0)
     
     pub def range(b: Int32, e: Int32): MutList[Int32] & Impure =
         if (e - b < minSize())
-            MutList(ref rangeHelperFill(b, e), ref minSize())
+            MutList(ref rangeHelperFill(b, e), ref (e - b))
 
         else
             MutList(ref Array.range(b, e), ref (e - b))
 
     def rangeHelperFill(b: Int32, e: Int32): Array[Int32] & Impure = {
-        fill([default; 8], 0, b, e)
+        fill([default; minSize()], 0, b, e)
     }
 
     def fill(a: Array[Int32], idx: Int32, c: Int32, e: Int32): Array[Int32] & Impure = {
