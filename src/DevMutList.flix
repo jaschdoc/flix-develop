@@ -23,4 +23,10 @@ namespace DevMutList {
             else
                 fill(Array.put(a, idx, c), idx + 1, c + 1, e)
     }
+
+    ///
+    /// Returns `v` as an immutable list.
+    ///
+    pub def toImm(v: MutList[a]): List[a] & Impure =
+        MutList.foldRight((x, acc) -> x :: acc, Nil, v)
 }
