@@ -15,16 +15,16 @@ namespace DevMutList {
         else
             MutList(ref Array.range(b, e), ref (e - b))
 
-    def rangeHelperFill(b: Int32, e: Int32): Array[Int32] & Impure = {
+    def rangeHelperFill(b: Int32, e: Int32): Array[Int32] & Impure = 
         fill([default; minSize()], 0, b, e)
-    }
+    
 
-    def fill(a: Array[Int32], idx: Int32, c: Int32, e: Int32): Array[Int32] & Impure = {
+    def fill(a: Array[Int32], idx: Int32, c: Int32, e: Int32): Array[Int32] & Impure = 
             if (e - c == 0)
                 a
             else
                 fill(Array.put(a, idx, c), idx + 1, c + 1, e)
-    }
+    
 
     ///
     /// Returns `v` as an immutable list.
