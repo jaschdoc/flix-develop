@@ -28,5 +28,14 @@ namespace DevMutList {
     /// Returns `v` as an immutable list.
     ///
     pub def toImm(v: MutList[a]): List[a] & Impure =
-        MutList.foldRight((x, acc) -> x :: acc, Nil, v)
+        toImmHelper(v, Nil, MutList.length(v) - 1)
+        // MutList.foldRight((x, acc) -> x :: acc, Nil, v)
+
+    def toImmHelper(v: MutList[a], acc: List[a], i: Int32): List[a] & Impure =
+        if (MutList.isEmpty(v))
+            acc
+        else
+            let a = ???;
+            ???
+            // toImmHelper()
 }
