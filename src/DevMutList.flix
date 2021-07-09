@@ -9,23 +9,14 @@ namespace DevMutList {
     pub def new(): MutList[a] & Impure = MutList(ref [default; minSize()], ref 0)
     
     pub def range(b: Int32, e: Int32): MutList[Int32] & Impure =
-        if (e - b < minSize())
-            MutList(ref rangeHelperFill(b, e), ref (e - b))
-
+        let min = minSize();
+        if (e - b < min)
+            let f = i -> if (b + i < e) b + i else default;
+            MutList(ref Array.init(f, min), ref (e - b))
+            
         else
             MutList(ref Array.range(b, e), ref (e - b))
-
-    def rangeHelperFill(b: Int32, e: Int32): Array[Int32] & Impure = 
-        fill([default; minSize()], 0, b, e)
-    
-
-    def fill(a: Array[Int32], idx: Int32, c: Int32, e: Int32): Array[Int32] & Impure = 
-            if (e - c == 0)
-                a
-            else
-                fill(Array.put(a, idx, c), idx + 1, c + 1, e)
-    
-
+            
     ///
     /// Returns `v` as an immutable list.
     ///
