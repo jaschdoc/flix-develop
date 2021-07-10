@@ -18,7 +18,7 @@ def main(_args: Array[String]): Int32 & Impure =
         and { (deref a)[0] = 10; (deref a) == [10, default] }
         and {Console.printLine((deref a) |> Array.formatWith(x -> "${x}", ",")); true }
         and (deref a) == [10, default]
-        
+        and (deref a) != [default, default]
     };
 
     if (e) exitWith("SUCCESS") else exitWith("FAILURE")
