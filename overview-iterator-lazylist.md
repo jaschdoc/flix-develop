@@ -5,7 +5,7 @@
 | `append`       | TODO :heavy_multiplication_x: | TODO :heavy_multiplication_x: |         |
 | `count`        | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `drop`         | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
-| `dropWhile`    | TODO :heavy_multiplication_x: | TODO :heavy_multiplication_x: |         |
+| `dropWhile`    | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `exists`       | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `filter`       | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `filterMap`    | TODO :heavy_multiplication_x: | TODO :heavy_multiplication_x: |         |
