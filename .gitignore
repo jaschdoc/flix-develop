@@ -1,6 +1,7 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/git,java,sass,scala,macos,linux,vscode,windows,jetbrains,intellij+all,maven,sbt
-# Edit at https://www.toptal.com/developers/gitignore?templates=git,java,sass,scala,macos,linux,vscode,windows,jetbrains,intellij+all,maven,sbt
+
+# Created by https://www.toptal.com/developers/gitignore/api/git,sbt,sass,java,scala,linux,macos,maven,windows,jetbrains,intellij+all,metals
+# Edit at https://www.toptal.com/developers/gitignore?templates=git,sbt,sass,java,scala,linux,macos,maven,windows,jetbrains,intellij+all,metals
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -27,6 +28,9 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+
+# AWS User-specific
+.idea/**/aws.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -136,6 +140,8 @@ hs_err_pid*
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
+
+# AWS User-specific
 
 # Generated files
 
@@ -262,7 +268,11 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
-.flattened-pom.xml
+
+### Metals ###
+.metals/
+.bloop/
+project/**/metals.sbt
 
 ### Sass ###
 .sass-cache/
@@ -282,17 +292,10 @@ project/plugins/project/
 .history
 .cache
 .lib/
-.bsp
 
 ### Scala ###
 
-### vscode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 
 ### Windows ###
 # Windows thumbnail cache files
@@ -320,4 +323,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/git,java,sass,scala,macos,linux,vscode,windows,jetbrains,intellij+all,maven,sbt
+# End of https://www.toptal.com/developers/gitignore/api/git,sbt,sass,java,scala,linux,macos,maven,windows,jetbrains,intellij+all,metals
