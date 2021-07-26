@@ -1,0 +1,29 @@
+# Status Overview
+
+|  Function   | Iterator                      | LazyList                      | Comment                                                |
+| :--------:  | :------:                      | :------:                      | -------                                                |
+| `isEmpty`   | Done :heavy_check_mark:       | ???                           |                                                        |
+| `count`     | Done :heavy_check_mark:       | ???                           |                                                        |
+| `drop`      | Done :heavy_check_mark:       | ???                           |                                                        |
+| `take`      | Done :heavy_check_mark:       | ???                           |                                                        |
+| `map`       | Done :heavy_check_mark:       | ???                           |                                                        |
+| `filter`    | Done :heavy_check_mark:       | ???                           |                                                        |
+| `findLeft`  | Done :heavy_check_mark:       | ???                           |                                                        |
+| `findRight` | Done :heavy_check_mark:       | ???                           |                                                        |
+| `head`      | Done :heavy_check_mark:       | ???                           |                                                        |
+| `range`     | Done :heavy_check_mark:       | ???                           |                                                        |
+| `repeat`    | Done :heavy_check_mark:       | ???                           |                                                        |
+| `memeberOf` | Done :heavy_check_mark:       | ???                           |                                                        |
+| `toArray`   | Done :heavy_check_mark:       | ???                           |                                                        |
+| `toMap`     | Done :heavy_check_mark:       | ???                           |                                                        |
+| `toSet`     | Done :heavy_check_mark:       | ???                           |                                                        |
+| `replace`   | Done :heavy_check_mark:       | ???                           |                                                        |
+| `exists`    | Done :heavy_check_mark:       | ???                           |                                                        |
+| `foreach`   | Done :heavy_check_mark:       | ???                           |                                                        |
+| `forall`    | Done :heavy_check_mark:       | ???                           |                                                        |
+| `dropWhile` | TODO                          | ???                           |                                                        |
+| `takeWhile` | Done :heavy_check_mark:       | ???                           |                                                        |
+| `zip`       | Done :heavy_check_mark:       | ???                           |                                                        |
+| `zipWith`   | TODO                          | ???                           |                                                        |
+| `foldLeft`  | Done :heavy_check_mark:       | ???                           |                                                        |
+| `foldRight` | Done :heavy_check_mark:       | ???                           |                                                        |
