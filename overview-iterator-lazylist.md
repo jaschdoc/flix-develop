@@ -30,7 +30,7 @@
 | `head`         | Done :heavy_check_mark:       | ???                           |         |
 | `range`        | Done :heavy_check_mark:       | ???                           |         |
 | `repeat`       | Done :heavy_check_mark:       | ???                           |         |
-| `memberOf`    | Done :heavy_check_mark:       | ???                           |         |
+| `memberOf`     | Done :heavy_check_mark:       | ???                           |         |
 | `toArray`      | Done :heavy_check_mark:       | ???                           |         |
 | `toMap`        | Done :heavy_check_mark:       | ???                           |         |
 | `toSet`        | Done :heavy_check_mark:       | ???                           |         |
