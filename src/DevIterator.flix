@@ -248,19 +248,19 @@ namespace DevIterator {
     /// - If `f` is impure then it is applied eagerly (consuming elements of the iterator until
     /// the first element that does *not* satisfy predicate `f`).
     ///
-    pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure = ??? /*
+    pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
         matchEff f {
             case Pure   => takeWhileL(f as a -> Bool, iter)
             case Impure => takeWhileE(f as a -> Bool & Impure, iter)
         }
-*/
+
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
     /// `f` is applied *lazily*.
     ///
     /// Does *not* consume any elements of the iterator.
     ///
-    def _takeWhileL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
+    def takeWhileL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
         if (done())
             Iterator(() -> true as & Impure, () -> bug!("Empty iterator") as & Impure)
@@ -280,7 +280,7 @@ namespace DevIterator {
     ///
     /// Consumes elements of the iterator until the first element that does *not* satisfy predicate `f`.
     ///
-    def _takeWhileE(f: a -> Bool & Impure, iter: Iterator[a]): Iterator[a] & Impure =
+    def takeWhileE(f: a -> Bool & Impure, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, _) = iter;
         if (done())
             Iterator(() -> true as & Impure, () -> bug!("Empty iterator") as & Impure)
@@ -332,7 +332,7 @@ namespace DevIterator {
         let doneAB = () -> doneA() or doneB();
         let nextAB = () -> (nextA(), nextB());
         Iterator(doneAB, nextAB)
-
+    
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
     /// `a` is the element at index `i` in `iterA` and `b` is the element at index `i` in `iterB`.
@@ -495,19 +495,19 @@ namespace DevIterator {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
-    /*pub def map(f: a -> b & ef, iter: Iterator[a]): Iterator[b] & Impure =
+    pub def map(f: a -> b & ef, iter: Iterator[a]): Iterator[b] & Impure =
         matchEff f {
             case Pure   => mapL(f as a -> b, iter)
             case Impure => mapE(f as a -> b & Impure, iter)
         }
-    */
+    
     ///
 	/// Returns an iterator with the pure function `f` applied *lazily* to every
 	/// element of the iterator `iter`.
 	///
 	/// Does *not* consume any elements from the iterator.
 	///
-    def _mapL(f: a -> b, iter: Iterator[a]): Iterator[b] =
+    def mapL(f: a -> b, iter: Iterator[a]): Iterator[b] =
 		let Iterator(done, next) = iter;
 		let next1 = () -> f(next());
 		Iterator(done, next1)
@@ -518,7 +518,7 @@ namespace DevIterator {
 	///
 	/// Consumes all elements in the iterator.
 	///
-    def _mapE(f: a -> b & Impure, iter: Iterator[a]): Iterator[b] & Impure =
+    def mapE(f: a -> b & Impure, iter: Iterator[a]): Iterator[b] & Impure =
 		toList(iter) |> List.map(f) |> toIter
 
     ///
@@ -530,12 +530,12 @@ namespace DevIterator {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
-    /*pub def filter(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
+    pub def filter(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
         matchEff f {
             case Pure   => filterL(f as a -> Bool, iter)
             case Impure => filterE(f as a -> Bool & Impure, iter)
         }
-*/
+
     ///
     /// Returns an iterator with every element of the iterator `iter` that
     /// satisfies the predicate `f`.
