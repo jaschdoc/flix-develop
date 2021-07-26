@@ -11,7 +11,7 @@
 | `filterMap`    | TODO :heavy_multiplication_x: | ???                           |         |
 | `findLeft`     | Done :heavy_check_mark:       | ???                           |         |
 | `findMap`      | TODO :heavy_multiplication_x: | ???                           |         |
-| `findRight`    | Done :heavy_check_mark:       | ???                           |         |
+| `findRight`    | Done :warning:                | ???                           | Needs optimization |
 | `flatMap`      | TODO :heavy_multiplication_x: | ???                           |         |
 | `flatten`      | TODO :heavy_multiplication_x: | ???                           |         |
 | `foldLeft`     | Done :heavy_check_mark:       | ???                           |         |
