@@ -21,9 +21,9 @@
 | `exists`    | Done :heavy_check_mark:       | ???                           |                                                        |
 | `foreach`   | Done :heavy_check_mark:       | ???                           |                                                        |
 | `forall`    | Done :heavy_check_mark:       | ???                           |                                                        |
-| `dropWhile` | TODO                          | ???                           |                                                        |
+| `dropWhile` | TODO :heavy_multiplication_x: | ???                           |                                                        |
 | `takeWhile` | Done :heavy_check_mark:       | ???                           |                                                        |
 | `zip`       | Done :heavy_check_mark:       | ???                           |                                                        |
-| `zipWith`   | TODO                          | ???                           |                                                        |
+| `zipWith`   | TODO :heavy_multiplication_x: | ???                           |                                                        |
 | `foldLeft`  | Done :heavy_check_mark:       | ???                           |                                                        |
 | `foldRight` | Done :heavy_check_mark:       | ???                           |                                                        |
