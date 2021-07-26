@@ -42,4 +42,4 @@
 | `toMap`        | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `toSet`        | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
 | `zip`          | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
-| `zipWith`      | Done :heavy_check_mark:       | TODO :heavy_multiplication_x: |         |
+| `zipWith`      | Done :warning:                | TODO :heavy_multiplication_x: | Needs optimization |
