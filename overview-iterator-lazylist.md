@@ -14,6 +14,11 @@
 | `maximum`      | TODO :heavy_multiplication_x: | ???                           |         |
 | `maximumBy`    | TODO :heavy_multiplication_x: | ???                           |         |
 | `mapWithIndex` | TODO :heavy_multiplication_x: | ???                           |         |
+| `flatMap`      | TODO :heavy_multiplication_x: | ???                           |         |
+| `intercalate`  | TODO :heavy_multiplication_x: | ???                           |         |
+| `flatten`      | TODO :heavy_multiplication_x: | ???                           |         |
+| `partition`    | TODO :heavy_multiplication_x: | ???                           |         |
+| `span`         | TODO :heavy_multiplication_x: | ???                           |         |
 | `findMap`      | TODO :heavy_multiplication_x: | ???                           |         |
 | `count`        | Done :heavy_check_mark:       | ???                           |         |
 | `drop`         | Done :heavy_check_mark:       | ???                           |         |
@@ -25,7 +30,7 @@
 | `head`         | Done :heavy_check_mark:       | ???                           |         |
 | `range`        | Done :heavy_check_mark:       | ???                           |         |
 | `repeat`       | Done :heavy_check_mark:       | ???                           |         |
-| `memeberOf`    | Done :heavy_check_mark:       | ???                           |         |
+| `memberOf`    | Done :heavy_check_mark:       | ???                           |         |
 | `toArray`      | Done :heavy_check_mark:       | ???                           |         |
 | `toMap`        | Done :heavy_check_mark:       | ???                           |         |
 | `toSet`        | Done :heavy_check_mark:       | ???                           |         |
