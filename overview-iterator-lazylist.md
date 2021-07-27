@@ -1,9 +1,9 @@
 # Status Overview
 
 Diffuculty explanation
-- :green_circle: Expected to be easy to implement
-- :red_circle: Requires though / consideration
-- :question: Uknown, will be updated
+    - :green_circle: Expected to be easy to implement
+    - :red_circle: Requires though / consideration
+    - :question: Uknown, will be updated
 
 |  Function      | Iterator                 | LazyList                 | Difficulty     | Comment |
 | :--------:     | :------:                 | :------:                 | :--------:     | :-----: |
