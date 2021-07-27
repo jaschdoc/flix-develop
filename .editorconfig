@@ -2,12 +2,20 @@
 # coding styles between different editors and IDEs
 # editorconfig.org
 
-root = true
-
-[*]
+[**]
 indent_style = space
-tab_width = 2
 end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
 insert_final_newline = true
+
+[**.flix]
+tab_width = 4
+trim_trailing_whitespace = true
+
+[**.{scala, sc}]
+tab_width = 2
+trim_trailing_whitespace = true
+
+[**.md]
+tab_width = 4
+trim_trailing_whitespace = false
