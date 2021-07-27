@@ -2,12 +2,12 @@
 
 |  Function      | Iterator                 | LazyList                 | Difficulty     | Comment |
 | :--------:     | :------:                 | :------:                 | :--------:     | :-----: |
-| `append`       | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `count`        | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `drop`         | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `dropWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `exists`       | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `filter`       | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
+| `append`       | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
+| `count`        | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `drop`         | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `dropWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: | :red_circle:   |         |
+| `exists`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `filter`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `filterMap`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
 | `findLeft`     | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
 | `findMap`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
