@@ -1,5 +1,10 @@
 # Status Overview
 
+Diffuculty explanation
+- :green_circle: Expected to be easy to implement
+- :red_circle: Requires though / consideration
+- :question: Uknown, will be updated
+
 |  Function      | Iterator                 | LazyList                 | Difficulty     | Comment |
 | :--------:     | :------:                 | :------:                 | :--------:     | :-----: |
 | `append`       | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
@@ -35,7 +40,7 @@
 | `reduceRight`  | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
 | `repeat`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `replace`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
-| `span`         | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
+| `span`         | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
 | `take`         | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `takeWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: | :red_circle:   |         |
 | `toArray`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
