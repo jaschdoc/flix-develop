@@ -24,22 +24,22 @@
 | `isEmpty`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `map`          | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `mapWithIndex` | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
-| `maximum`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `maximumBy`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `memberOf`     | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `minimum`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `minimumBy`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `partition`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `range`        | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `reduceLeft`   | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `reduceRight`  | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `repeat`       | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `replace`      | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
+| `maximum`      | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `maximumBy`    | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `memberOf`     | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `minimum`      | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `minimumBy`    | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `partition`    | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
+| `range`        | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `reduceLeft`   | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `reduceRight`  | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `repeat`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `replace`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `span`         | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `take`         | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `takeWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `toArray`      | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `toMap`        | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `toSet`        | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `zip`          | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `zipWith`      | :warning:                | :heavy_multiplication_x: |                | Needs optimization |
+| `take`         | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `takeWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: | :red_circle:   |         |
+| `toArray`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `toMap`        | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `toSet`        | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `zip`          | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `zipWith`      | :warning:                | :heavy_multiplication_x: | :green_circle: | Needs optimization |
