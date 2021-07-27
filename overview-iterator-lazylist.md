@@ -8,22 +8,22 @@
 | `dropWhile`    | :heavy_check_mark:       | :heavy_multiplication_x: | :red_circle:   |         |
 | `exists`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
 | `filter`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
-| `filterMap`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `findLeft`     | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `findMap`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `findRight`    | :warning:                | :heavy_multiplication_x: |                | Needs optimization |
-| `flatMap`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `flatten`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `foldLeft`     | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `foldRight`    | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `forall`       | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `foreach`      | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `head`         | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `intercalate`  | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `intersperse`  | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
-| `isEmpty`      | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `map`          | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
-| `mapWithIndex` | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
+| `filterMap`    | :heavy_multiplication_x: | :heavy_multiplication_x: | :question:     |         |
+| `findLeft`     | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `findMap`      | :heavy_multiplication_x: | :heavy_multiplication_x: | :question:     |         |
+| `findRight`    | :warning:                | :heavy_multiplication_x: | :green_circle: | Needs optimization |
+| `flatMap`      | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
+| `flatten`      | :heavy_multiplication_x: | :heavy_multiplication_x: | :question:     |         |
+| `foldLeft`     | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `foldRight`    | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `forall`       | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `foreach`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `head`         | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `intercalate`  | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
+| `intersperse`  | :heavy_multiplication_x: | :heavy_multiplication_x: | :red_circle:   |         |
+| `isEmpty`      | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `map`          | :heavy_check_mark:       | :heavy_multiplication_x: | :green_circle: |         |
+| `mapWithIndex` | :heavy_multiplication_x: | :heavy_multiplication_x: | :green_circle: |         |
 | `maximum`      | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
 | `maximumBy`    | :heavy_multiplication_x: | :heavy_multiplication_x: |                |         |
 | `memberOf`     | :heavy_check_mark:       | :heavy_multiplication_x: |                |         |
