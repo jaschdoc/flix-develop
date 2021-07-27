@@ -2,7 +2,7 @@
 
 Diffuculty explanation
     - :green_circle: Expected to be easy to implement
-    - :red_circle: Requires though / consideration
+    - :red_circle: Requires thought / consideration
     - :question: Uknown, will be updated
 
 |  Function      | Iterator                 | LazyList                 | Difficulty     | Comment |
