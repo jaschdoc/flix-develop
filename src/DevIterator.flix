@@ -31,13 +31,13 @@ namespace DevIterator {
                 if (res < e) {
                     i := res + 1;
                     res
-                } 
+                }
                 else bug!("Empty Iterator!")
             };
         Iterator(d, n)
 
     ///
-    /// Returns an iterator over an iterable with the element `a` repeated `n` times.
+    /// Returns an iterator over an iterable with the element `x` repeated `n` times.
     ///
     /// Returns an empty iterator if `n < 0`.
     ///
@@ -45,13 +45,13 @@ namespace DevIterator {
         let i = ref 0;
         let done: Done = () -> deref i >= n;
         let next: Next[a] = () -> {
-                let j = deref i;
-                if (j > n)
-                    bug!("Empty Iterator!")
-                else {
-                    i := j + 1;
-                    x
-                }
+              let j = deref i;
+              if (j > n)
+                  bug!("Empty Iterator!")
+              else {
+                  i := j + 1;
+                  x
+              }
             };
         Iterator(done, next)
 
@@ -133,6 +133,8 @@ namespace DevIterator {
     ///
     /// Does *not* consume any elements of the iterator.
     ///
+    /// The original iterator `iter` should not be reused.
+    ///
     pub def replace(x: a, y: a, iter: Iterator[a]): Iterator[a] with Eq[a] =
         let Iterator(done, next) = iter;
         let n = () -> {
@@ -202,9 +204,11 @@ namespace DevIterator {
     def dropWhileL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let needsEvaluation = ref true;
         let newIter = ref iter;
+        // If another function asks whether the iterator returned by dropWhileL is done, it must evaluate
+        // the dropped part such that a consumer knows whether it is empty or not.
         let done = () -> {
             if (deref needsEvaluation) {
-                newIter := dropWhile(f as a -> Bool & Impure, iter);
+                newIter := dropWhileE(f as a -> Bool & Impure, iter);
                 needsEvaluation := false
             } else ();
             let Iterator(d, _) = deref newIter;
@@ -230,23 +234,25 @@ namespace DevIterator {
         if (done())
             iter
         else
-            let x = next();
-            let p = ref true;
+            let peekedElement = next();
+            let shouldReturnPeekedElement = ref true;
             let n = () -> {
-                if (deref p) {
-                    p := false;
-                    x
+                if (deref shouldReturnPeekedElement) {
+                    shouldReturnPeekedElement := false;
+                    peekedElement
                 } else next()
             };
-            if (f(x)) dropWhile(f, iter) else Iterator(done, n)
+            if (f(peekedElement)) dropWhile(f, iter) else Iterator(done, n)
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
     ///
     /// Whether `f` is applied eagerly or lazily depends on its purity:
     /// - If `f` is pure then it is applied lazily.
-    /// - If `f` is impure then it is applied eagerly (consuming elements of the iterator until
+    /// - If `f` is impure then it is applied eagerly (consuming elements of the iterator until and including
     /// the first element that does *not* satisfy predicate `f`).
+    ///
+    /// The original iterator `iter` should not be reused.
     ///
     pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
         matchEff f {
@@ -260,34 +266,46 @@ namespace DevIterator {
     ///
     /// Does *not* consume any elements of the iterator.
     ///
+    /// The original iterator `iter` should not be reused.
+    ///
     def takeWhileL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
         if (done())
-            Iterator(() -> true as & Impure, () -> bug!("Empty iterator") as & Impure)
+            iter
         else
-            let x = ref default;
-            let p = () -> {
-                x := next();
-                not f(deref x)
+            let stopped = ref false;
+            let hasStopped = () -> deref stopped;
+            let nextElement = ref default;
+            let shouldTakeElement = (x) -> {
+                nextElement := x;
+                let shouldTake = f(x);
+                if (not shouldTake) stopped := true else ();
+                shouldTake
             };
-            let done1 = () -> done() or p();
-            let next1 = () -> deref x;
+            let done1 = () -> (done() or hasStopped()) or not shouldTakeElement(next());
+            let next1 = () -> deref nextElement;
             Iterator(done1, next1)
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
     /// `f` is applied *eagerly*.
     ///
-    /// Consumes elements of the iterator until the first element that does *not* satisfy predicate `f`.
+    /// Consumes elements of the iterator until and including the first element that does *not* satisfy predicate `f`.
+    ///
+    /// The original iterator `iter` should not be reused.
     ///
     def takeWhileE(f: a -> Bool & Impure, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, _) = iter;
         if (done())
-            Iterator(() -> true as & Impure, () -> bug!("Empty iterator") as & Impure)
-        else takeWhileEHelper(f, iter, Nil)
+            iter
+        else
+            takeWhileEHelper(f, iter, Nil)
 
     ///
     /// Helper function for takeWhileE
+    ///
+    ///
+    /// The original iterator `iter` should not be reused.
     ///
     def takeWhileEHelper(f: a -> Bool & Impure, iter: Iterator[a], acc: List[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
@@ -300,7 +318,6 @@ namespace DevIterator {
             else
                 let d = () -> true as & Impure;
                 takeWhileEHelper(f, Iterator(d, next), acc)
-
 
     ///
     /// Applies `f` to every element of `iter`.
@@ -326,13 +343,15 @@ namespace DevIterator {
     /// Consumes elements of both `iterA` and `iterB` equal to the length of the shortest iterator.
     /// If `iterA` and `iterB` are equal length, both iterators are fully consumed.
     ///
+    /// The original iterators `iterA` and `iterB` should not be reused.
+    ///
     pub def zip(iterA: Iterator[a], iterB: Iterator[b]): Iterator[(a, b)] =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
         let doneAB = () -> doneA() or doneB();
         let nextAB = () -> (nextA(), nextB());
         Iterator(doneAB, nextAB)
-    
+
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
     /// `a` is the element at index `i` in `iterA` and `b` is the element at index `i` in `iterB`.
@@ -402,8 +421,10 @@ namespace DevIterator {
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, iter: Iterator[a]): b & Impure =
         let Iterator(done, next) = iter;
-        if (done()) s
-        else foldLeft(f, f(s, next()), iter)
+        if (done())
+            s
+        else
+            foldLeft(f, f(s, next()), iter)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from right to left.
@@ -424,7 +445,7 @@ namespace DevIterator {
     ///
     /// The function `f` must be pure.
     ///
-    /// Consumes elements from the right until an element that satisfies predicate `f` is found.
+    /// Consumes the entire iterator.
     ///
     pub def findRight(f: a -> Bool, iter: Iterator[a]): Option[a] & Impure =
         toList(iter) |> List.findRight(f)
@@ -458,6 +479,8 @@ namespace DevIterator {
     ///
 	/// Consumes the first `n` elements of the iterator.
     ///
+    /// The original iterator `iter` should not be reused.
+    ///
     pub def drop(n: Int32, iter: Iterator[a]): Iterator[a] & Impure =
         if (n <= 0)
             iter
@@ -472,6 +495,8 @@ namespace DevIterator {
     /// Returns an iterator with the first `n` elements of the iterator `iter`.
     ///
     /// Does *not* consume any elements from the iterator.
+    ///
+    /// The original iterator `iter` should not be reused.
     ///
     pub def take(n: Int32, iter: Iterator[a]): Iterator[a] & Impure =
         if (n <= 0)
@@ -495,18 +520,22 @@ namespace DevIterator {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
+    /// The original iterator `iter` should not be reused.
+    ///
     pub def map(f: a -> b & ef, iter: Iterator[a]): Iterator[b] & Impure =
         matchEff f {
             case Pure   => mapL(f as a -> b, iter)
             case Impure => mapE(f as a -> b & Impure, iter)
         }
-    
+
     ///
 	/// Returns an iterator with the pure function `f` applied *lazily* to every
 	/// element of the iterator `iter`.
 	///
 	/// Does *not* consume any elements from the iterator.
 	///
+	/// The original iterator `iter` should not be reused.
+    ///
     def mapL(f: a -> b, iter: Iterator[a]): Iterator[b] =
 		let Iterator(done, next) = iter;
 		let next1 = () -> f(next());
@@ -518,6 +547,8 @@ namespace DevIterator {
 	///
 	/// Consumes all elements in the iterator.
 	///
+	/// The original iterator `iter` should not be reused.
+    ///
     def mapE(f: a -> b & Impure, iter: Iterator[a]): Iterator[b] & Impure =
 		toList(iter) |> List.map(f) |> toIter
 
@@ -529,6 +560,8 @@ namespace DevIterator {
 	///
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
+    ///
+    /// The original iterator `iter` should not be reused.
     ///
     pub def filter(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
         matchEff f {
@@ -542,6 +575,8 @@ namespace DevIterator {
 	///
 	/// Does *not* consume any elements from the iterator.
 	///
+	/// The original iterator `iter` should not be reused.
+    ///
 	pub def filterL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
 
@@ -575,6 +610,8 @@ namespace DevIterator {
 	///
 	/// Consume the entire iterator.
 	///
+	/// The original iterator `iter` should not be reused.
+    ///
 	pub def filterE(f: a -> Bool & Impure, iter: Iterator[a]): Iterator[a] & Impure =
 		(toList(iter) |> List.filter(f as a -> Bool) |> toIter) as & Impure
 
@@ -640,84 +677,3 @@ namespace DevIterator {
         }
 
 }
-
-/*
-pub def benchmarks(): Array[Benchmark] & Impure = [
-        benchmarkIterator(),
-        benchmarkList()
-    ] |> Array.flatten
-
-pub def benchmarkList(): Array[Benchmark] & Impure =
-    let pipeline = n ->
-        List.range(1, n) |>
-        List.map(x -> x + 1) |>
-        List.map(x -> List.length(List.range(1, 100)) + x) |>
-        List.map(x -> x + 1) |>
-        List.filter(x -> x % 2 == 0) |>
-        List.filter(x -> x % 2 == 0) |>
-        List.filter(x -> x % 2 == 0) |>
-        List.map(x -> x + 1) |>
-        List.map(x -> List.length(List.range(1, 100)) + x) |>
-        List.map(x -> x + 1) |>
-        List.take(n / 4) |>
-        List.count(constant(true));
-    [
-        defBenchmark("List (n = ${2 **  2})", () -> { pipeline(2 **  2) }),
-        defBenchmark("List (n = ${2 **  4})", () -> { pipeline(2 **  4) }),
-        defBenchmark("List (n = ${2 **  8})", () -> { pipeline(2 **  8) }),
-        defBenchmark("List (n = ${2 ** 12})", () -> { pipeline(2 ** 12) })
-    ]
-
-pub def benchmarkIterator(): Array[Benchmark] & Impure =
-    let pipeline = n ->
-        List.range(1, n) |>
-        Iterator.toIter |>
-        Iterator.map(x -> x + 1) |>
-        Iterator.map(x -> List.length(List.range(1, 100)) + x) |>
-        Iterator.map(x -> x + 1) |>
-        Iterator.filter(x -> x % 2 == 0) |>
-        Iterator.filter(x -> x % 2 == 0) |>
-        Iterator.filter(x -> x % 2 == 0) |>
-        Iterator.map(x -> x + 1) |>
-        Iterator.map(x -> List.length(List.range(1, 100)) + x) |>
-        Iterator.map(x -> x + 1) |>
-        Iterator.take(n / 4) |>
-        Iterator.count(constant(true));
-    [
-        defBenchmark("Iterator (n = ${2 **  2})", () -> { pipeline(2 **  2) as & Pure }),
-        defBenchmark("Iterator (n = ${2 **  4})", () -> { pipeline(2 **  4) as & Pure }),
-        defBenchmark("Iterator (n = ${2 **  8})", () -> { pipeline(2 **  8) as & Pure }),
-        defBenchmark("Iterator (n = ${2 ** 12})", () -> { pipeline(2 ** 12) as & Pure })
-    ]
-
-
-//pub def main(_args: Array[String]) : Int32 & Impure =
-//    Benchmark.runWithBudget(benchmarks(), 15_000_000_000i64)
-//
-//pub def main2(_args: Array[String]) : Int32 & Impure =
-//    List.range(1, 4) |>
-//    Iterator.toIter |>
-//    Iterator.map(x -> { println("a"); x + 1 } as & Pure) |>
-//    Iterator.map(x -> { println("b"); x } as & Pure) |>
-//    Iterator.toList;
-//    0
-//
-//pub def main3(_args: Array[String]) : Int32 & Impure =
-//    let b1 = () -> {
-//        List.range(1, 1000) |>
-//        List.map(x -> List.range(1, x)) |>
-//        List.find(l -> List.length(l) > 10)
-//    };
-//    let b2 = () -> {
-//        List.range(1, 1000) |>
-//        Iterator.toIter |>
-//        Iterator.map(x -> List.range(1, x)) |>
-//        Iterator.find(l -> List.length(l) > 10)
-//    } as & Pure;
-//    Benchmark.runWithBudget([
-//        defBenchmark("Bench 1", b1),
-//        defBenchmark("Bench 2", b2)
-//    ],
-//    15_000_000_000i64)
-
-*/
