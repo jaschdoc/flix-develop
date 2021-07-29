@@ -56,9 +56,9 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
       s"""|# Status Overview
           |
           |Difficulty explanation
-          |    - $Easy Expected to be easy to implement
-          |    - $Hard Requires thought / consideration
-          |    - $DNA Unknown, will be updated
+          |    - $Easy Expected to be easy to implement (${fps.count(fp => fp.difficulty == Easy)} / ${fps.length})
+          |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
+          |    - $DNA Unknown, will be updated (${fps.count(fp => fp.difficulty == DNA)} / ${fps.length})
           |
           || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Comment |
           || :------: | :------:                                                             | :------:                                                             | :--------: | :-----: |
