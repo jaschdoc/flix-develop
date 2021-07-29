@@ -116,7 +116,7 @@ println(
     FunctionProgress.from("foldLeft", Done, Todo, Easy),
     FunctionProgress.from("foldRight", Done, Todo, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
-    FunctionProgress.from("from", SNA, Done, Easy),
+    FunctionProgress.from("from", SNA, Done, Easy, "Is this even relevant for `Iterator`?"),
     FunctionProgress.from("new", SNA, Done, Easy, "Is this even relevant for `Iterator`?"),
     FunctionProgress.from("empty", SNA, Done, Easy, "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
   ).toList.sorted.toMarkdown
