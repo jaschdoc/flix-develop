@@ -1,24 +1,31 @@
 sealed trait Status
+
 case object Todo extends Status {
   override def toString: String = ":heavy_multiplication_x:"
 }
+
 case object Done extends Status {
   override def toString: String = ":heavy_check_mark:"
 }
+
 case object Warning extends Status {
   override def toString: String = ":warning:"
 }
+
 case object SNA extends Status {
   override def toString: String = ":question:"
 }
 
 sealed trait Difficulty
+
 case object Easy extends Difficulty {
   override def toString: String = ":green_circle:"
 }
+
 case object Hard extends Difficulty {
   override def toString: String = ":red_circle:"
 }
+
 case object DNA extends Difficulty {
   override def toString: String = ":question:"
 }
@@ -42,16 +49,16 @@ case object FunctionProgress {
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
     val title =
-      """|# Status Overview
-         |
-         |Difficulty explanation
-         |    - :green_circle: Expected to be easy to implement
-         |    - :red_circle: Requires thought / consideration
-         |    - :question: Unknown, will be updated
-         |
-         || Function | Iterator | LazyList | Difficulty | Comment |
-         || :------: | :------: | :------: | :--------: | :-----: |
-         |""".stripMargin
+      s"""|# Status Overview
+          |
+          |Difficulty explanation
+          |    - $Easy Expected to be easy to implement
+          |    - $Hard Requires thought / consideration
+          |    - $DNA Unknown, will be updated
+          |
+          || Function | Iterator | LazyList | Difficulty | Comment |
+          || :------: | :------: | :------: | :--------: | :-----: |
+          |""".stripMargin
 
     fps.foldLeft(title)((acc, fp) => {
       acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.lListStatus} | ${fp.difficulty} | ${fp.comment} |\n")
