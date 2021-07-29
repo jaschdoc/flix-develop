@@ -48,8 +48,10 @@ case object FunctionProgress {
 
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
-    val iterDone = fps.count(fp => fp.iterStatus == Done || fp.iterStatus == Warning)
-    val listDone = fps.count(fp => fp.listStatus == Done || fp.listStatus == Warning)
+    val iterDone = fps.count(fp => fp.iterStatus == Done)
+    val iterWarning = fps.count(fp => fp.iterStatus == Warning)
+    val listDone = fps.count(fp => fp.listStatus == Done)
+    val listWarning = fps.count(fp => fp.listStatus == Warning)
     val title =
       s"""|# Status Overview
           |
@@ -58,13 +60,13 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $Hard Requires thought / consideration
           |    - $DNA Unknown, will be updated
           |
-          || Function | Iterator ($iterDone / ${fps.length}) | LazyList ($listDone / ${fps.length}) | Difficulty | Comment |
-          || :------: | :----------------------------------: | :----------------------------------: | :--------: | :-----: |
+          || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Comment |
+          || :------: | :------------------------------------------------------------------: | :------------------------------------------------------------------: | :--------: | :-----: |
           |""".stripMargin
 
     fps.foldLeft(title)((acc, fp) => {
       acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.listStatus} | ${fp.difficulty} | ${fp.comment} |\n")
-    })
+    }).split(":").filterNot(c => c.contains("-")).mkString.replaceAll("::", ":---:")
   }
 }
 
