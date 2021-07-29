@@ -20,7 +20,7 @@ implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 case object FunctionProgress {
   def from(name: Name, iterStatus: Status = SNA, lListStatus: Status = SNA, difficulty: Difficulty = DNA, comment: Comment = ""): FunctionProgress = {
-    FunctionProgress(name, iterStatus, lListStatus, difficulty, comment)
+    FunctionProgress(name.trim, iterStatus, lListStatus, difficulty, comment)
   }
 }
 
