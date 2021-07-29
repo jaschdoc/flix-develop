@@ -322,3 +322,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/git,sbt,sass,java,scala,linux,macos,maven,windows,jetbrains,intellij+all,metals
+
+overview-iterator-lazylist.md

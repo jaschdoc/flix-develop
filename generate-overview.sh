@@ -1,5 +1,5 @@
 #!/bin/sh
 
-scala sorting.sc > overview-iterator-lazylist.md
+scala overview-iterator-lazylist.sc > overview-iterator-lazylist.md
 
 echo "Generated overview in overview-iterator-lazylist.md"

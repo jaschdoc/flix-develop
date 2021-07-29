@@ -43,15 +43,15 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
     val title =
       """|# Status Overview
-        |
-        |Difficulty explanation
-        |    - :green_circle: Expected to be easy to implement
-        |    - :red_circle: Requires thought / consideration
-        |    - :question: Unknown, will be updated
-        |
-        || Function | Iterator | LazyList | Difficulty | Comment |
-        || :------: | :------: | :------: | :--------: | :-----: |
-        |""".stripMargin
+         |
+         |Difficulty explanation
+         |    - :green_circle: Expected to be easy to implement
+         |    - :red_circle: Requires thought / consideration
+         |    - :question: Unknown, will be updated
+         |
+         || Function | Iterator | LazyList | Difficulty | Comment |
+         || :------: | :------: | :------: | :--------: | :-----: |
+         |""".stripMargin
 
     fps.foldLeft(title)((acc, fp) => {
       acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.lListStatus} | ${fp.difficulty} | ${fp.comment} |\n")
@@ -106,7 +106,7 @@ println(
     FunctionProgress.from("foldRight", Done, Todo, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
     FunctionProgress.from("from", SNA, Done, Easy),
-    FunctionProgress.from("new", SNA, Done, Easy),
-    FunctionProgress.from("empty", SNA, Done, Easy, "Not to be confused with `isEmpty`"),
+    FunctionProgress.from("new", SNA, Done, Easy, "Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("empty", SNA, Done, Easy, "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
   ).toList.sorted.toMarkdown
 )
