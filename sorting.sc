@@ -1,5 +1,5 @@
 println(
-  List(
+  Set(
     "isEmpty",
     "append",
     "filterMap",
@@ -41,6 +41,10 @@ println(
     "zip",
     "zipWith",
     "foldLeft",
-    "foldRight"
-  ).sorted
+    "foldRight",
+    "toList",
+    "from",
+    "new",
+    "empty",
+  ).toList.sorted
 )
