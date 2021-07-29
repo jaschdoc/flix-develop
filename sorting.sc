@@ -39,8 +39,7 @@ case object FunctionProgress {
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
     val title =
-      """
-        |# Status Overview
+      """|# Status Overview
         |
         |Difficulty explanation
         |    - :green_circle: Expected to be easy to implement
