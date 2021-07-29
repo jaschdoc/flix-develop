@@ -66,7 +66,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
     fps.foldLeft(title)((acc, fp) => {
       acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.listStatus} | ${fp.difficulty} | ${fp.comment} |\n")
-    }).split(":").filterNot(c => c.contains("-")).mkString.replaceAll("::", ":---:")
+    }).split(":").filterNot(c => c.contains("-")).mkString(":", "", ":").replaceAll("::", ":---:")
   }
 }
 
