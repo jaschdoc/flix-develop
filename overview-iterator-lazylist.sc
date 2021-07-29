@@ -33,7 +33,7 @@ case object DNA extends Difficulty {
 type Name = String
 type Comment = String
 
-case class FunctionProgress(name: Name, iterStatus: Status, lListStatus: Status, difficulty: Difficulty, comment: Comment) {
+case class FunctionProgress(name: Name, iterStatus: Status, listStatus: Status, difficulty: Difficulty, comment: Comment) {
   val _name = name.trim
   require(_name.nonEmpty)
 }
@@ -41,13 +41,15 @@ case class FunctionProgress(name: Name, iterStatus: Status, lListStatus: Status,
 implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 case object FunctionProgress {
-  def from(name: Name, iterStatus: Status = SNA, lListStatus: Status = SNA, difficulty: Difficulty = DNA, comment: Comment = ""): FunctionProgress = {
-    FunctionProgress(name.trim, iterStatus, lListStatus, difficulty, comment)
+  def from(name: Name, iterStatus: Status = SNA, listStatus: Status = SNA, difficulty: Difficulty = DNA, comment: Comment = ""): FunctionProgress = {
+    FunctionProgress(name.trim, iterStatus, listStatus, difficulty, comment)
   }
 }
 
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
+    val iterDone = fps.count(fp => fp.iterStatus == Done || fp.iterStatus == Warning)
+    val listDone = fps.count(fp => fp.listStatus == Done || fp.listStatus == Warning)
     val title =
       s"""|# Status Overview
           |
@@ -56,12 +58,12 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $Hard Requires thought / consideration
           |    - $DNA Unknown, will be updated
           |
-          || Function | Iterator | LazyList | Difficulty | Comment |
-          || :------: | :------: | :------: | :--------: | :-----: |
+          || Function | Iterator ($iterDone / ${fps.length}) | LazyList ($listDone / ${fps.length}) | Difficulty | Comment |
+          || :------: | :----------------------------------: | :----------------------------------: | :--------: | :-----: |
           |""".stripMargin
 
     fps.foldLeft(title)((acc, fp) => {
-      acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.lListStatus} | ${fp.difficulty} | ${fp.comment} |\n")
+      acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.listStatus} | ${fp.difficulty} | ${fp.comment} |\n")
     })
   }
 }
