@@ -1,24 +1,27 @@
 sealed trait Status
 case object Todo extends Status
 case object Done extends Status
+case object SNA extends Status
 
 sealed trait Difficulty
 case object Easy extends Difficulty
 case object Hard extends Difficulty
-case object NA extends Difficulty
+case object DNA extends Difficulty
 
 type Name = String
 type Comment = String
 
 case class FunctionProgress(name: Name, iterStatus: Status, lListStatus: Status, difficulty: Difficulty, comment: Comment) {
-
+  val _name = name.trim
+  require(_name.nonEmpty)
 }
 
 implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 case object FunctionProgress {
-  def from(name: Name, iterStatus: Status = Todo, lListStatus: Status = Todo, difficulty: Difficulty = Easy, comment: Comment = ""): FunctionProgress =
+  def from(name: Name, iterStatus: Status = SNA, lListStatus: Status = SNA, difficulty: Difficulty = DNA, comment: Comment = ""): FunctionProgress = {
     FunctionProgress(name, iterStatus, lListStatus, difficulty, comment)
+  }
 }
 
 println(
@@ -42,33 +45,32 @@ println(
     FunctionProgress.from("span", Todo, Todo),
     FunctionProgress.from("findMap", Todo, Todo),
     FunctionProgress.from("count", Todo, Todo),
-    FunctionProgress.from("???", Todo, Todo),
-    "drop",
-    "take",
-    "map",
-    "filter",
-    "findLeft",
-    "findRight",
-    "head",
-    "range",
-    "repeat",
-    "memberOf",
-    "toArray",
-    "toMap",
-    "toSet",
-    "replace",
-    "exists",
-    "foreach",
-    "forall",
-    "dropWhile",
-    "takeWhile",
-    "zip",
-    "zipWith",
-    "foldLeft",
-    "foldRight",
-    "toList",
-    "from",
-    "new",
-    "empty",
+    FunctionProgress.from("drop", Todo, Todo),
+    FunctionProgress.from("take", Todo, Todo),
+    FunctionProgress.from("map", Todo, Todo),
+    FunctionProgress.from("filter", Todo, Todo),
+    FunctionProgress.from("findLeft", Todo, Todo),
+    FunctionProgress.from("findRight", Todo, Todo),
+    FunctionProgress.from("head", Todo, Todo),
+    FunctionProgress.from("range", Todo, Todo),
+    FunctionProgress.from("repeat", Todo, Todo),
+    FunctionProgress.from("memberOf", Todo, Todo),
+    FunctionProgress.from("toArray", Todo, Todo),
+    FunctionProgress.from("toMap", Todo, Todo),
+    FunctionProgress.from("toSet", Todo, Todo),
+    FunctionProgress.from("replace", Todo, Todo),
+    FunctionProgress.from("exists", Todo, Todo),
+    FunctionProgress.from("foreach", Todo, Todo),
+    FunctionProgress.from("forall", Todo, Todo),
+    FunctionProgress.from("dropWhile", Todo, Todo),
+    FunctionProgress.from("takeWhile", Todo, Todo),
+    FunctionProgress.from("zip", Todo, Todo),
+    FunctionProgress.from("zipWith", Todo, Todo),
+    FunctionProgress.from("foldLeft", Todo, Todo),
+    FunctionProgress.from("foldRight", Todo, Todo),
+    FunctionProgress.from("toList", Todo, Todo),
+    FunctionProgress.from("from", Todo, Todo),
+    FunctionProgress.from("new", Todo, Todo),
+    FunctionProgress.from("empty", Todo, Todo),
   ).toList.sorted
 )
