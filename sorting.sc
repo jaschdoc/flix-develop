@@ -107,6 +107,6 @@ println(
     FunctionProgress.from("toList", Done, Done, Easy),
     FunctionProgress.from("from", SNA, Done, Easy),
     FunctionProgress.from("new", SNA, Done, Easy),
-    FunctionProgress.from("empty", SNA, Done, Easy),
+    FunctionProgress.from("empty", SNA, Done, Easy, "Not to be confused with `isEmpty`"),
   ).toList.sorted.toMarkdown
 )
