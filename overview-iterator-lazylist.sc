@@ -61,12 +61,12 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $DNA Unknown, will be updated
           |
           || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Comment |
-          || :------: | :------------------------------------------------------------------: | :------------------------------------------------------------------: | :--------: | :-----: |
-          |""".stripMargin
+          || :------: | :------:                                                             | :------:                                                             | :--------: | :-----: |
+          |""".stripMargin.replaceAll(" {2}", "")
 
     fps.foldLeft(title)((acc, fp) => {
       acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.listStatus} | ${fp.difficulty} | ${fp.comment} |\n")
-    }).split(":").filterNot(c => c.contains("-")).mkString(":", "", ":").replaceAll("::", ":---:")
+    }).trim
   }
 }
 
