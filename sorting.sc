@@ -54,7 +54,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
         |""".stripMargin
 
     fps.foldLeft(title)((acc, fp) => {
-      acc.appendedAll(s"| ${fp.name} | ${fp.iterStatus} | ${fp.lListStatus} | ${fp.difficulty} | ${fp.comment} |\n")
+      acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.lListStatus} | ${fp.difficulty} | ${fp.comment} |\n")
     })
   }
 }
