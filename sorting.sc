@@ -40,12 +40,12 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
     val title =
       """
-        | # Status Overview
+        |# Status Overview
         |
-        | Difficulty explanation
-        |     - :green_circle: Expected to be easy to implement
-        |     - :red_circle: Requires thought / consideration
-        |     - :question: Unknown, will be updated
+        |Difficulty explanation
+        |    - :green_circle: Expected to be easy to implement
+        |    - :red_circle: Requires thought / consideration
+        |    - :question: Unknown, will be updated
         |
         || Function | Iterator | LazyList | Difficulty | Comment |
         || :------: | :------: | :------: | :--------: | :-----: |
