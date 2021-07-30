@@ -112,7 +112,7 @@ println(
     FunctionProgress.from("dropWhile", Warning, Todo, Hard, "Needs review"),
     FunctionProgress.from("takeWhile", Warning, Todo, Hard, "Needs review"),
     FunctionProgress.from("zip", Done, Todo, Easy),
-    FunctionProgress.from("zipWith", Done, Todo, Easy),
+    FunctionProgress.from("zipWith", Warning, Todo, Easy, "`zipWithE` requires optimization"),
     FunctionProgress.from("foldLeft", Done, Todo, Easy),
     FunctionProgress.from("foldRight", Done, Todo, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
