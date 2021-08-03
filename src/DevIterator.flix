@@ -193,13 +193,12 @@ namespace DevIterator {
     ///
     /// The original DevIterator `iter` should not be reused.
     ///
-    pub def dropWhile(f: a -> Bool & ef, iter: DevIterator[a]): DevIterator[a] & Impure = dropWhileE(f as a -> Bool & Impure, iter)
-        /*
+    pub def dropWhile(f: a -> Bool & ef, iter: DevIterator[a]): DevIterator[a] & Impure =        
         matchEff f {
             case Pure   => dropWhileL(f as a -> Bool, iter)
             case Impure => dropWhileE(f as a -> Bool & Impure, iter)
         }
-        */
+        
 
     ///
     /// Returns `iter` without the longest prefix that satisfies the predicate `f`, where `f` is applied *lazily*.
@@ -210,7 +209,6 @@ namespace DevIterator {
     ///
     /// The original DevIterator `iter` should not be reused.
     ///
-    /*
     def dropWhileL(f: a -> Bool, iter: DevIterator[a]): DevIterator[a] & Impure =
         let needsEvaluation = ref true;
         let newIter = ref iter;
@@ -229,7 +227,6 @@ namespace DevIterator {
             n()
         };
         DevIterator(done, next)
-    */
 
     ///
     /// Returns `iter` without the longest prefix that satisfies the predicate `f`, where `f` is applied *eagerly*.
@@ -265,13 +262,11 @@ namespace DevIterator {
     ///
     /// The original DevIterator `iter` should not be reused.
     ///
-    pub def takeWhile(f: a -> Bool & ef, iter: DevIterator[a]): DevIterator[a] & Impure = takeWhileE(f as a -> Bool & Impure, iter)
-        /*
+    pub def takeWhile(f: a -> Bool & ef, iter: DevIterator[a]): DevIterator[a] & Impure =
         matchEff f {
             case Pure   => takeWhileL(f as a -> Bool, iter)
             case Impure => takeWhileE(f as a -> Bool & Impure, iter)
         }
-        */
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
@@ -281,7 +276,6 @@ namespace DevIterator {
     ///
     /// The original DevIterator `iter` should not be reused.
     ///
-    /*
     def takeWhileL(f: a -> Bool, iter: DevIterator[a]): DevIterator[a] & Impure =
         let DevIterator(done, next) = iter;
         if (done())
@@ -295,7 +289,6 @@ namespace DevIterator {
             let done1 = () -> done() or p();
             let next1 = () -> deref x;
             DevIterator(done1, next1)
-    */
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
