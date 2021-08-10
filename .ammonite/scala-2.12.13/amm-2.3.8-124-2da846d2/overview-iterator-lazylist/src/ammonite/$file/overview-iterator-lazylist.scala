@@ -36,7 +36,22 @@ import _root_.ammonite.repl.tools.Util.{
 
 
 object `overview-iterator-lazylist`{
-/*<script>*/sealed trait Status
+/*<script>*/sealed trait Choice
+
+case object Yes extends Choice {
+  override def toString: String = ":heavy_check_mark:"
+}
+
+case object No extends Choice {
+  override def toString: String = ":heavy_multiplication_x:"
+}
+
+case object Maybe extends Choice {
+  override def toString: String = ":question:"
+}
+
+sealed trait Status
+sealed trait Difficulty
 
 case object Todo extends Status {
   override def toString: String = ":heavy_multiplication_x:"
@@ -50,11 +65,6 @@ case object Warning extends Status {
   override def toString: String = ":warning:"
 }
 
-case object SNA extends Status {
-  override def toString: String = ":question:"
-}
-
-sealed trait Difficulty
 
 case object Easy extends Difficulty {
   override def toString: String = ":green_circle:"
@@ -64,23 +74,10 @@ case object Hard extends Difficulty {
   override def toString: String = ":red_circle:"
 }
 
-case object DNA extends Difficulty {
+case object NA extends Status with Difficulty {
   override def toString: String = ":question:"
 }
 
-sealed trait Choice
-
-case object Yes extends Choice {
-  override def toString: String = ":heavy_check_mark:"
-}
-
-case object No extends Choice {
-  override def toString: String = ":heavy_multiplication_x:"
-}
-
-case object Maybe extends Choice {
-  override def toString: String = ":question:"
-}
 
 type Name = String
 type Comment = String
@@ -138,7 +135,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 }
 
 
-/*<amm>*/val res_19 = /*</amm>*/println(
+/*<amm>*/val res_18 = /*</amm>*/println(
   Set(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Todo, Hard),
