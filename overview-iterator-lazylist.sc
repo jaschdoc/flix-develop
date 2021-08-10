@@ -30,19 +30,46 @@ case object DNA extends Difficulty {
   override def toString: String = ":question:"
 }
 
+sealed trait EffectPolymorphicStatus
+
+case object YesEffectPolymorphic extends EffectPolymorphicStatus {
+  override def toString: String = ":heavy_check_mark:"
+}
+
+case object NotEffectPolymorphic extends EffectPolymorphicStatus {
+  override def toString: String = ":heavy_multiplication_x:"
+}
+
 type Name = String
 type Comment = String
 
-case class FunctionProgress(name: Name, iterStatus: Status, listStatus: Status, difficulty: Difficulty, comment: Comment) {
-  val _name = name.trim
-  require(_name.nonEmpty)
+case class FunctionProgress(name: Name, iterStatus: Status,
+                            listStatus: Status,
+                            difficulty: Difficulty,
+                            polymorphic: EffectPolymorphicStatus,
+                            comment: Comment) {
+  require(name.trim.nonEmpty)
+
+  override def toString: String =
+    s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
 }
 
 implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 case object FunctionProgress {
-  def from(name: Name, iterStatus: Status = SNA, listStatus: Status = SNA, difficulty: Difficulty = DNA, comment: Comment = ""): FunctionProgress = {
-    FunctionProgress(name.trim, iterStatus, listStatus, difficulty, comment)
+  def from(name: Name,
+           iterStatus: Status = SNA,
+           listStatus: Status = SNA,
+           difficulty: Difficulty = DNA,
+           polymorphic: EffectPolymorphicStatus = NotEffectPolymorphic,
+           comment: Comment = ""): FunctionProgress = {
+    FunctionProgress(
+      name.trim,
+      iterStatus,
+      listStatus,
+      difficulty,
+      polymorphic,
+      comment)
   }
 }
 
@@ -60,13 +87,11 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
           |    - $DNA Unknown, will be updated (${fps.count(fp => fp.difficulty == DNA)} / ${fps.length})
           |
-          || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Comment |
-          || :------: | :------:                                                             | :------:                                                             | :--------: | :-----: |
+          || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
+          || :------: | :------:                                                             | :------:                                                             | :--------: | :---------:           | :-----: |
           |""".stripMargin.replaceAll(" {2}", "")
 
-    fps.foldLeft(title)((acc, fp) => {
-      acc.appendedAll(s"| `${fp.name}` | ${fp.iterStatus} | ${fp.listStatus} | ${fp.difficulty} | ${fp.comment} |\n")
-    }).trim
+    fps.map(_.toString).mkString(title, "\n", "").trim
   }
 }
 
@@ -97,7 +122,7 @@ println(
     FunctionProgress.from("map", Done, Todo, Easy),
     FunctionProgress.from("filter", Done, Todo, Easy),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
-    FunctionProgress.from("findRight", Warning, Todo, Easy, "Needs optimization"),
+    FunctionProgress.from("findRight", Warning, Todo, Easy, comment = "Needs optimization"),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Todo, Easy),
@@ -112,11 +137,11 @@ println(
     FunctionProgress.from("dropWhile", Todo, Todo, Hard),
     FunctionProgress.from("takeWhile", Todo, Todo, Hard),
     FunctionProgress.from("zip", Done, Todo, Easy),
-    FunctionProgress.from("zipWith", Warning, Todo, Easy, "`zipWithE` requires optimization"),
+    FunctionProgress.from("zipWith", Warning, Todo, Easy, comment = "`zipWithE` requires optimization"),
     FunctionProgress.from("foldLeft", Done, Todo, Easy),
     FunctionProgress.from("foldRight", Done, Todo, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
-    FunctionProgress.from("from", SNA, Todo, Easy, "Is this even relevant for `Iterator`?"),
-    FunctionProgress.from("empty", SNA, Done, Easy, "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("from", SNA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("empty", SNA, Done, Easy, comment = "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
   ).toList.sorted.toMarkdown
 )
