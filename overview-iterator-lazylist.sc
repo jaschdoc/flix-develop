@@ -30,14 +30,18 @@ case object DNA extends Difficulty {
   override def toString: String = ":question:"
 }
 
-sealed trait EffectPolymorphicStatus
+sealed trait Choice
 
-case object YesEffectPolymorphic extends EffectPolymorphicStatus {
+case object Yes extends Choice {
   override def toString: String = ":heavy_check_mark:"
 }
 
-case object NotEffectPolymorphic extends EffectPolymorphicStatus {
+case object No extends Choice {
   override def toString: String = ":heavy_multiplication_x:"
+}
+
+case object Maybe extends Choice {
+  override def toString: String = ":question:"
 }
 
 type Name = String
@@ -46,7 +50,7 @@ type Comment = String
 case class FunctionProgress(name: Name, iterStatus: Status,
                             listStatus: Status,
                             difficulty: Difficulty,
-                            polymorphic: EffectPolymorphicStatus,
+                            polymorphic: Choice,
                             comment: Comment) {
   require(name.trim.nonEmpty)
 
@@ -61,7 +65,7 @@ case object FunctionProgress {
            iterStatus: Status = SNA,
            listStatus: Status = SNA,
            difficulty: Difficulty = DNA,
-           polymorphic: EffectPolymorphicStatus = NotEffectPolymorphic,
+           polymorphic: Choice = No,
            comment: Comment = ""): FunctionProgress = {
     FunctionProgress(
       name.trim,
@@ -100,27 +104,27 @@ println(
   Set(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Todo, Hard),
-    FunctionProgress.from("filterMap", Todo, Todo, DNA),
-    FunctionProgress.from("findMap", Todo, Todo, DNA),
+    FunctionProgress.from("filterMap", Todo, Todo, DNA, polymorphic = Yes),
+    FunctionProgress.from("findMap", Todo, Todo, DNA, polymorphic = Yes),
     FunctionProgress.from("reduceLeft", Todo, Todo, Easy),
     FunctionProgress.from("reduceRight", Todo, Todo, Easy),
-    FunctionProgress.from("intersperse", Todo, Todo, Hard),
+    FunctionProgress.from("intersperse", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("minimum", Todo, Todo, Easy),
     FunctionProgress.from("minimumBy", Todo, Todo, Easy),
     FunctionProgress.from("maximum", Todo, Todo, Easy),
     FunctionProgress.from("maximumBy", Todo, Todo, Easy),
-    FunctionProgress.from("mapWithIndex", Todo, Todo, Easy),
-    FunctionProgress.from("flatMap", Todo, Todo, Easy),
-    FunctionProgress.from("intercalate", Todo, Todo, Hard),
-    FunctionProgress.from("flatten", Todo, Todo, DNA),
-    FunctionProgress.from("partition", Todo, Todo, Hard),
-    FunctionProgress.from("span", Todo, Todo, Hard),
+    FunctionProgress.from("mapWithIndex", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("flatMap", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("intercalate", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("flatten", Todo, Todo, DNA, polymorphic = Yes),
+    FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("findMap", Todo, Todo, DNA),
     FunctionProgress.from("count", Done, Todo, Easy),
-    FunctionProgress.from("drop", Done, Todo, Easy),
-    FunctionProgress.from("take", Done, Done, Easy),
-    FunctionProgress.from("map", Done, Todo, Easy),
-    FunctionProgress.from("filter", Done, Todo, Easy),
+    FunctionProgress.from("drop", Done, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("take", Done, Done, Easy, polymorphic = Yes),
+    FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
+    FunctionProgress.from("filter", Done, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
     FunctionProgress.from("findRight", Warning, Todo, Easy, comment = "Needs optimization"),
     FunctionProgress.from("head", Done, Done, Easy),
@@ -130,18 +134,20 @@ println(
     FunctionProgress.from("toArray", Done, Todo, Easy),
     FunctionProgress.from("toMap", Done, Todo, Easy),
     FunctionProgress.from("toSet", Done, Todo, Easy),
-    FunctionProgress.from("replace", Done, Todo, Easy),
+    FunctionProgress.from("replace", Done, Todo, Easy, polymorphic = Maybe),
     FunctionProgress.from("exists", Done, Todo, Easy),
     FunctionProgress.from("foreach", Done, Todo, Easy),
     FunctionProgress.from("forall", Done, Todo, Easy),
-    FunctionProgress.from("dropWhile", Todo, Todo, Hard),
-    FunctionProgress.from("takeWhile", Todo, Todo, Hard),
-    FunctionProgress.from("zip", Done, Todo, Easy),
-    FunctionProgress.from("zipWith", Warning, Todo, Easy, comment = "`zipWithE` requires optimization"),
+    FunctionProgress.from("dropWhile", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("takeWhile", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("zip", Done, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("zipWith", Warning, Todo, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
     FunctionProgress.from("foldLeft", Done, Todo, Easy),
     FunctionProgress.from("foldRight", Done, Todo, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
     FunctionProgress.from("from", SNA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
     FunctionProgress.from("empty", SNA, Done, Easy, comment = "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("toIter", SNA, Todo, Easy),
+    FunctionProgress.from("toLazyList", Todo, SNA, Easy, polymorphic = Maybe)
   ).toList.sorted.toMarkdown
 )
