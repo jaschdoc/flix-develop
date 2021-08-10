@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-use LazyList.LazyList;
+use LazyListOld.LazyList;
 
 ///
 /// An experimental lazy list.
@@ -27,19 +27,19 @@ opaque type LazyList2Old[t] = Lazy[LazyList[t]]
 namespace LazyList2Old {
 
     ///
-    /// Returns the empty LazyList.
+    /// Returns the empty LazyListOld.
     ///
-    pub def empty(): LazyList2Old[a] = LazyList2Old(lazy LazyList.empty())
+    pub def empty(): LazyList2Old[a] = LazyList2Old(lazy LazyListOld.empty())
 
     ///
     /// Returns an infinite LazyList of repeating `x`s.
     ///
-    pub def repeat(x: a): LazyList2Old[a] = LazyList2Old(lazy LazyList.repeat(x))
+    pub def repeat(x: a): LazyList2Old[a] = LazyList2Old(lazy LazyListOld.repeat(x))
 
     ///
     /// Returns an infinite sequence of integers starting from and including `n`.
     ///
-    pub def from(n: Int32): LazyList2Old[Int32] = LazyList2Old(lazy LazyList.from(n))
+    pub def from(n: Int32): LazyList2Old[Int32] = LazyList2Old(lazy LazyListOld.from(n))
 
     ///
     /// Returns true if and only if `xs` is the empty LazyList, i.e. `Empty`.
@@ -48,7 +48,7 @@ namespace LazyList2Old {
     ///
     pub def isEmpty(xs: LazyList2Old[a]): Bool = {
         let LazyList2Old(ys) = xs;
-        LazyList.isEmpty(force ys)
+        LazyListOld.isEmpty(force ys)
     }
 
     ///
@@ -58,7 +58,7 @@ namespace LazyList2Old {
     ///
     pub def length(xs: LazyList2Old[a]): Int32 = {
         let LazyList2Old(ys) = xs;
-        LazyList.length(force ys)
+        LazyListOld.length(force ys)
     }
 
     ///
@@ -70,7 +70,7 @@ namespace LazyList2Old {
     ///
     pub def head(xs: LazyList2Old[a]): Option[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList.head(force ys)
+        LazyListOld.head(force ys)
     }
 
     ///
@@ -82,7 +82,7 @@ namespace LazyList2Old {
     ///
     pub def last(xs: LazyList2Old[a]): Option[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList.last(force ys)
+        LazyListOld.last(force ys)
     }
 
     ///
@@ -94,7 +94,7 @@ namespace LazyList2Old {
     ///
     pub def nth(n: Int32, xs: LazyList2Old[a]): Option[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList.nth(n, force ys)
+        LazyListOld.nth(n, force ys)
     }
 
     ///
@@ -105,7 +105,7 @@ namespace LazyList2Old {
     pub def append(xs: LazyList2Old[a], ys: LazyList2Old[a]): LazyList2Old[a] = {
         let LazyList2Old(zs) = xs;
         let LazyList2Old(qs) = ys;
-        LazyList2Old(lazy LazyList.append(force zs, force qs))
+        LazyList2Old(lazy LazyListOld.append(force zs, force qs))
     }
 
     ///
@@ -115,7 +115,7 @@ namespace LazyList2Old {
     ///
     pub def reverse(xs: LazyList2Old[a]): LazyList2Old[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList2Old(lazy LazyList.reverse(force ys))
+        LazyList2Old(lazy LazyListOld.reverse(force ys))
     }
 
     ///
@@ -125,7 +125,7 @@ namespace LazyList2Old {
     ///
     pub def take(n: Int32, xs: LazyList2Old[a]): LazyList2Old[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList2Old(lazy LazyList.take(n, force ys))
+        LazyList2Old(lazy LazyListOld.take(n, force ys))
     }
 
     ///
@@ -135,7 +135,7 @@ namespace LazyList2Old {
     ///
     pub def drop(n: Int32, xs: LazyList2Old[a]): LazyList2Old[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList2Old(lazy LazyList.drop(n, force ys))
+        LazyList2Old(lazy LazyListOld.drop(n, force ys))
     }
 
     ///
@@ -152,7 +152,7 @@ namespace LazyList2Old {
     ///
     pub def toList(xs: LazyList2Old[a]): List[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList.toList(force ys)
+        LazyListOld.toList(force ys)
     }
 
     ///
@@ -164,7 +164,7 @@ namespace LazyList2Old {
     ///
     pub def foldLeft(f: (b, a) -> b, s: b, xs: LazyList2Old[a]): b = {
         let LazyList2Old(ys) = xs;
-        LazyList.foldLeft(f, s, force ys)
+        LazyListOld.foldLeft(f, s, force ys)
     }
 
     ///
@@ -176,7 +176,7 @@ namespace LazyList2Old {
     ///
     pub def foldRight(f: (a, Lazy[b]) -> b, s: b, xs: LazyList2Old[a]): b = {
         let LazyList2Old(ys) = xs;
-        LazyList.foldRight(f, s, force ys)
+        LazyListOld.foldRight(f, s, force ys)
     }
 
     ///
@@ -188,7 +188,7 @@ namespace LazyList2Old {
     ///
     pub def exists(f: a -> Bool, xs: LazyList2Old[a]): Bool = {
         let LazyList2Old(ys) = xs;
-        LazyList.exists(f, force ys)
+        LazyListOld.exists(f, force ys)
     }
 
     ///
@@ -200,7 +200,7 @@ namespace LazyList2Old {
     ///
     pub def forall(f: a -> Bool, xs: LazyList2Old[a]): Bool = {
         let LazyList2Old(ys) = xs;
-        LazyList.forall(f, force ys)
+        LazyListOld.forall(f, force ys)
     }
 
     ///
@@ -210,7 +210,7 @@ namespace LazyList2Old {
     ///
     pub def map(f: a -> b, xs: LazyList2Old[a]): LazyList2Old[b] = {
         let LazyList2Old(ys) = xs;
-        LazyList2Old(lazy LazyList.map(f, force ys))
+        LazyList2Old(lazy LazyListOld.map(f, force ys))
     }
 
     ///
@@ -220,7 +220,7 @@ namespace LazyList2Old {
     ///
     pub def filter(f: a -> Bool, xs: LazyList2Old[a]): LazyList2Old[a] = {
         let LazyList2Old(ys) = xs;
-        LazyList2Old(lazy LazyList.filter(f, force ys))
+        LazyList2Old(lazy LazyListOld.filter(f, force ys))
     }
 
     ///
@@ -230,7 +230,7 @@ namespace LazyList2Old {
     /// `f` should return `None` to signal the end of building the list.
     ///
     pub def unfold(f: b -> Option[(a, b)], s: b): LazyList2Old[a] =
-        LazyList2Old(lazy LazyList.unfold(f, s))
+        LazyList2Old(lazy LazyListOld.unfold(f, s))
 
     ///
     /// Returns a list where the element at index `i` is `f(a, b)` where
@@ -243,7 +243,7 @@ namespace LazyList2Old {
     pub def zipWith(f: (a, b) -> c, xs: LazyList2Old[a], ys: LazyList2Old[b]): LazyList2Old[c] = {
         let LazyList2Old(zs) = xs;
         let LazyList2Old(qs) = ys;
-        LazyList2Old(lazy LazyList.zipWith(f, force zs, force qs))
+        LazyList2Old(lazy LazyListOld.zipWith(f, force zs, force qs))
     }
 
     ///
@@ -257,7 +257,7 @@ namespace LazyList2Old {
     pub def zip(xs: LazyList2Old[a], ys: LazyList2Old[b]): LazyList2Old[(a, b)] = {
         let LazyList2Old(zs) = xs;
         let LazyList2Old(qs) = ys;
-        LazyList2Old(lazy LazyList.zip(force zs, force qs))
+        LazyList2Old(lazy LazyListOld.zip(force zs, force qs))
     }
 
 }

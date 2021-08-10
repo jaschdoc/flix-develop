@@ -331,6 +331,7 @@ namespace TestIterator {
     /////////////////////////////////////////////////////////////////////////////
     // dropWhile (pure)                                                        //
     /////////////////////////////////////////////////////////////////////////////
+    /*
 
     @test
     def dropWhilePure01(): Bool & Impure =
@@ -456,7 +457,7 @@ namespace TestIterator {
         iter |> Iterator.foreach(_ -> x := (deref x) + 1);
         deref x == 10000 and iter |> Iterator.isEmpty
 
-
+*/
     /////////////////////////////////////////////////////////////////////////////
     // zip                                                                     //
     /////////////////////////////////////////////////////////////////////////////
@@ -627,7 +628,7 @@ namespace TestIterator {
     /////////////////////////////////////////////////////////////////////////////
     // takeWhile (pure)                                                        //
     /////////////////////////////////////////////////////////////////////////////
-
+/*
     @test
     def takeWhilePure01(): Bool & Impure =
         Iterator.repeat(0, 0) |> Iterator.takeWhile(x -> x > 100) |> Iterator.toList == Nil: List[Int32]
@@ -672,7 +673,7 @@ namespace TestIterator {
     @test
     def takeWhileImpure05(): Bool & Impure =
         Iterator.repeat(10, 1000) |> Iterator.takeWhile({x -> x < 100 } as & Impure) |> Iterator.toList == List.repeat(10, 1000)
-
+*/
 
     /////////////////////////////////////////////////////////////////////////////
     // findRight                                                               //
