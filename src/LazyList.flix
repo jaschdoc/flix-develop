@@ -22,6 +22,20 @@ pub enum LazyList1[a] {
 }
 */
 
+instance Eq[LazyList[a]] with Eq[a] {
+    pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
+        case (ENil, ENil) => true
+        case (ECons(x, rs), ECons(y, qs)) => if (x != y) false else rs == qs
+        case (ECons(x, rs), LCons(y, qs)) => if (x != y) false else rs == force qs
+        case (LCons(x, rs), ECons(y, qs)) => if (x != y) false else (force rs) == qs
+        case (LCons(x, rs), LCons(y, qs)) => if (x != y) false else (force rs) == force qs
+        case (LList(rs), LList(qs))       => (force rs) == force qs
+        case (l, LList(qs))               => l == force qs
+        case (LList(rs), l)               => (force rs) == l
+        case _ => false
+    }
+}
+
 namespace LazyList1 {
     // TODO: Implement functions used in TestExamples
 
