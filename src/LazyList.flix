@@ -126,7 +126,7 @@ namespace LazyList1 {
     ///
     /// Forces the entire list `l`.
     ///
-    pub def toList(l: LazyList[a]): List[a] = toListAcc(l, Nil) |> List.reverse
+    pub def toList(l: LazyList[a]): List[a] = toListAcc(reverse(l), Nil)
 
     ///
     /// Helper function for `toList`.
@@ -212,16 +212,15 @@ namespace LazyList1 {
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
     def filterE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
-        filterEAcc(f, l, Nil) |> List.reverse |> toLazy
+        filterEAcc(f, l, ENil) |> reverse
 
     ///
     /// Helper function for `filterE`
     ///
-    // TODO: Refactor to NOT use List
-    def filterEAcc(f: a -> Bool & Impure, l: LazyList[a], acc: List[a]): List[a] & Impure = match l {
+    def filterEAcc(f: a -> Bool & Impure, l: LazyList[a], acc: LazyList[a]): LazyList[a] & Impure = match l {
         case ENil         => acc
-        case ECons(x, xs) => if (f(x)) filterEAcc(f, xs, x :: acc)       else filterEAcc(f, xs, acc)
-        case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, x :: acc) else filterEAcc(f, force xs, acc)
+        case ECons(x, xs) => if (f(x)) filterEAcc(f, xs, ECons(x, acc))       else filterEAcc(f, xs, acc)
+        case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, ECons(x, acc)) else filterEAcc(f, force xs, acc)
         case LList(xs)    => filterEAcc(f, force xs, acc)
     }
 
