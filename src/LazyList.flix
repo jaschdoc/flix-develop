@@ -188,8 +188,8 @@ namespace LazyList1 {
     ///
     pub def filter(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & Impure =
         matchEff f {
-            case Pure   => filterLazy(f as a -> Bool & Pure,    l)
-            case Impure => filterEager(f as a -> Bool & Impure, l)
+            case Pure   => filterL(f as a -> Bool & Pure,   l)
+            case Impure => filterE(f as a -> Bool & Impure, l)
         }
 
     ///
@@ -197,13 +197,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def filterLazy(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
+    def filterL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil                   => ENil
-        case ECons(x, xs) if (f(x)) => ECons(x, filterLazy(f, xs))
-        case LCons(x, xs) if (f(x)) => LCons(x, lazy filterLazy(f, force xs))
-        case ECons(_, xs)           => LList(lazy filterLazy(f, xs))
-        case LCons(_, xs)           => LList(lazy filterLazy(f, force xs))
-        case LList(xs)              => LList(lazy filterLazy(f, force xs))
+        case ECons(x, xs) if (f(x)) => ECons(x, filterL(f, xs))
+        case LCons(x, xs) if (f(x)) => LCons(x, lazy filterL(f, force xs))
+        case ECons(_, xs)           => LList(lazy filterL(f, xs))
+        case LCons(_, xs)           => LList(lazy filterL(f, force xs))
+        case LList(xs)              => LList(lazy filterL(f, force xs))
     }
 
     ///
@@ -211,18 +211,18 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def filterEager(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
-        filterEagerAcc(f, l, Nil) |> List.reverse |> toLazy
+    def filterE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
+        filterEAcc(f, l, Nil) |> List.reverse |> toLazy
 
     ///
-    /// Helper function for `filterEager`
+    /// Helper function for `filterE`
     ///
     // TODO: Refactor to NOT use List
-    def filterEagerAcc(f: a -> Bool & Impure, l: LazyList[a], acc: List[a]): List[a] & Impure = match l {
+    def filterEAcc(f: a -> Bool & Impure, l: LazyList[a], acc: List[a]): List[a] & Impure = match l {
         case ENil         => acc
-        case ECons(x, xs) => if (f(x)) filterEagerAcc(f, xs, x :: acc)       else filterEagerAcc(f, xs, acc)
-        case LCons(x, xs) => if (f(x)) filterEagerAcc(f, force xs, x :: acc) else filterEagerAcc(f, force xs, acc)
-        case LList(xs)    => filterEagerAcc(f, force xs, acc)
+        case ECons(x, xs) => if (f(x)) filterEAcc(f, xs, x :: acc)       else filterEAcc(f, xs, acc)
+        case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, x :: acc) else filterEAcc(f, force xs, acc)
+        case LList(xs)    => filterEAcc(f, force xs, acc)
     }
 
     ///
