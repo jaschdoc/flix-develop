@@ -149,9 +149,9 @@ namespace LazyList1 {
     ///
     def reverseAcc(l: LazyList[a], acc: LazyList[a]): LazyList[a] = match l {
         case ENil         => acc
-        case ECons(x, ys) => reverseAcc(ys, ECons(x, acc))
-        case LCons(x, ys) => reverseAcc(force ys, ECons(x, acc))
-        case LList(ys)    => reverseAcc(force ys, acc)
+        case ECons(x, xs) => reverseAcc(xs, ECons(x, acc))
+        case LCons(x, xs) => reverseAcc(force xs, ECons(x, acc))
+        case LList(xs)    => reverseAcc(force xs, acc)
     }
 
     ///
