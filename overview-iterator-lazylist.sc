@@ -122,7 +122,7 @@ println(
     FunctionProgress.from("drop", Done, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("take", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("filter", Done, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
     FunctionProgress.from("findRight", Warning, Todo, Easy, comment = "Needs optimization"),
     FunctionProgress.from("head", Done, Done, Easy),
