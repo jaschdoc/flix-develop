@@ -146,6 +146,8 @@ println(
     FunctionProgress.from("from", NA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
     FunctionProgress.from("empty", NA, Done, Easy, comment = "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
     FunctionProgress.from("toIter", NA, Todo, Easy),
-    FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe)
+    FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe),
+    FunctionProgress.from("last", Todo, Todo, Easy),
+    FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = Yes, comment = "Only eager version is implemented currently")
   ).toList.sorted.toMarkdown
 )
