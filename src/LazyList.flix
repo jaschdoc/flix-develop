@@ -51,7 +51,7 @@ namespace LazyList1 {
     ///
     pub def isEmpty(l: LazyList[a]): Bool = match l {
         case ENil      => true
-        case LList(ys) => isEmpty(force ys)
+        case LList(xs) => isEmpty(force xs)
         case _         => false
     }
 
@@ -77,7 +77,7 @@ namespace LazyList1 {
         case ENil        => None
         case ECons(x, _) => Some(x)
         case LCons(x, _) => Some(x)
-        case LList(ys)   => head(force ys)
+        case LList(xs)   => head(force xs)
     }
 
     ///
@@ -91,9 +91,9 @@ namespace LazyList1 {
         else
             match l {
                 case ENil         => ENil
-                case ECons(x, ys) => ECons(x, take(n - 1, ys))
-                case LCons(x, ys) => LCons(x, lazy take(n - 1, force ys))
-                case LList(ys)    => LList(lazy take(n, force ys))
+                case ECons(x, xs) => ECons(x, take(n - 1, xs))
+                case LCons(x, xs) => LCons(x, lazy take(n - 1, force xs))
+                case LList(xs)    => LList(lazy take(n, force xs))
             }
     ///
     /// Returns the length of `l`.
@@ -107,9 +107,9 @@ namespace LazyList1 {
     ///
     def lengthAcc(acc: Int32, l: LazyList[a]): Int32 = match l {
         case ENil         => acc
-        case ECons(_, ys) => lengthAcc(acc + 1, ys)
-        case LCons(_, ys) => lengthAcc(acc + 1, force ys)
-        case LList(ys)    => lengthAcc(acc, force ys)
+        case ECons(_, xs) => lengthAcc(acc + 1, xs)
+        case LCons(_, xs) => lengthAcc(acc + 1, force xs)
+        case LList(xs)    => lengthAcc(acc, force xs)
     }
 
     ///
@@ -133,9 +133,9 @@ namespace LazyList1 {
     ///
     def toListAcc(l: LazyList[a], acc: List[a]): List[a] = match l {
         case ENil         => acc
-        case ECons(x, ys) => toListAcc(ys, x :: acc)
-        case LCons(x, ys) => toListAcc(force ys, x :: acc)
-        case LList(ys)    => toListAcc(force ys, acc)
+        case ECons(x, xs) => toListAcc(xs, x :: acc)
+        case LCons(x, xs) => toListAcc(force xs, x :: acc)
+        case LList(xs)    => toListAcc(force xs, acc)
     }
 
     ///
@@ -173,9 +173,9 @@ namespace LazyList1 {
     ///
     pub def last(l: LazyList[a]): Option[a] = match l {
         case ENil         => None
-        case ECons(x, ys) => if (isEmpty(ys))       Some(x) else last(ys)
-        case LCons(x, ys) => if (isEmpty(force ys)) Some(x) else last(force ys)
-        case LList(ys)    => last(force ys)
+        case ECons(x, xs) => if (isEmpty(xs))       Some(x) else last(xs)
+        case LCons(x, xs) => if (isEmpty(force xs)) Some(x) else last(force xs)
+        case LList(xs)    => last(force xs)
     }
     
     ///
@@ -199,11 +199,11 @@ namespace LazyList1 {
     ///
     def filterLazy(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil                   => ENil
-        case ECons(x, ys) if (f(x)) => ECons(x, filterLazy(f, ys))
-        case LCons(x, ys) if (f(x)) => LCons(x, lazy filterLazy(f, force ys))
-        case ECons(_, ys)           => LList(lazy filterLazy(f, ys))
-        case LCons(_, ys)           => LList(lazy filterLazy(f, force ys))
-        case LList(ys)              => LList(lazy filterLazy(f, force ys))
+        case ECons(x, xs) if (f(x)) => ECons(x, filterLazy(f, xs))
+        case LCons(x, xs) if (f(x)) => LCons(x, lazy filterLazy(f, force xs))
+        case ECons(_, xs)           => LList(lazy filterLazy(f, xs))
+        case LCons(_, xs)           => LList(lazy filterLazy(f, force xs))
+        case LList(xs)              => LList(lazy filterLazy(f, force xs))
     }
 
     ///
@@ -220,9 +220,9 @@ namespace LazyList1 {
     // TODO: Refactor to NOT use List
     def filterEagerAcc(f: a -> Bool & Impure, l: LazyList[a], acc: List[a]): List[a] & Impure = match l {
         case ENil         => acc
-        case ECons(x, ys) => if (f(x)) filterEagerAcc(f, ys, x :: acc)       else filterEagerAcc(f, ys, acc)
-        case LCons(x, ys) => if (f(x)) filterEagerAcc(f, force ys, x :: acc) else filterEagerAcc(f, force ys, acc)
-        case LList(ys)    => filterEagerAcc(f, force ys, acc)
+        case ECons(x, xs) => if (f(x)) filterEagerAcc(f, xs, x :: acc)       else filterEagerAcc(f, xs, acc)
+        case LCons(x, xs) => if (f(x)) filterEagerAcc(f, force xs, x :: acc) else filterEagerAcc(f, force xs, acc)
+        case LList(xs)    => filterEagerAcc(f, force xs, acc)
     }
 
     ///
