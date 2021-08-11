@@ -198,7 +198,7 @@ namespace LazyList1 {
     ///
     def filterL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil                   => ENil
-        case ECons(x, xs) if (f(x)) => ECons(x, filterL(f, xs))
+        case ECons(x, xs) if (f(x)) => LCons(x, lazy filterL(f, xs))
         case LCons(x, xs) if (f(x)) => LCons(x, lazy filterL(f, force xs))
         case ECons(_, xs)           => LList(lazy filterL(f, xs))
         case LCons(_, xs)           => LList(lazy filterL(f, force xs))
