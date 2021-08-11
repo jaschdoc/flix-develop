@@ -24,7 +24,7 @@ pub enum LazyList1[a] {
 
 instance Eq[LazyList[a]] with Eq[a] {
     pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
-        case (ENil, ENil) => true
+        case (ENil, ENil)                 => true
         case (ECons(x, xs), ECons(y, ys)) => if (x != y) false else xs == ys
         case (ECons(x, xs), LCons(y, ys)) => if (x != y) false else xs == force ys
         case (LCons(x, xs), ECons(y, ys)) => if (x != y) false else (force xs) == ys
@@ -32,7 +32,7 @@ instance Eq[LazyList[a]] with Eq[a] {
         case (LList(xs), LList(ys))       => (force xs) == force ys
         case (l, LList(ys))               => l == force ys
         case (LList(xs), l)               => (force xs) == l
-        case _ => false
+        case _                            => false
     }
 }
 
@@ -198,8 +198,8 @@ namespace LazyList1 {
     ///
     def filterL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil                   => ENil
-        case ECons(x, xs) if (f(x)) => LCons(x, lazy filterL(f, xs))
-        case LCons(x, xs) if (f(x)) => LCons(x, lazy filterL(f, force xs))
+        case ECons(x, xs) if f(x) => LCons(x, lazy filterL(f, xs))
+        case LCons(x, xs) if f(x) => LCons(x, lazy filterL(f, force xs))
         case ECons(_, xs)           => LList(lazy filterL(f, xs))
         case LCons(_, xs)           => LList(lazy filterL(f, force xs))
         case LList(xs)              => LList(lazy filterL(f, force xs))
