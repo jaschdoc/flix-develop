@@ -141,7 +141,6 @@ namespace LazyList1 {
     ///
     /// Reverses the list `l`.
     ///
-    // TODO: Overload based on purity
     pub def reverse(l: LazyList[a]): LazyList[a] = reverseAcc(l, ENil)
 
     ///
