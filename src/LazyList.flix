@@ -25,13 +25,13 @@ pub enum LazyList1[a] {
 instance Eq[LazyList[a]] with Eq[a] {
     pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
         case (ENil, ENil) => true
-        case (ECons(x, rs), ECons(y, qs)) => if (x != y) false else rs == qs
-        case (ECons(x, rs), LCons(y, qs)) => if (x != y) false else rs == force qs
-        case (LCons(x, rs), ECons(y, qs)) => if (x != y) false else (force rs) == qs
-        case (LCons(x, rs), LCons(y, qs)) => if (x != y) false else (force rs) == force qs
-        case (LList(rs), LList(qs))       => (force rs) == force qs
-        case (l, LList(qs))               => l == force qs
-        case (LList(rs), l)               => (force rs) == l
+        case (ECons(x, xs), ECons(y, ys)) => if (x != y) false else xs == ys
+        case (ECons(x, xs), LCons(y, ys)) => if (x != y) false else xs == force ys
+        case (LCons(x, xs), ECons(y, ys)) => if (x != y) false else (force xs) == ys
+        case (LCons(x, xs), LCons(y, ys)) => if (x != y) false else (force xs) == force ys
+        case (LList(xs), LList(ys))       => (force xs) == force ys
+        case (l, LList(ys))               => l == force ys
+        case (LList(xs), l)               => (force xs) == l
         case _ => false
     }
 }
