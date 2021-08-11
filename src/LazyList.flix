@@ -100,16 +100,16 @@ namespace LazyList1 {
     ///
     /// Forces the entire list `l`.
     ///
-    pub def length(l: LazyList[a]): Int32 = lengthAcc(0, l)
+    pub def length(l: LazyList[a]): Int32 = lengthAcc(l, 0)
 
     ///
     /// Helper function for `length`
     ///
-    def lengthAcc(acc: Int32, l: LazyList[a]): Int32 = match l {
+    def lengthAcc(l: LazyList[a], acc: Int32): Int32 = match l {
         case ENil         => acc
-        case ECons(_, xs) => lengthAcc(acc + 1, xs)
-        case LCons(_, xs) => lengthAcc(acc + 1, force xs)
-        case LList(xs)    => lengthAcc(acc, force xs)
+        case ECons(_, xs) => lengthAcc(xs, acc + 1)
+        case LCons(_, xs) => lengthAcc(force xs, acc + 1)
+        case LList(xs)    => lengthAcc(force xs, acc)
     }
 
     ///
