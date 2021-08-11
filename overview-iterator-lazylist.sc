@@ -148,6 +148,7 @@ println(
     FunctionProgress.from("toIter", NA, Todo, Easy),
     FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe),
     FunctionProgress.from("last", Todo, Todo, Easy),
-    FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = Yes, comment = "Only eager version is implemented currently")
+    FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = Yes, comment = "Only eager version is implemented currently"),
+    FunctionProgress.from("length", Todo, Done, Easy),
   ).toList.sorted.toMarkdown
 )
