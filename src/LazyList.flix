@@ -235,7 +235,7 @@ namespace LazyList1 {
     ///
     pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & Impure =
         matchEff f {
-            case Pure   => mapL(f as a -> b & Pure,    l)
+            case Pure   => mapL(f as a -> b & Pure,   l)
             case Impure => mapE(f as a -> b & Impure, l)
         }
 
