@@ -293,5 +293,30 @@ namespace LazyList1 {
     /// Forces the entire list `l`.
     ///
     pub def toMap(l: LazyList[(a, b)]): Map[a, b] = ???
+
+    ///
+    /// Returns `true` if and only if at least one element in `l` satisfies the predicate `f`.
+    ///
+    /// Returns `false` if `l` is empty.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def exists(l: LazyList[a]): Bool = ???
+
+    ///
+    /// Returns `true` if and only if all elements in `l` satisfy the predicate `f`.
+    ///
+    /// Returns `true` if `l` is empty.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def forall(l: LazyList[a]): Bool = ???
+
+    ///
+    /// Applies `f` to every element of `xs`.
+    ///
+    /// The function `f` must be impure.
+    ///
+    pub def foreach(f: a ~> Unit, l: LazyList[a]): Unit & Impure = ???
     
 }
