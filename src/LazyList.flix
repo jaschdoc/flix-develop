@@ -301,7 +301,12 @@ namespace LazyList1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def exists(l: LazyList[a]): Bool = ???
+    pub def exists(f: a -> Bool, l: LazyList[a]): Bool = match l {
+        case ENil         => false
+        case ECons(x, xs) => f(x) or exists(f, xs)
+        case LCons(x, xs) => f(x) or exists(f, force xs)
+        case LList(xs)    => exists(f, force xs)
+    }
 
     ///
     /// Returns `true` if and only if all elements in `l` satisfy the predicate `f`.
@@ -310,7 +315,7 @@ namespace LazyList1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def forall(l: LazyList[a]): Bool = ???
+    pub def forall(f: a -> Bool, l: LazyList[a]): Bool = ???
 
     ///
     /// Applies `f` to every element of `xs`.
