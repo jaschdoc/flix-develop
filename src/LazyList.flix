@@ -315,7 +315,12 @@ namespace LazyList1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def forall(f: a -> Bool, l: LazyList[a]): Bool = ???
+    pub def forall(f: a -> Bool, l: LazyList[a]): Bool = match l {
+        case ENil         => true
+        case ECons(x, xs) => f(x) and forall(f, xs)
+        case LCons(x, xs) => f(x) and forall(f, force xs)
+        case LList(xs)    => forall(f, force xs)
+    }
 
     ///
     /// Applies `f` to every element of `xs`.
