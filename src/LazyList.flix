@@ -251,11 +251,30 @@ namespace LazyList1 {
     }
 
     ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, l: LazyList[a]): b & ef = match l {
+        case ENil         => s
+        case ECons(x, xs) => foldLeft(f, f(s, x),       xs)
+        case LCons(x, xs) => foldLeft(f, f(s, x), force xs)
+        case LList(xs)    => foldLeft(f, s,       force xs)
+    }
+
+    ///
     /// Returns `l` as an `Array`.
     ///
     /// Forces the entire list `l`.
     ///
-    pub def toArray(l: LazyList[a]): Array[a] & Impure = ???
+    pub def toArray(l: LazyList[a]): Array[a] & Impure = match head(l) {
+        case None    => []
+        case Some(x) =>
+            let a = Array.new(x, length(l));
+            let f = (i, y) -> { a[i] = y; i + 1 };
+            foldLeft(f, 0, l);
+            a
+    }
 
     ///
     /// Returns `l` as an `Iterator`.
