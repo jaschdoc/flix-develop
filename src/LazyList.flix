@@ -81,6 +81,16 @@ namespace LazyList1 {
     }
 
     ///
+    /// Returns `l` without the first element.
+    ///
+    pub def tail(l: LazyList[a]): LazyList[a] = match l {
+        case ENil         => ENil
+        case ECons(_, xs) => xs
+        case LCons(_, xs) => LList(xs)
+        case LList(xs)    => LList(lazy tail(force xs))
+    }
+
+    ///
     /// Returns the first `n` elements of `l`.
     ///
     /// Does not force the tail of `l`.
@@ -252,7 +262,21 @@ namespace LazyList1 {
     ///
     /// Does not force any elements of the list.
     ///
-    pub def toIter(l: LazyList[a]): Iterator[a] & Impure = ???
+    pub def toIter(l: LazyList[a]): Iterator[a] & Impure =
+        let cursor = ref l;
+        let done = () -> match head(deref cursor) {
+            case None    => true
+            case Some(_) => false
+        };
+        
+        let next = () -> match head(deref cursor) {
+            case None    => bug!("Empty iterator")
+            case Some(x) =>
+                cursor := tail(deref cursor);
+                x
+        };
+        
+        Iterator(done, next)
 
     ///
     /// Returns `l` as a `List`.
