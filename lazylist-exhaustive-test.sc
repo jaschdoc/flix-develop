@@ -17,7 +17,7 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String): String = {
 
   tests.foldLeft((0, Set[String]()))((acc, test) => {
     val (index, set) = acc
-    (index + 1, set + ("@test\ndef test" + index + prefix + test + suffix))
+    (index + 1, set + ("@test\ndef test" + index + "\n" + prefix + test + suffix))
   })._2.mkString("\n\n")
 }
 
