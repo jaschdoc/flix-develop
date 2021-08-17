@@ -56,7 +56,7 @@ case class FunctionProgress(name: Name, iterStatus: Status,
     s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
 
   override def equals(obj: Any): Boolean = obj match {
-    case FunctionProgress(name1, _, _, _, _, _) => name == name1
+    case FunctionProgress(name1, _, _, _, _, _) => name.trim.toLowerCase == name1.trim.toLowerCase
     case _ => false
   }
 }
@@ -155,5 +155,6 @@ println(
     FunctionProgress.from("last", Todo, Todo, Easy),
     FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = No, comment = "Could be lazier"),
     FunctionProgress.from("length", Todo, Done, Easy),
+    FunctionProgress.from("tail", Todo, Done, Easy),
   ).toList.sorted.toMarkdown
 )
