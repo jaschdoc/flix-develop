@@ -10,20 +10,25 @@ case object Impure extends Purity {
   override def toString: String = " & Impure"
 }
 
-def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, startFrom: Int = 1, purity: Purity = Pure): String = {
+implicit class toFlixLazyLists[+A](val l: List[A]) {
+  def toLazyLists: Set[String] = {
+    @tailrec
+    def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
+      case Nil => acc.map(st => st._1 + s"ENil" + ")".repeat(st._2)) ++ acc.map(st => st._1 + s"LList(lazy ENil)" + ")".repeat(st._2)) //add some @test annotation and stuff
+      case x :: xs => te(xs,
+        acc.map(st => (st._1 + s"ECons($x, ", st._2 + 1))
+          ++ acc.map(st => (st._1 + s"LCons($x, lazy ", st._2 + 1))
+          ++ acc.map(st => (st._1 + s"LList(lazy ECons($x, ", st._2 + 2))
+          ++ acc.map(st => (st._1 + s"LList(lazy LCons($x, lazy ", st._2 + 2))
+      )
+    }
 
-  @tailrec
-  def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
-    case Nil => acc.map(st => st._1 + s"ENil" + ")".repeat(st._2)) ++ acc.map(st => st._1 + s"LList(lazy ENil)" + ")".repeat(st._2)) //add some @test annotation and stuff
-    case x :: xs => te(xs,
-      acc.map(st => (st._1 + s"ECons($x, ", st._2 + 1))
-        ++ acc.map(st => (st._1 + s"LCons($x, lazy ", st._2 + 1))
-        ++ acc.map(st => (st._1 + s"LList(lazy ECons($x, ", st._2 + 2))
-        ++ acc.map(st => (st._1 + s"LList(lazy LCons($x, lazy ", st._2 + 2))
-    )
+    te(l, Set(("", 0)))
   }
+}
 
-  val tests = te(l, Set(("", 0)))
+def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, startFrom: Int = 1, purity: Purity = Pure): String = {
+  val tests = l.toLazyLists
 
   tests.foldLeft((if (startFrom < 1) 1 else startFrom, Set[(Int, String)]()))((acc, test) => {
     val (index, set) = acc
