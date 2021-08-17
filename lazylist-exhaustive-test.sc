@@ -1,10 +1,6 @@
 import scala.annotation.tailrec
 
-class ExhaustiveTest(val tests: Set[String]) {
-  override def toString: String = tests.mkString("\n\n")
-}
-
-def testExhaustive[A](l: List[A]): ExhaustiveTest = {
+def testExhaustive[A](l: List[A]): String = {
 
   @tailrec
   def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
@@ -17,7 +13,7 @@ def testExhaustive[A](l: List[A]): ExhaustiveTest = {
     )
   }
 
-  new ExhaustiveTest(te(l, Set()))
+  te(l, Set()).mkString("\n\n")
 }
 
 println(
@@ -26,6 +22,8 @@ println(
       1,
       2,
       3,
+      4,
+      5,
     )
   )
 )
