@@ -55,13 +55,7 @@ case class FunctionProgress(name: Name, iterStatus: Status,
   override def toString: String =
     s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
 
-  override def equals(obj: Any): Boolean = obj match {
-    case FunctionProgress(name1, _, _, _, _, _) => name.trim.toLowerCase == name1.trim.toLowerCase
-    case _ => false
-  }
 }
-
-implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 case object FunctionProgress {
   def from(name: Name,
@@ -79,6 +73,8 @@ case object FunctionProgress {
       comment)
   }
 }
+
+implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
 
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
@@ -104,7 +100,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
 
 println(
-  Set(
+  List(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Todo, Easy),
     FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
@@ -122,7 +118,6 @@ println(
     FunctionProgress.from("flatten", Todo, Todo, NA, polymorphic = Yes),
     FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("findMap", Todo, Todo, NA),
     FunctionProgress.from("count", Done, Todo, Easy),
     FunctionProgress.from("drop", Done, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("take", Done, Done, Easy, polymorphic = Yes),
@@ -156,5 +151,5 @@ println(
     FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = No, comment = "Could be lazier"),
     FunctionProgress.from("length", Todo, Done, Easy),
     FunctionProgress.from("tail", Todo, Done, Easy),
-  ).toList.sorted.toMarkdown
+  ).distinctBy(_.name.trim.toLowerCase).sorted.toMarkdown
 )
