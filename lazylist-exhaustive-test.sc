@@ -1,6 +1,16 @@
 import scala.annotation.tailrec
 
-def testExhaustive[A](prefix: String, l: List[A], suffix: String): String = {
+sealed trait Purity
+
+case object Pure extends Purity {
+  override def toString: String = ""
+}
+
+case object Impure extends Purity {
+  override def toString: String = " & Impure"
+}
+
+def testExhaustive[A](prefix: String, l: List[A], suffix: String, purity: Purity = Pure): String = {
 
   @tailrec
   def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
@@ -17,7 +27,7 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String): String = {
 
   tests.foldLeft((0, Set[String]()))((acc, test) => {
     val (index, set) = acc
-    (index + 1, set + ("@test\ndef test" + index + "\n" + prefix + test + suffix))
+    (index + 1, set + ("@test\ndef test" + index + "(): Bool" + purity + " = \n\t" + prefix + test + suffix))
   })._2.mkString("\n\n")
 }
 
@@ -27,6 +37,7 @@ println(
     List(
       1
     ),
-    ") == 1 :: Nil"
+    ") == 1 :: Nil",
+    purity = Pure,
   )
 )
