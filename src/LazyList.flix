@@ -22,6 +22,11 @@ pub enum LazyList1[a] {
 }
 */
 
+instance Foldable[LazyList] {
+    pub def foldLeft(f: (b, a) -> b & e, s: b, l: LazyList[a]): b & e = LazyList1.foldLeft(f, s, l)
+    pub def foldRight(f: (a, b) -> b & e, s: b, l: LazyList[a]): b & e = LazyList1.foldRight(f, s, l)
+}
+
 instance Eq[LazyList[a]] with Eq[a] {
     pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
         case (ENil, ENil)                 => true
