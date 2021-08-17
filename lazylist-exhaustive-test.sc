@@ -10,7 +10,7 @@ case object Impure extends Purity {
   override def toString: String = " & Impure"
 }
 
-def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, purity: Purity = Pure): String = {
+def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, startFrom: Int = 1, purity: Purity = Pure): String = {
 
   @tailrec
   def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
@@ -25,18 +25,19 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
   val tests = te(l, Set(("", 0)))
 
-  tests.foldLeft((1, Set[String]()))((acc, test) => {
+  tests.foldLeft((startFrom, Set[(Int, String)]()))((acc, test) => {
     val (index, set) = acc
-    (index + 1, set + ("@test\ndef " + name + index + "(): Bool" + purity + " = \n\t" + prefix + test + suffix))
-  })._2.mkString("\n\n")
+    (index + 1, set + ((index, "@test\ndef " + name + (if (index < 10) "0" + index else index.toString) + "(): Bool" + purity + " = \n\t" + prefix + test + suffix)))
+  })._2.toList.sortBy(t => t._1).map(_._2).mkString("\n\n")
 }
 
 println(
   testExhaustive(
     name = "toList",
     "LazyList.toList(",
-    List(),
-    ") == Nil",
+    List(1, 2, 3),
+    ") == 1 :: 2 :: 3 :: Nil",
+    startFrom = 6,
     purity = Pure,
   )
 )
