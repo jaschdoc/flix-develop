@@ -20,10 +20,12 @@ def testExhaustive[A](l: List[A]): ExhaustiveTest = {
   new ExhaustiveTest(te(l, Set()))
 }
 
-testExhaustive(
-  List(
-    1,
-    2,
-    3,
+println(
+  testExhaustive(
+    List(
+      1,
+      2,
+      3,
+    )
   )
 )
