@@ -25,7 +25,7 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
   val tests = te(l, Set(("", 0)))
 
-  tests.foldLeft((startFrom, Set[(Int, String)]()))((acc, test) => {
+  tests.foldLeft((if (startFrom < 1) 1 else startFrom, Set[(Int, String)]()))((acc, test) => {
     val (index, set) = acc
     (index + 1, set + ((index, "@test\ndef " + name + (if (index < 10) "0" + index else index.toString) + "(): Bool" + purity + " = \n\t" + prefix + test + suffix)))
   })._2.toList.sortBy(t => t._1).map(_._2).mkString("\n\n")
@@ -35,9 +35,9 @@ println(
   testExhaustive(
     name = "toList",
     "LazyList.toList(",
-    List(1, 2, 3),
-    ") == 1 :: 2 :: 3 :: Nil",
-    startFrom = 6,
+    List(1, 2),
+    ") == 1 :: 2 :: Nil",
+    startFrom = 0,
     purity = Pure,
   )
 )
