@@ -287,6 +287,10 @@ namespace LazyList1 {
     ///
     pub def toSet(l: LazyList[a]): Set[a] with Order[a] = toSetAcc(l, Set.empty())
 
+
+    ///
+    /// Helper functions for `toSet`.
+    ///
     def toSetAcc(l: LazyList[a], acc: Set[a]): Set[a] with Order[a] = match l {
         case ENil         => acc
         case ECons(x, xs) => toSetAcc(xs, Set.insert(x, acc))
