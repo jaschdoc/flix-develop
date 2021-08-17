@@ -53,7 +53,7 @@ case class FunctionProgress(name: Name, iterStatus: Status,
   require(name.trim.nonEmpty)
 
   override def toString: String =
-    s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
+    s"| `$name` | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
 
 }
 
@@ -144,7 +144,7 @@ println(
     FunctionProgress.from("foldRight", Done, Done, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
     FunctionProgress.from("from", NA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
-    FunctionProgress.from("empty", NA, Done, Easy, comment = "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("empty", NA, Done, Easy),
     FunctionProgress.from("toIter", NA, Todo, Easy),
     FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe),
     FunctionProgress.from("last", Todo, Todo, Easy),
