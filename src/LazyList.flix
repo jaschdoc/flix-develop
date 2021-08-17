@@ -287,7 +287,6 @@ namespace LazyList1 {
     ///
     pub def toSet(l: LazyList[a]): Set[a] with Order[a] = toSetAcc(l, Set.empty())
 
-
     ///
     /// Helper functions for `toSet`.
     ///
