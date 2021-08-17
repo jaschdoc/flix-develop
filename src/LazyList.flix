@@ -248,7 +248,7 @@ namespace LazyList1 {
     pub def toArray(l: LazyList[a]): Array[a] & Impure = ???
 
     ///
-    /// Returns `l` as an `Array`.
+    /// Returns `l` as an `Iterator`.
     ///
     /// Does not force any elements of the list.
     ///
