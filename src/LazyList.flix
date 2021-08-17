@@ -285,7 +285,14 @@ namespace LazyList1 {
     ///
     /// Forces the entire list `l`.
     ///
-    pub def toSet(l: LazyList[a]): Set[a] = ???
+    pub def toSet(l: LazyList[a]): Set[a] with Order[a] = toSetAcc(l, Set.empty())
+
+    def toSetAcc(l: LazyList[a], acc: Set[a]): Set[a] with Order[a] = match l {
+        case ENil         => acc
+        case ECons(x, xs) => toSetAcc(xs, Set.insert(x, acc))
+        case LCons(x, xs) => toSetAcc(force xs, Set.insert(x, acc))
+        case LList(xs)    => toSetAcc(force xs, acc)
+    }
 
     ///
     /// Returns `l` as a `Map`.
