@@ -14,7 +14,7 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String, purity: Purity
 
   @tailrec
   def te(l: List[A], acc: Set[(String, Int)]): Set[String] = l match {
-    case Nil => acc.map(st => st._1 + s"ENil" + ")".repeat(st._2)) //add some @test annotation and stuff
+    case Nil => acc.map(st => st._1 + s"ENil" + ")".repeat(st._2)) ++ acc.map(st => st._1 + s"LList(lazy ENil)" + ")".repeat(st._2)) //add some @test annotation and stuff
     case x :: xs => te(xs,
       acc.map(st => (st._1 + s"ECons($x, ", st._2 + 1))
         ++ acc.map(st => (st._1 + s"LCons($x, lazy ", st._2 + 1))
@@ -23,7 +23,7 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String, purity: Purity
     )
   }
 
-  val tests = te(l, Set(("", 1)))
+  val tests = te(l, Set(("", 0)))
 
   tests.foldLeft((0, Set[String]()))((acc, test) => {
     val (index, set) = acc
@@ -34,10 +34,8 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String, purity: Purity
 println(
   testExhaustive(
     "LazyList.toList(",
-    List(
-      1
-    ),
-    ") == 1 :: Nil",
+    List(),
+    ") == Nil",
     purity = Pure,
   )
 )
