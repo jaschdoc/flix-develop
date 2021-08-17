@@ -22,6 +22,25 @@ pub enum LazyList1[a] {
 }
 */
 
+instance Foldable[LazyList] {
+    pub def foldLeft( f: (b, a) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList1.foldLeft(f, s, l)
+    pub def foldRight(f: (a, b) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList1.foldRight(f, s, l)
+}
+
+instance Eq[LazyList[a]] with Eq[a] {
+    pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
+        case (ENil, ENil)                 => true
+        case (ECons(x, xs), ECons(y, ys)) => if (x != y) false else xs == ys
+        case (ECons(x, xs), LCons(y, ys)) => if (x != y) false else xs == force ys
+        case (LCons(x, xs), ECons(y, ys)) => if (x != y) false else (force xs) == ys
+        case (LCons(x, xs), LCons(y, ys)) => if (x != y) false else (force xs) == force ys
+        case (LList(xs), LList(ys))       => (force xs) == force ys
+        case (l, LList(ys))               => l == force ys
+        case (LList(xs), l)               => (force xs) == l
+        case _                            => false
+    }
+}
+
 namespace LazyList1 {
     // TODO: Implement functions used in TestExamples
 
@@ -37,7 +56,7 @@ namespace LazyList1 {
     ///
     pub def isEmpty(l: LazyList[a]): Bool = match l {
         case ENil      => true
-        case LList(ys) => isEmpty(force ys)
+        case LList(xs) => isEmpty(force xs)
         case _         => false
     }
 
@@ -63,7 +82,17 @@ namespace LazyList1 {
         case ENil        => None
         case ECons(x, _) => Some(x)
         case LCons(x, _) => Some(x)
-        case LList(ys)   => head(force ys)
+        case LList(xs)   => head(force xs)
+    }
+
+    ///
+    /// Returns `l` without the first element.
+    ///
+    pub def tail(l: LazyList[a]): LazyList[a] = match l {
+        case ENil         => ENil
+        case ECons(_, xs) => xs
+        case LCons(_, xs) => LList(xs)
+        case LList(xs)    => LList(lazy tail(force xs))
     }
 
     ///
@@ -77,66 +106,40 @@ namespace LazyList1 {
         else
             match l {
                 case ENil         => ENil
-                case ECons(x, ys) => ECons(x, take(n - 1, ys))
-                case LCons(x, ys) => LCons(x, lazy take(n - 1, force ys))
-                case LList(ys)    => LList(lazy take(n, force ys))
+                case ECons(x, xs) => ECons(x, take(n - 1, xs))
+                case LCons(x, xs) => LCons(x, lazy take(n - 1, force xs))
+                case LList(xs)    => LList(lazy take(n, force xs))
             }
     ///
     /// Returns the length of `l`.
     ///
     /// Forces the entire list `l`.
     ///
-    pub def length(l: LazyList[a]): Int32 = lengthAcc(0, l)
+    pub def length(l: LazyList[a]): Int32 = lengthAcc(l, 0)
 
     ///
     /// Helper function for `length`
     ///
-    def lengthAcc(acc: Int32, l: LazyList[a]): Int32 = match l {
+    def lengthAcc(l: LazyList[a], acc: Int32): Int32 = match l {
         case ENil         => acc
-        case ECons(_, ys) => lengthAcc(acc + 1, ys)
-        case LCons(_, ys) => lengthAcc(acc + 1, force ys)
-        case LList(ys)    => lengthAcc(acc, force ys)
-    }
-
-    ///
-    /// Returns the elements of `l` in a lazy list.
-    ///
-    // TODO: Move to List.
-    pub def toLazy(l: List[a]): LazyList[a] = match l {
-        case Nil     => ENil
-        case x :: xs => ECons(x, toLazy(xs))
-    }
-
-    ///
-    /// Returns `l` as a `List`.
-    ///
-    /// Forces the entire list `l`.
-    ///
-    pub def toList(l: LazyList[a]): List[a] = toListAcc(l, Nil) |> List.reverse
-
-    ///
-    /// Helper function for `toList`.
-    ///
-    def toListAcc(l: LazyList[a], acc: List[a]): List[a] = match l {
-        case ENil         => acc
-        case ECons(x, ys) => toListAcc(ys, x :: acc)
-        case LCons(x, ys) => toListAcc(force ys, x :: acc)
-        case LList(ys)    => toListAcc(force ys, acc)
+        case ECons(_, xs) => lengthAcc(xs, acc + 1)
+        case LCons(_, xs) => lengthAcc(force xs, acc + 1)
+        case LList(xs)    => lengthAcc(force xs, acc)
     }
 
     ///
     /// Reverses the list `l`.
     ///
-    pub def reverse(l: LazyList[a]): LazyList[a] = reverseAcc(ENil, l)
+    pub def reverse(l: LazyList[a]): LazyList[a] = reverseAcc(l, ENil)
 
     ///
     /// Helper function for `reverse`.
     ///
-    def reverseAcc(acc: LazyList[a], l: LazyList[a]): LazyList[a] = match l {
+    def reverseAcc(l: LazyList[a], acc: LazyList[a]): LazyList[a] = match l {
         case ENil         => acc
-        case ECons(x, ys) => reverseAcc(ECons(x, acc), ys)
-        case LCons(x, ys) => reverseAcc(ECons(x, acc), force ys)
-        case LList(ys)    => reverseAcc(acc, force ys)
+        case ECons(x, xs) => reverseAcc(xs, ECons(x, acc))
+        case LCons(x, xs) => reverseAcc(force xs, ECons(x, acc))
+        case LList(xs)    => reverseAcc(force xs, acc)
     }
 
     ///
@@ -158,9 +161,9 @@ namespace LazyList1 {
     ///
     pub def last(l: LazyList[a]): Option[a] = match l {
         case ENil         => None
-        case ECons(x, ys) => if (isEmpty(ys))       Some(x) else last(ys)
-        case LCons(x, ys) => if (isEmpty(force ys)) Some(x) else last(force ys)
-        case LList(ys)    => last(force ys)
+        case ECons(x, xs) => if (isEmpty(xs))       Some(x) else last(xs)
+        case LCons(x, xs) => if (isEmpty(force xs)) Some(x) else last(force xs)
+        case LList(xs)    => last(force xs)
     }
     
     ///
@@ -173,8 +176,8 @@ namespace LazyList1 {
     ///
     pub def filter(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & Impure =
         matchEff f {
-            case Pure   => filterLazy(f as a -> Bool & Pure,    l)
-            case Impure => filterEager(f as a -> Bool & Impure, l)
+            case Pure   => filterL(f as a -> Bool & Pure,   l)
+            case Impure => filterE(f as a -> Bool & Impure, l)
         }
 
     ///
@@ -182,13 +185,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def filterLazy(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
-        case ENil                   => ENil
-        case ECons(x, ys) if (f(x)) => ECons(x, filterLazy(f, ys))
-        case LCons(x, ys) if (f(x)) => LCons(x, lazy filterLazy(f, force ys))
-        case ECons(_, ys)           => LList(lazy filterLazy(f, ys))
-        case LCons(_, ys)           => LList(lazy filterLazy(f, force ys))
-        case LList(ys)              => LList(lazy filterLazy(f, force ys))
+    def filterL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
+        case ENil                 => ENil
+        case ECons(x, xs) if f(x) => LCons(x, lazy filterL(f, xs))
+        case LCons(x, xs) if f(x) => LCons(x, lazy filterL(f, force xs))
+        case ECons(_, xs)         => LList(lazy filterL(f, xs))
+        case LCons(_, xs)         => LList(lazy filterL(f, force xs))
+        case LList(xs)            => LList(lazy filterL(f, force xs))
     }
 
     ///
@@ -196,18 +199,17 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def filterEager(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
-        filterEagerAcc(f, l, Nil) |> List.reverse |> toLazy
+    def filterE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
+        filterEAcc(f, l, ENil) |> reverse
 
     ///
-    /// Helper function for `filterEager`
+    /// Helper function for `filterE`
     ///
-    // TODO: Refactor to NOT use List
-    def filterEagerAcc(f: a -> Bool & Impure, l: LazyList[a], acc: List[a]): List[a] & Impure = match l {
+    def filterEAcc(f: a -> Bool & Impure, l: LazyList[a], acc: LazyList[a]): LazyList[a] & Impure = match l {
         case ENil         => acc
-        case ECons(x, ys) => if (f(x)) filterEagerAcc(f, ys, x :: acc)       else filterEagerAcc(f, ys, acc)
-        case LCons(x, ys) => if (f(x)) filterEagerAcc(f, force ys, x :: acc) else filterEagerAcc(f, force ys, acc)
-        case LList(ys)    => filterEagerAcc(f, force ys, acc)
+        case ECons(x, xs) => if (f(x)) filterEAcc(f, xs, ECons(x, acc))       else filterEAcc(f, xs, acc)
+        case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, ECons(x, acc)) else filterEAcc(f, force xs, acc)
+        case LList(xs)    => filterEAcc(f, force xs, acc)
     }
 
     ///
@@ -220,8 +222,8 @@ namespace LazyList1 {
     ///
     pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & Impure =
         matchEff f {
-            case Pure   => mapLazy(f as a -> b & Pure,    l)
-            case Impure => mapEager(f as a -> b & Impure, l)
+            case Pure   => mapL(f as a -> b & Pure,   l)
+            case Impure => mapE(f as a -> b & Impure, l)
         }
 
     ///
@@ -229,11 +231,11 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def mapLazy(f: a -> b, l: LazyList[a]): LazyList[b] = match l {
+    def mapL(f: a -> b, l: LazyList[a]): LazyList[b] = match l {
         case ENil         => ENil
-        case ECons(x, ys) => ECons(f(x), mapLazy(f, ys))
-        case LCons(x, ys) => LCons(f(x), lazy mapLazy(f, force ys))
-        case LList(ys)    => LList(lazy mapLazy(f, force ys))
+        case ECons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f, xs)))
+        case LCons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f, force xs)))
+        case LList(xs)    => LList(lazy mapL(f, force xs))
     }
 
     ///
@@ -241,16 +243,45 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def mapEager(f: a -> b & Impure, l: LazyList[a]): LazyList[b] & Impure = mapEagerAcc(ENil, f, l) |> reverse
+    def mapE(f: a -> b & Impure, l: LazyList[a]): LazyList[b] & Impure = mapEAcc(f, l, ENil) |> reverse
 
     ///
-    /// Helper function for `mapEager`.
+    /// Helper function for `mapE`.
     ///
-    def mapEagerAcc(acc: LazyList[b], f: a -> b & Impure, l: LazyList[a]): LazyList[b] & Impure = match l {
+    def mapEAcc(f: a -> b & Impure, l: LazyList[a], acc: LazyList[b]): LazyList[b] & Impure = match l {
         case ENil         => acc
-        case ECons(x, ys) => mapEagerAcc(ECons(f(x), acc), f, ys)
-        case LCons(x, ys) => mapEagerAcc(ECons(f(x), acc), f, force ys)
-        case LList(ys)    => mapEagerAcc(acc, f, force ys)
+        case ECons(x, xs) => mapEAcc(f, xs, ECons(f(x), acc))
+        case LCons(x, xs) => mapEAcc(f, force xs, ECons(f(x), acc))
+        case LList(xs)    => mapEAcc(f, force xs, acc)
+    }
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, l: LazyList[a]): b & ef = match l {
+        case ENil         => s
+        case ECons(x, xs) => foldLeft(f, f(s, x),       xs)
+        case LCons(x, xs) => foldLeft(f, f(s, x), force xs)
+        case LList(xs)    => foldLeft(f, s,       force xs)
+    }
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
+    ///
+    pub def foldRight(f: (a, b) -> b & ef, s: b, l: LazyList[a]): b & ef = foldRightAcc(f, s, l, s1 -> s1 as & ef)
+
+    ///
+    /// Helper function for `foldRight`.
+    ///
+    def foldRightAcc(f: (a, b) -> b & ef, s: b, l: LazyList[a], g: b -> b & ef): b & ef = match l {
+        case ENil         => g(s)
+        case ECons(x, xs) => foldRightAcc(f, s,       xs, s1 -> g(f(x, s1)))
+        case LCons(x, xs) => foldRightAcc(f, s, force xs, s1 -> g(f(x, s1)))
+        case LList(xs)    => foldRightAcc(f, s, force xs, g)
     }
 
     ///
@@ -258,27 +289,127 @@ namespace LazyList1 {
     ///
     /// Forces the entire list `l`.
     ///
-    pub def toArray(l: LazyList[a]): Array[a] & Impure = ???
+    pub def toArray(l: LazyList[a]): Array[a] & Impure = match head(l) {
+        case None    => []
+        case Some(x) =>
+            let a = Array.new(x, length(l));
+            let f = (i, y) -> { a[i] = y; i + 1 };
+            foldLeft(f, 0, l);
+            a
+    }
 
     ///
-    /// Returns `l` as an `Array`.
+    /// Returns `l` as an `Iterator`.
     ///
     /// Does not force any elements of the list.
     ///
-    pub def toIter(l: LazyList[a]): Iterator[a] & Impure = ???
+    pub def toIter(l: LazyList[a]): Iterator[a] & Impure =
+        let cursor = ref l;
+        let done = () -> match head(deref cursor) {
+            case None    => true
+            case Some(_) => false
+        };
+        
+        let next = () -> match head(deref cursor) {
+            case None    => bug!("Empty iterator")
+            case Some(x) =>
+                cursor := tail(deref cursor);
+                x
+        };
+        
+        Iterator(done, next)
+
+    ///
+    /// Returns `l` as a `List`.
+    ///
+    /// Forces the entire list `l`.
+    ///
+    pub def toList(l: LazyList[a]): List[a] = toListAcc(reverse(l), Nil)
+
+    ///
+    /// Helper function for `toList`.
+    ///
+    def toListAcc(l: LazyList[a], acc: List[a]): List[a] = match l {
+        case ENil         => acc
+        case ECons(x, xs) => toListAcc(xs, x :: acc)
+        case LCons(x, xs) => toListAcc(force xs, x :: acc)
+        case LList(xs)    => toListAcc(force xs, acc)
+    }
+
+    ///
+    /// Returns the association list `l` as a map.
+    ///
+    /// If `l` contains multiple mappings with the same key, `toMap` does not
+    /// make any guarantees about which mapping will be in the resulting map.
+    ///
+    /// Forces the entire list `l`.
+    ///
+    pub def toMap(l: LazyList[(a, b)]): Map[a, b] with Order[a] = toMapAcc(l, Map.empty())
+
+    ///
+    /// Helper functions for `toMap`.
+    ///
+    def toMapAcc(l: LazyList[(a, b)], acc: Map[a, b]): Map[a, b] with Order[a] = match l {
+        case ENil              => acc
+        case ECons((k, v), xs) => toMapAcc(xs, Map.insert(k, v, acc))
+        case LCons((k, v), xs) => toMapAcc(force xs, Map.insert(k, v, acc))
+        case LList(xs)         => toMapAcc(force xs, acc)
+    }
 
     ///
     /// Returns `l` as a `Set`.
     ///
     /// Forces the entire list `l`.
     ///
-    pub def toSet(l: LazyList[a]): Set[a] = ???
+    pub def toSet(l: LazyList[a]): Set[a] with Order[a] = toSetAcc(l, Set.empty())
 
     ///
-    /// Returns `l` as a `Map`.
+    /// Helper functions for `toSet`.
     ///
-    /// Forces the entire list `l`.
+    def toSetAcc(l: LazyList[a], acc: Set[a]): Set[a] with Order[a] = match l {
+        case ENil         => acc
+        case ECons(x, xs) => toSetAcc(xs, Set.insert(x, acc))
+        case LCons(x, xs) => toSetAcc(force xs, Set.insert(x, acc))
+        case LList(xs)    => toSetAcc(force xs, acc)
+    }
+
     ///
-    pub def toMap(l: LazyList[(a, b)]): Map[a, b] = ???
-    
+    /// Returns `true` if and only if at least one element in `l` satisfies the predicate `f`.
+    ///
+    /// Returns `false` if `l` is empty.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def exists(f: a -> Bool, l: LazyList[a]): Bool = match l {
+        case ENil         => false
+        case ECons(x, xs) => f(x) or exists(f, xs)
+        case LCons(x, xs) => f(x) or exists(f, force xs)
+        case LList(xs)    => exists(f, force xs)
+    }
+
+    ///
+    /// Returns `true` if and only if all elements in `l` satisfy the predicate `f`.
+    ///
+    /// Returns `true` if `l` is empty.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def forall(f: a -> Bool, l: LazyList[a]): Bool = match l {
+        case ENil         => true
+        case ECons(x, xs) => f(x) and forall(f, xs)
+        case LCons(x, xs) => f(x) and forall(f, force xs)
+        case LList(xs)    => forall(f, force xs)
+    }
+
+    ///
+    /// Applies `f` to every element of `xs`.
+    ///
+    /// The function `f` must be impure.
+    ///
+    pub def foreach(f: a ~> Unit, l: LazyList[a]): Unit & Impure = match l {
+        case ENil         => ()
+        case ECons(x, xs) => f(x); foreach(f, xs)
+        case LCons(x, xs) => f(x); foreach(f, force xs)
+        case LList(xs)    => foreach(f, force xs)
+    }
 }
