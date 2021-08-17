@@ -148,7 +148,7 @@ println(
     FunctionProgress.from("toIter", NA, Todo, Easy),
     FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe),
     FunctionProgress.from("last", Todo, Todo, Easy),
-    FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = Maybe, comment = "Could be lazier"),
+    FunctionProgress.from("reverse", NA, Warning, Easy, polymorphic = No, comment = "Could be lazier"),
     FunctionProgress.from("length", Todo, Done, Easy),
   ).toList.sorted.toMarkdown
 )
