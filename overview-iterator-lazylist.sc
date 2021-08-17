@@ -54,6 +54,11 @@ case class FunctionProgress(name: Name, iterStatus: Status,
 
   override def toString: String =
     s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
+
+  override def equals(obj: Any): Boolean = obj match {
+    case FunctionProgress(name1, _, _, _, _, _) => name == name1
+    case _ => false
+  }
 }
 
 implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
@@ -89,7 +94,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
           |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / ${fps.length})
           |
-          || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
+          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
           || :------: | :------:                                                             | :------:                                                             | :--------: | :---------:           | :-----: |
           |""".stripMargin.replaceAll(" {2}", "")
 
@@ -101,7 +106,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 println(
   Set(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
-    FunctionProgress.from("append", Todo, Todo, Hard),
+    FunctionProgress.from("append", Todo, Todo, Easy),
     FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
     FunctionProgress.from("findMap", Todo, Todo, NA, polymorphic = Yes),
     FunctionProgress.from("reduceLeft", Todo, Todo, Easy),
