@@ -25,7 +25,7 @@ def testExhaustive[A](prefix: String, l: List[A], suffix: String, purity: Purity
 
   val tests = te(l, Set(("", 0)))
 
-  tests.foldLeft((0, Set[String]()))((acc, test) => {
+  tests.foldLeft((1, Set[String]()))((acc, test) => {
     val (index, set) = acc
     (index + 1, set + ("@test\ndef test" + index + "(): Bool" + purity + " = \n\t" + prefix + test + suffix))
   })._2.mkString("\n\n")
