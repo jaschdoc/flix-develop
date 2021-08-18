@@ -91,10 +91,9 @@ case class FunctionProgress(name: Name, iterStatus: Status,
   require(name.trim.nonEmpty)
 
   override def toString: String =
-    s"| $name | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
-}
+    s"| `$name` | $iterStatus | $listStatus | $difficulty | $polymorphic | $comment |"
 
-implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
+}
 
 case object FunctionProgress {
   def from(name: Name,
@@ -113,6 +112,8 @@ case object FunctionProgress {
   }
 }
 
+implicit def fpOrdering: Ordering[FunctionProgress] = Ordering.by(f => f.name)
+
 implicit class Stringifier(fps: List[FunctionProgress]) {
   def toMarkdown: String = {
     val iterDone = fps.count(fp => fp.iterStatus == Done)
@@ -127,7 +128,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
           |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
           |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / ${fps.length})
           |
-          || Function | Iterator ($iterDone $Done / ${fps.length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
+          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
           || :------: | :------:                                                             | :------:                                                             | :--------: | :---------:           | :-----: |
           |""".stripMargin.replaceAll(" {2}", "")
 
@@ -137,14 +138,15 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
 
 /*<amm>*/val res_18 = /*</amm>*/println(
-  Set(
+  List(
+    FunctionProgress.from("prepend", Todo, Todo, Easy),
     FunctionProgress.from("isEmpty", Done, Done, Easy),
-    FunctionProgress.from("append", Todo, Todo, Hard),
+    FunctionProgress.from("append", Todo, Todo, Easy),
     FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
     FunctionProgress.from("findMap", Todo, Todo, NA, polymorphic = Yes),
     FunctionProgress.from("reduceLeft", Todo, Todo, Easy),
     FunctionProgress.from("reduceRight", Todo, Todo, Easy),
-    FunctionProgress.from("intersperse", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("intersperse", Todo, Todo, Hard),
     FunctionProgress.from("minimum", Todo, Todo, Easy),
     FunctionProgress.from("minimumBy", Todo, Todo, Easy),
     FunctionProgress.from("maximum", Todo, Todo, Easy),
@@ -152,40 +154,43 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
     FunctionProgress.from("mapWithIndex", Todo, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("flatMap", Todo, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("intercalate", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("flatten", Todo, Todo, NA, polymorphic = Yes),
-    FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("findMap", Todo, Todo, NA),
+    FunctionProgress.from("flatten", Todo, Todo, Easy),
+    FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes, comment = "Is the function `f` passed to `partition` allowed to have an effect?"),
+    FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes, comment = "Is the function `f` passed to `span` allowed to have an effect?"),
     FunctionProgress.from("count", Done, Todo, Easy),
-    FunctionProgress.from("drop", Done, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("take", Done, Done, Easy, polymorphic = Yes),
+    FunctionProgress.from("drop", Done, Todo, Easy),
+    FunctionProgress.from("take", Done, Done, Easy),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("filter", Done, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
     FunctionProgress.from("findRight", Warning, Todo, Easy, comment = "Needs optimization"),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Todo, Easy),
     FunctionProgress.from("memberOf", Done, Todo, Easy),
-    FunctionProgress.from("toArray", Done, Todo, Easy),
-    FunctionProgress.from("toMap", Done, Todo, Easy),
-    FunctionProgress.from("toSet", Done, Todo, Easy),
-    FunctionProgress.from("replace", Done, Todo, Easy, polymorphic = Maybe),
+    FunctionProgress.from("toArray", Done, Done, Easy),
+    FunctionProgress.from("toMap", Done, Done, Easy),
+    FunctionProgress.from("toSet", Done, Done, Easy),
+    FunctionProgress.from("replace", Done, Todo, Easy),
     FunctionProgress.from("exists", Done, Todo, Easy),
     FunctionProgress.from("foreach", Done, Todo, Easy),
     FunctionProgress.from("forall", Done, Todo, Easy),
     FunctionProgress.from("dropWhile", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("takeWhile", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("zip", Done, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("zip", Done, Todo, Easy),
     FunctionProgress.from("zipWith", Warning, Todo, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
-    FunctionProgress.from("foldLeft", Done, Todo, Easy),
-    FunctionProgress.from("foldRight", Done, Todo, Easy),
+    FunctionProgress.from("foldLeft", Done, Done, Easy),
+    FunctionProgress.from("foldRight", Done, Done, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
     FunctionProgress.from("from", NA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
-    FunctionProgress.from("empty", NA, Done, Easy, comment = "Not to be confused with `isEmpty`. Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("empty", NA, Done, Easy),
     FunctionProgress.from("toIter", NA, Todo, Easy),
-    FunctionProgress.from("toLazyList", Todo, NA, Easy, polymorphic = Maybe)
-  ).toList.sorted.toMarkdown
+    FunctionProgress.from("toLazyList", Todo, NA, Easy),
+    FunctionProgress.from("last", Todo, Todo, Easy),
+    FunctionProgress.from("reverse", NA, Warning, Easy, comment = "Could be lazier"),
+    FunctionProgress.from("length", Todo, Done, Easy),
+    FunctionProgress.from("tail", Todo, Done, Easy),
+  ).distinctBy(_.name.trim.toLowerCase).sorted.toMarkdown
 )
 /*</script>*/ /*<generated>*/
 def $main() = { scala.Iterator[String]() }
