@@ -39,11 +39,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
 println(
   testExhaustive(
-    name = "append",
-    "LazyList.count(x -> x > 3, ",
-    List(4),
-    ") == 1",
-    startFrom = 9,
+    name = "drop",
+    "LazyList.drop(1, ",
+    List(1),
+    ") == ENil",
+    startFrom = 10,
     purity = Pure,
   )
 )
