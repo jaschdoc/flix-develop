@@ -121,7 +121,7 @@ println(
     FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes, comment = "Is the function `f` passed to `span` allowed to have an effect?"),
     FunctionProgress.from("count", Done, Todo, Easy),
     FunctionProgress.from("drop", Done, Todo, Easy),
-    FunctionProgress.from("take", Done, Done, Easy),
+    FunctionProgress.from("take", Done, Done, Easy, comment = "Could be lazier in LazyList"),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
