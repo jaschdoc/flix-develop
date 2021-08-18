@@ -136,7 +136,7 @@ namespace LazyList1 {
     /// Returns `l` if `n < 0`.
     ///
     pub def drop(n: Int32, l: LazyList[a]): LazyList[a] =
-        if (n < 0)
+        if (n < 1)
             l
         else
             match l {
