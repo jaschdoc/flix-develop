@@ -248,6 +248,9 @@ namespace LazyList1 {
         case LList(xs)    => filterEAcc(f, force xs, acc)
     }
 
+    ///
+    /// Returns the concatenation of the elements in `l`.
+    ///
     pub def flatten(l: LazyList[LazyList[a]]): LazyList[a] = match l {
         case ENil          => ENil
         case ECons(xs, ys) => append(xs, flatten(      ys))
