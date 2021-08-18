@@ -112,6 +112,16 @@ namespace LazyList1 {
             }
 
     ///
+    /// Returns `k` appended to `l`.
+    ///
+    pub def append(l: LazyList[a], k: LazyList[a]): LazyList[a] = match l {
+        case ENil         => k
+        case ECons(x, xs) => LCons(x, lazy append(      xs, k))
+        case LCons(x, xs) => LCons(x, lazy append(force xs, k))
+        case LList(xs)    => LList(   lazy append(force xs, k))
+    }
+
+    ///
     /// Returns the number of elements in `l` that satisfy the predicate `f`.
     ///
     /// The function `f` must be pure.
