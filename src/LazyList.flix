@@ -248,6 +248,13 @@ namespace LazyList1 {
         case LList(xs)    => filterEAcc(f, force xs, acc)
     }
 
+    pub def flatten(l: LazyList[LazyList[a]]): LazyList[a] = match l {
+        case ENil          => ENil
+        case ECons(xs, ys) => append(xs, flatten(      ys))
+        case LCons(xs, ys) => append(xs, flatten(force ys))
+        case LList(xs)     => flatten(force xs)
+    }
+
     ///
     /// Returns the result of applying `f` to every element in `l`.
     ///
