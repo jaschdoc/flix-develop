@@ -149,7 +149,7 @@ println(
     FunctionProgress.from("toIter", NA, Todo, Easy),
     FunctionProgress.from("toLazyList", Todo, NA, Easy),
     FunctionProgress.from("last", Todo, Todo, Easy),
-    FunctionProgress.from("reverse", NA, Warning, Easy, comment = "Could be lazier"),
+    FunctionProgress.from("reverse", NA, Done, Easy),
     FunctionProgress.from("length", Todo, Done, Easy),
     FunctionProgress.from("tail", Todo, Done, Easy),
   ).distinctBy(_.name.trim.toLowerCase).sorted.toMarkdown
