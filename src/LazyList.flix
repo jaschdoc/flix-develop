@@ -110,6 +110,15 @@ namespace LazyList1 {
                 case LCons(x, xs) => LCons(x, lazy take(n - 1, force xs))
                 case LList(xs)    => LList(lazy take(n, force xs))
             }
+
+    ///
+    /// Returns the number of elements in `l` that satisfy the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def count(f: a -> Bool, l: LazyList[a]): Int32 =
+        foldLeft((i, x) -> if (f(x)) i + 1 else i, 0, l)
+    
     ///
     /// Returns the length of `l`.
     ///
@@ -137,9 +146,9 @@ namespace LazyList1 {
     ///
     def reverseAcc(l: LazyList[a], acc: LazyList[a]): LazyList[a] = match l {
         case ENil         => acc
-        case ECons(x, xs) => reverseAcc(xs, ECons(x, acc))
-        case LCons(x, xs) => reverseAcc(force xs, ECons(x, acc))
-        case LList(xs)    => reverseAcc(force xs, acc)
+        case ECons(x, xs) => LList(lazy reverseAcc(xs, ECons(x, acc)))
+        case LCons(x, xs) => LList(lazy reverseAcc(force xs, ECons(x, acc)))
+        case LList(xs)    => LList(lazy reverseAcc(force xs, acc))
     }
 
     ///
