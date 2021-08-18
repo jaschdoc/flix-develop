@@ -40,10 +40,10 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 println(
   testExhaustive(
     name = "append",
-    "LazyList.append(ECons(4, ENil), ",
-    List(1, 2, 3),
-    ") == ECons(4, ECons(2, ECons(3, ECons(1, ENil))))",
-    startFrom = 15,
+    "LazyList.count(x -> x > 3, ",
+    List(4),
+    ") == 1",
+    startFrom = 9,
     purity = Pure,
   )
 )
