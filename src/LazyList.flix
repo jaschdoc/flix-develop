@@ -110,6 +110,42 @@ namespace LazyList1 {
                 case LCons(x, xs) => LCons(x, lazy take(n - 1, force xs))
                 case LList(xs)    => LList(lazy take(n, force xs))
             }
+
+    ///
+    /// Returns `k` appended to `l`.
+    ///
+    pub def append(l: LazyList[a], k: LazyList[a]): LazyList[a] = match l {
+        case ENil         => k
+        case ECons(x, xs) => LCons(x, lazy append(      xs, k))
+        case LCons(x, xs) => LCons(x, lazy append(force xs, k))
+        case LList(xs)    => LList(   lazy append(force xs, k))
+    }
+
+    ///
+    /// Returns the number of elements in `l` that satisfy the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def count(f: a -> Bool, l: LazyList[a]): Int32 =
+        foldLeft((i, x) -> if (f(x)) i + 1 else i, 0, l)
+
+    ///
+    /// Returns `l` without the first `n` elements.
+    ///
+    /// Returns `ENil` if `n > length(l)`.
+    /// Returns `l` if `n < 0`.
+    ///
+    pub def drop(n: Int32, l: LazyList[a]): LazyList[a] =
+        if (n < 1)
+            l
+        else
+            match l {
+                case ENil         => l
+                case ECons(_, xs) => LList(lazy drop(n - 1,       xs))
+                case LCons(_, xs) => LList(lazy drop(n - 1, force xs))
+                case LList(xs)    => LList(lazy drop(n,     force xs))
+            }
+
     ///
     /// Returns the length of `l`.
     ///
@@ -137,9 +173,9 @@ namespace LazyList1 {
     ///
     def reverseAcc(l: LazyList[a], acc: LazyList[a]): LazyList[a] = match l {
         case ENil         => acc
-        case ECons(x, xs) => reverseAcc(xs, ECons(x, acc))
-        case LCons(x, xs) => reverseAcc(force xs, ECons(x, acc))
-        case LList(xs)    => reverseAcc(force xs, acc)
+        case ECons(x, xs) => LList(lazy reverseAcc(xs, ECons(x, acc)))
+        case LCons(x, xs) => LList(lazy reverseAcc(force xs, ECons(x, acc)))
+        case LList(xs)    => LList(lazy reverseAcc(force xs, acc))
     }
 
     ///
@@ -165,7 +201,7 @@ namespace LazyList1 {
         case LCons(x, xs) => if (isEmpty(force xs)) Some(x) else last(force xs)
         case LList(xs)    => last(force xs)
     }
-    
+
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
     ///
@@ -210,6 +246,16 @@ namespace LazyList1 {
         case ECons(x, xs) => if (f(x)) filterEAcc(f, xs, ECons(x, acc))       else filterEAcc(f, xs, acc)
         case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, ECons(x, acc)) else filterEAcc(f, force xs, acc)
         case LList(xs)    => filterEAcc(f, force xs, acc)
+    }
+
+    ///
+    /// Returns the concatenation of the elements in `l`.
+    ///
+    pub def flatten(l: LazyList[LazyList[a]]): LazyList[a] = match l {
+        case ENil          => ENil
+        case ECons(xs, ys) => append(xs, flatten(      ys))
+        case LCons(xs, ys) => append(xs, flatten(force ys))
+        case LList(xs)     => flatten(force xs)
     }
 
     ///
@@ -309,14 +355,14 @@ namespace LazyList1 {
             case None    => true
             case Some(_) => false
         };
-        
+
         let next = () -> match head(deref cursor) {
             case None    => bug!("Empty iterator")
             case Some(x) =>
                 cursor := tail(deref cursor);
                 x
         };
-        
+
         Iterator(done, next)
 
     ///

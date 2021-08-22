@@ -39,11 +39,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
 println(
   testExhaustive(
-    name = "toArray",
-    "LazyList.toArray(",
-    List(1, 2, 3),
-    ") == [1, 2, 3]",
-    startFrom = 8,
-    purity = Impure,
+    name = "flatten",
+    "LazyList.flatten(ECons(",
+    List(1, 2),
+    ", ECons((ECons(1, ECons(2, ENil), ENil))) == ECons(1, ECons(2, ECons(1, ECons(2, ENil))))",
+    startFrom = 17,
+    purity = Pure,
   )
 )
