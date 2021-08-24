@@ -21,6 +21,7 @@ namespace Epoch {
     ///
     pub def nanoSeconds(): Int64 & Impure = ???
 
+
     ///
     /// Returns the number of micro seconds since the Unix epoch.
     ///
@@ -30,8 +31,10 @@ namespace Epoch {
     /// Returns the number of mili seconds since the Unix epoch.
     ///
     pub def miliSeconds(): Int64 & Impure =
-        import java.lang.System:currentTimeMillis();
-        currentTimeMillis()
+        import java.time.Instant:now();
+        import java.time.Instant.toEpochMilli();
+        let n = now();
+        n.toEpochMilli()
 
     ///
     /// Returns the number of seconds since the Unix epoch.
