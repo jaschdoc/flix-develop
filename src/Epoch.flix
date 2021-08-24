@@ -33,8 +33,7 @@ namespace Epoch {
     pub def miliSeconds(): Int64 & Impure =
         import java.time.Instant:now();
         import java.time.Instant.toEpochMilli();
-        let n = now();
-        n.toEpochMilli()
+        now().toEpochMilli()
 
     ///
     /// Returns the number of seconds since the Unix epoch.
