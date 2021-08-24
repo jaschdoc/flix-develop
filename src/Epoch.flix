@@ -19,18 +19,23 @@ namespace Epoch {
     ///
     /// Returns the number of nano seconds since the Unix epoch.
     ///
-    pub def nanoSeconds(): Int64 & Impure = ???
+    pub def nanoseconds(): Int64 & Impure =
+        import java.time.Instant:now();
+        import java.time.Instant.getEpochSecond();
+        import java.time.Instant.getNano();
+        let n = now();
+        (n.getEpochSecond() * 1000000000i64) + Int32.toInt64(n.getNano())
 
 
     ///
     /// Returns the number of micro seconds since the Unix epoch.
     ///
-    pub def microSeconds(): Int64 & Impure = ???
+    pub def microseconds(): Int64 & Impure = nanoseconds() / 1000i64
 
     ///
     /// Returns the number of milli seconds since the Unix epoch.
     ///
-    pub def milliSeconds(): Int64 & Impure =
+    pub def milliseconds(): Int64 & Impure =
         import java.time.Instant:now();
         import java.time.Instant.toEpochMilli();
         now().toEpochMilli()
