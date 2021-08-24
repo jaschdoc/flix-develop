@@ -1,7 +1,4 @@
 def main(_args: Array[String]): Int32 & Impure =
     Console.printLine("");
-
-    Console.print(Epoch.miliSeconds() |> ToString.toString);
-    
-    Console.printLine("");
+    Console.printLine(Epoch.miliSeconds() |> ToString.toString);
     0
