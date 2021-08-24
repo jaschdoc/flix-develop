@@ -1,4 +1,4 @@
-def main(_args: Array[String]): Int32 & Impure =
+def _main(_args: Array[String]): Int32 & Impure =
     Console.printLine("");
     Console.printLine(Epoch.seconds() |> ToString.toString);
     Console.printLine(Epoch.milliseconds() |> ToString.toString);
