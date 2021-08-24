@@ -15,12 +15,6 @@
  */
 
 namespace Epoch {
-    type alias JavaTemporalUnit = ##java.time.temporal.TemporalUnit
-    type alias JavaInstant = ##java.time.Instant
-
-    def now(): JavaInstant & Impure =
-        import java.time.Instant:now();
-        now()
 
     ///
     /// Returns the number of nano seconds since the Unix epoch.
@@ -37,6 +31,7 @@ namespace Epoch {
     /// Returns the number of mili seconds since the Unix epoch.
     ///
     pub def miliSeconds(): Int64 & Impure =
+        import java.time.Instant:now();
         import java.time.Instant.toEpochMilli();
         now().toEpochMilli()
 
@@ -44,6 +39,7 @@ namespace Epoch {
     /// Returns the number of seconds since the Unix epoch.
     ///
     pub def seconds(): Int64 & Impure =
+        import java.time.Instant:now();
         import java.time.Instant.getEpochSecond();
         now().getEpochSecond()
 }
