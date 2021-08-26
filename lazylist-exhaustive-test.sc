@@ -39,11 +39,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
 println(
   testExhaustive(
-    name = "zip",
-    "LazyList.zip(",
-    List(1, 2),
-    ", LCons(\"a\", lazy ECons(\"b\", LList(lazy ECons(\"c\", ENil)))) == ECons((1, \"a\"), ECons((2, \"b\"), ENil))",
-    startFrom = 20,
+    name = "zipWithPure",
+    "",
+    List(1),
+    " |> LazyList.zipWith((x, y) -> x + y, ECons(1, ECons(2, ENil))) == ECons(2, ENil)",
+    startFrom = 13,
     purity = Pure,
   )
 )

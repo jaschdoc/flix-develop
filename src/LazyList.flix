@@ -211,11 +211,11 @@ namespace LazyList1 {
     /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
-    pub def filter(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & Impure =
+    pub def filter(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
         matchEff f {
             case Pure   => filterL(f as a -> Bool & Pure,   l)
             case Impure => filterE(f as a -> Bool & Impure, l)
-        }
+        } as & ef
 
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
@@ -267,11 +267,11 @@ namespace LazyList1 {
     /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
-    pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & Impure =
+    pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & ef =
         matchEff f {
             case Pure   => mapL(f as a -> b & Pure,   l)
             case Impure => mapE(f as a -> b & Impure, l)
-        }
+        } as & ef
 
     ///
     /// Returns the result of applying `f` to every element in `l`.
@@ -449,16 +449,6 @@ namespace LazyList1 {
     }
 
     ///
-    /// Applies `f` to every element of `xs`.
-    ///
-    pub def foreach(f: a -> Unit & ef, l: LazyList[a]): Unit & ef = match l {
-        case ENil         => ()
-        case ECons(x, xs) => f(x); foreach(f, xs)
-        case LCons(x, xs) => f(x); foreach(f, force xs)
-        case LList(xs)    => foreach(f, force xs)
-    }
-
-    ///
     /// Returns a list where the element at index `i` is `(a, b)` where
     /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
     ///
@@ -482,16 +472,27 @@ namespace LazyList1 {
     ///
     /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
     ///
-    pub def zipWith(f: (a, b) -> c & ef, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & Impure =
-        matchEff f {
-            case Pure   => zipWithL(f as (a, b) -> c & Pure,   l1, l2)
-            case Impure => zipWithE(f as (a, b) -> c & Impure, l1, l2)
-        }
+    pub def zipWith(f: (a, b) -> c & ef, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & ef =
+        map((x) -> f(fst(x), snd(x)), zip(l1, l2))
 
     ///
     /// Helper function for `zipWith`. Applies `f` lazily.
     ///
-    def zipWithL(f: (a, b) -> c, l1: LazyList[a], l2: LazyList[b]): LazyList[c] = match (l1, l2) {
+    def _zipWithL(f: (a, b) -> c, l1: LazyList[a], l2: LazyList[b]): LazyList[c] = ???
+        // LList(lazy zipWithLHelper(f, zip(l1, l2)))
+
+    ///
+    /// Helper function for `zipWithL`. Applies `f` lazily.
+    ///
+    def _zipWithLHelper(f: (a, b) -> c, l: LazyList[(a, b)]): LazyList[c] = ??? /*match l {
+        case ENil                => ENil
+        case ECons((x1, x2), xs) => LCons(f(x1, x2), lazy zipWithLHelper(f,       xs))
+        case LCons((x1, x2), xs) => LCons(f(x1, x2), lazy zipWithLHelper(f, force xs))
+        case LList(xs)           => LList(      lazy zipWithLHelper(f, force xs))
+    }*/
+    
+    
+     /*match (l1, l2) {
         case (ENil, _)                    => ENil
         case (_, ENil)                    => ENil
         case (ECons(x, xs), ECons(y, ys)) => LCons(f(x, y), lazy zipWithL(f,       xs,       ys))
@@ -501,12 +502,13 @@ namespace LazyList1 {
         case (LList(xs), LList(ys))       => LList(lazy zipWithL(f, force xs, force ys))
         case (xs, LList(ys))              => LList(lazy zipWithL(f,       xs, force ys))
         case (LList(xs), ys)              => LList(lazy zipWithL(f, force xs,       ys))
-    }
+    }*/
 
     ///
     /// Helper function for `zipWith`. Applies `f` eagerly.
     ///
-    def zipWithE(f: (a, b) -> c & Impure, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & Impure = match (l1, l2) {
+    def _zipWithE(f: (a, b) -> c & Impure, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & Impure = ??? /*
+     match (l1, l2) {
         case (ENil, _)                    => ENil
         case (_, ENil)                    => ENil
         case (ECons(x, xs), ECons(y, ys)) => ECons(f(x, y), zipWithE(f,       xs,       ys))
@@ -517,5 +519,18 @@ namespace LazyList1 {
         case (xs, LList(ys))              => zipWithE(f,       xs, force ys)
         case (LList(xs), ys)              => zipWithE(f, force xs,       ys)
     }
+*/
+
+/*
+    ///
+    /// Applies `f` to every element of `xs`.
+    ///
+    pub def foreach(f: a -> Unit & ef, l: LazyList[a]): Unit & ef = match l {
+        case ENil         => ()
+        case ECons(x, xs) => f(x); foreach(f, xs)
+        case LCons(x, xs) => f(x); foreach(f, force xs)
+        case LList(xs)    => foreach(f, force xs)
+    }
+*/
 
 }
