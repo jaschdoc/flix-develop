@@ -156,40 +156,7 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & ef =
-        matchEff f {
-            case Pure   => mapL(f as a -> b & Pure,   l)
-            case Impure => mapE(f as a -> b & Impure, l)
-        } as & ef
-
-    ///
-    /// Returns the result of applying `f` to every element in `l`.
-    ///
-    /// Applies `f` lazily (i.e. the tail is not forced).
-    ///
-    def mapL(f: a -> b, l: LazyList[a]): LazyList[b] = match l {
-        case ENil         => ENil
-        case ECons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f,       xs)))
-        case LCons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f, force xs)))
-        case LList(xs)    => LList(                 lazy mapL(f, force xs))
-    }
-
-    ///
-    /// Returns the result of applying `f` to every element in `l`.
-    ///
-    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
-    ///
-    def mapE(f: a -> b & Impure, l: LazyList[a]): LazyList[b] & Impure =
-        mapEAcc(f, l, ENil) |> reverse
-
-    ///
-    /// Helper function for `mapE`.
-    ///
-    def mapEAcc(f: a -> b & Impure, l: LazyList[a], acc: LazyList[b]): LazyList[b] & Impure = match l {
-        case ENil         => acc
-        case ECons(x, xs) => mapEAcc(f,       xs, ECons(f(x), acc))
-        case LCons(x, xs) => mapEAcc(f, force xs, ECons(f(x), acc))
-        case LList(xs)    => mapEAcc(f, force xs,             acc)
-    }
+        mapWithIndex((x, _) -> f(x) as & ef, l)
 
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
@@ -477,7 +444,106 @@ namespace LazyList1 {
     ///
     /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
     ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
+    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
+    ///
     pub def zipWith(f: (a, b) -> c & ef, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & ef =
         map((x) -> f(fst(x), snd(x)), zip(l1, l2))
 
+    ///
+    /// Returns the result of applying `f` to every element in `l` along with that element's index.
+    ///
+    /// That is, the result is of the form: `f(x1, 0) :: f(x2, 1) :: ...`.
+    ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
+    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
+    ///
+    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: LazyList[a]): LazyList[b] & ef =
+        matchEff f {
+            case Pure   => mapWithIndexL(f as (a, Int32) -> b & Pure,   l)
+            case Impure => mapWithIndexE(f as (a, Int32) -> b & Impure, l)
+        } as & ef
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` along with the element's index.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def mapWithIndexL(f: (a, Int32) -> b, l: LazyList[a]): LazyList[b] =
+        mapWithIndexLAcc(f, l, 0)
+
+    ///
+    /// Helper function for `mapWithIndexL`.
+    ///
+    def mapWithIndexLAcc(f: (a, Int32) -> b, l: LazyList[a], i: Int32): LazyList[b] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f,       xs, i + 1)))
+        case LCons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f, force xs, i + 1)))
+        case LList(xs)    => LList(                    lazy mapWithIndexLAcc(f, force xs, i    ))
+    }
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` along with the element's index.
+    ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
+    ///
+    def mapWithIndexE(f: (a, Int32) -> b & Impure, l: LazyList[a]): LazyList[b] & Impure =
+        mapWithIndexEAcc(f, l, 0, ks -> ks)
+
+    ///
+    /// Helper function for `mapWithIndexE`.
+    ///
+    def mapWithIndexEAcc(f: (a, Int32) -> b & Impure, l: LazyList[a], i: Int32, k: LazyList[b] -> LazyList[b]): LazyList[b] & Impure = match l {
+        case ENil         => k(ENil)
+        case ECons(x, xs) =>
+            let x1 = f(x, i);
+            mapWithIndexEAcc(f,       xs, i + 1, ks -> k(ECons(x1, ks)))
+        case LCons(x, xs) =>
+            let x1 = f(x, i);
+            mapWithIndexEAcc(f, force xs, i + 1, ks -> k(ECons(x1, ks)))
+        case LList(xs)    => mapWithIndexEAcc(f, force xs, i, k)
+    }
+    
+    ///
+    /// Applies `f` to all elements in `l` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
+    ///
+    /// That is, the result is of the form: `Some(f(...f(f(x1, x2), x3)..., xn))`
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def reduceLeft(f: (a, a) -> a & ef, l: LazyList[a]): Option[a] & ef = match l {
+        case ENil         => None
+        case ECons(x, xs) => Some(foldLeft(f, x,       xs))
+        case LCons(x, xs) => Some(foldLeft(f, x, force xs))
+        case LList(xs)    => reduceLeft(f, force xs)
+    }
+
+    ///
+    /// Applies `f` to all elements in `l` going from right to left until a single value `v` is obtained.  Returns `Some(v)`.
+    ///
+    /// That is, the result is of the form: `Some(f(x1, ...f(xn-2, f(xn-1, xn))...))`
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def reduceRight(f: (a, a) -> a & ef, l: LazyList[a]): Option[a] & ef = match l {
+        case ENil      => None
+        case LList(xs) => reduceRight(f, force xs)
+        case _         => Some(reduceRightHelper(f, l, ks -> ks as & ef))
+    }
+
+    ///
+    /// Helper function for `reduceRight`.
+    /// `l` must be non-empty.
+    ///
+    def reduceRightHelper(f: (a, a) -> a & ef, l: LazyList[a], k: a -> a & ef): a & ef = match l {
+        case ECons(x, xs) => if (isEmpty(      xs)) k(x) else reduceRightHelper(f,       xs, ks -> k(f(x, ks)))
+        case LCons(x, xs) => if (isEmpty(force xs)) k(x) else reduceRightHelper(f, force xs, ks -> k(f(x, ks)))
+        case LList(xs)    => reduceRightHelper(f, force xs, k)
+        case _            => bug!("Unreachable code!")
+    }
+    
 }
