@@ -38,6 +38,7 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 }
 
 println(
+  "namespace GeneratedTests {\n" +
   testExhaustive(
     name = "flatMap",
     "LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ",
@@ -46,4 +47,5 @@ println(
     startFrom = 1,
     purity = Pure,
   )
+  + "\n}"
 )

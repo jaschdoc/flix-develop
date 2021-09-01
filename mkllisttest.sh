@@ -1,5 +1,5 @@
 #!/bin/bash
 
 echo "Generating tests"
-scala lazylist-exhaustive-test.sc > test/flixlazylisttests.flix
+scala lazylist-exhaustive-test.sc > test/GeneratedTests.flix
 echo "Done"
