@@ -43,8 +43,8 @@ println(
     name = "flatMap",
     "LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ",
     List(1, 2),
-    ") == ECons(1, ECons(2, ENil))",
-    startFrom = 41,
+    ") == ECons(1, ECons(2, ECons(2, ENil)))",
+    startFrom = 19,
     purity = Pure,
   )
   + "\n\n}"

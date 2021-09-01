@@ -556,8 +556,13 @@ namespace LazyList1 {
             case Impure => flatMapE(f as a -> LazyList[b] & Impure, l)
         } as & ef
 
-    pub def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] & ef = ???
+    pub def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f,       xs))))
+        case LCons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f, force xs))))
+        case LList(xs)    => LList(lazy flatMapL(f, force xs))
+    }
 
-    pub def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & ef = ???
+    pub def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & Impure = ???
     
 }
