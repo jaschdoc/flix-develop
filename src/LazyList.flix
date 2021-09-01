@@ -546,7 +546,6 @@ namespace LazyList1 {
         case _            => bug!("Unreachable code!")
     }
 
-
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
@@ -594,5 +593,37 @@ namespace LazyList1 {
             flatMapEHelper(f, force xs, ks -> k(append(xs1, ks)))
         case LList(xs)    => flatMapEHelper(f, force xs, k)
     }
-    
+
+    ///
+    /// Optionally finds the smallest element of `l` according to the `Order` on `a`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def minimum(l: LazyList[a]): Option[a] with Order[a] =
+        reduceLeft(Order.min, l)
+
+    ///
+    /// Optionally finds the smallest element of `l` according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def minimumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
+        reduceLeft(Order.minBy(cmp), l)
+
+    ///
+    /// Optionally finds the largest element of `l` according to the `Order` on `a`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def maximum(l: LazyList[a]): Option[a] with Order[a] =
+        reduceLeft(Order.max, l)
+
+    ///
+    /// Optionally finds the largest element of `l` according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def maximumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
+        reduceLeft(Order.maxBy(cmp), l)
+
 }

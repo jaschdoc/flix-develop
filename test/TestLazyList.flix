@@ -2161,4 +2161,104 @@ namespace TestLazyList {
         LazyList.toList as & Impure;
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimum01(): Bool =
+        LazyList1.minimum(ENil: LazyList[Int32]) == None
+
+    @test
+    def minimum02(): Bool =
+        LazyList1.minimum(ECons(1, ENil)) == Some(1)
+
+    @test
+    def minimum03(): Bool =
+        LazyList1.minimum(ECons(3, ECons(2, ECons(1, ENil)))) == Some(1)
+
+    @test
+    def minimum04(): Bool =
+        LazyList1.minimum(ECons(0, ECons(3, ECons(2, ECons(1, ENil))))) == Some(0)
+
+    @test
+    def minimum05(): Bool =
+        LazyList1.minimum(LazyList.range(0, 99)) == Some(0)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimumBy01(): Bool =
+        LazyList1.minimumBy((x, y) -> x <=> y, ENil: LazyList[Int32]) == None
+
+    @test
+    def minimumBy02(): Bool =
+        LazyList1.minimumBy((x, y) -> x <=> y, ECons(1, ENil)) == Some(1)
+
+    @test
+    def minimumBy03(): Bool =
+        LazyList1.minimumBy((x, y) -> x <=> y, ECons(3, ECons(2, ECons(1, ENil)))) == Some(1)
+
+    @test
+    def minimumBy04(): Bool =
+        LazyList1.minimumBy((x, y) -> x <=> y, ECons(0, ECons(3, ECons(2, ECons(1, ENil))))) == Some(0)
+
+    @test
+    def minimumBy05(): Bool =
+        LazyList1.minimumBy((_, _) -> LessThan, LazyList.range(0, 99)) == Some(0)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximum01(): Bool =
+        LazyList1.maximum(ENil: LazyList[Int32]) == None
+
+    @test
+    def maximum02(): Bool =
+        LazyList1.maximum(ECons(1, ENil)) == Some(1)
+
+    @test
+    def maximum03(): Bool =
+        LazyList1.maximum(ECons(3, ECons(2, ECons(1, ENil)))) == Some(3)
+
+    @test
+    def maximum04(): Bool =
+        LazyList1.maximum(ECons(0, ECons(3, ECons(2, ECons(1, ENil))))) == Some(3)
+
+    @test
+    def maximum05(): Bool =
+        LazyList1.maximum(LazyList.range(0, 99)) == Some(98)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximumBy01(): Bool =
+        LazyList1.maximumBy((x, y) -> x <=> y, ENil: LazyList[Int32]) == None
+
+    @test
+    def maximumBy02(): Bool =
+        LazyList1.maximumBy((x, y) -> x <=> y, ECons(1, ENil)) == Some(1)
+
+    @test
+    def maximumBy03(): Bool =
+        LazyList1.maximumBy((x, y) -> x <=> y, ECons(3, ECons(2, ECons(1, ENil)))) == Some(3)
+
+    @test
+    def maximumBy04(): Bool =
+        LazyList1.maximumBy((x, y) -> x <=> y, ECons(0, ECons(3, ECons(2, ECons(1, ENil))))) == Some(3)
+
+    @test
+    def maximumBy05(): Bool =
+        LazyList1.maximumBy((_, _) -> LessThan, LazyList.range(0, 99)) == Some(98)
+
 }
