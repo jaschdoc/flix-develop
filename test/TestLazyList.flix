@@ -2098,5 +2098,67 @@ namespace TestLazyList {
     def flatMapImpure19(): Bool & Impure = 
         LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i) as & Impure, ECons(1, LList(lazy LCons(2, lazy LList(lazy ECons(3, LList(lazy ENil))))))) == ECons(1, ECons(2, ECons(2, ECons(3, ECons(3, ECons(3, ENil))))))
 
- 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap flatMap                                                         //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapFlatMap01(): Bool =
+        ECons(1, ECons(2, ECons(3, ENil)))                             |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i)) |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i)) ==
+            ECons(1,
+                ECons(2, ECons(2, ECons(2, ECons(2,
+                    ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ENil))))))))))))))
+
+    @test
+    def flatMapFlatMap02(): Bool & Impure =
+        ECons(1, ECons(2, ECons(3, ENil)))                                         |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i) as & Impure) |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i))             ==
+            ECons(1,
+                ECons(2, ECons(2, ECons(2, ECons(2,
+                    ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ENil))))))))))))))
+
+    @test
+    def flatMapFlatMap03(): Bool & Impure =
+        ECons(1, ECons(2, ECons(3, ENil)))                                         |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i))             |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i) as & Impure) ==
+            ECons(1,
+                ECons(2, ECons(2, ECons(2, ECons(2,
+                    ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ENil))))))))))))))
+
+    @test
+    def flatMapFlatMap04(): Bool & Impure =
+        ECons(1, ECons(2, ECons(3, ENil)))                                         |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i) as & Impure) |>
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i) as & Impure) ==
+            ECons(1,
+                ECons(2, ECons(2, ECons(2, ECons(2,
+                    ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ECons(3, ENil))))))))))))))
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap flatMap fusion                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.flatMap(i -> { l := "a" :: deref l; ECons(i, ENil) }) |>
+        LazyList1.flatMap(i -> { l := "b" :: deref l; ECons(i, ENil) });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def flatMapFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.flatMap(i -> { l := "a" :: deref l; ECons(i, ENil) }) |>
+        LazyList1.flatMap(i -> { l := "b" :: deref l; ECons(i, ENil) }) |>
+        LazyList.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
 }
