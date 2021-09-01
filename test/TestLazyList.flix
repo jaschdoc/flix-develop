@@ -1948,6 +1948,10 @@ namespace TestLazyList {
     @test
     def flatMap02(): Bool =
         LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ECons(0, ENil)) == ENil
+
+    @test
+    def flatMap03(): Bool =
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ECons(1, ENil)) == ECons(1, ENil)
 /*
     @test
     def flatMap03(): Bool = List.flatMap(i -> List.repeat(i, i), 1 :: Nil) == 1 :: Nil

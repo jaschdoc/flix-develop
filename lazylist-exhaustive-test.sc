@@ -39,10 +39,10 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 
 println(
   testExhaustive(
-    name = "generatedMapWithIndexPure",
-    "",
-    List(1, 2, 3, 4),
-    " |> LazyList.mapWithIndex((x, i) -> x + i) == ECons(1, ECons(3, ECons(5, ECons(7, ENil))))",
+    name = "flatMap",
+    "LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ",
+    List(1),
+    ") == ECons(1, ENil)",
     startFrom = 1,
     purity = Pure,
   )
