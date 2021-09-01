@@ -42,9 +42,9 @@ println(
   testExhaustive(
     name = "flatMap",
     "LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ",
-    List(1, 2),
-    ") == ECons(1, ECons(2, ECons(2, ENil)))",
-    startFrom = 19,
+    List(1, 2, 3),
+    ") == ECons(1, ECons(2, ECons(2, ECons(3, ECons(3, ECons(3, ENil))))))",
+    startFrom = 51,
     purity = Pure,
   )
   + "\n\n}"
