@@ -1938,9 +1938,28 @@ namespace TestLazyList {
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // flatMap                                                                 //
+    // flatMap (pure)                                                          //
     /////////////////////////////////////////////////////////////////////////////
 
-    
+    @test
+    def flatMap01(): Bool =
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ENil: LazyList[Int32]) == ENil
+
+    @test
+    def flatMap02(): Bool =
+        LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(10), ECons(0, ENil)) == ENil
+/*
+    @test
+    def flatMap03(): Bool = List.flatMap(i -> List.repeat(i, i), 1 :: Nil) == 1 :: Nil
+
+    @test
+    def flatMap04(): Bool = List.flatMap(i -> List.repeat(i, i), 2 :: Nil) == 2 :: 2 :: Nil
+
+    @test
+    def flatMap05(): Bool = List.flatMap(i -> List.repeat(i, i), 1 :: 2 :: Nil) == 1 :: 2 :: 2 :: Nil
+
+    @test
+    def flatMap06(): Bool = List.flatMap(i -> List.repeat(i, i), 2 :: 3 :: Nil) == 2 :: 2 :: 3 :: 3 :: 3 :: Nil
+*/
 
 }
