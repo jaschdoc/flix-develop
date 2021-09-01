@@ -545,5 +545,19 @@ namespace LazyList1 {
         case LList(xs)    => reduceRightHelper(f, force xs, k)
         case _            => bug!("Unreachable code!")
     }
+
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` and concatenating the results.
+    ///
+    pub def flatMap(f: a -> LazyList[b] & ef, l: LazyList[a]): LazyList[b] & ef =
+        matchEff f {
+            case Pure   => flatMapL(f as a -> LazyList[b] & Pure,   l)
+            case Impure => flatMapE(f as a -> LazyList[b] & Impure, l)
+        } as & ef
+
+    pub def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] & e = ???
+
+    pub def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & e = ???
     
 }
