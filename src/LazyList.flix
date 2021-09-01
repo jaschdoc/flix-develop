@@ -556,8 +556,8 @@ namespace LazyList1 {
             case Impure => flatMapE(f as a -> LazyList[b] & Impure, l)
         } as & ef
 
-    pub def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] & e = ???
+    pub def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] & ef = ???
 
-    pub def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & e = ???
+    pub def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & ef = ???
     
 }
