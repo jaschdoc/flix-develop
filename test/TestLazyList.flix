@@ -2156,8 +2156,8 @@ namespace TestLazyList {
     def flatMapFusion02(): Bool & Impure =
         let l = ref Nil;
         (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
-        LazyList1.flatMap(i -> { l := "a" :: deref l; ECons(i, ENil) & as Pure }) |>
-        LazyList1.flatMap(i -> { l := "b" :: deref l; ECons(i, ENil) & as Pure }) |>
+        LazyList1.flatMap(i -> { l := "a" :: deref l; ECons(i, ENil) } & as Pure) |>
+        LazyList1.flatMap(i -> { l := "b" :: deref l; ECons(i, ENil) } & as Pure) |>
         LazyList.toList as & Impure;
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
 
