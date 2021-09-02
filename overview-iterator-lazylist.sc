@@ -122,7 +122,7 @@ println(
     FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("count", Done, Done, Easy),
     FunctionProgress.from("drop", Done, Done, Easy),
-    FunctionProgress.from("take", Done, Done, Easy, comment = "Could be lazier in LazyList"),
+    FunctionProgress.from("take", Done, Done, Easy),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Todo, Easy),
