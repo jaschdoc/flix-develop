@@ -14,36 +14,6 @@
  * limitations under the License.
  */
 
-
-
-/*
-pub enum LazyList[a] {
-    case ENil,
-    case ECons(a, LazyList[a]),
-    case LCons(a, Lazy[LazyList[a]]),
-    case LList(Lazy[LazyList[a]])
-}
-
-instance Eq[LazyList[a]] with Eq[a] {
-    pub def eq(l1: LazyList[a], l2: LazyList[a]): Bool = match (l1, l2) {
-        case (ENil, ENil)                 => true
-        case (ECons(x, xs), ECons(y, ys)) => if (x != y) false else xs == ys
-        case (ECons(x, xs), LCons(y, ys)) => if (x != y) false else xs == force ys
-        case (LCons(x, xs), ECons(y, ys)) => if (x != y) false else (force xs) == ys
-        case (LCons(x, xs), LCons(y, ys)) => if (x != y) false else (force xs) == force ys
-        case (LList(xs), LList(ys))       => (force xs) == force ys
-        case (l, LList(ys))               => l == force ys
-        case (LList(xs), l)               => (force xs) == l
-        case _                            => false
-    }
-}
-    
-instance Foldable[LazyList] {
-    pub def foldLeft( f: (b, a) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList.foldLeft( f, s, l)
-    pub def foldRight(f: (a, b) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList.foldRight(f, s, l)
-}
-*/
-
 namespace LazyList1 {
 
     ///
@@ -156,7 +126,40 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & ef =
-        mapWithIndex((x, _) -> f(x) as & ef, l)
+        matchEff f {
+            case Pure   => mapL(f as a -> b & Pure,   l)
+            case Impure => mapE(f as a -> b & Impure, l)
+        } as & ef
+
+    ///
+    /// Returns the result of applying `f` to every element in `l`.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def mapL(f: a -> b, l: LazyList[a]): LazyList[b] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f,       xs)))
+        case LCons(x, xs) => LList(lazy LCons(f(x), lazy mapL(f, force xs)))
+        case LList(xs)    => LList(                 lazy mapL(f, force xs))
+    }
+
+    ///
+    /// Returns the result of applying `f` to every element in `l`.
+    ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
+    ///
+    def mapE(f: a -> b & Impure, l: LazyList[a]): LazyList[b] & Impure =
+        mapEAcc(f, l, ENil) |> reverse
+
+    ///
+    /// Helper function for `mapE`.
+    ///
+    def mapEAcc(f: a -> b & Impure, l: LazyList[a], acc: LazyList[b]): LazyList[b] & Impure = match l {
+        case ENil         => acc
+        case ECons(x, xs) => mapEAcc(f,       xs, ECons(f(x), acc))
+        case LCons(x, xs) => mapEAcc(f, force xs, ECons(f(x), acc))
+        case LList(xs)    => mapEAcc(f, force xs,             acc)
+    }
 
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
@@ -444,70 +447,9 @@ namespace LazyList1 {
     ///
     /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
     ///
-    /// Whether `f` is applied eagerly or lazily depends on its purity:
-    ///
-    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
-    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
-    ///
     pub def zipWith(f: (a, b) -> c & ef, l1: LazyList[a], l2: LazyList[b]): LazyList[c] & ef =
         map((x) -> f(fst(x), snd(x)), zip(l1, l2))
 
-    ///
-    /// Returns the result of applying `f` to every element in `l` along with that element's index.
-    ///
-    /// That is, the result is of the form: `f(x1, 0) :: f(x2, 1) :: ...`.
-    ///
-    /// Whether `f` is applied eagerly or lazily depends on its purity:
-    ///
-    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
-    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
-    ///
-    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: LazyList[a]): LazyList[b] & ef =
-        matchEff f {
-            case Pure   => mapWithIndexL(f as (a, Int32) -> b & Pure,   l)
-            case Impure => mapWithIndexE(f as (a, Int32) -> b & Impure, l)
-        } as & ef
-
-    ///
-    /// Returns the result of applying `f` to every element in `l` along with the element's index.
-    ///
-    /// Applies `f` lazily (i.e. the tail is not forced).
-    ///
-    def mapWithIndexL(f: (a, Int32) -> b, l: LazyList[a]): LazyList[b] =
-        mapWithIndexLAcc(f, l, 0)
-
-    ///
-    /// Helper function for `mapWithIndexL`.
-    ///
-    def mapWithIndexLAcc(f: (a, Int32) -> b, l: LazyList[a], i: Int32): LazyList[b] = match l {
-        case ENil         => ENil
-        case ECons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f,       xs, i + 1)))
-        case LCons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f, force xs, i + 1)))
-        case LList(xs)    => LList(                    lazy mapWithIndexLAcc(f, force xs, i    ))
-    }
-
-    ///
-    /// Returns the result of applying `f` to every element in `l` along with the element's index.
-    ///
-    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
-    ///
-    def mapWithIndexE(f: (a, Int32) -> b & Impure, l: LazyList[a]): LazyList[b] & Impure =
-        mapWithIndexEAcc(f, l, 0, ks -> ks)
-
-    ///
-    /// Helper function for `mapWithIndexE`.
-    ///
-    def mapWithIndexEAcc(f: (a, Int32) -> b & Impure, l: LazyList[a], i: Int32, k: LazyList[b] -> LazyList[b]): LazyList[b] & Impure = match l {
-        case ENil         => k(ENil)
-        case ECons(x, xs) =>
-            let x1 = f(x, i);
-            mapWithIndexEAcc(f,       xs, i + 1, ks -> k(ECons(x1, ks)))
-        case LCons(x, xs) =>
-            let x1 = f(x, i);
-            mapWithIndexEAcc(f, force xs, i + 1, ks -> k(ECons(x1, ks)))
-        case LList(xs)    => mapWithIndexEAcc(f, force xs, i, k)
-    }
-    
     ///
     /// Applies `f` to all elements in `l` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
     ///
@@ -547,6 +489,36 @@ namespace LazyList1 {
     }
 
     ///
+    /// Optionally finds the smallest element of `l` according to the `Order` on `a`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def minimum(l: LazyList[a]): Option[a] with Order[a] =
+        reduceLeft(Order.min, l)
+
+    ///
+    /// Optionally finds the smallest element of `l` according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def minimumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
+        reduceLeft(Order.minBy(cmp), l)
+
+    ///
+    /// Optionally finds the largest element of `l` according to the `Order` on `a`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def maximum(l: LazyList[a]): Option[a] with Order[a] =
+        reduceLeft(Order.max, l)
+
+    ///
+    /// Optionally finds the largest element of `l` according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `l` is empty.
+    ///
+    pub def maximumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
+        reduceLeft(Order.maxBy(cmp), l)
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
     /// Whether `f` is applied eagerly or lazily depends on its purity:
@@ -595,35 +567,28 @@ namespace LazyList1 {
     }
 
     ///
-    /// Optionally finds the smallest element of `l` according to the `Order` on `a`.
+    /// Returns `true` if and only if `l` contains the element `a`.
     ///
-    /// Returns `None` if `l` is empty.
+    /// Forces elements until `a` is found.
     ///
-    pub def minimum(l: LazyList[a]): Option[a] with Order[a] =
-        reduceLeft(Order.min, l)
+    @Time(length(l)) @Space(1)
+    pub def memberOf(a: a, l: LazyList[a]): Bool with Eq[a] = match l {
+        case ENil         => false
+        case ECons(x, xs) => if (x == a) true else memberOf(a,       xs)
+        case LCons(x, xs) => if (x == a) true else memberOf(a, force xs)
+        case LList(xs)    => memberOf(a, force xs)
+    }
 
     ///
-    /// Optionally finds the smallest element of `l` according to the given comparator `cmp`.
+    /// Returns `l2` prepended to `l1`. This operation is equivalent to `append(l2, l1)`.
     ///
-    /// Returns `None` if `l` is empty.
-    ///
-    pub def minimumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
-        reduceLeft(Order.minBy(cmp), l)
+    pub def prepend(l1: LazyList[a], l2: LazyList[a]): LazyList[a] =
+        append(l2, l1)
 
     ///
-    /// Optionally finds the largest element of `l` according to the `Order` on `a`.
+    /// Returns `l` with every occurrence of `x` replaced by `y`.
     ///
-    /// Returns `None` if `l` is empty.
-    ///
-    pub def maximum(l: LazyList[a]): Option[a] with Order[a] =
-        reduceLeft(Order.max, l)
-
-    ///
-    /// Optionally finds the largest element of `l` according to the given comparator `cmp`.
-    ///
-    /// Returns `None` if `l` is empty.
-    ///
-    pub def maximumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
-        reduceLeft(Order.maxBy(cmp), l)
+    pub def replace(x: a, y: a, l: LazyList[a]): LazyList[a] with Eq[a] =
+        map(e -> if (x == e) y else e, l)
 
 }

@@ -40,11 +40,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 println(
   "namespace GeneratedTests {\n\n" +
   testExhaustive(
-    name = "flatMap",
-    "LazyList1.flatMap(i -> LazyList.repeat(i) |> LazyList.take(i), ",
-    List(1, 2, 3),
-    ") == ECons(1, ECons(2, ECons(2, ECons(3, ECons(3, ECons(3, ENil))))))",
-    startFrom = 1,
+    name = "replace",
+    "LazyList1.replace(3, 4, ",
+    List(2, 3, 2),
+    ") == ECons(2, ECons(4, ECons(2, ENil)))",
+    startFrom = 14,
     purity = Pure,
   )
   + "\n\n}"
