@@ -101,7 +101,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
 println(
   List(
-    FunctionProgress.from("prepend", Todo, Todo, Easy),
+    FunctionProgress.from("prepend", Todo, Done, Easy),
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
     FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
@@ -129,11 +129,11 @@ println(
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Done, Easy),
-    FunctionProgress.from("memberOf", Done, Todo, Easy),
+    FunctionProgress.from("memberOf", Done, Done, Easy),
     FunctionProgress.from("toArray", Done, Done, Easy),
     FunctionProgress.from("toMap", Done, Done, Easy),
     FunctionProgress.from("toSet", Done, Done, Easy),
-    FunctionProgress.from("replace", Done, Todo, Easy),
+    FunctionProgress.from("replace", Done, Done, Easy),
     FunctionProgress.from("exists", Done, Done, Easy),
     FunctionProgress.from("foreach", Done, Done, Easy),
     FunctionProgress.from("forall", Done, Done, Easy),
