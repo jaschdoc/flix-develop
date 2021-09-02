@@ -125,7 +125,7 @@ println(
     FunctionProgress.from("take", Done, Done, Easy),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("findLeft", Done, Todo, Easy),
+    FunctionProgress.from("findLeft", Done, Done, Easy),
     FunctionProgress.from("findRight", Warning, Todo, Easy),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
