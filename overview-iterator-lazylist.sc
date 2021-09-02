@@ -82,15 +82,16 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
     val iterWarning = fps.count(fp => fp.iterStatus == Warning)
     val listDone = fps.count(fp => fp.listStatus == Done)
     val listWarning = fps.count(fp => fp.listStatus == Warning)
+    val totalCount = fps.length
     val title =
       s"""|# Status Overview
           |
           |Difficulty explanation
-          |    - $Easy Expected to be easy to implement (${fps.count(fp => fp.difficulty == Easy)} / ${fps.length})
-          |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
-          |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / ${fps.length})
+          |    - $Easy Expected to be easy to implement (${fps.count(fp => fp.difficulty == Easy)} / $totalCount)
+          |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / $totalCount)
+          |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / $totalCount)
           |
-          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
+          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy (${fps.count(fp => fp.polymorphic == Yes)} / $totalCount) | Comment |
           || :------: | :------:                                                             | :------:                                                             | :--------: | :---------:           | :-----: |
           |""".stripMargin.replaceAll(" {2}", "")
 
@@ -104,8 +105,8 @@ println(
     FunctionProgress.from("prepend", Todo, Done, Easy),
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
-    FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
-    FunctionProgress.from("findMap", Todo, Todo, NA, polymorphic = Yes),
+    FunctionProgress.from("filterMap", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("findMap", Todo, Todo, Easy),
     FunctionProgress.from("reduceLeft", Todo, Done, Easy),
     FunctionProgress.from("reduceRight", Todo, Done, Easy),
     FunctionProgress.from("intersperse", Todo, Todo, Hard),
@@ -124,8 +125,8 @@ println(
     FunctionProgress.from("take", Done, Done, Easy, comment = "Could be lazier in LazyList"),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("findLeft", Done, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("findRight", Warning, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("findLeft", Done, Todo, Easy),
+    FunctionProgress.from("findRight", Warning, Todo, Easy),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Done, Easy),
