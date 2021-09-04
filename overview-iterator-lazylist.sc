@@ -102,7 +102,6 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
 println(
   List(
-    FunctionProgress.from("prepend", Todo, Done, Easy),
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
     FunctionProgress.from("filterMap", Todo, Todo, Hard, polymorphic = Yes),
@@ -126,7 +125,7 @@ println(
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Done, Easy),
-    FunctionProgress.from("findRight", Warning, Todo, Easy),
+    FunctionProgress.from("findRight", Warning, Warning, Easy, comment = "Needs optimization in `LazyList`"),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Done, Easy),

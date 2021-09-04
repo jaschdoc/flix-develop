@@ -519,6 +519,8 @@ namespace LazyList1 {
     ///
     pub def maximumBy(cmp: (a, a) -> Comparison, l: LazyList[a]): Option[a] =
         reduceLeft(Order.maxBy(cmp), l)
+    
+    ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
     /// Whether `f` is applied eagerly or lazily depends on its purity:
@@ -571,19 +573,12 @@ namespace LazyList1 {
     ///
     /// Forces elements until `a` is found.
     ///
-    @Time(length(l)) @Space(1)
     pub def memberOf(a: a, l: LazyList[a]): Bool with Eq[a] = match l {
         case ENil         => false
-        case ECons(x, xs) => if (x == a) true else memberOf(a,       xs)
-        case LCons(x, xs) => if (x == a) true else memberOf(a, force xs)
-        case LList(xs)    => memberOf(a, force xs)
+        case ECons(x, xs) => x == a or memberOf(a,       xs)
+        case LCons(x, xs) => x == a or memberOf(a, force xs)
+        case LList(xs)    =>           memberOf(a, force xs)
     }
-
-    ///
-    /// Returns `l2` prepended to `l1`. This operation is equivalent to `append(l2, l1)`.
-    ///
-    pub def prepend(l1: LazyList[a], l2: LazyList[a]): LazyList[a] =
-        append(l2, l1)
 
     ///
     /// Returns `l` with every occurrence of `x` replaced by `y`.
@@ -604,6 +599,11 @@ namespace LazyList1 {
     ///
     /// Optionally returns the first element of `l` that satisfies the predicate `f` when searching from right to left.
     ///
-    pub def findRight(f: a -> Bool & ef, l: LazyList[a]): Option[a] & ef = ???
+    pub def findRight(f: a -> Bool & ef, l: LazyList[a]): Option[a] & ef =
+        let g = (x: a) -> (acc: Option[a]) -> match acc {
+            case None => if (f(x)) Some(x) else None
+            case _    => acc
+        };
+        foldRight(g, None, l)
 
 }
