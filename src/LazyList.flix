@@ -630,10 +630,6 @@ namespace LazyList1 {
     /// Optionally returns the first element of `l` that satisfies the predicate `f` when searching from right to left.
     ///
     pub def findRight(f: a -> Bool & ef, l: LazyList[a]): Option[a] & ef =
-        let g = (x: a) -> (acc: Option[a]) -> match acc {
-            case None => if (f(x)) Some(x) else None
-            case _    => acc
-        };
-        foldRight(g, None, l)
+        reverse(l) |> findLeft(f)
 
 }
