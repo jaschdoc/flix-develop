@@ -125,7 +125,7 @@ println(
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findLeft", Done, Done, Easy),
-    FunctionProgress.from("findRight", Warning, Warning, Easy, comment = "Needs optimization in `LazyList`"),
+    FunctionProgress.from("findRight", Warning, Done, Easy, comment = "Needs optimization in `LazyList`"),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
     FunctionProgress.from("repeat", Done, Done, Easy),
