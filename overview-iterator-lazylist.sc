@@ -115,7 +115,7 @@ println(
     FunctionProgress.from("maximumBy", Todo, Done, Easy),
     FunctionProgress.from("mapWithIndex", Todo, Warning, Easy, polymorphic = Yes, comment = "Compiler bug with curried function and effect ef. See https://github.com/flix/flix/pull/2206"),
     FunctionProgress.from("flatMap", Todo, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("intercalate", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("intercalate", Todo, Todo, Hard),
     FunctionProgress.from("flatten", Todo, Done, Easy),
     FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
