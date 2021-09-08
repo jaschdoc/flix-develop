@@ -76,14 +76,16 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 }
 
 /*<amm>*/val res_6 = /*</amm>*/println(
+  "namespace GeneratedTests {\n\n" +
   testExhaustive(
-    name = "toArray",
-    "LazyList.toArray(",
+    name = "intercalate",
+    "LazyList1.intercalate(ECons(10, ECons(11, ECons(12, ENil))), LCons(",
     List(1, 2, 3),
-    ") == [1, 2, 3]",
-    startFrom = 8,
-    purity = Impure,
+    ", lazy ECons(ECons(100, ECons(101, ECons(102, ENil))), ENil))) == ECons(1, ECons(2, ECons(3, ECons(10, ECons(11, ECons(12, ECons(100, ECons(101, ECons(102, ENil)))))))))",
+    startFrom = 11,
+    purity = Pure,
   )
+  + "\n\n}"
 )
 /*</script>*/ /*<generated>*/
 def $main() = { scala.Iterator[String]() }

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Instantiating tests..."
+echo "This may take a while..."
+RESULT="$(java -jar flix.jar test)"
+SUMMARYFILE="summarytests"
+echo "$RESULT" > "$SUMMARYFILE"
+echo "$RESULT"
+echo "Saved test summary in '$SUMMARYFILE'"

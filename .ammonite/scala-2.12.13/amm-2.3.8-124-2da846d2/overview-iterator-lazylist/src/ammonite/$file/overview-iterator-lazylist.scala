@@ -120,15 +120,16 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
     val iterWarning = fps.count(fp => fp.iterStatus == Warning)
     val listDone = fps.count(fp => fp.listStatus == Done)
     val listWarning = fps.count(fp => fp.listStatus == Warning)
+    val totalCount = fps.length
     val title =
       s"""|# Status Overview
           |
           |Difficulty explanation
-          |    - $Easy Expected to be easy to implement (${fps.count(fp => fp.difficulty == Easy)} / ${fps.length})
-          |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / ${fps.length})
-          |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / ${fps.length})
+          |    - $Easy Expected to be easy to implement (${fps.count(fp => fp.difficulty == Easy)} / $totalCount)
+          |    - $Hard Requires thought / consideration (${fps.count(fp => fp.difficulty == Hard)} / $totalCount)
+          |    - $NA Unknown, will be updated (${fps.count(fp => fp.difficulty == NA)} / $totalCount)
           |
-          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy| Comment |
+          || Function | Iterator ($iterDone $Done / ${fps.filterNot(fp => fp.iterStatus == NA).length} and $iterWarning $Warning) | LazyList ($listDone $Done / ${fps.filterNot(fp => fp.listStatus == NA).length} and $listWarning $Warning) | Difficulty | Polymorphic eager/lazy (${fps.count(fp => fp.polymorphic == Yes)} / $totalCount) | Comment |
           || :------: | :------:                                                             | :------:                                                             | :--------: | :---------:           | :-----: |
           |""".stripMargin.replaceAll(" {2}", "")
 
@@ -139,54 +140,53 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
 
 /*<amm>*/val res_18 = /*</amm>*/println(
   List(
-    FunctionProgress.from("prepend", Todo, Todo, Easy),
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
-    FunctionProgress.from("filterMap", Todo, Todo, NA, polymorphic = Yes),
-    FunctionProgress.from("findMap", Todo, Todo, NA, polymorphic = Yes),
-    FunctionProgress.from("reduceLeft", Todo, Todo, Easy),
-    FunctionProgress.from("reduceRight", Todo, Todo, Easy),
-    FunctionProgress.from("intersperse", Todo, Todo, Hard),
-    FunctionProgress.from("minimum", Todo, Todo, Easy),
-    FunctionProgress.from("minimumBy", Todo, Todo, Easy),
-    FunctionProgress.from("maximum", Todo, Todo, Easy),
-    FunctionProgress.from("maximumBy", Todo, Todo, Easy),
-    FunctionProgress.from("mapWithIndex", Todo, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("flatMap", Todo, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("intercalate", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("filterMap", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("findMap", Todo, Todo, Easy),
+    FunctionProgress.from("reduceLeft", Todo, Done, Easy),
+    FunctionProgress.from("reduceRight", Todo, Done, Easy),
+    FunctionProgress.from("intersperse", Todo, Todo, Easy),
+    FunctionProgress.from("minimum", Todo, Done, Easy),
+    FunctionProgress.from("minimumBy", Todo, Done, Easy),
+    FunctionProgress.from("maximum", Todo, Done, Easy),
+    FunctionProgress.from("maximumBy", Todo, Done, Easy),
+    FunctionProgress.from("mapWithIndex", Todo, Warning, Easy, polymorphic = Yes, comment = "Compiler bug with curried function and effect ef. See https://github.com/flix/flix/pull/2206"),
+    FunctionProgress.from("flatMap", Todo, Done, Easy, polymorphic = Yes),
+    FunctionProgress.from("intercalate", Todo, Todo, Easy),
     FunctionProgress.from("flatten", Todo, Done, Easy),
-    FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Maybe, comment = "Is the function `f` passed to `partition` allowed to have an effect?"),
-    FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Maybe, comment = "Is the function `f` passed to `span` allowed to have an effect?"),
+    FunctionProgress.from("partition", Todo, Todo, Hard, polymorphic = Yes),
+    FunctionProgress.from("span", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("count", Done, Done, Easy),
     FunctionProgress.from("drop", Done, Done, Easy),
-    FunctionProgress.from("take", Done, Done, Easy, comment = "Could be lazier in LazyList"),
+    FunctionProgress.from("take", Done, Done, Easy),
     FunctionProgress.from("map", Done, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("filter", Done, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("findLeft", Done, Todo, Easy, polymorphic = Maybe, comment = "Is the function `f` passed to `findLeft` allowed to have an effect?"),
-    FunctionProgress.from("findRight", Warning, Todo, Easy, polymorphic = Maybe, comment = "Needs optimization in Iterator. Is the function `f` passed to `findRight` allowed to have an effect?"),
+    FunctionProgress.from("findLeft", Done, Done, Easy),
+    FunctionProgress.from("findRight", Warning, Done, Easy),
     FunctionProgress.from("head", Done, Done, Easy),
     FunctionProgress.from("range", Done, Done, Easy),
-    FunctionProgress.from("repeat", Done, Todo, Easy),
-    FunctionProgress.from("memberOf", Done, Todo, Easy),
+    FunctionProgress.from("repeat", Done, Done, Easy),
+    FunctionProgress.from("memberOf", Done, Done, Easy),
     FunctionProgress.from("toArray", Done, Done, Easy),
     FunctionProgress.from("toMap", Done, Done, Easy),
     FunctionProgress.from("toSet", Done, Done, Easy),
-    FunctionProgress.from("replace", Done, Todo, Easy),
+    FunctionProgress.from("replace", Done, Done, Easy),
     FunctionProgress.from("exists", Done, Done, Easy),
     FunctionProgress.from("foreach", Done, Done, Easy),
     FunctionProgress.from("forall", Done, Done, Easy),
     FunctionProgress.from("dropWhile", Todo, Todo, Hard, polymorphic = Yes),
     FunctionProgress.from("takeWhile", Todo, Todo, Hard, polymorphic = Yes),
-    FunctionProgress.from("zip", Done, Todo, Easy),
-    FunctionProgress.from("zipWith", Warning, Todo, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
+    FunctionProgress.from("zip", Done, Done, Easy),
+    FunctionProgress.from("zipWith", Warning, Done, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
     FunctionProgress.from("foldLeft", Done, Done, Easy),
     FunctionProgress.from("foldRight", Done, Done, Easy),
     FunctionProgress.from("toList", Done, Done, Easy),
-    FunctionProgress.from("from", NA, Todo, Easy, comment = "Is this even relevant for `Iterator`?"),
+    FunctionProgress.from("from", NA, Done, Easy, comment = "Is this even relevant for `Iterator`?"),
     FunctionProgress.from("empty", NA, Done, Easy),
-    FunctionProgress.from("toIter", NA, Todo, Easy),
+    FunctionProgress.from("toIter", NA, Done, Easy),
     FunctionProgress.from("toLazyList", Todo, NA, Easy),
-    FunctionProgress.from("last", Todo, Todo, Easy),
+    FunctionProgress.from("last", Todo, Done, Easy),
     FunctionProgress.from("reverse", NA, Done, Easy),
     FunctionProgress.from("length", Todo, Done, Easy),
     FunctionProgress.from("tail", Todo, Done, Easy),
