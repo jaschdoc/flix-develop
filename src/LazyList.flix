@@ -721,13 +721,28 @@ namespace LazyList1 {
     /// `l1` is the longest prefix of `l` that satisfies the predicate `f`.
     /// `l2` is the remainder of `l`.
     ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
+    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
+    ///
     pub def span(f: a -> Bool & ef, l: List[a]): (List[a], List[a]) & ef =
         matchEff f {
             case Pure   => spanL(f as a -> Bool & Pure,   l)
             case Impure => spanE(f as a -> Bool & Impure, l)
         } as & ef
 
-    def spanL(f: a -> Bool, l: List[a]): (List[a], List[a]) = ???
+    ///
+    /// Returns a pair of lists `(l1, l2)`.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def spanL(f: a -> Bool, l: List[a]): (List[a], List[a]) = match l {
+        case ENil         => ???
+        case ECons(x, xs) => ???
+        case LCons(x, xs) => ???
+        case LList(xs)    => ???
+    }
 
     def spanE(f: a -> Bool & Impure, l: List[a]): (List[a], List[a]) & Impure = ???
 
