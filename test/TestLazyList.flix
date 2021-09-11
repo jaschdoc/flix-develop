@@ -2897,9 +2897,29 @@ namespace TestLazyList {
     // takeWhile                                                               //
     /////////////////////////////////////////////////////////////////////////////
 
+    @test
+    def takeWhilePure01(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ENil) == ENil
+
+    @test
+    def takeWhilePure02(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy ENil)) == ENil
+
+    @test
+    def takeWhilePure03(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LCons(1, lazy ENil)) == ENil
+
+    @test
+    def takeWhilePure04(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy ECons(1, LList(lazy ENil)))) == ENil
+
+    @test
+    def takeWhilePure05(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(1, LList(lazy ENil))) == ENil
+
    
     @test
-    def takeWhilePure08(): Bool =
+    def takeWhilePure0899999(): Bool =
         LazyList1.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil)))))))))))) == ECons(4, ECons(6, ENil))
 
 

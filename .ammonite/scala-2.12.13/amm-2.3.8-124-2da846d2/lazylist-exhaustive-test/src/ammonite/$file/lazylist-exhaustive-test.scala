@@ -80,9 +80,9 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
   testExhaustive(
     name = "takeWhilePure",
     "LazyList1.takeWhile(i -> i > 3, ",
-    List(),
+    List(1,2),
     ") == ENil",
-    startFrom = 1,
+    startFrom = 10,
     purity = Pure,
   )
   + "\n\n}"
