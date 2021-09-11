@@ -2985,44 +2985,28 @@ namespace TestLazyList {
     def takeWhilePure22(): Bool = 
         LazyList1.takeWhile(i -> i > 3, ECons(5, LList(lazy ECons(1, ENil)))) == ECons(5, ENil)
 
+    @test
+    def takeWhilePure23(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy ECons(5, ECons(8, ENil)))) == ECons(5, ECons(8, ENil))
 
     @test
-    def takeWhilePure0899999(): Bool =
+    def takeWhilePure24(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LCons(5, lazy LList(lazy ECons(8, LList(lazy ENil))))) == ECons(5, ECons(8, ENil))
+
+    @test
+    def takeWhilePure25(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(5, ECons(8, LList(lazy ENil)))) == ECons(5, ECons(8, ENil))
+
+    @test
+    def takeWhilePure26(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy ECons(5, LList(lazy LCons(8, lazy ENil))))) == ECons(5, ECons(8, ENil))
+
+    @test
+    def takeWhilePure27(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(5, LList(lazy ECons(8, ENil)))) == ECons(5, ECons(8, ENil))
+
+    @test
+    def takeWhilePure28(): Bool =
         LazyList1.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil)))))))))))) == ECons(4, ECons(6, ENil))
-
-
-/*
-@test
-def takeWhilePure01(): Bool =
-    LazyList.takeWhile(i -> i > 3, ENil: LazyList[Int32]) == ENil
-
-@test
-def takeWhilePure02(): Bool =
-    LazyList.takeWhile(i -> i > 3, 1 :: ENil) == ENil
-
-@test
-def takeWhilePure03(): Bool =
-    LazyList.takeWhile(i -> i > 3, 4 :: ENil) == 4 :: ENil
-
-@test
-def takeWhilePure04(): Bool =
-    LazyList.takeWhile(i -> i > 3, 1 :: 2 :: ENil) == ENil
-
-@test
-def takeWhilePure05(): Bool =
-    LazyList.takeWhile(i -> i > 3, 1 :: 5 :: ENil) == ENil
-
-@test
-def takeWhilePure06(): Bool =
-    LazyList.takeWhile(i -> i > 3, 5 :: 1 :: ENil) == 5 :: ENil
-
-@test
-def takeWhilePure07(): Bool =
-    LazyList.takeWhile(i -> i > 3, 5 :: 8 :: ENil) == 5 :: 8 :: ENil
-
-@test
-def takeWhilePure08(): Bool =
-    LazyList.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))) == ECons(4, ECons(6, ENil))
-*/
 
 }
