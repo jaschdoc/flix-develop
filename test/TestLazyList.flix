@@ -3176,7 +3176,15 @@ namespace TestLazyList {
         LazyList1.takeWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
         LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 2 } as & Pure) |>
         LazyList1.toList as & Impure;
-        println(deref l |> List.reverse);
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: Nil)
        
+    @test
+    def takeWhileTakeWhileFusion04(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.takeWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
+        LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 3 } as & Pure) |>
+        LazyList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: Nil)
+        
 }
