@@ -725,10 +725,34 @@ namespace LazyList1 {
     ///
     pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] =
         matchEfff f {
-            case Pure   =>   ???
-            case Impure => ???
+            case Pure   => takeWhileL(f as a -> Bool & Pure,   l)
+            case Impure => takeWhileE(f as a -> Bool & Impure, l)
         }
     
+    ///
+    /// Returns the longest prefix of `l` that satisfies the predicate `f`.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def takeWhileL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
+        case ENil         => ???
+        case ECons(x, xs) => ???
+        case LCons(x, xs) => ???
+        case LList(xs)    => ???
+    }
+
+    ///
+    /// Returns the longest prefix of `l` that satisfies the predicate `f`.
+    ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
+    ///
+    def takeWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure = match l {
+        case ENil         => ???
+        case ECons(x, xs) => ???
+        case LCons(x, xs) => ???
+        case LList(xs)    => ???
+    }
+
     ///
     /// Returns `l` without the longest prefix that satisfies the predicate `f`.
     ///
