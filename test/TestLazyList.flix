@@ -3126,4 +3126,25 @@ namespace TestLazyList {
     def takeWhileImpure28(): Bool & Impure =
         LazyList1.takeWhile(i -> i > 3 as & Impure, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil)))))))))))) == ECons(4, ECons(6, ENil))
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile takeWhile                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhileTakeWhile01(): Bool =
+        ECons(4, ECons(5, ECons(1, ENil))) |> LazyList1.takeWhile(i -> i > 3) |> LazyList1.takeWhile(i -> i < 5) == ECons(4, ENil)
+
+    @test
+    def takeWhileTakeWhile02(): Bool & Impure =
+        ECons(4, ECons(5, ECons(1, ENil))) |> LazyList1.takeWhile(i -> i > 3 as & Impure) |> LazyList1.takeWhile(i -> i < 5) == ECons(4, ENil)
+
+    @test
+    def takeWhileTakeWhile03(): Bool & Impure =
+        ECons(4, ECons(5, ECons(1, ENil))) |> LazyList1.takeWhile(i -> i > 3) |> LazyList1.takeWhile(i -> i < 5 as & Impure) == ECons(4, ENil)
+
+    @test
+    def takeWhileTakeWhile04(): Bool & Impure =
+        ECons(4, ECons(5, ECons(1, ENil))) |> LazyList1.takeWhile(i -> i > 3 as & Impure) |> LazyList1.takeWhile(i -> i < 5 as & Impure) == ECons(4, ENil)
+        
 }
