@@ -3011,7 +3011,7 @@ namespace TestLazyList {
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // takeWhile (Impure)                                                      //
+    // takeWhile (impure)                                                      //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
@@ -3186,5 +3186,5 @@ namespace TestLazyList {
         LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 3 } as & Pure) |>
         LazyList1.toList as & Impure;
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: Nil)
-        
+
 }
