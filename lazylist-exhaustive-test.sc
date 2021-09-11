@@ -42,9 +42,9 @@ println(
   testExhaustive(
     name = "takeWhilePure",
     "LazyList1.takeWhile(i -> i > 3, ",
-    List(1,2),
+    List(1,5),
     ") == ENil",
-    startFrom = 10,
+    startFrom = 14,
     purity = Pure,
   )
   + "\n\n}"
