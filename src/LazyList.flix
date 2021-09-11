@@ -753,10 +753,10 @@ namespace LazyList1 {
     /// Helper function for `takeWhileE`.
     ///
     def takeWhileEAcc(f: a -> Bool & Impure, l: LazyList[a], k: LazyList[a] -> LazyList[a]): LazyList[a] & Impure = match l {
-        case ENil         => ???
-        case ECons(x, xs) => ???
-        case LCons(x, xs) => ???
-        case LList(xs)    => ???
+        case ENil         => k(ENil)
+        case ECons(x, xs) => if (f(x)) takeWhileEAcc(f,       xs, ks -> k(ECons(x, ks))) else k(ENil)
+        case LCons(x, xs) => if (f(x)) takeWhileEAcc(f, force xs, ks -> k(ECons(x, ks))) else k(ENil)
+        case LList(xs)    => takeWhileEAcc(f, force xs, k)
     }
 
     ///
