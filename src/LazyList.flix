@@ -734,7 +734,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def takeWhileL(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
+    def takeWhileL(f: a -> Bool, l: LazyList[a]): LazyList[a] = 
+        LList(lazy takeWhileLHelper(f, l))
+    
+    ///
+    /// Helper function for `takeWhileL`.
+    ///
+    def takeWhileLHelper(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil         => ENil
         case ECons(x, xs) => if (f(x)) LCons(x, lazy takeWhileL(f,       xs)) else ENil
         case LCons(x, xs) => if (f(x)) LCons(x, lazy takeWhileL(f, force xs)) else ENil

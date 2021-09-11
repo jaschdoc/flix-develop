@@ -3146,5 +3146,37 @@ namespace TestLazyList {
     @test
     def takeWhileTakeWhile04(): Bool & Impure =
         ECons(4, ECons(5, ECons(1, ENil))) |> LazyList1.takeWhile(i -> i > 3 as & Impure) |> LazyList1.takeWhile(i -> i < 5 as & Impure) == ECons(4, ENil)
-        
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile takeWhile fusion                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhileTakeWhileFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.takeWhile(i -> { l := "a" :: deref l; i < 4 }) |>
+        LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 4 });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def takeWhileTakeWhileFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.takeWhile(i -> { l := "a" :: deref l; i < 4 } as & Pure) |>
+        LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 4 } as & Pure) |>
+        LazyList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+       
+    @test
+    def takeWhileTakeWhileFusion03(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.takeWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
+        LazyList1.takeWhile(i -> { l := "b" :: deref l; i < 2 } as & Pure) |>
+        LazyList1.toList as & Impure;
+        println(deref l |> List.reverse);
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: Nil)
+       
 }
