@@ -40,11 +40,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 println(
   "namespace GeneratedTests {\n\n" +
   testExhaustive(
-    name = "intercalate",
-    "LazyList1.intercalate(ECons(10, ECons(11, ECons(12, ENil))), LCons(",
-    List(1, 2, 3),
-    ", lazy ECons(ECons(100, ECons(101, ECons(102, ENil))), ENil))) == ECons(1, ECons(2, ECons(3, ECons(10, ECons(11, ECons(12, ECons(100, ECons(101, ECons(102, ENil)))))))))",
-    startFrom = 11,
+    name = "intersperse",
+    "LazyList1.intersperse(-11, ",
+    List(1, 2, 3, 4, 5),
+    ") == ECons(1, ECons(-11, ECons(2, ECons(-11, ECons(3, ECons(-11, ECons(4, ECons(-11, ECons(5, ENil)))))))))",
+    startFrom = 171,
     purity = Pure,
   )
   + "\n\n}"
