@@ -138,7 +138,7 @@ println(
     FunctionProgress.from("foreach", Done, Done, Easy),
     FunctionProgress.from("forall", Done, Done, Easy),
     FunctionProgress.from("dropWhile", Todo, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("takeWhile", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("takeWhile", Todo, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("zip", Done, Done, Easy),
     FunctionProgress.from("zipWith", Warning, Done, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
     FunctionProgress.from("foldLeft", Done, Done, Easy),
