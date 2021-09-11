@@ -746,7 +746,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def takeWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure = match l {
+    def takeWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
+        takeWhileEAcc(f, l, ks -> ks)
+    
+    ///
+    /// Helper function for `takeWhileE`.
+    ///
+    def takeWhileEAcc(f: a -> Bool & Impure, l: LazyList[a], k: LazyList[a] -> LazyList[a]): LazyList[a] & Impure = match l {
         case ENil         => ???
         case ECons(x, xs) => ???
         case LCons(x, xs) => ???
