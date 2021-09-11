@@ -2893,4 +2893,47 @@ namespace TestLazyList {
         LazyList1.intersperse(-11, LList(lazy ECons(1, ECons(2, ECons(3, LCons(4, lazy ENil)))))) == ECons(1, ECons(-11, ECons(2, ECons(-11, ECons(3, ECons(-11, ECons(4, ENil)))))))
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+   
+    @test
+    def takeWhilePure08(): Bool =
+        LazyList1.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))) == ECons(4, ECons(6, ENil))
+
+
+/*
+@test
+def takeWhilePure01(): Bool =
+    LazyList.takeWhile(i -> i > 3, ENil: LazyList[Int32]) == ENil
+
+@test
+def takeWhilePure02(): Bool =
+    LazyList.takeWhile(i -> i > 3, 1 :: ENil) == ENil
+
+@test
+def takeWhilePure03(): Bool =
+    LazyList.takeWhile(i -> i > 3, 4 :: ENil) == 4 :: ENil
+
+@test
+def takeWhilePure04(): Bool =
+    LazyList.takeWhile(i -> i > 3, 1 :: 2 :: ENil) == ENil
+
+@test
+def takeWhilePure05(): Bool =
+    LazyList.takeWhile(i -> i > 3, 1 :: 5 :: ENil) == ENil
+
+@test
+def takeWhilePure06(): Bool =
+    LazyList.takeWhile(i -> i > 3, 5 :: 1 :: ENil) == 5 :: ENil
+
+@test
+def takeWhilePure07(): Bool =
+    LazyList.takeWhile(i -> i > 3, 5 :: 8 :: ENil) == 5 :: 8 :: ENil
+
+@test
+def takeWhilePure08(): Bool =
+    LazyList.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))) == ECons(4, ECons(6, ENil))
+*/
 }

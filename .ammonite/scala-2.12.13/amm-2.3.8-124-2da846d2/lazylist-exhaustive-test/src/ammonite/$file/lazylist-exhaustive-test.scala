@@ -78,11 +78,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 /*<amm>*/val res_6 = /*</amm>*/println(
   "namespace GeneratedTests {\n\n" +
   testExhaustive(
-    name = "intersperse",
-    "LazyList1.intersperse(-11, ",
-    List(1, 2, 3, 4, 5),
-    ") == ECons(1, ECons(-11, ECons(2, ECons(-11, ECons(3, ECons(-11, ECons(4, ECons(-11, ECons(5, ENil)))))))))",
-    startFrom = 171,
+    name = "takeWhilePure",
+    "LazyList1.takeWhile(i -> i > 3, ",
+    List(),
+    ") == ENil",
+    startFrom = 1,
     purity = Pure,
   )
   + "\n\n}"
