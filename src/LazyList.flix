@@ -715,4 +715,20 @@ namespace LazyList1 {
         case LList(xs)      => LList(lazy intersperse(x, force xs))
     }
 
+    ///
+    /// Returns a pair of lists `(l1, l2)`.
+    ///
+    /// `l1` is the longest prefix of `l` that satisfies the predicate `f`.
+    /// `l2` is the remainder of `l`.
+    ///
+    pub def span(f: a -> Bool & ef, l: List[a]): (List[a], List[a]) & ef =
+        matchEff f {
+            case Pure   => spanL(f as a -> Bool & Pure,   l)
+            case Impure => spanE(f as a -> Bool & Impure, l)
+        } as & ef
+
+    def spanL(f: a -> Bool, l: List[a]): (List[a], List[a]) = ???
+
+    def spanE(f: a -> Bool & Impure, l: List[a]): (List[a], List[a]) & Impure = ???
+
 }
