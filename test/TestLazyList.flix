@@ -2936,4 +2936,5 @@ def takeWhilePure07(): Bool =
 def takeWhilePure08(): Bool =
     LazyList.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))) == ECons(4, ECons(6, ENil))
 */
+
 }

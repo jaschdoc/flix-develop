@@ -724,7 +724,7 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] =
-        matchEfff f {
+        matchEff f {
             case Pure   => takeWhileL(f as a -> Bool & Pure,   l)
             case Impure => takeWhileE(f as a -> Bool & Impure, l)
         }
@@ -768,7 +768,7 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def dropWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] =
-        matchEfff f {
+        matchEff f {
             case Pure   => ???
             case Impure => ???
         }
