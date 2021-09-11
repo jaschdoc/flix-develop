@@ -2917,7 +2917,38 @@ namespace TestLazyList {
     def takeWhilePure05(): Bool = 
         LazyList1.takeWhile(i -> i > 3, ECons(1, LList(lazy ENil))) == ENil
 
-   
+    @test
+    def takeWhilePure06(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(4, LList(lazy ENil))) == ECons(4, ENil)
+
+    @test
+    def takeWhilePure07(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LCons(4, lazy LList(lazy ENil))) == ECons(4, ENil)
+
+    @test
+    def takeWhilePure08(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(4, ENil)) == ECons(4, ENil)
+
+    @test
+    def takeWhilePure09(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy LCons(4, lazy ENil))) == ECons(4, ENil)
+
+    @test
+    def takeWhilePure10(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy LCons(1, lazy LList(lazy LCons(2, lazy ENil))))) == ENil
+
+    @test
+    def takeWhilePure11(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy LCons(1, lazy ECons(2, LList(lazy ENil))))) == ENil
+
+    @test
+    def takeWhilePure12(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, LList(lazy LCons(1, lazy LCons(2, lazy ENil)))) == ENil
+
+    @test
+    def takeWhilePure13(): Bool = 
+        LazyList1.takeWhile(i -> i > 3, ECons(1, LCons(2, lazy ENil))) == ENil
+
     @test
     def takeWhilePure0899999(): Bool =
         LazyList1.takeWhile(i -> i > 3, ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil)))))))))))) == ECons(4, ECons(6, ENil))
