@@ -723,11 +723,11 @@ namespace LazyList1 {
     /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
-    pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] =
+    pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
         matchEff f {
             case Pure   => takeWhileL(f as a -> Bool & Pure,   l)
             case Impure => takeWhileE(f as a -> Bool & Impure, l)
-        }
+        } as & ef
     
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
@@ -784,7 +784,7 @@ namespace LazyList1 {
     /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
-    pub def span(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef =
-        (takeWhile(f, l), dropWhile(f, l))
+    pub def span(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef = ???
+        // (takeWhile(f, l), dropWhile(f, l))
 
 }
