@@ -1,1 +1,1 @@
-Enter license information here.
+See [LICENSE](LICENSE)
