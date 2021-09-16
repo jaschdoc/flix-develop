@@ -779,13 +779,15 @@ namespace LazyList1 {
             dropWhileE(f as a -> Bool & Impure, l) as & ef
 
     ///
+    /// Returns `l` without the longest prefix that satisfies the predicate `f`.
     ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
     ///
     def dropWhileL(f: a -> Bool, l: LazyList[a]): LazyList[a] =
         LList(lazy dropWhileLHelper(f, l))
     
     ///
-    ///
+    /// Helper function for `dropWhileL`.
     ///
     def dropWhileLHelper(f: a -> Bool, l: LazyList[a]): LazyList[a] = match l {
         case ENil         => ENil
@@ -795,7 +797,9 @@ namespace LazyList1 {
     }
 
     ///
+    /// Returns `l` without the longest prefix that satisfies the predicate `f`.
     ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
     def dropWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure = match l {
         case ENil         => ENil
