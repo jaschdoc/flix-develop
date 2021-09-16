@@ -185,10 +185,10 @@ namespace DevIterator {
     /// The original iterator `iter` should not be reused.
     ///
     pub def dropWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        matchEff f {
-            case Pure   => dropWhileL(f as a -> Bool, iter)
-            case Impure => dropWhileE(f as a -> Bool & Impure, iter)
-        }
+        if (reify f)
+            dropWhileL(f as a -> Bool & Pure, iter)
+        else
+            dropWhileE(f as a -> Bool & Impure, iter)
 
     ///
     /// Returns `iter` without the longest prefix that satisfies the predicate `f`, where `f` is applied *lazily*.
@@ -249,10 +249,10 @@ namespace DevIterator {
     /// the first element that does *not* satisfy predicate `f`).
     ///
     pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        matchEff f {
-            case Pure   => takeWhileL(f as a -> Bool, iter)
-            case Impure => takeWhileE(f as a -> Bool & Impure, iter)
-        }
+        if (reify f)
+            takeWhileL(f as a -> Bool, iter)
+        else
+            takeWhileE(f as a -> Bool & Impure, iter)
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
@@ -349,10 +349,10 @@ namespace DevIterator {
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
     pub def zipWith(f: (a, b) -> c & ef, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] & Impure =
-        matchEff f {
-            case Pure   => zipWithL(f as (a, b) -> c & Pure,   iterA, iterB)
-            case Impure => zipWithE(f as (a, b) -> c & Impure, iterA, iterB)
-        }
+        if (reify f)
+            zipWithL(f as (a, b) -> c & Pure,   iterA, iterB)
+        else
+            zipWithE(f as (a, b) -> c & Impure, iterA, iterB)
 
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
@@ -496,10 +496,10 @@ namespace DevIterator {
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
     pub def map(f: a -> b & ef, iter: Iterator[a]): Iterator[b] & Impure =
-        matchEff f {
-            case Pure   => mapL(f as a -> b, iter)
-            case Impure => mapE(f as a -> b & Impure, iter)
-        }
+        if (reify f)
+            mapL(f as a -> b, iter)
+        else
+            mapE(f as a -> b & Impure, iter)
     
     ///
 	/// Returns an iterator with the pure function `f` applied *lazily* to every
@@ -531,10 +531,10 @@ namespace DevIterator {
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
     pub def filter(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        matchEff f {
-            case Pure   => filterL(f as a -> Bool, iter)
-            case Impure => filterE(f as a -> Bool & Impure, iter)
-        }
+        if (reify f)
+            filterL(f as a -> Bool, iter)
+        else
+            filterE(f as a -> Bool & Impure, iter)
 
     ///
     /// Returns an iterator with every element of the iterator `iter` that
