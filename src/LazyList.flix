@@ -138,10 +138,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & ef =
-        matchEff f {
-            case Pure   => mapL(f as a -> b & Pure,   l)
-            case Impure => mapE(f as a -> b & Impure, l)
-        } as & ef
+        if (reify f) 
+             mapL(f as a -> b & Pure,   l)
+        else
+             mapE(f as a -> b & Impure, l)
 
     ///
     /// Returns the result of applying `f` to every element in `l`.
@@ -182,11 +182,11 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def filter(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
-        matchEff f {
-            case Pure   => filterL(f as a -> Bool & Pure,   l)
-            case Impure => filterE(f as a -> Bool & Impure, l)
-        } as & ef
-
+        if (reify f)
+            filterL(f as a -> Bool & Pure,   l)
+        else
+            filterE(f as a -> Bool & Impure, l)
+        
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
     ///
@@ -559,10 +559,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def flatMap(f: a -> LazyList[b] & ef, l: LazyList[a]): LazyList[b] & ef =
-        matchEff f {
-            case Pure   => flatMapL(f as a -> LazyList[b] & Pure,   l)
-            case Impure => flatMapE(f as a -> LazyList[b] & Impure, l)
-        } as & ef
+        if (reify f)
+            flatMapL(f as a -> LazyList[b] & Pure,   l)
+        else
+            flatMapE(f as a -> LazyList[b] & Impure, l)
 
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
@@ -644,10 +644,10 @@ namespace LazyList1 {
     ///
     pub def mapWithIndex(f: (a, Int32) -> b & ef, l: LazyList[a]): LazyList[b] & ef =
         let g = match (r) -> f(r.x, r.i);
-        matchEff g {
-            case Pure   => mapWithIndexL(f as (a, Int32) -> b & Pure,   l)
-            case Impure => mapWithIndexE(f as (a, Int32) -> b & Impure, l)
-        } as & ef
+        if (reify g)
+            mapWithIndexL(f as (a, Int32) -> b & Pure,   l)
+        else
+            mapWithIndexE(f as (a, Int32) -> b & Impure, l)
 
     ///
     /// Returns the result of applying `f` to every element in `l` along with the element's index.
@@ -724,10 +724,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
-        matchEff f {
-            case Pure   => takeWhileL(f as a -> Bool & Pure,   l)
-            case Impure => takeWhileE(f as a -> Bool & Impure, l)
-        } as & ef
+        if (reify f)
+            takeWhileL(f as a -> Bool & Pure,   l)
+        else
+            takeWhileE(f as a -> Bool & Impure, l)
     
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
@@ -774,10 +774,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def dropWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] =
-        matchEff f {
-            case Pure   => ???
-            case Impure => ???
-        }
+        if (reify f)
+            ???
+        else
+            ???
 
     ///
     /// Returns a pair of lists `(l1, l2)`.
