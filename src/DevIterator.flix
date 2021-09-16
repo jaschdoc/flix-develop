@@ -185,7 +185,7 @@ namespace DevIterator {
     /// The original iterator `iter` should not be reused.
     ///
     pub def dropWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        if (reify f)
+        if (reify ef)
             dropWhileL(f as a -> Bool & Pure, iter)
         else
             dropWhileE(f as a -> Bool & Impure, iter)
@@ -249,7 +249,7 @@ namespace DevIterator {
     /// the first element that does *not* satisfy predicate `f`).
     ///
     pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        if (reify f)
+        if (reify ef)
             takeWhileL(f as a -> Bool, iter)
         else
             takeWhileE(f as a -> Bool & Impure, iter)
@@ -349,7 +349,7 @@ namespace DevIterator {
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
     pub def zipWith(f: (a, b) -> c & ef, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] & Impure =
-        if (reify f)
+        if (reify ef)
             zipWithL(f as (a, b) -> c & Pure,   iterA, iterB)
         else
             zipWithE(f as (a, b) -> c & Impure, iterA, iterB)
@@ -496,7 +496,7 @@ namespace DevIterator {
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
     pub def map(f: a -> b & ef, iter: Iterator[a]): Iterator[b] & Impure =
-        if (reify f)
+        if (reify ef)
             mapL(f as a -> b, iter)
         else
             mapE(f as a -> b & Impure, iter)
@@ -531,7 +531,7 @@ namespace DevIterator {
     /// - If `f` is impure then it is applied eagerly (consuming the iterator).
     ///
     pub def filter(f: a -> Bool & ef, iter: Iterator[a]): Iterator[a] & Impure =
-        if (reify f)
+        if (reify ef)
             filterL(f as a -> Bool, iter)
         else
             filterE(f as a -> Bool & Impure, iter)
