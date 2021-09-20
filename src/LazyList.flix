@@ -845,13 +845,16 @@ namespace LazyList1 {
     def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] = match l {
         case ENil         => ENil
         case ECons(x, xs) =>
-            let matcher = () -> match f(x) {
+            LList(lazy match f(x) {
                 case None    => filterMapL(f, xs)
                 case Some(v) => LCons(v, lazy filterMapL(f, xs))
-            };
-            LList(lazy matcher())
-        case LCons(x, xs) => ???
-        case LList(xs)    => ???
+            })
+        case LCons(x, xs) =>
+            LList(lazy match f(x) {
+                case None    => filterMapL(f, force xs)
+                case Some(v) => LCons(v, lazy filterMapL(f, force xs))
+            })
+        case LList(xs)    => LList(lazy filterMapL(f, force xs))
     }
 
     ///
