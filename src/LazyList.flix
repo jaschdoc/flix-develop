@@ -842,7 +842,17 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] = ???
+    def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) =>
+            let matcher = () -> match f(x) {
+                case None    => filterMapL(f, xs)
+                case Some(v) => LCons(v, lazy filterMapL(f, xs))
+            };
+            LList(lazy matcher())
+        case LCons(x, xs) => ???
+        case LList(xs)    => ???
+    }
 
     ///
     /// Collects the results of applying the partial function `f` to every element in `l`.
