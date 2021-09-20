@@ -300,5 +300,5 @@ namespace TestLazyList2 {
     @test
 	def findMap18(): Bool = 
 		LazyList1.findMap(i -> if (i % 2 == 0) Some(i / 2) else None, ECons(0, ECons(1, ECons(2, ECons(3, ECons(4, ECons(5, ECons(10, ENil)))))))) == Some(0)
-           
+
 }
