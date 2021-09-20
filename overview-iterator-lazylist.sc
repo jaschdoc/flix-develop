@@ -104,7 +104,7 @@ println(
   List(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
-    FunctionProgress.from("filterMap", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("filterMap", Todo, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("findMap", Todo, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("reduceLeft", Todo, Done, Easy),
     FunctionProgress.from("reduceRight", Todo, Done, Easy),
@@ -137,7 +137,7 @@ println(
     FunctionProgress.from("exists", Done, Done, Easy),
     FunctionProgress.from("foreach", Done, Done, Easy),
     FunctionProgress.from("forall", Done, Done, Easy),
-    FunctionProgress.from("dropWhile", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("dropWhile", Todo, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("takeWhile", Todo, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("zip", Done, Done, Easy),
     FunctionProgress.from("zipWith", Warning, Done, Easy, polymorphic = Yes, comment = "`zipWithE` requires optimization"),
