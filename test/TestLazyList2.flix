@@ -31,4 +31,20 @@ namespace TestLazyList2 {
     def filterMapPure06(): Bool = 
         LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, ECons(1, ENil)) == ENil
 
+    @test
+    def filterMapPure07(): Bool = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, LList(lazy ECons(2, LList(lazy ENil)))) == ECons(1, ENil)
+
+    @test
+    def filterMapPure08(): Bool = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, LCons(2, lazy ENil)) == ECons(1, ENil)
+
+    @test
+    def filterMapPure09(): Bool = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, ECons(2, LList(lazy ENil))) == ECons(1, ENil)
+
+    @test
+    def filterMapPure10(): Bool = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, LList(lazy ECons(2, ENil))) == ECons(1, ENil)
+
 }

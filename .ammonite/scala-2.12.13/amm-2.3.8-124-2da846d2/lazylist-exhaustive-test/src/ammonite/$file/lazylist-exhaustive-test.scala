@@ -80,9 +80,9 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
   testExhaustive(
     name = "filterMapPure",
     "LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, ",
-    List(1),
-    ") == ENil",
-    startFrom = 3,
+    List(2),
+    ") == ECons(1, ENil)",
+    startFrom = 7,
     purity = Pure,
   )
   + "\n\n}"
