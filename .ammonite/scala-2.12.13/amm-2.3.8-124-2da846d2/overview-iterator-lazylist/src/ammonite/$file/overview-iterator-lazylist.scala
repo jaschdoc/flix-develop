@@ -151,7 +151,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
     FunctionProgress.from("minimumBy", Todo, Done, Easy),
     FunctionProgress.from("maximum", Todo, Done, Easy),
     FunctionProgress.from("maximumBy", Todo, Done, Easy),
-    FunctionProgress.from("mapWithIndex", Todo, Warning, Easy, polymorphic = Yes, comment = "Compiler bug with curried function and effect ef. See https://github.com/flix/flix/pull/2206"),
+    FunctionProgress.from("mapWithIndex", Todo, Done, Easy, polymorphic = Yes, comment = "Compiler bug with curried function and effect ef. See https://github.com/flix/flix/pull/2206"),
     FunctionProgress.from("flatMap", Todo, Done, Easy, polymorphic = Yes),
     FunctionProgress.from("intercalate", Todo, Done, Easy),
     FunctionProgress.from("flatten", Todo, Done, Easy),
