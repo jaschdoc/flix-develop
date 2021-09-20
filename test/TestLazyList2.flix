@@ -78,5 +78,82 @@ namespace TestLazyList2 {
     @test
 	def filterMapPure18(): Bool = 
 		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None, ECons(0, ECons(1, ECons(2, ECons(3, ECons(4, ECons(5, ECons(10, ENil)))))))) == ECons(0, ECons(1, ECons(2, ECons(5, ENil))))
+    
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filterMap (impure)                                                      //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterMapImpure01(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ENil) == ENil
+
+    @test
+    def filterMapImpure02(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy ENil)) == ENil
+
+    @test
+    def filterMapImpure03(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LCons(1, lazy ENil)) == ENil
+
+    @test
+    def filterMapImpure04(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(1, LList(lazy ENil))) == ENil
+
+    @test
+    def filterMapImpure05(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LCons(1, lazy LList(lazy ENil))) == ENil
+
+    @test
+    def filterMapImpure06(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(1, ENil)) == ENil
+
+    @test
+    def filterMapImpure07(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy ECons(2, LList(lazy ENil)))) == ECons(1, ENil)
+
+    @test
+    def filterMapImpure08(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LCons(2, lazy ENil)) == ECons(1, ENil)
+
+    @test
+    def filterMapImpure09(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(2, LList(lazy ENil))) == ECons(1, ENil)
+
+    @test
+    def filterMapImpure10(): Bool & Impure = 
+        LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy ECons(2, ENil))) == ECons(1, ENil)
+
+	@test
+	def filterMapImpure11(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy ECons(1, ECons(3, ENil)))) == ENil
+
+	@test
+	def filterMapImpure12(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy LCons(1, lazy LCons(3, lazy LList(lazy ENil))))) == ENil
+
+	@test
+	def filterMapImpure13(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, LList(lazy ECons(1, LCons(3, lazy LList(lazy ENil))))) == ENil
+
+	@test
+	def filterMapImpure14(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(1, ECons(3, LList(lazy ENil)))) == ENil
+
+	@test
+	def filterMapImpure15(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(1, ECons(4, ENil))) == ECons(2, ENil)
+
+	@test
+	def filterMapImpure16(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(6, ECons(-1, ENil))) == ECons(3, ENil)
+
+	@test
+	def filterMapImpure17(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(8, ECons(6, ENil))) == ECons(4, ECons(3, ENil))
+    
+    @test
+	def filterMapImpure18(): Bool & Impure = 
+		LazyList1.filterMap(i -> if (i % 2 == 0) Some(i/2) else None as & Impure, ECons(0, ECons(1, ECons(2, ECons(3, ECons(4, ECons(5, ECons(10, ENil)))))))) == ECons(0, ECons(1, ECons(2, ECons(5, ENil))))
 
 }
