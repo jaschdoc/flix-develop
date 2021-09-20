@@ -1,4 +1,5 @@
 namespace AllGeneratedTests2 {
+	/*
 
 @test
 def intersperse01(): Bool = 
@@ -2598,5 +2599,5 @@ def memberOf202(): Bool =
 @test
 def memberOf203(): Bool = 
 	LazyList1.memberOf(0, LCons(1, lazy LList(lazy ECons(2, LList(lazy ECons(3, LList(lazy ECons(0, LList(lazy ENil)))))))))
-
+*/
 }

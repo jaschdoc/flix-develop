@@ -1,4 +1,4 @@
-namespace AllGeneratedTests {
+namespace AllGeneratedTests {/*
 
 @test
 def memberOf204(): Bool = 
@@ -1788,5 +1788,5 @@ def memberOf649(): Bool =
 def memberOf650(): Bool = 
 	LazyList1.memberOf(0, LCons(1, lazy LList(lazy ECons(2, LCons(3, lazy LList(lazy ECons(0, LList(lazy ENil))))))))
 
-
+*/
 }
