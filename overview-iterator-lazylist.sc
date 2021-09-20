@@ -122,7 +122,7 @@ println(
     FunctionProgress.from("isEmpty", Done, Done, Easy),
     FunctionProgress.from("append", Todo, Done, Easy),
     FunctionProgress.from("filterMap", Todo, Done, Easy, polymorphic = Yes),
-    FunctionProgress.from("findMap", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("findMap", Todo, Todo, Easy),
     FunctionProgress.from("reduceLeft", Todo, Done, Easy),
     FunctionProgress.from("reduceRight", Todo, Done, Easy),
     FunctionProgress.from("intersperse", Todo, Done, Easy),
