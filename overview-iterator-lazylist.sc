@@ -135,7 +135,7 @@ println(
     FunctionProgress.from("intercalate", Todo, Done, Easy),
     FunctionProgress.from("flatten", Todo, Done, Easy),
     FunctionProgress.from("partition", Todo, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("span", Todo, Warning, Easy, polymorphic = Yes, comment = "Requires optimization"),
+    FunctionProgress.from("span", Todo, Todo, Easy, polymorphic = Yes),
     FunctionProgress.from("count", Done, Done, Easy),
     FunctionProgress.from("drop", Done, Done, Easy),
     FunctionProgress.from("take", Done, Done, Easy),
