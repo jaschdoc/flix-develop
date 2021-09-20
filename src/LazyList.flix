@@ -822,4 +822,33 @@ namespace LazyList1 {
     pub def span(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef = ???
         // (takeWhile(f, l), dropWhile(f, l))
 
+
+    ///
+    /// Collects the results of applying the partial function `f` to every element in `l`.
+    ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily (i.e. the tail is not forced).
+    /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
+    ///
+    pub def filterMap(f: a -> Option[b] & ef, l: LazyList[a]): LazyList[b] & ef =
+        if (reify ef)
+            filterMapL(f as a -> Option[b] & Pure,   l)
+        else
+            filterMapE(f as a -> Option[b] & Impure, l) as & ef
+
+    ///
+    /// Collects the results of applying the partial function `f` to every element in `l`.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] = ???
+
+    ///
+    /// Collects the results of applying the partial function `f` to every element in `l`.
+    ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
+    ///
+    def filterMapE(f: a -> Option[b] & Impure, l: LazyList[a]): LazyList[b] & Impure = ???
+
 }
