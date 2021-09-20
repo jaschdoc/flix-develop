@@ -202,4 +202,26 @@ namespace TestLazyList2 {
             LazyList1.filterMap(i -> if (i % 2 == 0) Some(i / 2) else None as & Impure) |>
             LazyList1.filterMap(i -> if (i > 1)      Some(i * 3 as & Impure) else None) == ECons(6, ECons(9, ENil))
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filterMap filterMap fusion                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterMapFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.filterMap(x -> { l := "a" :: deref l; Some(x) }) |>
+        LazyList1.filterMap(x -> { l := "b" :: deref l; Some(x) });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def filterMapFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List.toLazy |>
+        LazyList1.filterMap(x -> { l := "a" :: deref l; Some(x) } as & Pure) |>
+        LazyList1.filterMap(x -> { l := "b" :: deref l; Some(x) } as & Pure) |>
+        LazyList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
 }
