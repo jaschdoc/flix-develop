@@ -301,4 +301,18 @@ namespace TestLazyList2 {
 	def findMap18(): Bool = 
 		LazyList1.findMap(i -> if (i % 2 == 0) Some(i / 2) else None, ECons(0, ECons(1, ECons(2, ECons(3, ECons(4, ECons(5, ECons(10, ENil)))))))) == Some(0)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // span                                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def span01(): Bool = 
+        LazyList1.span(i -> i > 3, ENil) == (ENil, ENil)
+
+    @test
+    def span02(): Bool = 
+        LazyList1.span(i -> i > 3, LList(lazy ENil)) == (ENil, ECons(1, ENil))
+
+
 }
