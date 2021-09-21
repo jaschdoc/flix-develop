@@ -156,7 +156,7 @@ implicit class Stringifier(fps: List[FunctionProgress]) {
     FunctionProgress.from("intercalate", Todo, Done, Easy),
     FunctionProgress.from("flatten", Todo, Done, Easy),
     FunctionProgress.from("partition", Todo, Todo, Easy, polymorphic = Yes),
-    FunctionProgress.from("span", Todo, Todo, Easy, polymorphic = Yes),
+    FunctionProgress.from("span", Todo, Done, Easy),
     FunctionProgress.from("count", Done, Done, Easy),
     FunctionProgress.from("drop", Done, Done, Easy),
     FunctionProgress.from("take", Done, Done, Easy),
