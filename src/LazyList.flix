@@ -937,4 +937,6 @@ namespace LazyList1 {
         case LList(xs)    => spanEAcc(f, force xs, k)
     }
 
+    pub def partition(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef = ???
+    
 }
