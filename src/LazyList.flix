@@ -14,8 +14,29 @@
  * limitations under the License.
  */
 
-// TODO: Add ToString implementation
+
+instance ToString[LazyList[a]] with ToString[a] {
+    pub def toString(l: LazyList[a]): String = LazyList1.toString(l)
+}
+
 namespace LazyList1 {
+
+    ///
+    /// Converts the lazylist `l` into a String.
+    ///
+    /// Forces the entire list `l`. 
+    ///
+    pub def toString(l: LazyList[a]): String with ToString[a] =
+        toStringHelper(l) as & Pure
+    
+    ///
+    /// Helper function for `toString`.
+    ///
+    def toStringHelper(l: LazyList[a]): String & Impure with ToString[a] =
+        let sb = StringBuilder.new();
+        map(x -> StringBuilder.appendString!(sb, "${x} :: "), l);
+        StringBuilder.appendString!(sb, "ENil");
+        StringBuilder.toString(sb)
 
     ///
     /// Returns an empty LazyList.
