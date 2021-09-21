@@ -22,7 +22,7 @@ instance ToString[LazyList[a]] with ToString[a] {
 namespace LazyList1 {
 
     ///
-    /// Converts the lazylist `l` into a String.
+    /// Converts the list `l` into a String.
     ///
     /// Forces the entire list `l`. 
     ///
