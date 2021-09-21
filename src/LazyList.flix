@@ -925,6 +925,19 @@ namespace LazyList1 {
     ///
     /// Helper function for `spanE`-.
     ///
-    def spanEAcc(f: a -> Bool & Impure, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & Impure = ???
+    def spanEAcc(f: a -> Bool & Impure, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & Impure = match l {
+        case ENil         => k(ENil, ENil)
+        case ECons(x, xs) =>
+            if (f(x))
+                spanEAcc(f, xs, (ks, ls) -> (ECons(x, ks), ls))
+            else
+                k(ENil, xs)
+        case LCons(x, xs) =>
+            if (f(x))
+                spanEAcc(f, force xs, (ks, ls) -> (ECons(x, ks), ls))
+            else
+                k(ENil, force xs)
+        case LList(xs)    => spanEAcc(f, force xs, k)
+    }
 
 }
