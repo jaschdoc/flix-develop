@@ -466,4 +466,33 @@ namespace TestLazyList2 {
     @test
     def partition16(): Bool = 
         LazyList1.partition(i -> i > 3, ECons(1, ECons(5, ENil))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def partition17(): Bool = 
+        LazyList1.partition(i -> i > 3, ECons(5, ECons(1, ENil))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def partition18(): Bool = 
+        LazyList1.partition(i -> i > 3, LCons(5, lazy ECons(1, ENil))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def partition19(): Bool = 
+	    LazyList1.partition(i -> i > 3, LList(lazy LCons(5, lazy ECons(1, ENil)))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def partition20(): Bool = 
+        LazyList1.partition(i -> i > 3, ECons(5, LList(lazy ECons(1, ENil)))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def partition21(): Bool = 
+        LazyList1.partition(i -> i > 3, ECons(5, ECons(8, ENil))) == (ECons(5, ECons(8, ENil)), ENil)
+
+    @test
+    def partition22(): Bool = 
+        LazyList1.partition(i -> i > 3, ECons(5, LCons(8, lazy ENil))) == (ECons(5, ECons(8, ENil)), ENil)
+
+    @test
+    def partition23(): Bool =
+        LazyList1.partition(i -> i > 3, (ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))))) == (ECons(4, ECons(6, ECons(11, ECons(16, ECons(7, ECons(7, ENil)))))), ECons(-3, ECons(-5, ECons(1, ECons(2, ECons(1, ENil))))))
+
 }
