@@ -926,12 +926,12 @@ namespace LazyList1 {
         case ENil         => k(ENil, ENil)
         case ECons(x, xs) =>
             if (f(x))
-                spanEAcc(f, xs, (ks, ls) -> (ECons(x, ks), ls))
+                spanEAcc(f, xs, (ks, ls) -> k(ECons(x, ks), ls))
             else
                 k(ENil, l)
         case LCons(x, xs) =>
             if (f(x))
-                spanEAcc(f, force xs, (ks, ls) -> (ECons(x, ks), ls))
+                spanEAcc(f, force xs, (ks, ls) -> k(ECons(x, ks), ls))
             else
                 k(ENil, l)
         case LList(xs)    => spanEAcc(f, force xs, k)
