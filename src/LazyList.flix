@@ -920,7 +920,7 @@ namespace LazyList1 {
         spanEAcc(f, l, (ks, ls) -> (ks, ls))
 
     ///
-    /// Helper function for `spanE`-.
+    /// Helper function for `spanE`.
     ///
     def spanEAcc(f: a -> Bool & ef, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & ef = match l {
         case ENil         => k(ENil, ENil)
