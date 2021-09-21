@@ -370,4 +370,21 @@ namespace TestLazyList2 {
     def span16(): Bool = 
         LazyList1.span(i -> i > 3, ECons(1, ECons(5, ENil))) == (ENil, ECons(1, ECons(5, ENil)))
 
+    @test
+    def span17(): Bool = 
+        LazyList1.span(i -> i > 3, ECons(5, ECons(1, ENil))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def span18(): Bool = 
+        LazyList1.span(i -> i > 3, LCons(5, lazy ECons(1, ENil))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def span19(): Bool = 
+	    LazyList1.span(i -> i > 3, LList(lazy LCons(5, lazy ECons(1, ENil)))) == (ECons(5, ENil), ECons(1, ENil))
+
+    @test
+    def span20(): Bool = 
+        LazyList1.span(i -> i > 3, ECons(5, LList(lazy ECons(1, ENil)))) == (ECons(5, ENil), ECons(1, ENil))
+
+
 }
