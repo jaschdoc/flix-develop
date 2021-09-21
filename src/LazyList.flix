@@ -916,11 +916,15 @@ namespace LazyList1 {
     ///
     /// `l1` is the longest prefix of `l` that satisfies the predicate `f`.
     /// `l2` is the remainder of `l`.
+    ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
     def spanE(f: a -> Bool & Impure, l: LazyList[a]): (LazyList[a], LazyList[a]) & Impure =
         spanEAcc(f, l, (ks, ls) -> (ks, ls))
 
+    ///
+    /// Helper function for `spanE`-.
+    ///
     def spanEAcc(f: a -> Bool & Impure, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & Impure = ???
-    
+
 }
