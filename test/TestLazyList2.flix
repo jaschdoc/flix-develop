@@ -312,7 +312,7 @@ namespace TestLazyList2 {
 
     @test
     def span02(): Bool = 
-        LazyList1.span(i -> i > 3, LList(lazy ENil)) == (ENil, ECons(1, ENil))
+        LazyList1.span(i -> i > 3, LList(lazy ENil)) == (ENil, ENil)
 
 
 }
