@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// TODO: Add ToString implementation
 namespace LazyList1 {
 
     ///
@@ -937,9 +938,23 @@ namespace LazyList1 {
         case LList(xs)    => spanEAcc(f, force xs, k)
     }
 
+    ///
+    /// Returns a pair of lists `(l1, l2)`.
+    ///
+    /// `l1` contains all elements of `l` that satisfy the predicate `f`.
+    /// `l2` contains all elements of `l` that DO NOT satisfy the predicate `f`.
+    ///
     pub def partition(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef =
         partitionAcc(f, l, (ks, ls) -> (ks, ls))
 
-    def partitionAcc(f: a -> Bool & ef, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & ef = ???
+    ///
+    /// Helper function for `partition`.
+    ///
+    def partitionAcc(f: a -> Bool & ef, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & ef = match l {
+        case ENil         => k(ENil, ENil)
+        case ECons(x, xs) => if (f(x)) partitionAcc(f,       xs, (ks, ls) -> k(ECons(x, ks), ls)) else partitionAcc(f,       xs, (ks, ls) -> k(ks, ECons(x, ls)))
+        case LCons(x, xs) => if (f(x)) partitionAcc(f, force xs, (ks, ls) -> k(ECons(x, ks), ls)) else partitionAcc(f, force xs, (ks, ls) -> k(ks, ECons(x, ls)))
+        case LList(xs)    => partitionAcc(f, force xs, k)
+    }
     
 }
