@@ -59,9 +59,9 @@ println(
   testExhaustive(
     name = "span",
     "LazyList1.span(i -> i > 3, ",
-    List(1),
-    ") == (ENil, ECons(1, ENil))",
-    startFrom = 3,
+    List(4),
+    ") == (ECons(4, ENil), ENil)",
+    startFrom = 8,
     purity = Pure,
   )
   + "\n\n}"
