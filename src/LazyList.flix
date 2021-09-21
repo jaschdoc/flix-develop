@@ -896,10 +896,7 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def span(f: a -> Bool & ef, l: LazyList[a]): (LazyList[a], LazyList[a]) & ef =
-        if (reify ef)
-            spanL(f as a -> Bool & Pure,   l)
-        else
-            spanE(f as a -> Bool & Impure, l) as & ef
+        spanEAcc(f, l, (ks, ls) -> (ks, ls))
 
     ///
     /// Returns a pair of lists `(l1, l2)`.
@@ -909,7 +906,7 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def spanL(f: a -> Bool, l: LazyList[a]): (LazyList[a], LazyList[a]) = ???
+    def _spanL(f: a -> Bool, l: LazyList[a]): (LazyList[a], LazyList[a]) = ???
 
     ///
     /// Returns a pair of lists `(l1, l2)`.
@@ -919,13 +916,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def spanE(f: a -> Bool & Impure, l: LazyList[a]): (LazyList[a], LazyList[a]) & Impure =
+    def _spanE(f: a -> Bool & Impure, l: LazyList[a]): (LazyList[a], LazyList[a]) & Impure =
         spanEAcc(f, l, (ks, ls) -> (ks, ls))
 
     ///
     /// Helper function for `spanE`-.
     ///
-    def spanEAcc(f: a -> Bool & Impure, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & Impure = match l {
+    def spanEAcc(f: a -> Bool & ef, l: LazyList[a], k: (LazyList[a], LazyList[a]) -> (LazyList[a], LazyList[a])): (LazyList[a], LazyList[a]) & ef = match l {
         case ENil         => k(ENil, ENil)
         case ECons(x, xs) =>
             if (f(x))
