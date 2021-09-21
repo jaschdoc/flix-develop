@@ -57,11 +57,11 @@ def testExhaustive[A](name: String, prefix: String, l: List[A], suffix: String, 
 println(
   "namespace GeneratedTests {\n\n" +
   testExhaustive(
-    name = "span",
-    "LazyList1.span(i -> i > 3, ",
-    List(5,8),
-    ") == (ECons(5, ECons(8, ENil)), ENil)",
-    startFrom = 21,
+    name = "toString",
+    "LazyList1.toString(",
+    List(1,2,3),
+    ") == \"1 :: 2 :: 3 :: ENil\"",
+    startFrom = 1,
     purity = Pure,
   )
   + "\n\n}"

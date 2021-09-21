@@ -495,4 +495,45 @@ namespace TestLazyList2 {
     def partition23(): Bool =
         LazyList1.partition(i -> i > 3, (ECons(4, ECons(6, ECons(-3, ECons(11, ECons(-5, ECons(1, ECons(2, ECons(16, ECons(7, ECons(1, ECons(7, ENil))))))))))))) == (ECons(4, ECons(6, ECons(11, ECons(16, ECons(7, ECons(7, ENil)))))), ECons(-3, ECons(-5, ECons(1, ECons(2, ECons(1, ENil))))))
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toString                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toString01(): Bool = 
+        LazyList1.toString(LCons(1, lazy LCons(2, lazy LList(lazy LCons(3, lazy ENil))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString02(): Bool = 
+        LazyList1.toString(LCons(1, lazy ECons(2, LCons(3, lazy LList(lazy ENil))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString03(): Bool = 
+        LazyList1.toString(LCons(1, lazy ECons(2, LList(lazy LCons(3, lazy LList(lazy ENil)))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString04(): Bool = 
+        LazyList1.toString(LList(lazy LCons(1, lazy LList(lazy ECons(2, ECons(3, LList(lazy ENil))))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString05(): Bool = 
+        LazyList1.toString(LList(lazy LCons(1, lazy LList(lazy ECons(2, LList(lazy ECons(3, ENil))))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString06(): Bool = 
+        LazyList1.toString(LCons(1, lazy ECons(2, ECons(3, LList(lazy ENil))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString07(): Bool = 
+        LazyList1.toString(ECons(1, ECons(2, LList(lazy LCons(3, lazy ENil))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString08(): Bool = 
+        LazyList1.toString(ECons(1, LCons(2, lazy LCons(3, lazy LList(lazy ENil))))) == "1 :: 2 :: 3 :: ENil"
+
+    @test
+    def toString09(): Bool = 
+        LazyList1.toString(ECons(1, ECons(2, ECons(3, ENil)))) == "1 :: 2 :: 3 :: ENil"
+
 }
