@@ -17,7 +17,7 @@
 namespace TestStream {
 
     /////////////////////////////////////////////////////////////////////////////
-    // toStream                                                                //
+    // toStream & toList                                                       //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
@@ -27,14 +27,15 @@ namespace TestStream {
     @test
     def toStream02(): Bool =
         List1.toStream(1 :: Nil) |> Stream1.toList == 1 :: Nil
-
-
-    /////////////////////////////////////////////////////////////////////////////
-    // toList                                                                  //
-    /////////////////////////////////////////////////////////////////////////////
+    
+    @test
+    def toStream03(): Bool =
+        List1.toStream(1 :: 2 :: 3 :: Nil) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
 
     @test
-    def toList01(): Bool =
-    	Stream1.toList(Stream(_ -> Done, default)): List[Unit] == Nil
+    def toStream04(): Bool =
+        List.range(-1000, 1000) |>
+            List1.toStream |>
+            Stream1.toList == List.range(-1000, 1000)
 
 }
