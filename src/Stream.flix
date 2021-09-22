@@ -60,9 +60,7 @@ namespace Stream1 {
 
 
     pub def range(b: Int32, e: Int32): Stream[Int32, Int32] =
-        if (b >= e) 
-            empty()
-        else
-            ???
+        let next = x -> if (x >= e) Done else Yield(x, x + 1);
+        Stream(next, b)
 
 }
