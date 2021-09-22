@@ -16,6 +16,9 @@
 
 namespace List1 {
 
+    ///
+    /// Converts the list `l` to a `Stream`.
+    ///
     pub def toStream(l: List[a]): Stream[a, List[a]] =
         let next = s -> match s {
             case Nil     => Done
