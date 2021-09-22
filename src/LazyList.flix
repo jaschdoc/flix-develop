@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-
-instance ToString[LazyList[a]] with ToString[a] {
-    pub def toString(l: LazyList[a]): String = LazyList1.toString(l)
-}
-
 namespace LazyList1 {
 
     ///
