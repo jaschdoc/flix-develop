@@ -24,6 +24,10 @@ namespace TestStream {
     def toStream01(): Bool =
         List1.toStream(Nil): Stream[Unit, List[Unit]] |> Stream1.toList == Nil
 
+    @test
+    def toStream02(): Bool =
+        List1.toStream(1 :: Nil) |> Stream1.toList == 1 :: Nil
+
 
     /////////////////////////////////////////////////////////////////////////////
     // toList                                                                  //

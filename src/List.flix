@@ -16,10 +16,11 @@
 
 namespace List1 {
 
-    pub def toStream(xs: List[a]): Stream[a, List[a]] =
-        match xs {
-            case Nil => Stream(s -> Done, Nil)
-            case x :: xs1 => ???
-        }
+    pub def toStream(l: List[a]): Stream[a, List[a]] =
+        let next = s -> match s {
+            case Nil     => Done
+            case x :: xs => Yield(x, xs)
+        };
+        Stream(next, l)
 
 }
