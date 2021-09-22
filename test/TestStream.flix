@@ -64,4 +64,37 @@ namespace TestStream {
             List1.toStream |>
             Stream1.toList == List.range(-1000, 1000)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // range                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def range01(): Bool =
+        Stream1.range(0, 0) |> Stream1.isEmpty
+
+    @test
+    def range02(): Bool =
+        Stream1.range(100, 100) |> Stream1.isEmpty
+
+    @test
+    def range03(): Bool =
+        Stream1.range(1, 0) |> Stream1.isEmpty
+
+    @test
+    def range04(): Bool =
+        not (Stream1.range(0, 100) |> Stream1.isEmpty)
+
+    @test
+    def range05(): Bool =
+        Stream1.range(0, 100) |> Stream1.toList == List.range(0, 100)
+
+    @test
+    def range06(): Bool =
+        not (Stream1.range(-100, 100) |> Stream1.isEmpty)
+
+    @test
+    def range07(): Bool =
+        Stream1.range(-100, 100) |> Stream1.toList == List.range(-100, 100)
+
 }

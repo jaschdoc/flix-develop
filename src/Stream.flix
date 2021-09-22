@@ -58,4 +58,11 @@ namespace Stream1 {
         case Yield(x, s1) => toListAcc(next, s1, ks -> k(x :: ks))
     }
 
+
+    pub def range(b: Int32, e: Int32): Stream[Int32, Int32] =
+        if (b >= e) 
+            empty()
+        else
+            ???
+
 }
