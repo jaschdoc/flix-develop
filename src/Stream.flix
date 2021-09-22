@@ -41,5 +41,15 @@ namespace Stream1 {
             case Done => true
             case _    => false
         }
+    
+    pub def toList(s: Stream[a, s]): List[a] =
+        let Stream(next0, s0) = s;
+        toListAcc(next0, s0, Nil) |> List.reverse
+    
+    def toListAcc(next0: s -> Step[a, s], s0: s, acc: List[a]): List[a] = match next0(s0) {
+        case Done         => acc
+        case Skip(s1)     => ???
+        case Yield(x, s1) => ???
+    }
 
 }
