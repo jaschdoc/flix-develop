@@ -124,13 +124,21 @@ namespace Stream1 {
     ///
     /// Applies `f` lazily.
     ///
-    def mapL(f: a -> b, s: Stream[a, s]): Stream[b, s] = ???
+    def mapL(f: a -> b, s: Stream[a, s]): Stream[b, s] =
+        let Stream(next0, s0) = s;
+        let next1 = s1 -> match next0(s1) {
+            case Done         => Done
+            case Skip(s2)     => Skip(s2)
+            case Yield(x, s2) => Yield(f(x), s2)
+        };
+        Stream(next1, s0)
 
     ///
     /// Returns the result of applying `f` to every element in `s`.
     ///
     /// Applies `f` eagerly.
     ///
-    def mapE(f: a -> b & Impure, s: Stream[a, s]): Stream[b, s] & Impure = ???
+    def mapE(f: a -> b & Impure, s: Stream[a, s]): Stream[b, s] & Impure =
+        (toList(s) |> List.map(f) |> List.toStream) as Stream[b, s]
 
 }
