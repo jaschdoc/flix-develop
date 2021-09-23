@@ -105,4 +105,32 @@ namespace Stream1 {
     def filterE(f: a -> Bool & Impure, s: Stream[a, s]): Stream[a, s] & Impure =
         (toList(s) |> List1.filter(f) |> List.toStream) as Stream[a, s]
 
+    ///
+    /// Returns the result of applying `f` to every element in `s`.
+    ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily.
+    /// - If `f` is impure then it is applied eagerly.
+    ///
+    pub def map(f: a -> b & ef, s: Stream[a, s]): Stream[b, s] & ef =
+        if (reify ef) 
+             mapL(f as a -> b & Pure,   s)
+        else
+             mapE(f as a -> b & Impure, s) as & ef
+
+    ///
+    /// Returns the result of applying `f` to every element in `s`.
+    ///
+    /// Applies `f` lazily.
+    ///
+    def mapL(f: a -> b, s: Stream[a, s]): Stream[b, s] = ???
+
+    ///
+    /// Returns the result of applying `f` to every element in `s`.
+    ///
+    /// Applies `f` eagerly.
+    ///
+    def mapE(f: a -> b & Impure, s: Stream[a, s]): Stream[b, s] & Impure = ???
+
 }
