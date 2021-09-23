@@ -104,6 +104,6 @@ namespace Stream1 {
     /// Applies `f` eagerly.
     ///
     def filterE(f: a -> Bool & Impure, s: Stream[a, s]): Stream[a, s] & Impure =
-        toList(s) |> List1.filter(f) |> List.toStream
+        (toList(s) |> List1.filter(f) |> List.toStream) as Stream[a, s]
 
 }
