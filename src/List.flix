@@ -26,4 +26,16 @@ namespace List1 {
         };
         Stream(next, l)
 
+    ///
+    /// Mocks `List.filter` until merged into nightly compiler.
+    ///
+    pub def filter(f: a -> Bool & ef, xs: List[a]): List[a] & ef = filterAcc(f, xs, Nil) |> List.reverse
+
+    pub def filterAcc(f: a -> Bool & ef, l: List[a], rs: List[a]): List[a] & ef = match l {
+        case Nil => rs
+        case x :: xs =>
+            if (f(x)) filterAcc(f, xs, x :: rs) else filterAcc(f, xs, rs)
+    }
+
+
 }

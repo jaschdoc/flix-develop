@@ -84,7 +84,9 @@ namespace Stream1 {
             filterE(f as a -> Bool & Impure, s) as & ef
 
     ///
+    /// Returns a stream of every element in `s` that satisfies the predicate `f`.
     ///
+    /// Applies `f` lazily.
     ///
     def filterL(f: a -> Bool, s: Stream[a, s]): Stream[a, s] =
         let Stream(next0, s0) = s;
@@ -95,9 +97,13 @@ namespace Stream1 {
         };
         Stream(next1, s0)
 
+
     ///
+    /// Returns a stream of every element in `s` that satisfies the predicate `f`.
     ///
+    /// Applies `f` eagerly.
     ///
-    def filterE(f: a -> Bool & Impure, s: Stream[a, s]): Stream[a, s] & Impure = ???
+    def filterE(f: a -> Bool & Impure, s: Stream[a, s]): Stream[a, s] & Impure =
+        toList(s) |> List1.filter(f) |> List.toStream
 
 }
