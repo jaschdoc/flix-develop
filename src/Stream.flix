@@ -69,4 +69,18 @@ namespace Stream1 {
         let next = x -> if (x >= e) Done else Yield(x, x + 1);
         Stream(next, b)
 
+    ///
+    /// Returns a stream of every element in `s` that satisfies the predicate `f`.
+    ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily.
+    /// - If `f` is impure then it is applied eagerly.
+    ///
+    pub def filter(f: a -> Bool & ef, s: Stream[a, s]): Stream[a, s] & ef =
+        if (reify ef)
+            ???
+        else
+            ???
+
 }
