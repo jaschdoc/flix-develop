@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+/*
 pub enum Step[a, s] {
     case Done,
     case Skip(s),
@@ -23,6 +25,8 @@ pub enum Step[a, s] {
 pub enum Stream[a, s] {
     case Stream(s -> Step[a, s], s)
 }
+
+*/
 
 namespace Stream1 {
 
