@@ -163,4 +163,18 @@ namespace Stream1 {
             mapEAcc(f, next, s1, ks -> k(x1 :: ks))
     }
 
+    ///
+    /// Applies `f` to a start value `s` and all elements in `st` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, st: Stream[a, st]): b & ef = ???
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
+    ///
+    pub def foldRight(f: (a, b) -> b & ef, s: b, st: Stream[a, st]): b & ef = ???
+
 }
