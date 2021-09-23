@@ -168,7 +168,13 @@ namespace Stream1 {
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
-    pub def foldLeft(f: (b, a) -> b & ef, s: b, st: Stream[a, st]): b & ef = ???
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, st: Stream[a, st]): b & ef =
+        let Stream(next, st0) = st;
+        match next(st0) {
+            case Done          => s
+            case Skip(st1)     => foldLeft(f, s, st1) as b
+            case Yield(x, st1) => foldLeft(f, f(s, x), st1) as b
+        }
 
     ///
     /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
