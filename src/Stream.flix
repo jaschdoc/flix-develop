@@ -139,6 +139,15 @@ namespace Stream1 {
     /// Applies `f` eagerly.
     ///
     def mapE(f: a -> b & Impure, s: Stream[a, s]): Stream[b, s] & Impure =
-        (toList(s) |> List.map(f) |> List.toStream) as Stream[b, s]
+        let Stream(next0, s0) = s;
+        (mapEHelper(f, next0, s0, ks -> ks) |> List.toStream) as Stream[b, s]
+
+    def mapEHelper(f: a -> b & Impure, next: s -> Step[a, s], s0: s, k: List[b] -> List[b]): List[b] & Impure = match next(s0) {
+        case Done         => k(Nil)
+        case Skip(s1)     => mapEHelper(f, next, s1, k)
+        case Yield(x, s1) =>
+            let x1 = f(x);
+            mapEHelper(f, next, s1, ks -> k(x1 :: ks))
+    }
 
 }
