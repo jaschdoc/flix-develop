@@ -97,7 +97,6 @@ namespace Stream1 {
         };
         Stream(next1, s0)
 
-
     ///
     /// Returns a stream of every element in `s` that satisfies the predicate `f`.
     ///
