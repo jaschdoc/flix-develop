@@ -86,7 +86,14 @@ namespace Stream1 {
     ///
     ///
     ///
-    def filterL(f: a -> Bool, s: Stream[a, s]): Stream[a, s] = ???
+    def filterL(f: a -> Bool, s: Stream[a, s]): Stream[a, s] =
+        let Stream(next0, s0) = s;
+        let next1 = s1 -> match next0(s1) {
+            case Done         => Done
+            case Skip(s2)     => Skip(s2)
+            case Yield(x, s2) => if (f(x)) Yield(x, s2) else Skip(s2)
+        };
+        Stream(next1, s0)
 
     ///
     ///
