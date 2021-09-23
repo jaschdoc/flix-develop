@@ -79,8 +79,18 @@ namespace Stream1 {
     ///
     pub def filter(f: a -> Bool & ef, s: Stream[a, s]): Stream[a, s] & ef =
         if (reify ef)
-            ???
+            filterL(f as a -> Bool & Pure,   s)
         else
-            ???
+            filterE(f as a -> Bool & Impure, s) as & ef
+
+    ///
+    ///
+    ///
+    def filterL(f: a -> Bool, s: Stream[a, s]): Stream[a, s] = ???
+
+    ///
+    ///
+    ///
+    def filterE(f: a -> Bool & Impure, s: Stream[a, s]): Stream[a, s] & Impure = ???
 
 }
