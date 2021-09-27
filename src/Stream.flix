@@ -181,6 +181,15 @@ namespace Stream1 {
     ///
     /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
     ///
-    pub def foldRight(f: (a, b) -> b & ef, s: b, st: Stream[a, st]): b & ef = ???
+    pub def foldRight(f: (a, b) -> b & ef, s: b, st: Stream[a, st]): b & ef =
+        foldRightAcc(f, s, st, ks -> ks as & ef)
+
+    def foldRightAcc(f: (a, b) -> b & ef, s: b, st: Stream[a, st], k: b -> b & ef): b & ef =
+        let Stream(next, st0) = st;
+        match next(st0) {
+            case Done          => k(s)
+            case Skip(st1)     => foldRightAcc(f, s, Stream(next, st1), k)
+            case Yield(x, st1) => foldRightAcc(f, s, Stream(next, st1), ks -> k(f(x, ks)))
+        }
 
 }
