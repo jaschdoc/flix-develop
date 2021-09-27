@@ -195,4 +195,8 @@ namespace Stream1 {
             case Yield(x, st1) => foldRightAcc(f, s, Stream(next, st1), ks -> k(f(x, ks)))
         }
 
+    ///
+    /// Returns the first `n` elements of `s`.
+    ///
+    pub def take(n: Int32, s: Stream[a, s]): Stream[a, s] = ???
 }
