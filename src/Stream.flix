@@ -184,6 +184,9 @@ namespace Stream1 {
     pub def foldRight(f: (a, b) -> b & ef, s: b, st: Stream[a, st]): b & ef =
         foldRightAcc(f, s, st, ks -> ks as & ef)
 
+    ///
+    /// Helper function for `foldRight`.
+    ///
     def foldRightAcc(f: (a, b) -> b & ef, s: b, st: Stream[a, st], k: b -> b & ef): b & ef =
         let Stream(next, st0) = st;
         match next(st0) {
