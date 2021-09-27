@@ -198,5 +198,13 @@ namespace Stream1 {
     ///
     /// Returns the first `n` elements of `s`.
     ///
-    pub def take(n: Int32, s: Stream[a, s]): Stream[a, s] = ???
+    pub def take(n: Int32, s: Stream[a, s]): Stream[a, s] =
+        let Stream(next0, s0) = s;
+        if (n <= 0)
+            Stream(_ -> Done, s0)
+        else
+            Stream(takeHelper(n, next0, s0), s0)
+
+    def takeHelper(n: Int32, next: s -> Step[a, s], s0: s): s -> Step[a, s] = ???
+
 }
