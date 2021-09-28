@@ -213,7 +213,8 @@ namespace Stream1 {
     ///
     /// Returns `false` if `s` is empty.
     ///
-    pub def exists(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef = ???
+    pub def exists(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef =
+        foldLeft((acc, x) -> f(x) or acc, false, s)
 
 
     ///
@@ -221,6 +222,7 @@ namespace Stream1 {
     ///
     /// Returns `true` if `s` is empty.
     ///
-    pub def forall(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef = ???
+    pub def forall(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef =
+        foldLeft((acc, x) -> f(x) and acc, true, s)
 
 }
