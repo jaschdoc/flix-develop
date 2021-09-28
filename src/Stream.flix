@@ -244,7 +244,19 @@ namespace Stream1 {
     ///
     /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting list.
     ///
-    pub def zip(s1: Stream[a, s], s2: Stream[b, p]): Stream[(a, b), s] = ???
+    pub def zip(s1: Stream[a, s], s2: Stream[b, t]): Stream[(a, b), u] =
+        // maybe use Option and define two helper functions as in Stream paper.
+        let Stream(next1, st1) = s1;
+        let Stream(next2, st2) = s2;
+        let nextZip = (x, y) -> match (next1(x), next2(y)) {
+            case (Done, _)                          => Done
+            case (_, Done)                          => Done
+            case (Skip(stp1),      Skip(stp2))      => Skip((stp1, stp2))
+            case (Skip(stp1),      Yield(y2, stp2)) => ???
+            case (Yield(x1, stp1), Skip(stp2))      => ???
+            case (Yield(x1, stp1), Yield(y2, stp2)) => ???
+        };
+        ???
 
 
 }
