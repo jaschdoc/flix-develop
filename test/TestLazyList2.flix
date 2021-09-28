@@ -536,4 +536,37 @@ namespace TestLazyList2 {
     def toString09(): Bool = 
         LazyList1.toString(ECons(1, ECons(2, ECons(3, ENil)))) == "1 :: 2 :: 3 :: ENil"
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // sum                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sum01(): Bool =
+        List.toLazy(Nil) |> LazyList1.sum == 0
+
+    @test
+    def sum02(): Bool =
+        List.toLazy(1 :: Nil) |> LazyList1.sum == 1
+
+    @test
+    def sum03(): Bool =
+        List.toLazy(1 :: 2 :: 3 :: Nil) |> LazyList1.sum == 6
+
+    @test
+    def sum04(): Bool =
+        List.toLazy(1 :: 2 :: 3 :: -3 :: Nil) |> LazyList1.sum == 3
+
+    @test
+    def sum05(): Bool =
+        List.toLazy(-1 :: -2 :: -3 :: -4 :: Nil) |> LazyList1.sum == -10
+
+    @test
+    def sum06(): Bool =
+        List.toLazy(10 :: -10 :: Nil) |> LazyList1.sum == 0
+
+    @test
+    def sum07(): Bool =
+        List.range(1, 101) |> List.toLazy |> LazyList1.sum == 5050
+
 }
