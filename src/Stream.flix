@@ -207,7 +207,6 @@ namespace Stream1 {
 
     def takeHelper(n: Int32, next: s -> Step[a, s], s0: s): s -> Step[a, s] = ???
 
-
     ///
     /// Returns `true` if and only if at least one element in `s` satisfies the predicate `f`.
     ///
@@ -215,7 +214,6 @@ namespace Stream1 {
     ///
     pub def exists(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef =
         foldLeft((acc, x) -> f(x) or acc, false, s)
-
 
     ///
     /// Returns `true` if and only if all elements in `s` satisfy the predicate `f`.
@@ -238,5 +236,15 @@ namespace Stream1 {
             case Yield(x, stp) => Yield(x, stp)
         };*/ // this loops forever
         Stream(nextOrAppend, st1)
+
+
+    ///
+    /// Returns a list where the element at index `i` is `(a, b)` where
+    /// `a` is the element at index `i` in `s1` and `b` is the element at index `i` in `s2`.
+    ///
+    /// If either `s1` or `s2` becomes depleted, then no further elements are added to the resulting list.
+    ///
+    pub def zip(s1: Stream[a, s], s2: Stream[b, p]): Stream[(a, b), s] = ???
+
 
 }

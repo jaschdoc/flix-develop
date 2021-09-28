@@ -545,4 +545,52 @@ namespace TestStream {
             List.toStream(1 :: Nil),
             List.toStream(2 :: 3 :: Nil)) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
 */
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // zip                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def zip01(): Bool =
+        Stream1.zip(
+            Stream1.empty(): Stream[Unit, Unit],
+            Stream1.empty(): Stream[Unit, Unit]) |> Stream1.toList == Nil
+
+    @test
+    def zip02(): Bool =
+        Stream1.zip(
+            List.toStream(1 :: Nil),
+            List.toStream(Nil: List[Unit])) |> Stream1.toList == Nil
+
+    @test
+    def zip03(): Bool =
+        Stream1.zip(
+            List.toStream(Nil: List[Unit]),
+            List.toStream(2 :: Nil)) |> Stream1.toList == Nil
+
+    @test
+    def zip04(): Bool =
+        Stream1.zip(
+            List.toStream(1 :: Nil),
+            List.toStream(2 :: Nil)) |> Stream1.toList == (1, 2) :: Nil
+
+    @test
+    def zip05(): Bool =
+        Stream1.zip(
+            List.toStream(1 :: 3 :: Nil),
+            List.toStream(2 :: 4 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: Nil
+
+    @test
+    def zip06(): Bool = 
+        Stream1.zip(
+            List.toStream(1 :: 3 :: 5 :: Nil),
+            List.toStream(2 :: 4 :: 6 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: Nil
+
+    @test
+    def zip07(): Bool =
+        Stream1.zip(
+            List.toStream(1 :: 3 :: 5 :: 7 :: Nil),
+            List.toStream(2 :: 4 :: 6 :: 8 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
+            
 }
