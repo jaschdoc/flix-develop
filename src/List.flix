@@ -19,12 +19,12 @@ namespace List1 {
     ///
     /// Converts the list `l` to a `Stream`.
     ///
-    pub def toStream(l: List[a]): Stream[a, s] =
+    pub def toStream(l: List[a]): Stream[a, List[a]] =
         let next = s -> match s {
             case Nil     => Done
             case x :: xs => Yield(x, xs)
         };
-        Stream(next, l) as Stream[a, s]
+        Stream(next, l)
 
     ///
     /// Mocks `List.filter` until merged into nightly compiler.
