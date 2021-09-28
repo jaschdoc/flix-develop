@@ -225,4 +225,9 @@ namespace Stream1 {
     pub def forall(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef =
         foldLeft((acc, x) -> f(x) and acc, true, s)
 
+    ///
+    /// Returns `s2` appended to `s1`.
+    ///
+    pub def append(_s1: Stream[a, s], _s2: Stream[a, s]): Stream[a, s] = Stream.empty()
+
 }

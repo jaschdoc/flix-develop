@@ -494,4 +494,55 @@ namespace TestStream {
     def forall10(): Bool =
         (11 :: 9 :: 31 :: Nil) |> List.toStream |> Stream1.forall(i -> i > 3)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // append                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def append01(): Bool =
+        Stream1.append(Stream1.empty(), Stream1.empty()) |> Stream1.toList == Nil
+
+    @test
+    def append02(): Bool =
+        Stream1.append(
+            Stream1.empty(),
+            List.toStream(1 :: Nil)) |> Stream1.toList == 1 :: Nil
+
+    @test
+    def append03(): Bool =
+        Stream1.append(
+            Stream1.empty(),
+            List.toStream(1 :: 2 :: Nil)) |> Stream1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append04(): Bool =
+        Stream1.append(
+            List.toStream(1 :: Nil),
+            Stream1.empty()) |> Stream1.toList == 1 :: Nil
+
+    @test
+    def append05(): Bool =
+        Stream1.append(
+            List.toStream(1 :: 2 :: Nil),
+            Stream1.empty()) |> Stream1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append06(): Bool =
+        Stream1.append(
+            List.toStream(1 :: Nil),
+            List.toStream(2 :: Nil)) |> Stream1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append07(): Bool =
+        Stream1.append(
+            List.toStream(1 :: 2 :: Nil),
+            List.toStream(3 :: Nil)) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def append08(): Bool =
+        Stream1.append(
+            List.toStream(1 :: Nil),
+            List.toStream(2 :: 3 :: Nil)) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
+
 }
