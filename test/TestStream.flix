@@ -498,7 +498,7 @@ namespace TestStream {
     /////////////////////////////////////////////////////////////////////////////
     // append                                                                  //
     /////////////////////////////////////////////////////////////////////////////
-
+/*
     @test
     def append01(): Bool =
         Stream1.append(Stream1.empty(), Stream1.empty()) |> Stream1.toList == Nil
@@ -544,5 +544,5 @@ namespace TestStream {
         Stream1.append(
             List.toStream(1 :: Nil),
             List.toStream(2 :: 3 :: Nil)) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
-
+*/
 }

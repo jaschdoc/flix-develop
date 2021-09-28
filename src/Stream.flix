@@ -228,8 +228,15 @@ namespace Stream1 {
     ///
     /// Returns `s2` appended to `s1`.
     ///
-    pub def append(_s1: Stream[a, s], _s2: Stream[a, s]): Stream[a, s] = empty()
-        //let Stream(next1, st1) = s1;
-        //let Stream(next2, st2) = s2;
-        //let nextAppend = ()
+    pub def append(s1: Stream[a, s], s2: Stream[a, s]): Stream[a, s] =
+        let Stream(next1, st1) = s1;
+        let Stream(next2, st2) = s2;
+        let nextOrAppend = _ -> ???;
+        /*match next1(sp) {
+            case Done          => next2(st2)
+            case Skip(stp)     => Skip(stp)
+            case Yield(x, stp) => Yield(x, stp)
+        };*/ // this loops forever
+        Stream(nextOrAppend, st1)
+
 }
