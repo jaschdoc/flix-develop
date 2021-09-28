@@ -228,6 +228,8 @@ namespace Stream1 {
     ///
     /// Returns `s2` appended to `s1`.
     ///
-    pub def append(_s1: Stream[a, s], _s2: Stream[a, s]): Stream[a, s] = Stream.empty()
-
+    pub def append(_s1: Stream[a, s], _s2: Stream[a, s]): Stream[a, s] = empty()
+        //let Stream(next1, st1) = s1;
+        //let Stream(next2, st2) = s2;
+        //let nextAppend = ()
 }
