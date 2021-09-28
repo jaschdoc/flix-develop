@@ -207,4 +207,20 @@ namespace Stream1 {
 
     def takeHelper(n: Int32, next: s -> Step[a, s], s0: s): s -> Step[a, s] = ???
 
+
+    ///
+    /// Returns `true` if and only if at least one element in `s` satisfies the predicate `f`.
+    ///
+    /// Returns `false` if `s` is empty.
+    ///
+    pub def exists(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef = ???
+
+
+    ///
+    /// Returns `true` if and only if all elements in `s` satisfy the predicate `f`.
+    ///
+    /// Returns `true` if `s` is empty.
+    ///
+    pub def forall(f: a -> Bool & ef, s: Stream[a, s]): Bool & ef = ???
+
 }
