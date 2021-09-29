@@ -198,14 +198,20 @@ namespace Stream1 {
     ///
     /// Returns the first `n` elements of `s`.
     ///
-    pub def take(n: Int32, s: Stream[a, s]): Stream[a, s] =
+    pub def take(n: Int32, s: Stream[a, s]): Stream[a, { i :: Int32, s :: s }] =
         let Stream(next0, s0) = s;
-        if (n <= 0)
-            Stream(_ -> Done, s0)
-        else
-            Stream(takeHelper(n, next0, s0), s0)
+        let next1 = (r) -> if (r.i <= 0) Done else match next0(r.s) {
+            case Done          => Done
+            case Skip(st1)     => Skip({i = r.i, s = st1})
+            case Yield(x, st1) => Yield(x, {i = r.i - 1, s = st1})
+        };
+        Stream(next1, {i = n, s = s0})
+        //takeHelper(n, next1, (n, s0)) as Stream[a, s]
 
-    def takeHelper(n: Int32, next: s -> Step[a, s], s0: s): s -> Step[a, s] = ???
+    ///
+    /// Helper function for `take`.
+    ///
+    //def takeHelper(n: Int32, next: (Int32, s) -> Step[a, (Int32, s)], s0: (Int32, s)): Stream[a, (Int32, s)] = ???
 
     ///
     /// Returns `true` if and only if at least one element in `s` satisfies the predicate `f`.
