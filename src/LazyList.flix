@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+
+instance Functor[LazyList] {
+    pub def map(f: a -> b & ef, l: LazyList[a]): LazyList[b] & ef = LazyList.map(f, l)
+}
+
 namespace LazyList1 {
 
     ///
