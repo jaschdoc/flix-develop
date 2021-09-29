@@ -258,5 +258,32 @@ namespace Stream1 {
         };
         ???
 
+    ///
+    /// Returns the result of applying `f` to every element in `s` and concatenating the results.
+    ///
+    /// Whether `f` is applied eagerly or lazily depends on its purity:
+    ///
+    /// - If `f` is pure then it is applied lazily.
+    /// - If `f` is impure then it is applied eagerly.
+    ///
+    pub def flatMap(f: a -> Stream[b, s] & ef, s: Stream[a, t]): Stream[b, u] & ef =
+        if (reify ef)
+            flatMapL(f as a -> Stream[b, s] & Pure,   s)
+        else
+            flatMapE(f as a -> Stream[b, s] & Impure, s) as & ef
+
+    ///
+    /// Returns the result of applying `f` to every element in `s` and concatenating the results.
+    ///
+    /// Applies `f` lazily.
+    ///
+    def flatMapL(f: a -> Stream[b, s], s: Stream[a, t]): Stream[b, u] = ???
+
+    ///
+    /// Returns the result of applying `f` to every element in `s` and concatenating the results.
+    ///
+    /// Applies `f` eagerly.
+    ///
+    def flatMapE(f: a -> Stream[b, s] & Impure, s: Stream[a, t]): Stream[b, u] & Impure = ???
 
 }
