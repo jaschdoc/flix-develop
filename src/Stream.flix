@@ -201,9 +201,9 @@ namespace Stream1 {
     pub def take(n: Int32, s: Stream[a, s]): Stream[a, (Int32, s)] =
         let Stream(next0, s0) = s;
         let next1 = (t: (Int32, s)) -> if (fst(t) <= 0) Done else match next0(snd(t)) {
-            case Done          => Done
-            case Skip(st1)     => Skip (   (fst(t)    , st1))
-            case Yield(x, st1) => Yield(x, (fst(t) - 1, st1))
+            case Done         => Done
+            case Skip(xs)     => Skip (   (fst(t)    , xs))
+            case Yield(x, xs) => Yield(x, (fst(t) - 1, xs))
         };
         Stream(next1, (n, s0))
 
@@ -226,16 +226,26 @@ namespace Stream1 {
     ///
     /// Returns `s2` appended to `s1`.
     ///
-    pub def append(s1: Stream[a, s], s2: Stream[a, s]): Stream[a, s] =
+    pub def append(s1: Stream[a, s], s2: Stream[a, t]): Stream[a, Either[s, t]] =
         let Stream(next1, st1) = s1;
         let Stream(next2, st2) = s2;
-        let nextOrAppend = _ -> ???;
-        /*match next1(sp) {
-            case Done          => next2(st2)
-            case Skip(stp)     => Skip(stp)
-            case Yield(x, stp) => Yield(x, stp)
-        };*/ // this loops forever
-        Stream(nextOrAppend, st1)
+        Stream(s -> appendNextHelper(s, next1, next2, st1, st2), Left(st1))
+
+    ///
+    /// Defines the `next` function for `append`.
+    ///
+    def appendNextHelper(s3: Either[s, t], next1: s -> Step[a, s], next2: t -> Step[a, t], st1: s, st2: t): Step[a, Either[s, t]] = match s3 {
+        case Left(st3)  => match next1(st3) {
+            case Done         => appendNextHelper(Right(st2), next1, next2, st1, st2)
+            case Skip(xs)     => Skip (   Left(xs))
+            case Yield(x, xs) => Yield(x, Left(xs))
+        }
+        case Right(st3) => match next2(st3) {
+            case Done         => Done
+            case Skip(ys)     => Skip (   Right(ys))
+            case Yield(y, ys) => Yield(y, Right(ys))
+        }
+    }
 
 
     ///
