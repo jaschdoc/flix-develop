@@ -592,4 +592,34 @@ namespace TestStream {
             List.toStream(1 :: 3 :: 5 :: 7 :: Nil),
             List.toStream(2 :: 4 :: 6 :: 8 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
             */
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap (pure)                                                          //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMap01(): Bool =
+        Stream1.flatMap(i -> Stream1.range(i, i + 100), Stream1.empty()) |> Stream.toList == Nil
+
+    @test
+    def flatMap02(): Bool =
+        List.toStream(0 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 100)) |> Stream.toList == List.range(0, 100)
+
+    @test
+    def flatMap03(): Bool =
+        List.toStream(1 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 1 :: 2 :: Nil
+
+    @test
+    def flatMap04(): Bool =
+        List.toStream(2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 2 :: 3 :: Nil
+
+    @test
+    def flatMap05(): Bool =
+        List.toStream(1 :: 2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 1 :: 2 :: 2 :: 3 :: Nil
+
+    @test
+    def flatMap06(): Bool =
+        List.toStream(2 :: 3 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 2 :: 3 :: 3 :: 4 :: Nil
+
 }
