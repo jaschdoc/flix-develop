@@ -273,24 +273,44 @@ namespace Stream1 {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly.
     ///
-    pub def flatMap(f: a -> Stream[b, s] & ef, s: Stream[a, t]): Stream[b, u] & ef =
+    pub def flatMap(f: a -> Stream[b, t] & ef, s: Stream[a, s]): Stream[b, (s, Option[Stream[b, t]])] & ef =
         if (reify ef)
-            flatMapL(f as a -> Stream[b, s] & Pure,   s)
+            flatMapL(f as a -> Stream[b, t] & Pure,   s)
         else
-            flatMapE(f as a -> Stream[b, s] & Impure, s) as & ef
+            flatMapE(f as a -> Stream[b, t] & Impure, s) as & ef
 
     ///
     /// Returns the result of applying `f` to every element in `s` and concatenating the results.
     ///
     /// Applies `f` lazily.
     ///
-    def flatMapL(f: a -> Stream[b, s], s: Stream[a, t]): Stream[b, u] = ???
+    def flatMapL(f: a -> Stream[b, t], s: Stream[a, s]): Stream[b, (s, Option[Stream[b, t]])] =
+        let Stream(nexta, s0) = s;
+        let nextNone = s -> match nexta(s) {
+            case Done         => Done
+            case Skip(xs)     => Skip((xs, None      ))
+            case Yield(x, xs) => Skip((xs, Some(f(x))))
+        };
+        let nextSome = t -> {
+            let sa = fst(t);
+            let Stream(nextb, sb) = snd(t);
+            match nextb(sb) {
+                case Done         => Skip (   (sa, None                   ))
+                case Skip(xs)     => Skip (   (sa, Some(Stream(nextb, xs))))
+                case Yield(x, xs) => Yield(x, (sa, Some(Stream(nextb, xs))))
+            }
+        };
+        let nextFlatMap = t -> match t {
+            case (sa, None   ) => nextNone(sa)
+            case (sa, Some(v)) => nextSome((sa, v))
+        };
+        Stream(nextFlatMap, (s0, None))
 
     ///
     /// Returns the result of applying `f` to every element in `s` and concatenating the results.
     ///
     /// Applies `f` eagerly.
     ///
-    def flatMapE(f: a -> Stream[b, s] & Impure, s: Stream[a, t]): Stream[b, u] & Impure = ???
+    def flatMapE(f: a -> Stream[b, t] & Impure, s: Stream[a, s]): Stream[b, (s, Option[Stream[b, t]])] & Impure = ???
 
 }
