@@ -273,7 +273,7 @@ namespace Stream1 {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly.
     ///
-    pub def flatMap(f: a -> Stream[b, t] & ef, s: Stream[a, s]): Stream[b, (s, Option[Stream[b, t]])] & ef =
+    pub def flatMap(f: a -> Stream[b, t] & ef, s: Stream[a, s]): Stream[b, Either[(s, Option[Stream[b, t]]), Stream[b, List[b]]]] & ef =
         if (reify ef)
             flatMapL(f as a -> Stream[b, t] & Pure,   s)
         else
@@ -311,6 +311,16 @@ namespace Stream1 {
     ///
     /// Applies `f` eagerly.
     ///
-    def flatMapE(f: a -> Stream[b, t] & Impure, s: Stream[a, s]): Stream[b, (s, Option[Stream[b, t]])] & Impure = ???
+    def flatMapE(f: a -> Stream[b, t] & Impure, s: Stream[a, s]): Stream[b, List[b]] & Impure =
+        let Stream(next, s0) = s;
+        flatMapEAcc(f, next, s0, ks -> ks) |> List.toStream
+
+    def flatMapEAcc(f: a -> Stream[b, t] & Impure, next: s -> Step[a, s], s0: s, k: List[b] -> List[b]): List[b] & Impure = match next(s0) {
+        case Done         => k(Nil)
+        case Skip(xs)     => flatMapEAcc(f, next, xs, k)
+        case Yield(x, xs) =>
+        let xs1 = f(x) |> Stream.toList;
+        flatMapEAcc(f, next, xs, ks -> k(xs1 ::: ks))
+    }
 
 }
