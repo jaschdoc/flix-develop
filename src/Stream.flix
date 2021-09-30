@@ -247,7 +247,6 @@ namespace Stream1 {
         }
     }
 
-
     ///
     /// Returns a list where the element at index `i` is `(a, b)` where
     /// `a` is the element at index `i` in `s1` and `b` is the element at index `i` in `s2`.
