@@ -599,27 +599,56 @@ namespace TestStream {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def flatMap01(): Bool =
+    def flatMapPure01(): Bool =
         Stream1.flatMap(i -> Stream1.range(i, i + 100), Stream1.empty()) |> Stream.toList == Nil
 
     @test
-    def flatMap02(): Bool =
+    def flatMapPure02(): Bool =
         List.toStream(0 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 100)) |> Stream.toList == List.range(0, 100)
 
     @test
-    def flatMap03(): Bool =
+    def flatMapPure03(): Bool =
         List.toStream(1 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 1 :: 2 :: Nil
 
     @test
-    def flatMap04(): Bool =
+    def flatMapPure04(): Bool =
         List.toStream(2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 2 :: 3 :: Nil
 
     @test
-    def flatMap05(): Bool =
+    def flatMapPure05(): Bool =
         List.toStream(1 :: 2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 1 :: 2 :: 2 :: 3 :: Nil
 
     @test
-    def flatMap06(): Bool =
+    def flatMapPure06(): Bool =
         List.toStream(2 :: 3 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2)) |> Stream.toList == 2 :: 3 :: 3 :: 4 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap (impure)                                                        //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapImpure01(): Bool & Impure =
+        Stream1.flatMap(i -> Stream1.range(i, i + 100) as & Impure, Stream1.empty()) |> Stream.toList == Nil
+
+    @test
+    def flatMapImpure02(): Bool & Impure =
+        List.toStream(0 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 100) as & Impure) |> Stream.toList == List.range(0, 100)
+
+    @test
+    def flatMapImpure03(): Bool & Impure =
+        List.toStream(1 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 1 :: 2 :: Nil
+
+    @test
+    def flatMapImpure04(): Bool & Impure =
+        List.toStream(2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 2 :: 3 :: Nil
+
+    @test
+    def flatMapImpure05(): Bool & Impure =
+        List.toStream(1 :: 2 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 1 :: 2 :: 2 :: 3 :: Nil
+
+    @test
+    def flatMapImpure06(): Bool & Impure =
+        List.toStream(2 :: 3 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 2 :: 3 :: 3 :: 4 :: Nil
 
 }
