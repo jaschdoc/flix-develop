@@ -273,11 +273,29 @@ namespace Stream1 {
     /// - If `f` is pure then it is applied lazily.
     /// - If `f` is impure then it is applied eagerly.
     ///
-    pub def flatMap(f: a -> Stream[b, t] & ef, s: Stream[a, s]): Stream[b, Either[(s, Option[Stream[b, t]]), Stream[b, List[b]]]] & ef =
+    pub def flatMap(f: a -> Stream[b, t] & ef, s: Stream[a, s]): Stream[a, Either[(s, Option[Stream[b, t]]), Stream[b, List[b]]]] & ef =
         if (reify ef)
-            flatMapL(f as a -> Stream[b, t] & Pure,   s)
+            let Stream(nextL, s0) = flatMapL(f as a -> Stream[b, t] & Pure,   s);
+            let nextLL = e -> match e {
+                case Left(ss)  => match nextL(ss) {
+                    case Done         => Done
+                    case Skip(xs)     => Skip(    Left(xs))
+                    case Yield(x, xs) => Yield(x, Left(xs))
+                }
+                case Right(_) => bug!("Unreachable code!")
+            };
+            Stream(nextLL, Left(s0))
         else
-            flatMapE(f as a -> Stream[b, t] & Impure, s) as & ef
+            let Stream(nextE, s0) = flatMapE(f as a -> Stream[b, t] & Impure, s) as & ef;
+            let nextEE = e -> match e {
+                case Right(ss) => match nextE(ss) {
+                    case Done         => Done
+                    case Skip(xs)     => Skip(    Right(xs))
+                    case Yield(x, xs) => Yield(x, Right(xs)) 
+                }
+                case Left(_)   => bug!("Unreachable code!")
+            };
+            Stream(nextEE, Right(s0))
 
     ///
     /// Returns the result of applying `f` to every element in `s` and concatenating the results.
@@ -315,6 +333,9 @@ namespace Stream1 {
         let Stream(next, s0) = s;
         flatMapEAcc(f, next, s0, ks -> ks) |> List.toStream
 
+    ///
+    /// Helper function for `flatMapE`.
+    ///
     def flatMapEAcc(f: a -> Stream[b, t] & Impure, next: s -> Step[a, s], s0: s, k: List[b] -> List[b]): List[b] & Impure = match next(s0) {
         case Done         => k(Nil)
         case Skip(xs)     => flatMapEAcc(f, next, xs, k)
