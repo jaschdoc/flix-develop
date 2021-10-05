@@ -592,7 +592,7 @@ namespace TestStream {
             List.toStream(1 :: 3 :: 5 :: 7 :: Nil),
             List.toStream(2 :: 4 :: 6 :: 8 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
             */
-
+/*
 
     /////////////////////////////////////////////////////////////////////////////
     // flatMap (pure)                                                          //
@@ -650,5 +650,5 @@ namespace TestStream {
     @test
     def flatMapImpure06(): Bool & Impure =
         List.toStream(2 :: 3 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 2 :: 3 :: 3 :: 4 :: Nil
-
+*/
 }
