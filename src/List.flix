@@ -38,4 +38,7 @@ namespace List1 {
     }
 
 
+    pub def toStreamListed(l: List[a]): StreamListed[a, s] =
+        Listed(l)
+
 }
