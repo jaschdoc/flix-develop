@@ -32,6 +32,11 @@ namespace DemandList1 {
     type alias Forced = true
 
     ///
+    /// Returns an empty `DemandList`.
+    ///
+    pub def empty(): DemandList[a, d] = ENil
+
+    ///
     /// Returns `Some(x)` if `x` is the first element of `l`.
     ///
     /// Returns `None` if `l` is empty.

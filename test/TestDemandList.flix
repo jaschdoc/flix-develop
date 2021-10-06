@@ -23,6 +23,42 @@ namespace TestDemandList {
 */
 
     /////////////////////////////////////////////////////////////////////////////
+    // isEmpty                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def isEmpty01(): Bool =
+        DemandList1.empty() |> DemandList1.isEmpty
+
+    @test
+    def isEmpty02(): Bool =
+        not (List1.toDemandList(1 :: Nil) |> DemandList1.isEmpty)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toDemandList & toList                                                       //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toDemandList01(): Bool =
+        List1.toDemandList(Nil) |> DemandList1.toList == Nil
+
+    @test
+    def toDemandList02(): Bool =
+        List1.toDemandList(1 :: Nil) |> DemandList1.toList == 1 :: Nil
+    
+    @test
+    def toDemandList03(): Bool =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil) |> DemandList1.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def toDemandList04(): Bool =
+        List.range(-1000, 1000) |>
+            List1.toDemandList |>
+            DemandList1.toList == List.range(-1000, 1000)
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // range                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
@@ -136,6 +172,151 @@ namespace TestDemandList {
         (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
         DemandList1.map(x -> { l := "a" :: deref l; x } as & Pure) |>
         DemandList1.map(x -> { l := "b" :: deref l; x } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filter (pure)                                                           //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterPure01(): Bool =
+        Nil |> List1.toDemandList |> DemandList1.filter(x -> x > 100) |> DemandList1.toList == Nil
+
+    @test
+    def filterPure02(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 0) |> DemandList1.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def filterPure03(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1) |> DemandList1.toList == 2 :: 3 :: Nil
+
+    @test
+    def filterPure04(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 2) |> DemandList1.toList == 3 :: Nil
+
+    @test
+    def filterPure05(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 3) |> DemandList1.toList == Nil
+
+    @test
+    def filterPure06(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 100) |> DemandList1.toList == Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filter (impure)                                                         //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterImpure01(): Bool & Impure =
+        Nil |> List1.toDemandList |> DemandList1.filter(x -> x > 100 as & Impure) |> DemandList1.toList == Nil
+
+    @test
+    def filterImpure02(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 0 as & Impure) |> DemandList1.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def filterImpure03(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1 as & Impure) |> DemandList1.toList == 2 :: 3 :: Nil
+
+    @test
+    def filterImpure04(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 2 as & Impure) |> DemandList1.toList == 3 :: Nil
+
+    @test
+    def filterImpure05(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 3 as & Impure) |> DemandList1.toList == Nil
+
+    @test
+    def filterImpure06(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 100 as & Impure) |> DemandList1.toList == Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filter filter                                                           //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterFilter01(): Bool =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1) |> DemandList1.filter(x -> x < 3) |> DemandList1.toList == 2 :: Nil
+
+    @test
+    def filterFilter02(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1 as & Impure) |> DemandList1.filter(x -> x < 3) |> DemandList1.toList == 2 :: Nil
+
+    @test
+    def filterFilter03(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1) |> DemandList1.filter(x -> x < 3 as & Impure) |> DemandList1.toList == 2 :: Nil
+
+    @test
+    def filterFilter04(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |> DemandList1.filter(x -> x > 1 as & Impure) |> DemandList1.filter(x -> x < 3 as & Impure) |> DemandList1.toList == 2 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filter filter fusion                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.filter(_ -> { l := "a" :: deref l; true }) |>
+        DemandList1.filter(_ -> { l := "b" :: deref l; true });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def filterFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.filter(_x -> { l := "a" :: deref l; true } as & Pure) |>
+        DemandList1.filter(_x -> { l := "b" :: deref l; true } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // map filter fusion                                                       //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def mapFilterFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.map(   x -> { l := "a" :: deref l; x }) |>
+        DemandList1.filter(_ -> { l := "b" :: deref l; true });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def mapFilterFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.map(   x -> { l := "a" :: deref l; x }    as & Pure) |>
+        DemandList1.filter(_ -> { l := "b" :: deref l; true } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filter map fusion                                                       //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterMapFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.filter(_ -> { l := "a" :: deref l; true }) |>
+        DemandList1.map(   x -> { l := "b" :: deref l; x    });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def filterMapFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.filter(_ -> { l := "a" :: deref l; true } as & Pure) |>
+        DemandList1.map(   x -> { l := "b" :: deref l; x    } as & Pure) |>
         DemandList1.toList as & Impure;
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
 
