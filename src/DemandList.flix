@@ -154,4 +154,37 @@ namespace DemandList1 {
         case LList(xs)    => LList(lazy reverseAcc(force xs,          acc))
     }
 
+    pub def map(f: a -> b & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
+        if (reify ef)
+            mapL(f as a -> b & Pure,   l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
+        else
+            mapE(f as a -> b & Impure, l as DemandList[a, true])  as DemandList[b, not ef or d] & ef
+
+    def mapL(f: a -> b, l: DemandList[a, false]): DemandList[b, false] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy LCons(f(x), lazy mapL1(f,       xs)))
+        case LCons(x, xs) => LList(lazy LCons(f(x), lazy mapL1(f, force xs)))
+        case LList(xs)    => LList(                 lazy mapL1(f, force xs))
+    }
+    
+    def mapL1(f: a -> b, l: DemandList[a, false]): DemandList[b, false] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LCons(f(x), lazy mapL1(f,       xs))
+        case LCons(x, xs) => LCons(f(x), lazy mapL1(f, force xs))
+        case LList(xs)    => LList(      lazy mapL1(f, force xs))
+    }
+
+    def mapE(f: a -> b & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
+        mapEAcc(f, l, ks -> ks)
+    
+    def mapEAcc(f: a -> b & Impure, l: DemandList[a, Forced], k: DemandList[b, Forced] -> DemandList[b, Forced]): DemandList[b, Forced] & Impure = match l {
+        case ENil         => k(ENil)
+        case ECons(x, xs) =>
+            let x1 = f(x);
+            mapEAcc(f, xs, ks -> k(ECons(x1, ks)))
+        case LCons(x, xs) =>
+            let x1 = f(x);
+            mapEAcc(f, force xs, ks -> k(ECons(x1, ks)))
+        case LList(xs)    => mapEAcc(f, force xs, k)
+    }
 }
