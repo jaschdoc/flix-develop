@@ -41,4 +41,15 @@ namespace List1 {
     pub def toStreamListed(l: List[a]): StreamListed[a, s] =
         Listed(l)
 
+
+    ///
+    /// Returns the elements of `l` as a DemandList.
+    ///
+    pub def toDemandList(l: List[a]): DemandList1.DemandList[a, false] =
+        use DemandList1.{DemandList};
+        match l {
+            case Nil     => DemandList.ENil
+            case x :: xs => DemandList.LList(lazy DemandList.LCons(x, lazy toDemandList(xs)))
+        }
+
 }

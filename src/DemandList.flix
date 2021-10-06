@@ -154,6 +154,18 @@ namespace DemandList1 {
         case LList(xs)    => LList(lazy reverseAcc(force xs,          acc))
     }
 
+    ///
+    /// Returns true if and only if `l` is the empty LazyList, i.e. `ENil`.
+    ///
+    /// Does not force the tail of `l`.
+    ///
+    pub def isEmpty(l: DemandList[a, d]): Bool = match l {
+        case ENil      => true
+        case LList(xs) => isEmpty(force xs)
+        case _         => false
+    }
+
+
     pub def map(f: a -> b & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
         if (reify ef)
             mapL(f as a -> b & Pure,   l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
@@ -186,5 +198,23 @@ namespace DemandList1 {
             let x1 = f(x);
             mapEAcc(f, force xs, ks -> k(ECons(x1, ks)))
         case LList(xs)    => mapEAcc(f, force xs, k)
+    }
+
+    ///
+    /// Returns `l` as a `List`.
+    ///
+    /// Forces the entire list `l`.
+    ///
+    pub def toList(l: DemandList[a, d]): List[a] =
+        toListAcc(l, ks -> ks)
+
+    ///
+    /// Helper function for `toList`.
+    ///
+    def toListAcc(l: DemandList[a, d], k: List[a] -> List[a]): List[a] = match l {
+        case ENil         => k(Nil)
+        case ECons(x, xs) => toListAcc(      xs, ks -> k(x :: ks))
+        case LCons(x, xs) => toListAcc(force xs, ks -> k(x :: ks))
+        case LList(xs)    => toListAcc(force xs,       k)
     }
 }
