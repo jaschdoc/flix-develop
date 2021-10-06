@@ -45,7 +45,7 @@ namespace List1 {
     ///
     /// Returns the elements of `l` as a DemandList.
     ///
-    pub def toDemandList(l: List[a]): DemandList1.DemandList[a, false] =
+    pub def toDemandList(l: List[a]): DemandList1.DemandList[a, d] =
         use DemandList1.{DemandList};
         match l {
             case Nil     => DemandList.ENil
