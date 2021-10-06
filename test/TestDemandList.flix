@@ -20,10 +20,7 @@ namespace TestDemandList {
         let l1 = range(1, 10);                            // l1 must be eager
         let l2 = filter(x -> x > 5 as & Impure, l1);      // l2 must be eager
         head(l2)
-
-
 */
-
 
     /////////////////////////////////////////////////////////////////////////////
     // range                                                                   //
