@@ -239,4 +239,34 @@ namespace DemandList1 {
         case LCons(x, xs) => toListAcc(force xs, ks -> k(x :: ks))
         case LList(xs)    => toListAcc(force xs,       k)
     }
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, l: DemandList[a, Forced]): b & ef = match l {
+        case ENil         => s
+        case ECons(x, xs) => foldLeft(f, f(s, x),       xs)
+        case LCons(x, xs) => foldLeft(f, f(s, x), force xs)
+        case LList(xs)    => foldLeft(f, s,       force xs)
+    }
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
+    ///
+    pub def foldRight(f: (a, b) -> b & ef, s: b, l: DemandList[a, Forced]): b & ef =
+        foldRightAcc(f, s, l, ks -> ks as & ef)
+
+    ///
+    /// Helper function for `foldRight`.
+    ///
+    def foldRightAcc(f: (a, b) -> b & ef, s: b, l: DemandList[a, Forced], k: b -> b & ef): b & ef = match l {
+        case ENil         => k(s)
+        case ECons(x, xs) => foldRightAcc(f, s,       xs, ks -> k(f(x, ks)))
+        case LCons(x, xs) => foldRightAcc(f, s, force xs, ks -> k(f(x, ks)))
+        case LList(xs)    => foldRightAcc(f, s, force xs, k)
+    }
 }
