@@ -451,5 +451,98 @@ namespace TestDemandList {
     @test
     def drop12(): Bool =
         (1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil) |> List1.toDemandList |> DemandList1.drop(4) |>  DemandList1.toList == 5 :: 6 :: Nil
-        
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // append                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+    @test
+    def append01(): Bool =
+        DemandList1.append(List1.toDemandList(Nil: List[Unit]), List1.toDemandList(Nil))    |> DemandList1.toList == Nil
+
+    @test
+    def append02(): Bool =
+        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: Nil))           |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def append03(): Bool =
+        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: 2 :: Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append04(): Bool =
+        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(Nil))           |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def append05(): Bool =
+        DemandList1.append(List1.toDemandList(1 :: 2 :: Nil), List1.toDemandList(Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append06(): Bool =
+        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(2 :: Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+
+    @test
+    def append07(): Bool =
+        DemandList1.append(List1.toDemandList(1 :: 2 :: Nil), List1.toDemandList(3 :: Nil)) |> DemandList1.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def append08(): Bool =
+        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(2 :: 3 :: Nil)) |> DemandList1.toList == 1 :: 2 :: 3 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap (pure)                                                          //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapPure01(): Bool =
+        DemandList1.flatMap(i -> DemandList1.range(i, i + 100), DemandList1.empty()) |> DemandList1.toList == Nil
+
+    @test
+    def flatMapPure02(): Bool =
+        List1.toDemandList(0 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 100)) |> DemandList1.toList == List.range(0, 100)
+
+    @test
+    def flatMapPure03(): Bool =
+        List1.toDemandList(1 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2)) |> DemandList1.toList == 1 :: 2 :: Nil
+
+    @test
+    def flatMapPure04(): Bool =
+        List1.toDemandList(2 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2)) |> DemandList1.toList == 2 :: 3 :: Nil
+
+    @test
+    def flatMapPure05(): Bool =
+        List1.toDemandList(1 :: 2 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2)) |> DemandList1.toList == 1 :: 2 :: 2 :: 3 :: Nil
+
+    @test
+    def flatMapPure06(): Bool =
+        List1.toDemandList(2 :: 3 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2)) |> DemandList1.toList == 2 :: 3 :: 3 :: 4 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap (impure)                                                        //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapImpure01(): Bool & Impure =
+        DemandList1.flatMap(i -> DemandList1.range(i, i + 100) as & Impure, DemandList1.empty()) |> DemandList1.toList == Nil
+
+    @test
+    def flatMapImpure02(): Bool & Impure =
+        List1.toDemandList(0 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 100) as & Impure) |> DemandList1.toList == List.range(0, 100)
+
+    @test
+    def flatMapImpure03(): Bool & Impure =
+        List1.toDemandList(1 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2) as & Impure) |> DemandList1.toList == 1 :: 2 :: Nil
+
+    @test
+    def flatMapImpure04(): Bool & Impure =
+        List1.toDemandList(2 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2) as & Impure) |> DemandList1.toList == 2 :: 3 :: Nil
+
+    @test
+    def flatMapImpure05(): Bool & Impure =
+        List1.toDemandList(1 :: 2 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2) as & Impure) |> DemandList1.toList == 1 :: 2 :: 2 :: 3 :: Nil
+
+    @test
+    def flatMapImpure06(): Bool & Impure =
+        List1.toDemandList(2 :: 3 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2) as & Impure) |> DemandList1.toList == 2 :: 3 :: 3 :: 4 :: Nil
 }

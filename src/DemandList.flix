@@ -315,4 +315,56 @@ namespace DemandList1 {
                 case LList(xs)    => LList(lazy dropHelper(n,     force xs))
             }
 
+    ///
+    /// Returns `l2` appended to `l1`.
+    ///
+    pub def append(l1: DemandList[a, d], l2: DemandList[a, d]): DemandList[a, d] = match l1 {
+        case ENil         => l2
+        case ECons(x, xs) => LCons(x, lazy append(      xs, l2))
+        case LCons(x, xs) => LCons(x, lazy append(force xs, l2))
+        case LList(xs)    => LList(   lazy append(force xs, l2))
+    }
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` and concatenating the results.
+    ///
+    pub def flatMap(f: a -> DemandList[b, e] & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
+        if (reify ef)
+            flatMapL(f as a -> DemandList[b, e] & Pure,   l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
+        else
+            flatMapE(f as a -> DemandList[b, e] & Impure, l as DemandList[a, true]) as DemandList[b, not ef or d] & ef
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` and concatenating the results.
+    ///
+    /// Applies `f` lazily (i.e. the tail is not forced).
+    ///
+    def flatMapL(f: a -> DemandList[b, e], l: DemandList[a, false]): DemandList[b, false] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f,       xs))))
+        case LCons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f, force xs))))
+        case LList(xs)    => LList(lazy flatMapL(f, force xs))
+    }
+
+    ///
+    /// Returns the result of applying `f` to every element in `l` and concatenating the results.
+    ///
+    /// Applies `f` eagerly (i.e. the entire list `l` is forced).
+    ///
+    def flatMapE(f: a -> DemandList[b, e] & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
+        flatMapEHelper(f, l, ks -> ks)
+
+    ///
+    /// Helper function for `flatMapE`.
+    ///
+    def flatMapEHelper(f: a -> DemandList[b, e] & Impure, l: DemandList[a, d], k: DemandList[b, d] -> DemandList[b, d]): DemandList[b, d] & Impure = match l {
+        case ENil         => k(ENil)
+        case ECons(x, xs) =>
+            let xs1 = f(x);
+            flatMapEHelper(f,       xs, ks -> k(append(xs1, ks)))
+        case LCons(x, xs) =>
+            let xs1 = f(x);
+            flatMapEHelper(f, force xs, ks -> k(append(xs1, ks)))
+        case LList(xs)    => flatMapEHelper(f, force xs, k)
+    }
 }
