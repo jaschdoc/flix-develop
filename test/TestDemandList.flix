@@ -1059,4 +1059,35 @@ namespace TestDemandList {
     def sum07(): Bool =
         DemandList1.range(1, 101) |> DemandList1.sum == 5050
 
+ /*      
+    /////////////////////////////////////////////////////////////////////////////
+    // zipWith                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def zipWith01(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(Nil), List1.toDemandList(Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def zipWith02(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(1 :: Nil), List1.toDemandList(Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def zipWith03(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(Nil), List1.toDemandList(true :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def zipWith04(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(1 :: Nil), List1.toDemandList(true :: Nil)) |> DemandList1.toList == 2 :: Nil
+
+    @test
+    def zipWith05(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(1 :: Nil), List1.toDemandList(false :: Nil)) |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def zipWith06(): Bool =
+        DemandList1.zipWith((a, b) -> if (b) a + 1 else a, List1.toDemandList(1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil),
+                        List1.toDemandList(false :: true :: true :: false :: false :: true :: true :: true :: Nil)) ==
+                        1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+*/
 }

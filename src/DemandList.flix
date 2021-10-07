@@ -511,9 +511,10 @@ namespace DemandList1 {
     }
 
 /*
-            /////////////////////////////////////
-            //  DOES NOT TYPE CHECK YET        //
-            /////////////////////////////////////
+    /////////////////////////////////////
+    //  DOES NOT TYPE CHECK YET        //
+    /////////////////////////////////////
+
     ///
     /// Returns a list where the element at index `i` is `f(a, b)` where
     /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
@@ -523,6 +524,4 @@ namespace DemandList1 {
     pub def zipWith(f: (a, b) -> c & ef, l1: DemandList[a, not ef or d], l2: DemandList[b, not ef or e]): DemandList[c, not ef or (d or e)] & ef =
         map((x) -> f(fst(x), snd(x)), zip(l1, l2))
 */
-
-
 }
