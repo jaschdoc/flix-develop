@@ -1026,4 +1026,37 @@ namespace TestDemandList {
         DemandList1.toList as & Impure;
         List.reverse(deref l) == ("a" :: "a" :: "b" :: "b" :: Nil)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // sum                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sum01(): Bool =
+        List1.toDemandList(Nil) |> DemandList1.sum == 0
+
+    @test
+    def sum02(): Bool =
+        List1.toDemandList(1 :: Nil) |> DemandList1.sum == 1
+
+    @test
+    def sum03(): Bool =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil) |> DemandList1.sum == 6
+
+    @test
+    def sum04(): Bool =
+        List1.toDemandList(1 :: 2 :: 3 :: -3 :: Nil) |> DemandList1.sum == 3
+
+    @test
+    def sum05(): Bool =
+        List1.toDemandList(-1 :: -2 :: -3 :: -4 :: Nil) |> DemandList1.sum == -10
+
+    @test
+    def sum06(): Bool =
+        List1.toDemandList(10 :: -10 :: Nil) |> DemandList1.sum == 0
+
+    @test
+    def sum07(): Bool =
+        DemandList1.range(1, 101) |> DemandList1.sum == 5050
+
 }
