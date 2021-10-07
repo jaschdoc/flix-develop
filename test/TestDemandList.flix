@@ -456,29 +456,30 @@ namespace TestDemandList {
     /////////////////////////////////////////////////////////////////////////////
     // append                                                                  //
     /////////////////////////////////////////////////////////////////////////////
+
     @test
     def append01(): Bool =
-        DemandList1.append(List1.toDemandList(Nil: List[Unit]), List1.toDemandList(Nil))    |> DemandList1.toList == Nil
+        DemandList1.append(List1.toDemandList(Nil: List[Unit]), List1.toDemandList(Nil)) |> DemandList1.toList == Nil
 
     @test
     def append02(): Bool =
-        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: Nil))           |> DemandList1.toList == 1 :: Nil
+        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: Nil)) |> DemandList1.toList == 1 :: Nil
 
     @test
     def append03(): Bool =
-        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: 2 :: Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+        DemandList1.append(List1.toDemandList(Nil), List1.toDemandList(1 :: 2 :: Nil)) |> DemandList1.toList == 1 :: 2 :: Nil
 
     @test
     def append04(): Bool =
-        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(Nil))           |> DemandList1.toList == 1 :: Nil
+        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(Nil)) |> DemandList1.toList == 1 :: Nil
 
     @test
     def append05(): Bool =
-        DemandList1.append(List1.toDemandList(1 :: 2 :: Nil), List1.toDemandList(Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+        DemandList1.append(List1.toDemandList(1 :: 2 :: Nil), List1.toDemandList(Nil)) |> DemandList1.toList == 1 :: 2 :: Nil
 
     @test
     def append06(): Bool =
-        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(2 :: Nil))      |> DemandList1.toList == 1 :: 2 :: Nil
+        DemandList1.append(List1.toDemandList(1 :: Nil), List1.toDemandList(2 :: Nil)) |> DemandList1.toList == 1 :: 2 :: Nil
 
     @test
     def append07(): Bool =
