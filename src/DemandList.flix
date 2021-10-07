@@ -326,13 +326,25 @@ namespace DemandList1 {
     }
 
     ///
+    /// Returns an infinite `DemandList` of repeating `x`s.
+    ///
+    pub def repeat(x: a): DemandList[a, d] =
+        LList(lazy repeatHelper(x))
+
+    ///
+    /// Helper function for `repeat`.
+    ///
+    def repeatHelper(x: a): DemandList[a, d] =
+        LCons(x, lazy repeatHelper(x))
+
+    ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
     pub def flatMap(f: a -> DemandList[b, false] & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
         if (reify ef)
-            flatMapL(f as a -> DemandList[b, false] & Pure,   l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
+            flatMapL(f as a -> DemandList[b, false] & Pure,  l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
         else
-            flatMapE(f as a -> DemandList[b, false] & Impure, l as DemandList[a, true]) as DemandList[b, not ef or d] & ef
+            flatMapE(f as a -> DemandList[b, true] & Impure, l as DemandList[a, true]) as DemandList[b, not ef or d] & ef
 
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
@@ -351,13 +363,13 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def flatMapE(f: a -> DemandList[b, false] & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
+    def flatMapE(f: a -> DemandList[b, true] & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
         flatMapEHelper(f, l, ks -> ks)
 
     ///
     /// Helper function for `flatMapE`.
     ///
-    def flatMapEHelper(f: a -> DemandList[b, false] & Impure, l: DemandList[a, true], k: DemandList[b, d] -> DemandList[b, d]): DemandList[b, true] & Impure = match l {
+    def flatMapEHelper(f: a -> DemandList[b, true] & Impure, l: DemandList[a, true], k: DemandList[b, true] -> DemandList[b, true]): DemandList[b, true] & Impure = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) =>
             let xs1 = f(x);

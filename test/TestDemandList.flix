@@ -491,6 +491,39 @@ namespace TestDemandList {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // repeat                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def repeat01(): Bool =
+        DemandList1.repeat(1) |> DemandList1.take(-1) |> DemandList1.toList == Nil
+
+    @test
+    def repeat02(): Bool =
+        DemandList1.repeat(1) |> DemandList1.take(0) |> DemandList1.toList == Nil
+
+    @test
+    def repeat03(): Bool =
+        DemandList1.repeat(1) |> DemandList1.take(1) |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def repeat04(): Bool =
+        DemandList1.repeat(1) |> DemandList1.take(2) |> DemandList1.toList == 1 :: 1 :: Nil
+
+    @test
+    def repeat05(): Bool =
+        DemandList1.repeat(1) |> DemandList1.take(3) |> DemandList1.toList == 1 :: 1 :: 1 :: Nil
+
+    @test
+    def repeat07(): Bool =
+        DemandList1.repeat(3) |> DemandList1.take(3) |> DemandList1.toList == 3 :: 3 :: 3 :: Nil
+
+    @test
+    def repeat08(): Bool =
+        DemandList1.repeat("a") |> DemandList1.take(3) |> DemandList1.toList == "a" :: "a" :: "a" :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // flatMap (pure)                                                          //
     /////////////////////////////////////////////////////////////////////////////
 
@@ -546,4 +579,62 @@ namespace TestDemandList {
     @test
     def flatMapImpure06(): Bool & Impure =
         List1.toDemandList(2 :: 3 :: Nil) |> DemandList1.flatMap(i -> DemandList1.range(i, i + 2) as & Impure) |> DemandList1.toList == 2 :: 3 :: 3 :: 4 :: Nil
+
+    
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap flatMap                                                         //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapFlatMap01(): Bool =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil)                                 |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i)) |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i)) |>
+        DemandList1.toList == 1 :: 2 :: 2 :: 2 :: 2 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: Nil
+
+    @test
+    def flatMapFlatMap02(): Bool & Impure =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil)                                             |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i) as & Impure) |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i))             |>
+        DemandList1.toList == 1 :: 2 :: 2 :: 2 :: 2 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: Nil
+    
+    @test
+    def flatMapFlatMap03(): Bool & Impure =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil)                                             |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i))             |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i) as & Impure) |>
+        DemandList1.toList == 1 :: 2 :: 2 :: 2 :: 2 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: Nil
+
+    @test
+    def flatMapFlatMap04(): Bool & Impure =
+        List1.toDemandList(1 :: 2 :: 3 :: Nil)                                             |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i) as & Impure) |>
+        DemandList1.flatMap(i -> DemandList1.repeat(i) |> DemandList1.take(i) as & Impure) |>
+        DemandList1.toList == 1 :: 2 :: 2 :: 2 :: 2 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: 3 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap flatMap fusion                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMapFusion01(): Bool & Impure =
+        use DemandList1.{DemandList};
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.flatMap(i -> { l := "a" :: deref l; DemandList.ECons(i, DemandList.ENil) }) |>
+        DemandList1.flatMap(i -> { l := "b" :: deref l; DemandList.ECons(i, DemandList.ENil) });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def flatMapFusion02(): Bool & Impure =
+        use DemandList1.{DemandList};
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.flatMap(i -> { l := "a" :: deref l; DemandList.ECons(i, DemandList.ENil) } as & Pure) |>
+        DemandList1.flatMap(i -> { l := "b" :: deref l; DemandList.ECons(i, DemandList.ENil) } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
 }
