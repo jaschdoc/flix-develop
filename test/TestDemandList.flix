@@ -756,4 +756,80 @@ namespace TestDemandList {
     def zip07(): Bool =
         DemandList1.zip(List1.toDemandList(1 :: 3 :: 5 :: 7 :: Nil), List1.toDemandList(2 :: 4 :: 6 :: 8 :: Nil)) |> DemandList1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile (pure)                                                        //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhilePure01(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(Nil: List[Int32])) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhilePure02(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(1 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhilePure03(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(4 :: Nil)) |> DemandList1.toList == 4 :: Nil
+
+    @test
+    def takeWhilePure04(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(1 :: 2 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhilePure05(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(1 :: 5 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhilePure06(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(5 :: 1 :: Nil)) |> DemandList1.toList == 5 :: Nil
+
+    @test
+    def takeWhilePure07(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(5 :: 8 :: Nil)) |> DemandList1.toList == 5 :: 8 :: Nil
+
+    @test
+    def takeWhilePure08(): Bool =
+        DemandList1.takeWhile(i -> i > 3, List1.toDemandList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil)) |> DemandList1.toList == 4 :: 6 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile (impure)                                                      //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhileImpure01(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(Nil: List[Int32])) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhileImpure02(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(1 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhileImpure03(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(4 :: Nil)) |> DemandList1.toList == 4 :: Nil
+
+    @test
+    def takeWhileImpure04(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(1 :: 2 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhileImpure05(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(1 :: 5 :: Nil)) |> DemandList1.toList == Nil
+
+    @test
+    def takeWhileImpure06(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(5 :: 1 :: Nil)) |> DemandList1.toList == 5 :: Nil
+
+    @test
+    def takeWhileImpure07(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(5 :: 8 :: Nil)) |> DemandList1.toList == 5 :: 8 :: Nil
+
+    @test
+    def takeWhileImpure08(): Bool & Impure =
+        DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil)) |> DemandList1.toList == 4 :: 6 :: Nil
+
+
+
 }
