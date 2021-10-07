@@ -831,5 +831,65 @@ namespace TestDemandList {
         DemandList1.takeWhile(i -> i > 3 as & Impure, List1.toDemandList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil)) |> DemandList1.toList == 4 :: 6 :: Nil
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile takeWhile                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhileTakeWhile01(): Bool =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.takeWhile(i -> i > 3) |> DemandList1.takeWhile(i -> i < 5) |> DemandList1.toList == 4 :: Nil
+
+    @test
+    def takeWhileTakeWhile02(): Bool & Impure =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.takeWhile(i -> i > 3 as & Impure) |> DemandList1.takeWhile(i -> i < 5) |> DemandList1.toList == 4 :: Nil
+
+    @test
+    def takeWhileTakeWhile03(): Bool & Impure =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.takeWhile(i -> i > 3) |> DemandList1.takeWhile(i -> i < 5 as & Impure) |> DemandList1.toList == 4 :: Nil
+
+    @test
+    def takeWhileTakeWhile04(): Bool & Impure =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.takeWhile(i -> i > 3 as & Impure) |> DemandList1.takeWhile(i -> i < 5 as & Impure) |> DemandList1.toList == 4 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // takeWhile takeWhile fusion                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhileTakeWhileFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.takeWhile(i -> { l := "a" :: deref l; i < 4 }) |>
+        DemandList1.takeWhile(i -> { l := "b" :: deref l; i < 4 });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def takeWhileTakeWhileFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.takeWhile(i -> { l := "a" :: deref l; i < 4 } as & Pure) |>
+        DemandList1.takeWhile(i -> { l := "b" :: deref l; i < 4 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+
+    @test
+    def takeWhileTakeWhileFusion03(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.takeWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.takeWhile(i -> { l := "b" :: deref l; i < 2 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: Nil)
+
+    @test
+    def takeWhileTakeWhileFusion04(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.takeWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.takeWhile(i -> { l := "b" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: Nil)
+
 
 }
