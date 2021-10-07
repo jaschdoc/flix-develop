@@ -964,4 +964,66 @@ namespace TestDemandList {
     @test
     def dropWhileImpure08(): Bool & Impure =
         DemandList1.dropWhile(i -> i > 3 as & Impure, List1.toDemandList(4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil)) |> DemandList1.toList == -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // dropWhile dropWhile                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def dropWhileDropWhile01(): Bool =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.dropWhile(i -> i < 5) |> DemandList1.dropWhile(i -> i > 1) |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def dropWhileDropWhile02(): Bool & Impure =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.dropWhile(i -> i < 5 as & Impure) |> DemandList1.dropWhile(i -> i > 1) |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def dropWhileDropWhile03(): Bool & Impure =
+        List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.dropWhile(i -> i < 5) |> DemandList1.dropWhile(i -> i > 1 as & Impure) |> DemandList1.toList == 1 :: Nil
+
+    @test
+    def dropWhileDropWhile04(): Bool & Impure =
+         List1.toDemandList(4 :: 5 :: 1 :: Nil) |> DemandList1.dropWhile(i -> i < 5 as & Impure) |> DemandList1.dropWhile(i -> i > 1 as & Impure) |> DemandList1.toList == 1 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // dropWhile dropWhile fusion                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def dropWhileDropWhileFusion01(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.dropWhile(i -> { l := "a" :: deref l; i < 3 }) |>
+        DemandList1.dropWhile(i -> { l := "b" :: deref l; i < 4 });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: Nil)
+
+    @test
+    def dropWhileDropWhileFusion02(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.dropWhile(i -> { l := "a" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.dropWhile(i -> { l := "b" :: deref l; i < 4 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: Nil)
+
+    @test
+    def dropWhileDropWhileFusion03(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.dropWhile(i -> { l := "a" :: deref l; i < 1 } as & Pure) |>
+        DemandList1.dropWhile(i -> { l := "b" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def dropWhileDropWhileFusion04(): Bool & Impure =
+        let l = ref Nil;
+        (1 :: 2 :: 3 :: Nil) |> List1.toDemandList |>
+        DemandList1.dropWhile(i -> { l := "a" :: deref l; i < 2 } as & Pure) |>
+        DemandList1.dropWhile(i -> { l := "b" :: deref l; i < 3 } as & Pure) |>
+        DemandList1.toList as & Impure;
+        List.reverse(deref l) == ("a" :: "a" :: "b" :: "b" :: Nil)
+
 }
