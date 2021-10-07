@@ -403,4 +403,40 @@ namespace DemandList1 {
         case LCons(x, xs) => f(x) and forall(f, force xs)
         case LList(xs)    => forall(f, force xs)
     }
+
+    ///
+    /// Returns a list where the element at index `i` is `(a, b)` where
+    /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
+    ///
+    /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
+    ///
+    pub def zip(l1: DemandList[a, d], l2: DemandList[b, e]): DemandList[(a, b), d or e] = match (l1, l2) {
+        case (ENil, _)                    => ENil
+        case (_, ENil)                    => ENil
+        case (ECons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zip(      xs,       ys)))
+        case (ECons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zip(      xs, force ys)))
+        case (LCons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zip(force xs,       ys)))
+        case (LCons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zip(force xs, force ys)))
+        case (LList(xs), LList(ys))       => LList(                   lazy zip(force xs, force ys))
+        case (xs, LList(ys))              => LList(                   lazy zip(      xs, force ys))
+        case (LList(xs), ys)              => LList(                   lazy zip(force xs,       ys))
+    }
+
+    
+
+/*
+            /////////////////////////////////////
+            //  DOES NOT TYPE CHECK YET        //
+            /////////////////////////////////////
+    ///
+    /// Returns a list where the element at index `i` is `f(a, b)` where
+    /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
+    ///
+    /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
+    ///
+    pub def zipWith(f: (a, b) -> c & ef, l1: DemandList[a, not ef or d], l2: DemandList[b, not ef or e]): DemandList[c, not ef or (d or e)] & ef =
+        map((x) -> f(fst(x), snd(x)), zip(l1, l2))
+*/
+
+
 }
