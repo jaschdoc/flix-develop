@@ -1,5 +1,5 @@
 namespace ParallelSet {
-    
+  /*  
     pub def count(f: a -> Bool & ef, s: Set[a]): Int32 & ef =
         if (reify ef)
             // parallelize
@@ -11,5 +11,5 @@ namespace ParallelSet {
                 
         else
             Set.foldLeft((acc, x) -> if (f(x)) 1 + acc else acc, 0, xs) as & ef
-
+*/
 }
