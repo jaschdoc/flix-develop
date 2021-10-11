@@ -15,9 +15,16 @@
  */
 
 
+/// Represents a mutable deque.
+pub enum MutDeque[a] {
+    case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
+}
+
 namespace MutDeque {
 
-    pub def new(): MutDeque[a] & Impure = ???
+    def minSize(): Int32 = 8
+
+    pub def new(): MutDeque[a] & Impure = MutDeque(ref Array.new(default, minSize()), ref 0, ref 0)
 
     pub def size(d: MutDeque[a]): Int32 & Impure = ???
 
@@ -30,5 +37,5 @@ namespace MutDeque {
     pub def pushFront(d: MutDeque[a]): Unit & Impure = ???
 
     pub def pushBack(d: MutDeque[a]): Unit & Impure = ???
-    
+
 }
