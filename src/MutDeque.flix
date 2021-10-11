@@ -26,9 +26,17 @@ namespace MutDeque {
 
     pub def new(): MutDeque[a] & Impure = MutDeque(ref Array.new(default, minSize()), ref 0, ref 0)
 
-    pub def size(d: MutDeque[a]): Int32 & Impure = ???
+    pub def size(d: MutDeque[a]): Int32 & Impure =
+        let MutDeque(_, f, b) = d;
+        let f1 = deref f1;
+        let b1 = deref b;
+        if (f1 < b1) b1 - f1 else f1 - b1
 
-    pub def isEmpty(d: MutDeque[a]): Bool & Impure = ???
+    pub def isEmpty(d: MutDeque[a]): Bool & Impure =
+        let MutDeque(_, f, b) = d;
+        let f1 = deref f1;
+        let b1 = deref b;
+        f1 == b1
 
     pub def popFront(d: MutDeque[a]): Unit & Impure = ???
     
