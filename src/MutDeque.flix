@@ -16,5 +16,19 @@
 
 
 namespace MutDeque {
+
+    pub def new(): MutDeque[a] & Impure = ???
+
+    pub def size(d: MutDeque[a]): Int32 & Impure = ???
+
+    pub def isEmpty(d: MutDeque[a]): Bool & Impure = ???
+
+    pub def popFront(d: MutDeque[a]): Unit & Impure = ???
+    
+    pub def popBack(d: MutDeque[a]): Unit & Impure = ???
+
+    pub def pushFront(d: MutDeque[a]): Unit & Impure = ???
+
+    pub def pushBack(d: MutDeque[a]): Unit & Impure = ???
     
 }
