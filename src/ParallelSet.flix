@@ -12,4 +12,11 @@ namespace ParallelSet {
         else
             Set.foldLeft((acc, x) -> if (f(x)) 1 + acc else acc, 0, xs) as & ef
 */
+
+    ///
+    /// Returns the set `s` as a `LazyList`.
+    ///
+    pub def toLazyList(s: Set[a]): LazyList[a] =
+        Set.foldLeft((acc, x) -> ECons(x, acc), ENil, s)
+
 }
