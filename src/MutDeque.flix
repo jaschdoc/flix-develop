@@ -21,29 +21,65 @@ pub enum MutDeque[a] {
 }
 
 namespace MutDeque {
+// TODO: Add Doc
+// TODO: Add tests
 
-    def minSize(): Int32 = 8
+    def minCapacity(): Int32 = 8
 
-    pub def new(): MutDeque[a] & Impure = MutDeque(ref Array.new(default, minSize()), ref 0, ref 0)
+    pub def new(): MutDeque[a] & Impure = MutDeque(ref Array.new(default, minCapacity()), ref 0, ref 0)
 
     pub def size(d: MutDeque[a]): Int32 & Impure =
-        let MutDeque(_, f, b) = d;
-        let f1 = deref f1;
+        let MutDeque(a, f, b) = d;
+        let f1 = deref f;
         let b1 = deref b;
-        if (f1 < b1) b1 - f1 else f1 - b1
+        if (f1 <= b1) b1 - f1 else Array.length(deref a) - (f1 - b1)
 
     pub def isEmpty(d: MutDeque[a]): Bool & Impure =
         let MutDeque(_, f, b) = d;
-        let f1 = deref f1;
+        let f1 = deref f;
         let b1 = deref b;
         f1 == b1
 
-    pub def popFront(d: MutDeque[a]): Unit & Impure = ???
-    
-    pub def popBack(d: MutDeque[a]): Unit & Impure = ???
+    // TODO: Collapse array if load factor < threshold
+    pub def popFront(d: MutDeque[a]): a & Impure =
+        let MutDeque(a, f, _) = d;
+        let a1 = deref a;
+        let f1 = deref f;
+        let x = a1[f1];
+        let c = Array.length(a1);
+        f := (f1 + 1) % c;
+        x
 
-    pub def pushFront(d: MutDeque[a]): Unit & Impure = ???
+    // TODO: Collapse array if load factor < threshold
+    pub def popBack(d: MutDeque[a]): a & Impure =
+        let MutDeque(a, _, b) = d;
+        let a1 = deref a;
+        let c = Array.length(a1);
+        let b1 = (deref b - 1) % c;
+        let x = a1[b1];
+        b := b1;
+        x
 
-    pub def pushBack(d: MutDeque[a]): Unit & Impure = ???
+    // TODO: Expand array if elements > capacity / 2
+    pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
+        let MutDeque(a, f, _) = d;
+        let a1 = deref a;
+        let c = Array.length(a1);
+        let f1 = (deref f - 1) % c;
+        a1[f1] = x;
+        a := a1;
+        f := f1;
+        ()
+
+    // TODO: Expand array if elements > capacity / 2
+    pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
+        let MutDeque(a, _, b) = d;
+        let a1 = deref a;
+        let c = Array.length(a1);
+        let b1 = deref b;
+        a1[b1] = x;
+        a := a1;
+        b := (b1 + 1) % c;
+        ()
 
 }

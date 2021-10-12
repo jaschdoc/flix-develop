@@ -15,7 +15,7 @@
  */
 
 
-namespace DemandList {
+namespace DemandList1 {
 
     ///
     /// Represents a lazy list.

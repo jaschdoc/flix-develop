@@ -18,9 +18,11 @@ namespace ParallelSet {
     ///
     pub def toLazyList(s: Set[a]): LazyList[a] =
         Set.foldLeft((acc, x) -> ECons(x, acc), ENil, s)
-
+    
+    /*
     pub def tester(s: Set[a]): Unit = match (reifyType a) {
         case ReifiedInt32 => ???
     }
+    */
 
 }
