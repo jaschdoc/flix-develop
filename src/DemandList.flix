@@ -15,7 +15,7 @@
  */
 
 
-namespace DemandList1 {
+namespace DemandList {
 
     ///
     /// Represents a lazy list.
@@ -159,7 +159,7 @@ namespace DemandList1 {
     }
 
     ///
-    /// Returns true if and only if `l` is the empty DemandList, i.e. `ENil`.
+    /// Returns true if and only if `l` is the empty LazyList, i.e. `ENil`.
     ///
     /// Does not force the tail of `l`.
     ///
@@ -189,7 +189,7 @@ namespace DemandList1 {
         case LCons(x, xs) => LList(lazy LCons(f(x), lazy mapL1(f, force xs)))
         case LList(xs)    => LList(                 lazy mapL1(f, force xs))
     }
-    
+
     ///
     /// Helper function for `mapL`.
     ///
@@ -199,7 +199,7 @@ namespace DemandList1 {
         case LCons(x, xs) => LCons(f(x), lazy mapL1(f, force xs))
         case LList(xs)    => LList(      lazy mapL1(f, force xs))
     }
-    
+
     ///
     /// Returns the result of applying `f` to every element in `l`.
     ///
@@ -207,7 +207,7 @@ namespace DemandList1 {
     ///
     def mapE(f: a -> b & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
         mapEAcc(f, l, ks -> ks)
-    
+
     ///
     /// Helper function for `mapE`.
     ///
@@ -291,7 +291,7 @@ namespace DemandList1 {
                 case LCons(x, xs) => LCons(x, lazy takeHelper(n - 1, force xs))
                 case LList(xs)    => LList(   lazy takeHelper(n,     force xs))
             }
-    
+
     ///
     /// Returns `l` without the first `n` elements.
     ///
@@ -387,8 +387,8 @@ namespace DemandList1 {
     ///
     pub def exists(f: a -> Bool & ef, l: DemandList[a, Forced]): Bool & ef = match l {
         case ENil         => false
-        case ECons(x, xs) => f(x) or exists(f, xs)
-        case LCons(x, xs) => f(x) or exists(f, force xs)
+        case ECons(x, xs) => if (f(x)) true else exists(f,       xs)
+        case LCons(x, xs) => if (f(x)) true else exists(f, force xs)
         case LList(xs)    => exists(f, force xs)
     }
 
@@ -399,11 +399,11 @@ namespace DemandList1 {
     ///
     pub def forall(f: a -> Bool & ef, l: DemandList[a, Forced]): Bool & ef = match l {
         case ENil         => true
-        case ECons(x, xs) => f(x) and forall(f, xs)
-        case LCons(x, xs) => f(x) and forall(f, force xs)
+        case ECons(x, xs) => if (f(x)) forall(f,       xs) else false
+        case LCons(x, xs) => if (f(x)) forall(f, force xs) else false
         case LList(xs)    => forall(f, force xs)
     }
-
+/*
     ///
     /// Returns a list where the element at index `i` is `(a, b)` where
     /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
@@ -413,15 +413,30 @@ namespace DemandList1 {
     pub def zip(l1: DemandList[a, d], l2: DemandList[b, e]): DemandList[(a, b), d or e] = match (l1, l2) {
         case (ENil, _)                    => ENil
         case (_, ENil)                    => ENil
-        case (ECons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zip(      xs,       ys)))
-        case (ECons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zip(      xs, force ys)))
-        case (LCons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zip(force xs,       ys)))
-        case (LCons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zip(force xs, force ys)))
-        case (LList(xs), LList(ys))       => LList(                   lazy zip(force xs, force ys))
-        case (xs, LList(ys))              => LList(                   lazy zip(      xs, force ys))
-        case (LList(xs), ys)              => LList(                   lazy zip(force xs,       ys))
+        case (ECons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zipHelper(      xs,       ys)))
+        case (ECons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zipHelper(      xs, force ys)))
+        case (LCons(x, xs), ECons(y, ys)) => LList(lazy LCons((x, y), lazy zipHelper(force xs,       ys)))
+        case (LCons(x, xs), LCons(y, ys)) => LList(lazy LCons((x, y), lazy zipHelper(force xs, force ys)))
+        case (LList(xs), LList(ys))       => LList(                   lazy zipHelper(force xs, force ys))
+        case (xs, LList(ys))              => LList(                   lazy zipHelper(      xs, force ys))
+        case (LList(xs), ys)              => LList(                   lazy zipHelper(force xs,       ys))
     }
-    
+
+    ///
+    /// Helper function for `zip`.
+    ///
+    def zipHelper(l1: DemandList[a, d], l2: DemandList[b, e]): DemandList[(a, b), d or e] = match (l1, l2) {
+        case (ENil, _)                    => ENil
+        case (_, ENil)                    => ENil
+        case (ECons(x, xs), ECons(y, ys)) => LCons((x, y), lazy zipHelper(      xs,       ys))
+        case (ECons(x, xs), LCons(y, ys)) => LCons((x, y), lazy zipHelper(      xs, force ys))
+        case (LCons(x, xs), ECons(y, ys)) => LCons((x, y), lazy zipHelper(force xs,       ys))
+        case (LCons(x, xs), LCons(y, ys)) => LCons((x, y), lazy zipHelper(force xs, force ys))
+        case (LList(xs), LList(ys))       => LList(lazy zipHelper(force xs, force ys))
+        case (xs, LList(ys))              => LList(lazy zipHelper(      xs, force ys))
+        case (LList(xs), ys)              => LList(lazy zipHelper(force xs,       ys))
+    }
+*/
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
     ///
@@ -432,15 +447,15 @@ namespace DemandList1 {
             takeWhileL(f as a -> Bool & Pure,   l as DemandList[a, false]) as DemandList[a, not ef or d] & ef
         else
             takeWhileE(f as a -> Bool & Impure, l as DemandList[a, Forced]) as DemandList[a, not ef or d] & ef
-    
+
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def takeWhileL(f: a -> Bool, l: DemandList[a, false]): DemandList[a, false] = 
+    def takeWhileL(f: a -> Bool, l: DemandList[a, false]): DemandList[a, false] =
         LList(lazy takeWhileLHelper(f, l))
-    
+
     ///
     /// Helper function for `takeWhileL`.
     ///
@@ -458,7 +473,7 @@ namespace DemandList1 {
     ///
     def takeWhileE(f: a -> Bool & Impure, l: DemandList[a, Forced]): DemandList[a, Forced] & Impure =
         takeWhileEAcc(f, l, ks -> ks)
-    
+
     ///
     /// Helper function for `takeWhileE`.
     ///
@@ -487,7 +502,7 @@ namespace DemandList1 {
     ///
     def dropWhileL(f: a -> Bool, l: DemandList[a, false]): DemandList[a, false] =
         LList(lazy dropWhileLHelper(f, l))
-    
+
     ///
     /// Helper function for `dropWhileL`.
     ///
@@ -509,19 +524,4 @@ namespace DemandList1 {
         case LCons(x, xs) => if (f(x)) dropWhileE(f, force xs) else l
         case LList(xs)    => dropWhileE(f, force xs)
     }
-
-/*
-    /////////////////////////////////////
-    //  DOES NOT TYPE CHECK YET        //
-    /////////////////////////////////////
-
-    ///
-    /// Returns a list where the element at index `i` is `f(a, b)` where
-    /// `a` is the element at index `i` in `l1` and `b` is the element at index `i` in `l2`.
-    ///
-    /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
-    ///
-    pub def zipWith(f: (a, b) -> c & ef, l1: DemandList[a, not ef or d], l2: DemandList[b, not ef or e]): DemandList[c, not ef or (d or e)] & ef =
-        map((x) -> f(fst(x), snd(x)), zip(l1, l2))
-*/
 }
