@@ -82,7 +82,6 @@ namespace MutDeque {
             a := a1;
             f := f1
 
-    // TODO: Expand array if elements > capacity / 2
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
