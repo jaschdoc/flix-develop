@@ -26,7 +26,7 @@ namespace MutDeque {
 
     def minCapacity(): Int32 = 8
 
-    pub def new(): MutDeque[a] & Impure = MutDeque(ref Array.new(default, minCapacity()), ref 0, ref 0)
+    pub def new(): MutDeque[a] & Impure = MutDeque(ref [default; minCapacity()], ref 0, ref 0)
 
     pub def size(d: MutDeque[a]): Int32 & Impure =
         let MutDeque(a, f, b) = d;
@@ -69,13 +69,18 @@ namespace MutDeque {
 
     // TODO: Expand array if elements > capacity / 2
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
-        let MutDeque(a, f, _) = d;
+        let MutDeque(a, f, b) = d;
         let a1 = deref a;
-        let c = Array.length(a1);
-        let f1 = (deref f - 1) `mod` c;
+        let l = Array.length(a1);
+        let f1 = (deref f - 1) `mod` l;
         a1[f1] = x;
-        a := a1;
-        f := f1
+        let b1 = deref b;
+        println("front: ${f1}"); // DEBUG
+        if (computeSize(l, f1, b1) >= l / 2)
+            expand(a1, f1, b1, d)
+        else
+            a := a1;
+            f := f1
 
     // TODO: Expand array if elements > capacity / 2
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
@@ -85,8 +90,9 @@ namespace MutDeque {
         let b1 = deref b;
         a1[b1] = x;
         let b2 = (b1 + 1) `mod` l;
-        if (computeSize(l, deref f, b2) >= l / 2)
-            expand(a1, deref f, b2, d)
+        let f1 = deref f;
+        if (computeSize(l, f1, b2) >= l / 2)
+            expand(a1, f1, b2, d)
         else
             a := a1;
             b := b2 
@@ -95,14 +101,16 @@ namespace MutDeque {
     /// Expands `d` to double its length.
     ///
     def expand(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
+        println("Expanding:${f}, ${b}"); // DEBUG
         let MutDeque(a1, f1, b1) = d;
         let l = Array.length(arr);
         let arr1 = [default; 2 * l];
-        if (f < b)
+        if (f <= b)
             Array.patch!(0, b - f, arr[f .. b], arr1)
         else {
             Array.patch!(0, b,     arr[0 .. b], arr1);
-            Array.patch!(b, l - f, arr[f .. l], arr1)
+            Array.patch!(b, l - f, arr[f .. l], arr1);
+            ()
         };
         f1 := 0;
         b1 := computeSize(l, f, b);
