@@ -30,9 +30,16 @@ namespace MutDeque {
 
     pub def size(d: MutDeque[a]): Int32 & Impure =
         let MutDeque(a, f, b) = d;
-        let f1 = deref f;
-        let b1 = deref b;
-        if (f1 <= b1) b1 - f1 else Array.length(deref a) - (f1 - b1)
+        computeSize(Array.length(deref a), deref f, deref b)
+
+    ///
+    /// Returns the size of a MutDeque, where `l` = array length, `f` = front index, `b` = back index.
+    ///
+    def computeSize(l: Int32, f: Int32, b: Int32): Int32 =
+        if (f <= b)
+            b - f
+        else
+            l - (f - b)
 
     pub def isEmpty(d: MutDeque[a]): Bool & Impure =
         let MutDeque(_, f, b) = d;
@@ -72,13 +79,34 @@ namespace MutDeque {
 
     // TODO: Expand array if elements > capacity / 2
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
-        let MutDeque(a, _, b) = d;
+        let MutDeque(a, f, b) = d;
         let a1 = deref a;
-        let c = Array.length(a1);
+        let l = Array.length(a1);
         let b1 = deref b;
         a1[b1] = x;
-        a := a1;
-        b := (b1 + 1) `mod` c
+        let b2 = (b1 + 1) `mod` l;
+        if (computeSize(l, deref f, b2) >= l / 2)
+            expand(a1, deref f, b2, d)
+        else
+            a := a1;
+            b := b2 
+
+    ///
+    /// Expands `d` to double its length.
+    ///
+    def expand(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
+        let MutDeque(a1, f1, b1) = d;
+        let l = Array.length(arr);
+        let arr1 = [default; 2 * l];
+        if (f < b)
+            Array.patch!(0, b - f, arr[f .. b], arr1)
+        else {
+            Array.patch!(0, b,     arr[0 .. b], arr1);
+            Array.patch!(b, l - f, arr[f .. l], arr1)
+        };
+        f1 := 0;
+        b1 := computeSize(l, f, b);
+        a1 := arr1
 
     ///
     /// Returns `a` mod `b`.
