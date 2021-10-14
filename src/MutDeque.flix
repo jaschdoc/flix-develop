@@ -32,6 +32,9 @@ namespace MutDeque {
     ///
     pub def new(): MutDeque[a] & Impure = MutDeque(ref [default; minCapacity()], ref 0, ref 0)
 
+    ///
+    /// Returns the number of elements in the MutDeque `d`.
+    ///
     pub def size(d: MutDeque[a]): Int32 & Impure =
         let MutDeque(_, f, b) = d;
         computeSize(capacity(d), deref f, deref b)
@@ -142,7 +145,6 @@ namespace MutDeque {
         b1 := computeSize(c, f, b);
         a1 := arr1
 
-
     ///
     /// Compresses MutDeque `d` if the load factor is below 1 / 2.
     ///
@@ -177,7 +179,6 @@ namespace MutDeque {
         } else
             ()
 
-        
     ///
     /// Returns `true` if the load factor is less than 1 / 2.
     ///
@@ -186,7 +187,6 @@ namespace MutDeque {
         let c = capacity(d);
         let loadFactor = loadFactorOf(s, c);
         loadFactor < 1.0f32 / 4.0f32 and s > 0 // and c > minCapacity()
-        
 
     ///
     /// Returns the load factor, given size `s` and capacity `c`.
@@ -201,56 +201,10 @@ namespace MutDeque {
         let MutDeque(a, _, _) = d;
         Array.length(deref a)
 
-
-/*
-    ///
-    /// Compresses the given mutable list `v` if needed.
-    ///
-    /// The mutable list will be shrunk to 1/2 of its size if the load factor is less than 1/4.
-    ///
-    pub def compress!(v: mut MutList[a]): Unit & Impure =
-        let c = capacity(v);
-        let len = length(v);
-        let loadFactor = Int32.toFloat32(len) / Int32.toFloat32(c);
-        if (loadFactor < 1.0f32/4.0f32 and len > 0) {
-            if (len == 1)
-                shrinkTo!(1, v)
-            else
-                shrinkTo!(c / 2, v)
-        }
-        else ()
-
-    ///
-    /// Shrinks the given mutable list `v` down to a capacity of `n` elements but no less than 8.
-    ///
-    /// Truncates the mutable list as needed.
-    ///
-    def shrinkTo!(n: Int32, v: MutList[a]): Unit & Impure =
-        let minCap = minCapacity();
-        let capv = capacity(v);
-        let MutList(a, l) = v;
-        if (n < capv and capv != minCap) {
-            let len = deref l;
-            let newCap = Order.max(n, minCap);
-            a := Array.slice(deref a, 0, newCap);
-            l := Order.min(len, newCap)
-        }
-        else ()
-
-*/
-
-
-
     ///
     /// Returns `a` mod `b`.
     ///
     def mod(a: Int32, b: Int32): Int32 =
         ((a % b) + b) % b
-
-    ///
-    /// Returns the absolute value of `x`.
-    ///
-    def _abs(x: Int32): Int32 =
-        if (x < 0) -x else x
 
 }
