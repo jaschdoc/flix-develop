@@ -178,4 +178,32 @@ namespace TestMutDeque {
             MutDeque.popFront(d) == Some(1) and
             MutDeque.popFront(d) == None
 
+    @test
+    def popFront04(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.pushBack(2, d);
+        MutDeque.pushBack(3, d);
+        MutDeque.popFront(d) == Some(1)     and
+            MutDeque.popFront(d) == Some(2) and
+            MutDeque.popFront(d) == Some(3) and
+            MutDeque.popFront(d) == None
+
+    @test
+    def popFront05(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushFront(1, d);
+        MutDeque.pushBack(2, d);
+        MutDeque.popFront(d) == Some(1)     and
+            MutDeque.popFront(d) == Some(2) and
+            MutDeque.popFront(d) == None
+    
+    @test
+    def popFront06(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.pushFront(2, d);
+        MutDeque.popFront(d) == Some(2)     and
+            MutDeque.popFront(d) == Some(1) and
+            MutDeque.popFront(d) == None
 }
