@@ -21,12 +21,17 @@ pub enum MutDeque[a] {
 }
 
 namespace MutDeque {
-// TODO: Add Doc
 // TODO: Add tests
 // TODO: Refactor `Array.length` to use `capacity`.
 
+    ///
+    /// Constant denoting the minimum allowed length of the backing array.
+    ///
     def minCapacity(): Int32 = 8
 
+    ///
+    /// Returns an empty MutDeque.
+    ///
     pub def new(): MutDeque[a] & Impure = MutDeque(ref [default; minCapacity()], ref 0, ref 0)
 
     pub def size(d: MutDeque[a]): Int32 & Impure =
@@ -42,13 +47,18 @@ namespace MutDeque {
         else
             l - (f - b)
 
+    ///
+    /// Returns `true` if the MutDeque `d` is empty.
+    ///
     pub def isEmpty(d: MutDeque[a]): Bool & Impure =
         let MutDeque(_, f, b) = d;
         let f1 = deref f;
         let b1 = deref b;
         f1 == b1
-
-    // TODO: Collapse array if load factor < threshold
+   
+    ///
+    /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
+    ///
     pub def popFront(d: MutDeque[a]): Option[a] & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
@@ -63,7 +73,9 @@ namespace MutDeque {
             Some(x)
         }
 
-    // TODO: Collapse array if load factor < threshold
+    ///
+    /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
+    ///
     pub def popBack(d: MutDeque[a]): Option[a] & Impure =
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
@@ -78,7 +90,9 @@ namespace MutDeque {
             Some(x)
         }
         
-
+    ///
+    /// Pushes `x` to the front of `d`.
+    ///
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
@@ -94,6 +108,9 @@ namespace MutDeque {
             f := f1
         }
 
+    ///
+    /// Pushes `x` to the back of `d`.
+    ///
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
