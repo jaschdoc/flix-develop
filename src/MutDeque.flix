@@ -67,7 +67,6 @@ namespace MutDeque {
         b := b1;
         x
 
-    // TODO: Expand array if elements > capacity / 2
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
@@ -75,12 +74,13 @@ namespace MutDeque {
         let f1 = (deref f - 1) `mod` l;
         a1[f1] = x;
         let b1 = deref b;
-        println("front: ${f1}"); // DEBUG
-        if (computeSize(l, f1, b1) >= l / 2)
+        if (computeSize(l, f1, b1) >= l / 2) {
             expand(a1, f1, b1, d)
-        else
+        }
+        else {
             a := a1;
             f := f1
+        }
 
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
@@ -90,17 +90,17 @@ namespace MutDeque {
         a1[b1] = x;
         let b2 = (b1 + 1) `mod` l;
         let f1 = deref f;
-        if (computeSize(l, f1, b2) >= l / 2)
+        if (computeSize(l, f1, b2) >= l / 2) {
             expand(a1, f1, b2, d)
-        else
+        }
+        else {
             a := a1;
             b := b2 
-
+        }
     ///
     /// Expands `d` to double its length.
     ///
     def expand(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
-        println("Expanding:${f}, ${b}"); // DEBUG
         let MutDeque(a1, f1, b1) = d;
         let l = Array.length(arr);
         let arr1 = [default; 2 * l];
@@ -108,8 +108,7 @@ namespace MutDeque {
             Array.patch!(0, b - f, arr[f .. b], arr1)
         else {
             Array.patch!(0, b,     arr[0 .. b], arr1);
-            Array.patch!(b, l - f, arr[f .. l], arr1);
-            ()
+            Array.patch!(b, l - f, arr[f .. l], arr1)
         };
         f1 := 0;
         b1 := computeSize(l, f, b);
@@ -119,17 +118,12 @@ namespace MutDeque {
     /// Returns `a` mod `b`.
     ///
     def mod(a: Int32, b: Int32): Int32 =
-        let r = a % b;
-        if (r < 0)
-            let r1 = abs(b) - abs(r);
-            if (a < 0) r1 else -r1
-        else
-            r
+        ((a % b) + b) % b
 
     ///
     /// Returns the absolute value of `x`.
     ///
-    def abs(x: Int32): Int32 =
+    def _abs(x: Int32): Int32 =
         if (x < 0) -x else x
 
 }
