@@ -206,4 +206,61 @@ namespace TestMutDeque {
         MutDeque.popFront(d) == Some(2)     and
             MutDeque.popFront(d) == Some(1) and
             MutDeque.popFront(d) == None
+    
+
+    /////////////////////////////////////////////////////////////////////////////
+    // popBack                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def popBack01(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.popBack(d) == None
+    
+    @test
+    def popBack02(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.popBack(d) == Some(1)
+
+    @test
+    def popBack03(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.pushBack(2, d);
+        MutDeque.pushBack(3, d);
+        MutDeque.popBack(d) == Some(3)     and
+            MutDeque.popBack(d) == Some(2) and
+            MutDeque.popBack(d) == Some(1) and
+            MutDeque.popBack(d) == None
+
+    @test
+    def popBack04(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushFront(1, d);
+        MutDeque.pushFront(2, d);
+        MutDeque.pushFront(3, d);
+        MutDeque.popBack(d) == Some(1)     and
+            MutDeque.popBack(d) == Some(2) and
+            MutDeque.popBack(d) == Some(3) and
+            MutDeque.popBack(d) == None
+
+    @test
+    def popBack05(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.pushFront(2, d);
+        MutDeque.popBack(d) == Some(1)     and
+            MutDeque.popBack(d) == Some(2) and
+            MutDeque.popBack(d) == None
+    
+    @test
+    def popBack06(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushFront(1, d);
+        MutDeque.pushBack(2, d);
+        MutDeque.popBack(d) == Some(2)     and
+            MutDeque.popBack(d) == Some(1) and
+            MutDeque.popBack(d) == None
+            
 }
