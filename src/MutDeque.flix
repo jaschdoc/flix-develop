@@ -21,7 +21,6 @@ pub enum MutDeque[a] {
 }
 
 namespace MutDeque {
-// TODO: Add tests
 
     ///
     /// Constant denoting the minimum allowed length of the backing array.
@@ -118,7 +117,7 @@ namespace MutDeque {
         a1[b1] = x;
         let b2 = (b1 + 1) `mod` c;
         let f1 = deref f;
-        if (computeSize(c, f1, b2) >= c / 2) { // refactor this
+        if (computeSize(c, f1, b2) >= c / 2) { // TODO: refactor this into helper function as in `pop` operations.
             expand!(a1, f1, b2, d)
         }
         else {
