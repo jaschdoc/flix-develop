@@ -101,6 +101,20 @@ namespace TestMutDeque {
         MutDeque.popFront(d);
 
         MutDeque.size(d) == 0
+
+    @test
+    def size07(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushFront(1, d);
+        MutDeque.popBack(d);
+        MutDeque.size(d) == 0
+    
+    @test
+    def size08(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.popFront(d);
+        MutDeque.size(d) == 0
     
     
     /////////////////////////////////////////////////////////////////////////////
