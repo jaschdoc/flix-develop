@@ -75,7 +75,7 @@ namespace MutDeque {
         a1[f1] = x;
         let b1 = deref b;
         if (computeSize(l, f1, b1) >= l / 2) {
-            expand(a1, f1, b1, d)
+            expand!(a1, f1, b1, d)
         }
         else {
             a := a1;
@@ -91,7 +91,7 @@ namespace MutDeque {
         let b2 = (b1 + 1) `mod` l;
         let f1 = deref f;
         if (computeSize(l, f1, b2) >= l / 2) {
-            expand(a1, f1, b2, d)
+            expand!(a1, f1, b2, d)
         }
         else {
             a := a1;
@@ -100,7 +100,7 @@ namespace MutDeque {
     ///
     /// Expands `d` to double its length.
     ///
-    def expand(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
+    def expand!(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a1, f1, b1) = d;
         let l = Array.length(arr);
         let arr1 = [default; 2 * l];
@@ -113,6 +113,29 @@ namespace MutDeque {
         f1 := 0;
         b1 := computeSize(l, f, b);
         a1 := arr1
+
+
+
+/*
+    ///
+    /// Compresses the given mutable list `v` if needed.
+    ///
+    /// The mutable list will be shrunk to 1/2 of its size if the load factor is less than 1/4.
+    ///
+    pub def compress!(v: mut MutList[a]): Unit & Impure =
+        let c = capacity(v);
+        let len = length(v);
+        let loadFactor = Int32.toFloat32(len) / Int32.toFloat32(c);
+        if (loadFactor < 1.0f32/4.0f32 and len > 0) {
+            if (len == 1)
+                shrinkTo!(1, v)
+            else
+                shrinkTo!(c / 2, v)
+        }
+        else ()
+*/
+
+
 
     ///
     /// Returns `a` mod `b`.
