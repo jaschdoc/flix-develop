@@ -22,7 +22,6 @@ pub enum MutDeque[a] {
 
 namespace MutDeque {
 // TODO: Add tests
-// TODO: Refactor `Array.length` to use `capacity`.
 
     ///
     /// Constant denoting the minimum allowed length of the backing array.
@@ -35,8 +34,8 @@ namespace MutDeque {
     pub def new(): MutDeque[a] & Impure = MutDeque(ref [default; minCapacity()], ref 0, ref 0)
 
     pub def size(d: MutDeque[a]): Int32 & Impure =
-        let MutDeque(a, f, b) = d;
-        computeSize(Array.length(deref a), deref f, deref b)
+        let MutDeque(_, f, b) = d;
+        computeSize(capacity(d), deref f, deref b)
 
     ///
     /// Returns the size of a MutDeque, where `l` = array length, `f` = front index, `b` = back index.
@@ -67,7 +66,7 @@ namespace MutDeque {
             None
         else {
             let x = a1[f1];
-            let c = Array.length(a1);
+            let c = capacity(d);
             f := (f1 + 1) `mod` c;
             compress!(d);
             Some(x)
@@ -79,7 +78,7 @@ namespace MutDeque {
     pub def popBack(d: MutDeque[a]): Option[a] & Impure =
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
-        let c = Array.length(a1);
+        let c = capacity(d);
         let b1 = (deref b - 1) `mod` c;
         if (isEmpty(d))
             None
@@ -96,11 +95,11 @@ namespace MutDeque {
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
-        let l = Array.length(a1);
-        let f1 = (deref f - 1) `mod` l;
+        let c = capacity(d);
+        let f1 = (deref f - 1) `mod` c;
         a1[f1] = x;
         let b1 = deref b;
-        if (computeSize(l, f1, b1) >= l / 2) {
+        if (computeSize(c, f1, b1) >= c / 2) {
             expand!(a1, f1, b1, d)
         }
         else {
@@ -114,12 +113,12 @@ namespace MutDeque {
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let a1 = deref a;
-        let l = Array.length(a1);
+        let c = capacity(d);
         let b1 = deref b;
         a1[b1] = x;
-        let b2 = (b1 + 1) `mod` l;
+        let b2 = (b1 + 1) `mod` c;
         let f1 = deref f;
-        if (computeSize(l, f1, b2) >= l / 2) { // refactor this
+        if (computeSize(c, f1, b2) >= c / 2) { // refactor this
             expand!(a1, f1, b2, d)
         }
         else {
@@ -132,16 +131,16 @@ namespace MutDeque {
     ///
     def expand!(arr: Array[a], f: Int32, b: Int32, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a1, f1, b1) = d;
-        let l = Array.length(arr);
-        let arr1 = [default; 2 * l];
+        let c = capacity(d);
+        let arr1 = [default; 2 * c];
         if (f <= b)
             Array.patch!(0, b - f, arr[f .. b], arr1)
         else {
             Array.patch!(0, b,     arr[0 .. b], arr1);
-            Array.patch!(b, l - f, arr[f .. l], arr1)
+            Array.patch!(b, c - f, arr[f .. c], arr1)
         };
         f1 := 0;
-        b1 := computeSize(l, f, b);
+        b1 := computeSize(c, f, b);
         a1 := arr1
 
 
@@ -151,8 +150,7 @@ namespace MutDeque {
     def compress!(d: MutDeque[a]): Unit & Impure =
         if (shouldBeCompressed(d)) {
             shrink!(d)
-        }
-        else
+        } else
             ()
 
     ///
