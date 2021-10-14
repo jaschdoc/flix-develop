@@ -116,12 +116,26 @@ namespace TestMutDeque {
         let d = MutDeque.new();
         MutDeque.pushBack(1, d);
         not (MutDeque.isEmpty(d))
-
+    
     @test
     def isEmpty03(): Bool & Impure =
         let d = MutDeque.new();
+        MutDeque.pushBack(1, d);
+        MutDeque.popBack(d);
+        MutDeque.isEmpty(d)
+
+    @test
+    def isEmpty04(): Bool & Impure =
+        let d = MutDeque.new();
         MutDeque.pushFront(1, d);
         not (MutDeque.isEmpty(d))
+
+    @test
+    def isEmpty05(): Bool & Impure =
+        let d = MutDeque.new();
+        MutDeque.pushFront(1, d);
+        MutDeque.popFront(d);
+        MutDeque.isEmpty(d)
 
 
     /////////////////////////////////////////////////////////////////////////////
