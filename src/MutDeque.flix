@@ -23,6 +23,7 @@ pub enum MutDeque[a] {
 namespace MutDeque {
 // TODO: Add Doc
 // TODO: Add tests
+// TODO: Refactor `Array.length` to use `capacity`.
 
     def minCapacity(): Int32 = 8
 
@@ -90,7 +91,7 @@ namespace MutDeque {
         a1[b1] = x;
         let b2 = (b1 + 1) `mod` l;
         let f1 = deref f;
-        if (computeSize(l, f1, b2) >= l / 2) {
+        if (computeSize(l, f1, b2) >= l / 2) { // refactor this
             expand!(a1, f1, b2, d)
         }
         else {
@@ -115,6 +116,65 @@ namespace MutDeque {
         a1 := arr1
 
 
+    ///
+    /// Compresses MutDeque `d` if the load factor is below 1 / 2.
+    ///
+    def _compress!(d: MutDeque[a]): Unit & Impure =
+        if (shouldBeCompressed(d)){
+            shrink!(d)
+        }
+        else
+            ()
+
+    ///
+    /// Shrinks MutDeque `d` to half its size unless it's than the minimum capacity.
+    ///
+    def shrink!(d: MutDeque[a]): Unit & Impure =
+        let MutDeque(a, f, b) = d;
+        let mc = minCapacity();
+        let c = capacity(d);
+        if (c > mc) {
+            let a1 = deref a;
+            let f1 = deref f;
+            let b1 = deref b;
+            let s = size(d);
+            let arr = [default; c / 2];
+            if (f1 < b1) {
+                Array.patch!(0, b1 - f1, a1[f1 .. b1], arr)
+            } else {
+                Array.patch!(0,  b1,     a1[0 .. b1], arr);
+                Array.patch!(b1, s - f1, a1[f1 .. s], arr)
+            };
+            a := arr;
+            f := 0;
+            b := s
+        } else
+            ()
+
+        
+    ///
+    /// Returns `true` if the load factor is less than 1 / 2.
+    ///
+    def shouldBeCompressed(d: MutDeque[a]): Bool & Impure =
+        let s = size(d);
+        let c = capacity(d);
+        let loadFactor = loadFactorOf(s, c);
+        loadFactor < 1.0f32 / 4.0f32 and s > 0 // and c > minCapacity()
+        
+
+    ///
+    /// Returns the load factor, given size `s` and capacity `c`.
+    ///
+    def loadFactorOf(s: Int32, c: Int32): Float32 =
+        Int32.toFloat32(s) / Int32.toFloat32(c)
+
+    ///
+    /// Returns the capacity of `d`.
+    ///
+    def capacity(d: MutDeque[a]): Int32 & Impure =
+        let MutDeque(a, _, _) = d;
+        Array.length(deref a)
+
 
 /*
     ///
@@ -133,6 +193,24 @@ namespace MutDeque {
                 shrinkTo!(c / 2, v)
         }
         else ()
+
+    ///
+    /// Shrinks the given mutable list `v` down to a capacity of `n` elements but no less than 8.
+    ///
+    /// Truncates the mutable list as needed.
+    ///
+    def shrinkTo!(n: Int32, v: MutList[a]): Unit & Impure =
+        let minCap = minCapacity();
+        let capv = capacity(v);
+        let MutList(a, l) = v;
+        if (n < capv and capv != minCap) {
+            let len = deref l;
+            let newCap = Order.max(n, minCap);
+            a := Array.slice(deref a, 0, newCap);
+            l := Order.min(len, newCap)
+        }
+        else ()
+
 */
 
 
