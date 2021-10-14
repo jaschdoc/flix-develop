@@ -49,24 +49,35 @@ namespace MutDeque {
         f1 == b1
 
     // TODO: Collapse array if load factor < threshold
-    pub def popFront(d: MutDeque[a]): a & Impure =
+    pub def popFront(d: MutDeque[a]): Option[a] & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
         let f1 = deref f;
-        let x = a1[f1];
-        let c = Array.length(a1);
-        f := (f1 + 1) `mod` c;
-        x
+        if (isEmpty(d))
+            None
+        else {
+            let x = a1[f1];
+            let c = Array.length(a1);
+            f := (f1 + 1) `mod` c;
+            compress!(d);
+            Some(x)
+        }
 
     // TODO: Collapse array if load factor < threshold
-    pub def popBack(d: MutDeque[a]): a & Impure =
+    pub def popBack(d: MutDeque[a]): Option[a] & Impure =
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
         let c = Array.length(a1);
         let b1 = (deref b - 1) `mod` c;
-        let x = a1[b1];
-        b := b1;
-        x
+        if (isEmpty(d))
+            None
+        else {
+            let x = a1[b1];
+            b := b1;
+            compress!(d);
+            Some(x)
+        }
+        
 
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
@@ -98,6 +109,7 @@ namespace MutDeque {
             a := a1;
             b := b2 
         }
+
     ///
     /// Expands `d` to double its length.
     ///
@@ -119,8 +131,8 @@ namespace MutDeque {
     ///
     /// Compresses MutDeque `d` if the load factor is below 1 / 2.
     ///
-    def _compress!(d: MutDeque[a]): Unit & Impure =
-        if (shouldBeCompressed(d)){
+    def compress!(d: MutDeque[a]): Unit & Impure =
+        if (shouldBeCompressed(d)) {
             shrink!(d)
         }
         else
