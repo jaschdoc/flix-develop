@@ -64,8 +64,9 @@ namespace MutDeque {
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
         let f1 = deref f;
-        if (isEmpty(d))
+        if (isEmpty(d)) {
             None
+        }
         else {
             let x = a1[f1];
             let c = capacity(d);
@@ -122,21 +123,16 @@ namespace MutDeque {
     /// Expands `d` to double its length.
     ///
     def expand!(d: MutDeque[a]): Unit & Impure =
-        if (shouldExpand(d)) {
+        if (shouldExpand(d))
             grow!(d)
-        } else
+        else
             ()
 
     ///
     /// Returns `true` if the load factor is greater or equal to 1 / 2.
     ///
     def shouldExpand(d: MutDeque[a]): Bool & Impure =
-        let s = size(d);
-        let c = capacity(d);
-        let loadFactor = loadFactorOf(s, c);
-        let a: Float32 = 1.0f32;
-        let b: Float32 = 2.0f32;
-        loadFactor > a / b and s > 0
+        loadFactorOf(size(d), capacity(d)) >= 3.0f32 / 4.0f32
 
     ///
     /// Expands the MutDeque `d` to double its size.
@@ -163,9 +159,9 @@ namespace MutDeque {
     /// Compresses MutDeque `d` if the load factor is below 1 / 2.
     ///
     def compress!(d: MutDeque[a]): Unit & Impure =
-        if (shouldCompress(d)) {
+        if (shouldCompress(d))
             shrink!(d)
-        } else
+        else
             ()
 
     ///
@@ -197,12 +193,7 @@ namespace MutDeque {
     /// Returns `true` if the load factor is less than 1 / 2.
     ///
     def shouldCompress(d: MutDeque[a]): Bool & Impure =
-        let s = size(d);
-        let c = capacity(d);
-        let loadFactor = loadFactorOf(s, c);
-        let a: Float32 = 1.0f32;
-        let b: Float32 = 2.0f32;
-        loadFactor < a / b and s > 0
+        loadFactorOf(size(d), capacity(d)) <= 1.0f32 / 4.0f32
 
     ///
     /// Returns the load factor, given size `s` and capacity `c`.
@@ -221,6 +212,6 @@ namespace MutDeque {
     /// Returns `a` mod `b`.
     ///
     def mod(a: Int32, b: Int32): Int32 =
-        ((a % b) + b) % b
+        (a + b) % b
 
 }
