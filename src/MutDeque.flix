@@ -63,8 +63,7 @@ namespace MutDeque {
             let a1 = deref a;
             let f1 = deref f;
             let x = a1[f1];
-            let c = capacity(d);
-            f := (f1 + 1) `mod` c;
+            f := (f1 + 1) `mod` capacity(d);
             compress!(d);
             Some(x)
         }
@@ -79,8 +78,7 @@ namespace MutDeque {
         else {
             let MutDeque(a, _, b) = d;
             let a1 = deref a;
-            let c = capacity(d);
-            let b1 = (deref b - 1) `mod` c;
+            let b1 = (deref b - 1) `mod` capacity(d);
             let x = a1[b1];
             b := b1;
             compress!(d);
@@ -93,8 +91,7 @@ namespace MutDeque {
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
-        let c = capacity(d);
-        let f1 = (deref f - 1) `mod` c;
+        let f1 = (deref f - 1) `mod` capacity(d);
         a1[f1] = x;
         f := f1;
         expand!(d)
@@ -105,10 +102,9 @@ namespace MutDeque {
     pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
-        let c = capacity(d);
         let b1 = deref b;
         a1[b1] = x;
-        b := (b1 + 1) `mod` c;
+        b := (b1 + 1) `mod` capacity(d);
         expand!(d)
 
     ///
@@ -170,10 +166,10 @@ namespace MutDeque {
     def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit & Impure =
         let c = Array.length(a);
         if (f < b) {
-            Array.patch!(0, b - f, a, a1)
+            Array.updateSequence!(0, a[f .. b], a1)
         } else {
-            Array.patch!(0, b,     a, a1);
-            Array.patch!(b, c - f, a, a1)
+            Array.updateSequence!(0, a[0 .. b], a1);
+            Array.updateSequence!(b, a[f .. c], a1)
         }
 
     ///
