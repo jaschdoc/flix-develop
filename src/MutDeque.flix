@@ -25,13 +25,13 @@ namespace MutDeque {
     ///
     /// Returns an empty MutDeque.
     ///
-    pub def new(): MutDeque[Int32] & Impure =
+    pub def new(): MutDeque[a] & Impure =
         MutDeque(ref [default; minCapacity()], ref 0, ref 0)
 
     ///
     /// Returns the number of elements in the MutDeque `d`.
     ///
-    pub def size(d: MutDeque[Int32]): Int32 & Impure =
+    pub def size(d: MutDeque[a]): Int32 & Impure =
         let MutDeque(_, f, b) = d;
         computeSize(capacity(d), deref f, deref b)
 
@@ -47,14 +47,14 @@ namespace MutDeque {
     ///
     /// Returns `true` if the MutDeque `d` is empty.
     ///
-    pub def isEmpty(d: MutDeque[Int32]): Bool & Impure =
+    pub def isEmpty(d: MutDeque[a]): Bool & Impure =
         let MutDeque(_, f, b) = d;
         deref f == deref b
    
     ///
     /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
     ///
-    pub def popFront(d: MutDeque[Int32]): Option[Int32] & Impure =
+    pub def popFront(d: MutDeque[a]): Option[a] & Impure =
         if (isEmpty(d)) {
             None
         }
@@ -71,7 +71,7 @@ namespace MutDeque {
     ///
     /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
     ///
-    pub def popBack(d: MutDeque[Int32]): Option[Int32] & Impure =
+    pub def popBack(d: MutDeque[a]): Option[a] & Impure =
         if (isEmpty(d)) {
             None
         }
@@ -88,7 +88,7 @@ namespace MutDeque {
     ///
     /// Pushes `x` to the front of `d`.
     ///
-    pub def pushFront(x: Int32, d: MutDeque[Int32]): Unit & Impure =
+    pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
         let f1 = (deref f - 1) `mod` capacity(d);
@@ -99,7 +99,7 @@ namespace MutDeque {
     ///
     /// Pushes `x` to the back of `d`.
     ///
-    pub def pushBack(x: Int32, d: MutDeque[Int32]): Unit & Impure =
+    pub def pushBack(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
         let b1 = deref b;
@@ -110,67 +110,47 @@ namespace MutDeque {
     ///
     /// Doubles the capacity of `d` if the load factor is greater than or equal to `maxLoadFactor`.
     ///
-    def expand!(d: MutDeque[Int32]): Unit & Impure =
+    def expand!(d: MutDeque[a]): Unit & Impure =
         if (shouldExpand(d)) grow!(d) else ()
 
     ///
     /// Returns `true` if the load factor is equal to `maxLoadFactor`.
     ///
-    def shouldExpand(d: MutDeque[Int32]): Bool & Impure =
+    def shouldExpand(d: MutDeque[a]): Bool & Impure =
         loadFactorOf(size(d), capacity(d)) >= maxLoadFactor()
 
     ///
     /// Doubles the capacity of `d`.
     ///
-    def grow!(d: MutDeque[Int32]): Unit & Impure = {
+    def grow!(d: MutDeque[a]): Unit & Impure = {
         let MutDeque(a, f, b) = d;
         let c = capacity(d);
         let arr = [default; 2 * c];
-        {
-            println("Front: ${deref f}");
-            println("Back: ${deref b}")
-        };
         copyElements!(deref f, deref b, deref a, arr);
         a := arr;
         b := computeSize(c, deref f, deref b);
-        f := 0;
-        {
-            print("Array is now: [");
-            Array.foreach(x -> print("${x}, "), deref a);
-            println("]");
-            println("^^^^ In `grow!` ^^^^")
-        }
+        f := 0
     }
 
     ///
     /// Compresses MutDeque `d` if the load factor is below `minLoadFactor`.
     ///
-    def compress!(d: MutDeque[Int32]): Unit & Impure =
+    def compress!(d: MutDeque[a]): Unit & Impure =
         if (shouldCompress(d)) shrink!(d) else ()
 
     ///
     /// Shrinks MutDeque `d` to half its size unless it's than the minimum capacity.
     ///
-    def shrink!(d: MutDeque[Int32]): Unit & Impure =
+    def shrink!(d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
         let mc = minCapacity();
         let c = capacity(d);
         if (c > mc) {
             let arr = [default; c / 2];
-            {
-                println("Front: ${deref f}");
-                println("Back: ${deref b}")
-            };
             copyElements!(deref f, deref b, deref a, arr);
             a := arr;
             b := computeSize(c, deref f, deref b);
-            f := 0;
-            {
-                print("Array is now: [");
-                Array.foreach(x -> print("${x}, "), deref a);
-                println("]");
-                println("^^^^ In `shrink!` ^^^^")
-            }
+            f := 0
         } else {
             ()
         }
@@ -178,27 +158,19 @@ namespace MutDeque {
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
-    def copyElements!(f: Int32, b: Int32, a: Array[Int32], a1: Array[Int32]): Unit & Impure =
+    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit & Impure =
         let c = Array.length(a);
         if (f < b) {
             Array.updateSequence!(0,     a[f .. b], a1)
         } else {
             Array.updateSequence!(0,     a[f .. c], a1);
-            Array.updateSequence!(c - f, a[0 .. b], a1);
-            print("Array before: [");
-            Array.foreach(x -> print("${x}, "), a);
-            print("]");
-            println("");
-            print("Array after:  [");
-            Array.foreach(x -> print("${x}, "), a1);
-            print("]");
-            println("")
+            Array.updateSequence!(c - f, a[0 .. b], a1)
         }
 
     ///
     /// Returns `true` if the load factor is less than 1 / 4.
     ///
-    def shouldCompress(d: MutDeque[Int32]): Bool & Impure =
+    def shouldCompress(d: MutDeque[a]): Bool & Impure =
         loadFactorOf(size(d), capacity(d)) <= minLoadFactor()
 
     ///
@@ -210,7 +182,7 @@ namespace MutDeque {
     ///
     /// Returns the capacity of `d`.
     ///
-    def capacity(d: MutDeque[Int32]): Int32 & Impure =
+    def capacity(d: MutDeque[a]): Int32 & Impure =
         let MutDeque(a, _, _) = d;
         Array.length(deref a)
 
