@@ -133,13 +133,7 @@ namespace MutDeque {
         let b = deref b0;
         let c = capacity(d);
         let arr = [default; 2 * c];
-        if (f < b) {
-            Array.patch!(0, b - f, a[f .. b], arr)
-        }
-        else {
-            Array.patch!(0, b,     a[0 .. b], arr);
-            Array.patch!(b, c - f, a[f .. c], arr)
-        };
+        copyElements!(f, b, a, arr);
         a0 := arr;
         f0 := 0;
         b0 := computeSize(c, f, b)
@@ -161,19 +155,25 @@ namespace MutDeque {
             let a = deref a0;
             let f = deref f0;
             let b = deref b0;
-            let s = size(d);
             let arr = [default; c / 2];
-            if (f < b) {
-                Array.patch!(0, b - f, a[f .. b], arr)
-            } else {
-                Array.patch!(0, b,     a[0 .. b], arr);
-                Array.patch!(b, s - f, a[f .. s], arr)
-            };
+            copyElements!(f, b, a, arr);
             a0 := arr;
             f0 := 0;
-            b0 := s
+            b0 := computeSize(c, f, b)
         } else {
             ()
+        }
+
+    ///
+    /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
+    ///
+    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit & Impure =
+        let c = Array.length(a);
+        if (f < b) {
+            Array.patch!(0, b - f, a, a1)
+        } else {
+            Array.patch!(0, b,     a, a1);
+            Array.patch!(b, c - f, a, a1)
         }
 
     ///
@@ -215,4 +215,5 @@ namespace MutDeque {
     /// Constant denoting the largest valid load factor.
     ///
     def maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
+
 }
