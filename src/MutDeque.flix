@@ -108,7 +108,7 @@ namespace MutDeque {
         expand!(d)
 
     ///
-    /// Doubles the capacity of `d` if the capacity is full.
+    /// Doubles the capacity of `d` if the load factor is greater than or equal to `maxLoadFactor`.
     ///
     def expand!(d: MutDeque[a]): Unit & Impure =
         if (shouldExpand(d)) grow!(d) else ()
