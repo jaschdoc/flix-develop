@@ -55,13 +55,13 @@ namespace MutDeque {
     /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
     ///
     pub def popFront(d: MutDeque[a]): Option[a] & Impure =
-        let MutDeque(a, f, _) = d;
-        let a1 = deref a;
-        let f1 = deref f;
         if (isEmpty(d)) {
             None
         }
         else {
+            let MutDeque(a, f, _) = d;
+            let a1 = deref a;
+            let f1 = deref f;
             let x = a1[f1];
             let c = capacity(d);
             f := (f1 + 1) `mod` c;
@@ -73,14 +73,14 @@ namespace MutDeque {
     /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
     ///
     pub def popBack(d: MutDeque[a]): Option[a] & Impure =
-        let MutDeque(a, _, b) = d;
-        let a1 = deref a;
-        let c = capacity(d);
-        let b1 = (deref b - 1) `mod` c;
         if (isEmpty(d)) {
             None
         }
         else {
+            let MutDeque(a, _, b) = d;
+            let a1 = deref a;
+            let c = capacity(d);
+            let b1 = (deref b - 1) `mod` c;
             let x = a1[b1];
             b := b1;
             compress!(d);
