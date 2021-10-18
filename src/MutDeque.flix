@@ -210,11 +210,13 @@ namespace MutDeque {
 
     ///
     /// Constant denoting the smallest valid load factor.
+    /// The load factor is the ratio of elements in the array divided by the total capacity of the array.
     ///
     def minLoadFactor(): Float32 = 1.0f32 / 4.0f32
 
     ///
     /// Constant denoting the largest valid load factor.
+    /// The load factor is the ratio of elements in the array divided by the total capacity of the array.
     ///
     def maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
 
