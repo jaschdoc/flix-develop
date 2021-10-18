@@ -69,7 +69,7 @@ namespace MutDeque {
         if (isEmpty(d)) {
             None
         }
-        else { // Get the element at the front, update the index, compress backing array if needed, return `Some(element)`.
+        else { // Get the element `x` at the front, update index, optionally compress array, return `Some(x)`.
             let MutDeque(a, f, _) = d;
             let a1 = deref a;
             let f1 = deref f;
@@ -86,7 +86,7 @@ namespace MutDeque {
         if (isEmpty(d)) {
             None
         }
-        else {
+        else { // Update index such that back points to a valid element `x`, get element, optionally compress array, return `Some(x)`.
             let MutDeque(a, _, b) = d;
             let a1 = deref a;
             let b1 = (deref b - 1) `mod` capacity(d);
