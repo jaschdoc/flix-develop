@@ -34,6 +34,25 @@ pub enum MutDeque[a] {
 namespace MutDeque {
 
     ///
+    /// Constant denoting the minimum capacity of the backing array.
+    ///
+    def minCapacity(): Int32 = 8
+
+    ///
+    /// Constant denoting the smallest valid load factor.
+    /// The load factor is the ratio between number of elemnts in the array and its total capacity.
+    /// I.e. `(number of elements) / capacity`.
+    ///
+    def minLoadFactor(): Float32 = 1.0f32 / 4.0f32
+
+    ///
+    /// Constant denoting the largest valid load factor.
+    /// The load factor is the ratio between number of elemnts in the array and its total capacity.
+    /// I.e. `(number of elements) / capacity`.
+    ///
+    def maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
+
+    ///
     /// Returns an empty MutDeque.
     ///
     pub def new(): MutDeque[a] & Impure =
@@ -49,11 +68,11 @@ namespace MutDeque {
     ///
     /// Returns the size of a MutDeque, where `l` = array length, `f` = front index, `b` = back index.
     ///
-    def computeSize(l: Int32, f: Int32, b: Int32): Int32 =
-        if (f <= b)
+    def computeSize(c: Int32, f: Int32, b: Int32): Int32 =
+        if (f <= b) // The elements laid out without "wrapping around" the array.
             b - f
         else
-            l - (f - b)
+            c - (f - b) // Subtract the complement of number of elements from the capacity
 
     ///
     /// Returns `true` if the MutDeque `d` is empty.
@@ -202,22 +221,5 @@ namespace MutDeque {
     ///
     def mod(a: Int32, b: Int32): Int32 =
         (a + b) % b
-
-    ///
-    /// Constant denoting the minimum capacity of the backing array.
-    ///
-    def minCapacity(): Int32 = 8
-
-    ///
-    /// Constant denoting the smallest valid load factor.
-    /// The load factor is the ratio of elements in the array divided by the total capacity of the array.
-    ///
-    def minLoadFactor(): Float32 = 1.0f32 / 4.0f32
-
-    ///
-    /// Constant denoting the largest valid load factor.
-    /// The load factor is the ratio of elements in the array divided by the total capacity of the array.
-    ///
-    def maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
 
 }
