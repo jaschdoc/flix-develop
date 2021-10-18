@@ -15,7 +15,14 @@
  */
 
 
+///
 /// Represents a mutable deque.
+///
+/// Explanation of component types (from left to right):
+/// The 1st component is a reference the backing array.
+/// The 2nd component is a reference to the front index.
+/// The 3rd component is a reference to the back index.
+///
 pub enum MutDeque[a] {
     case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
 }
