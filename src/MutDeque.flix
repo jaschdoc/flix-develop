@@ -150,7 +150,7 @@ namespace MutDeque {
         if (shouldCompress(d)) shrink!(d) else ()
 
     ///
-    /// Shrinks MutDeque `d` to half its size unless it's than the minimum capacity.
+    /// Shrinks MutDeque `d` to half its size but never below `minCapacity`.
     ///
     def shrink!(d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
