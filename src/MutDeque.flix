@@ -23,6 +23,10 @@
 /// The 2nd component is a reference to the front index.
 /// The 3rd component is a reference to the back index.
 ///
+/// If front == back then the deque is empty.
+/// Otherwise, the front index always points to an element (going counter-clockwise)
+/// and the back index always points to the first empty index (going clockwise).
+///
 pub enum MutDeque[a] {
     case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
 }
@@ -65,7 +69,7 @@ namespace MutDeque {
         if (isEmpty(d)) {
             None
         }
-        else {
+        else { // Get the element at the front, update the index, compress backing array if needed, return `Some(element)`.
             let MutDeque(a, f, _) = d;
             let a1 = deref a;
             let f1 = deref f;
