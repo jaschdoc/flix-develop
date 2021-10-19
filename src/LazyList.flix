@@ -721,9 +721,19 @@ namespace LazyList1 {
     ///
     def flatMapL(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] = match l {
         case ENil         => ENil
-        case ECons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f,       xs))))
-        case LCons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapL(f, force xs))))
-        case LList(xs)    => LList(lazy flatMapL(f, force xs))
+        case ECons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapLHelper(f,       xs))))
+        case LCons(x, xs) => LList(lazy append(f(x), LList(lazy flatMapLHelper(f, force xs))))
+        case LList(xs)    => LList(lazy flatMapLHelper(f, force xs))
+    }
+
+    ///
+    /// Helper fucntion for `flatMapL`.
+    ///
+    def flatMapLHelper(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => append(f(x), LList(lazy flatMapLHelper(f,       xs)))
+        case LCons(x, xs) => append(f(x), LList(lazy flatMapLHelper(f, force xs)))
+        case LList(xs)    => LList(lazy flatMapLHelper(f, force xs))
     }
 
     ///
