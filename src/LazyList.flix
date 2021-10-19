@@ -486,10 +486,17 @@ namespace LazyList1 {
     /// Does not force the tail of `l`.
     ///
     pub def flatten(l: LazyList[LazyList[a]]): LazyList[a] = match l {
-        case ENil          => ENil
-        case ECons(xs, ys) => LList(lazy append(xs, flatten(      ys)))
-        case LCons(xs, ys) => LList(lazy append(xs, flatten(force ys)))
-        case LList(xs)     => LList(lazy flatten(force xs))
+        case ENil         => ENil
+        case ECons(x, xs) => LList(lazy append(x, flattenHelper(      xs)))
+        case LCons(x, xs) => LList(lazy append(x, flattenHelper(force xs)))
+        case LList(xs)    => LList(lazy flattenHelper(force xs))
+    }
+
+    def flattenHelper(l: LazyList[LazyList[a]]): LazyList[a] = match l {
+        case ENil         => ENil
+        case ECons(x, xs) => append(x,  LList(lazy flattenHelper(      xs)))
+        case LCons(x, xs) => append(x,  LList(lazy flattenHelper(force xs)))
+        case LList(xs)    => LList(lazy flattenHelper(force xs))
     }
 
     ///
