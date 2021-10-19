@@ -828,16 +828,16 @@ namespace LazyList1 {
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
     def mapWithIndexL(f: (a, Int32) -> b, l: LazyList[a]): LazyList[b] =
-        mapWithIndexLAcc(f, l, 0)
+        LList(lazy mapWithIndexLHelper(f, l, 0))
 
     ///
     /// Helper function for `mapWithIndexL`.
     ///
-    def mapWithIndexLAcc(f: (a, Int32) -> b, l: LazyList[a], i: Int32): LazyList[b] = match l {
+    def mapWithIndexLHelper(f: (a, Int32) -> b, l: LazyList[a], i: Int32): LazyList[b] = match l {
         case ENil         => ENil
-        case ECons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f,       xs, i + 1)))
-        case LCons(x, xs) => LList(lazy LCons(f(x, i), lazy mapWithIndexLAcc(f, force xs, i + 1)))
-        case LList(xs)    => LList(                    lazy mapWithIndexLAcc(f, force xs, i    ))
+        case ECons(x, xs) => LCons(f(x, i), lazy mapWithIndexLHelper(f,       xs, i + 1))
+        case LCons(x, xs) => LCons(f(x, i), lazy mapWithIndexLHelper(f, force xs, i + 1))
+        case LList(xs)    => LList(         lazy mapWithIndexLHelper(f, force xs, i    ))
     }
 
     ///
