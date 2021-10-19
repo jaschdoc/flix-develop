@@ -394,7 +394,6 @@ namespace LazyList1 {
     ///
     /// Forces the entire list `l`.
     ///
-    // TODO: Use k function as acc.
     pub def toList(l: LazyList[a]): List[a] =
         toListAcc(l, ks -> ks)
 
@@ -871,9 +870,19 @@ namespace LazyList1 {
     ///
     pub def intercalate(l1: LazyList[a], l2: LazyList[LazyList[a]]): LazyList[a] = match l2 {
         case ENil           => ENil
-        case ECons(x, xs)   => if (isEmpty(      xs)) x else LList(lazy append(append(x, l1), intercalate(l1,       xs)))
-        case LCons(x, xs)   => if (isEmpty(force xs)) x else LList(lazy append(append(x, l1), intercalate(l1, force xs)))
-        case LList(xs)      => LList(lazy intercalate(l1, force xs))
+        case ECons(x, xs)   => if (isEmpty(      xs)) x else LList(lazy append(append(x, l1), intercalateHelper(l1,       xs)))
+        case LCons(x, xs)   => if (isEmpty(force xs)) x else LList(lazy append(append(x, l1), intercalateHelper(l1, force xs)))
+        case LList(xs)      => LList(lazy intercalateHelper(l1, force xs))
+    }
+
+    ///
+    /// Helper function for `intercalate`.
+    ///
+    def intercalateHelper(l1: LazyList[a], l2: LazyList[LazyList[a]]): LazyList[a] = match l2 {
+        case ENil           => ENil
+        case ECons(x, xs)   => if (isEmpty(      xs)) x else append(append(x, l1), intercalateHelper(l1,       xs))
+        case LCons(x, xs)   => if (isEmpty(force xs)) x else append(append(x, l1), intercalateHelper(l1, force xs))
+        case LList(xs)      => LList(lazy intercalateHelper(l1, force xs))
     }
 
     ///
