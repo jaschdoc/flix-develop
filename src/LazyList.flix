@@ -1021,19 +1021,25 @@ namespace LazyList1 {
     ///
     /// Applies `f` lazily (i.e. the tail is not forced).
     ///
-    def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] = match l {
+    def filterMapL(f: a -> Option[b], l: LazyList[a]): LazyList[b] =
+        LList(lazy filterMapLHelper(f, l))
+
+    ///
+    /// Helper function for `filterMapL`.
+    ///
+    def filterMapLHelper(f: a -> Option[b], l: LazyList[a]): LazyList[b] = match l {
         case ENil         => ENil
         case ECons(x, xs) =>
-            LList(lazy match f(x) {
-                case None    => filterMapL(f, xs)
-                case Some(v) => LCons(v, lazy filterMapL(f, xs))
-            })
+            match f(x) {
+                case None    => filterMapLHelper(f, xs)
+                case Some(v) => LCons(v, lazy filterMapLHelper(f, xs))
+            }
         case LCons(x, xs) =>
-            LList(lazy match f(x) {
-                case None    => filterMapL(f, force xs)
-                case Some(v) => LCons(v, lazy filterMapL(f, force xs))
-            })
-        case LList(xs)    => LList(lazy filterMapL(f, force xs))
+            match f(x) {
+                case None    => filterMapLHelper(f, force xs)
+                case Some(v) => LCons(v, lazy filterMapLHelper(f, force xs))
+            }
+        case LList(xs)    => LList(lazy filterMapLHelper(f, force xs))
     }
 
     ///
