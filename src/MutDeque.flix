@@ -27,11 +27,13 @@
 /// Otherwise, the front index always points to an element (going counter-clockwise)
 /// and the back index always points to the first empty index (going clockwise).
 ///
+/*
 pub enum MutDeque[a] {
     case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
 }
+*/
 
-namespace MutDeque {
+namespace MutDeque1 {
 
     ///
     /// Constant denoting the minimum capacity of the backing array.
