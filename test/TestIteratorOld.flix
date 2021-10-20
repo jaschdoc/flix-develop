@@ -348,7 +348,7 @@ namespace TestIteratorOld {
     /////////////////////////////////////////////////////////////////////////////
     // dropWhile (pure)                                                        //
     /////////////////////////////////////////////////////////////////////////////
-    /*
+    
 
     @test
     def dropWhilePure01(): Bool & Impure =
@@ -474,11 +474,11 @@ namespace TestIteratorOld {
         iter |> IteratorOld.foreach(_ -> x := (deref x) + 1);
         deref x == 10000 and iter |> IteratorOld.isEmpty
 
-*/
+
     /////////////////////////////////////////////////////////////////////////////
     // zip                                                                     //
     /////////////////////////////////////////////////////////////////////////////
-/*
+
     @test
     def zip01(): Bool & Impure =
         let iterA = Nil: List[Int32] |> IteratorOld.toIter;
@@ -645,7 +645,7 @@ namespace TestIteratorOld {
     /////////////////////////////////////////////////////////////////////////////
     // takeWhile (pure)                                                        //
     /////////////////////////////////////////////////////////////////////////////
-/*
+
     @test
     def takeWhilePure01(): Bool & Impure =
         IteratorOld.repeat(0, 0) |> IteratorOld.takeWhile(x -> x > 100) |> IteratorOld.toList == Nil: List[Int32]
@@ -704,9 +704,8 @@ namespace TestIteratorOld {
     @test
     def takeWhileImpure05(): Bool & Impure =
         IteratorOld.repeat(10, 1000) |> IteratorOld.takeWhile({x -> x < 100 } as & Impure) |> IteratorOld.toList == List.repeat(10, 1000)
-*/
 
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // findRight                                                               //
     /////////////////////////////////////////////////////////////////////////////
@@ -739,4 +738,5 @@ namespace TestIteratorOld {
     @test
     def testIsEmpty02(): Bool & Impure =
         not ((1 :: Nil) |> IteratorOld.toIter |> IteratorOld.isEmpty)
+}
 */
