@@ -1,4 +1,4 @@
-namespace DevMutList {
+namespace MutList1 {
     def minSize(): Int32 = 8
     
     pub def range(b: Int32, e: Int32): MutList[Int32] & Impure =
