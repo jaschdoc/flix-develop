@@ -387,48 +387,48 @@ namespace TestIterator {
     @test
     def dropWhileImpure01(): Bool & Impure =
         let list: List[Int32] = Nil;
-        list |> Iterator.toIter |> Iterator.dropWhile({_ -> true} as & Impure)  |> Iterator.toList ==  list and
-        list |> Iterator.toIter |> Iterator.dropWhile({_ -> false} as & Impure) |> Iterator.toList ==  list
+        list |> Iterator.toIter |> Iterator.dropWhile((_ -> true) as & Impure)  |> Iterator.toList ==  list and
+        list |> Iterator.toIter |> Iterator.dropWhile((_ -> false) as & Impure) |> Iterator.toList ==  list
 
     @test
     def dropWhileImpure02(): Bool & Impure =
         let iter = () -> Iterator.range(0, 1000);
-        iter() |> Iterator.dropWhile({_ -> false} as & Impure) |> Iterator.toList == List.range(0, 1000)
+        iter() |> Iterator.dropWhile((_ -> false) as & Impure) |> Iterator.toList == List.range(0, 1000)
 
     @test
     def dropWhileImpure03(): Bool & Impure =
         let iter = () -> Iterator.range(0, 1000);
-        iter() |> Iterator.dropWhile({_ -> true} as & Impure) |> Iterator.isEmpty
+        iter() |> Iterator.dropWhile((_ -> true) as & Impure) |> Iterator.isEmpty
 
     @test
     def dropWhileImpure04(): Bool & Impure =
         let iter = () -> Iterator.range(0, 1000);
-        iter() |> Iterator.dropWhile({x -> x < 500} as & Impure) |> Iterator.toList == List.range(500, 1000)
+        iter() |> Iterator.dropWhile((x -> x < 500) as & Impure) |> Iterator.toList == List.range(500, 1000)
 
     @test
     def dropWhileImpure05(): Bool & Impure =
         let iter = () -> Iterator.repeat(2, 1000);
-        iter() |> Iterator.dropWhile({x -> x < 3} as & Impure) |> Iterator.isEmpty
+        iter() |> Iterator.dropWhile((x -> x < 3) as & Impure) |> Iterator.isEmpty
 
     @test
     def dropWhileImpure06(): Bool & Impure =
         let iter = () -> ("a" :: "a" :: "b" :: "b" :: "c" :: "c" :: Nil) |> Iterator.toIter;
-        iter() |> Iterator.dropWhile({x -> x == "a"} as & Impure) |> Iterator.toList == ("b" :: "b" :: "c" :: "c" :: Nil)
+        iter() |> Iterator.dropWhile((x -> x == "a") as & Impure) |> Iterator.toList == ("b" :: "b" :: "c" :: "c" :: Nil)
 
     @test
     def dropWhileImpure07(): Bool & Impure =
         let iter = () -> ("a" :: "a" :: "b" :: "b" :: "c" :: "c" :: Nil) |> Iterator.toIter;
-        iter() |> Iterator.dropWhile({x -> x == "b"} as & Impure) |> Iterator.toList == iter() |> Iterator.toList
+        iter() |> Iterator.dropWhile((x -> x == "b") as & Impure) |> Iterator.toList == iter() |> Iterator.toList
 
     @test
     def dropWhileImpure08(): Bool & Impure =
         let iter = () -> ("a" :: "a" :: "b" :: "b" :: "c" :: "c" :: Nil) |> Iterator.toIter;
-        iter() |> Iterator.dropWhile({x -> x == "a" or x == "c"} as & Impure) |> Iterator.toList == ("b" :: "b" :: "c" :: "c" :: Nil)
+        iter() |> Iterator.dropWhile((x -> x == "a" or x == "c") as & Impure) |> Iterator.toList == ("b" :: "b" :: "c" :: "c" :: Nil)
 
     @test
     def dropWhileImpure09(): Bool & Impure =
         let iter = () -> ("a" :: "a" :: "b" :: "b" :: "c" :: "c" :: Nil) |> Iterator.toIter;
-        iter() |> Iterator.dropWhile({x -> x == "a" or x == "b"} as & Impure) |> Iterator.toList == List.repeat("c", 2)
+        iter() |> Iterator.dropWhile((x -> x == "a" or x == "b") as & Impure) |> Iterator.toList == List.repeat("c", 2)
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -649,6 +649,20 @@ namespace TestIterator {
     def takeWhilePure05(): Bool & Impure =
         Iterator.repeat(10, 1000) |> Iterator.takeWhile(x -> x < 100) |> Iterator.toList == List.repeat(10, 1000)
 
+    @test
+    def takeWhilePure06(): Bool & Impure =
+        let iter = (1 :: 2 :: 1 :: Nil): List[Int32] |> Iterator.toIter |> Iterator.takeWhile(x -> x == 1);
+        iter |> Iterator.head == Some(1)
+            and iter |> Iterator.head == None
+            and iter |> Iterator.head == None
+
+    @test
+    def takeWhilePure07(): Bool & Impure =
+        let iter = Iterator.range(1, 10000) |> Iterator.replace(10, 1) |> Iterator.takeWhile(x -> x == 1);
+        let Iterator(done, _) = iter;
+        iter |> Iterator.toList == List.repeat(1, 1)
+            and done() and done() and done() and done() and done()
+
 
     /////////////////////////////////////////////////////////////////////////////
     // takeWhile (impure)                                                      //
@@ -656,24 +670,25 @@ namespace TestIterator {
 
     @test
     def takeWhileImpure01(): Bool & Impure =
-        Iterator.repeat(0, 0) |> Iterator.takeWhile({x -> x > 100} as & Impure) |> Iterator.toList == Nil: List[Int32]
+        Iterator.repeat(0, 0) |> Iterator.takeWhile((x -> x > 100) as & Impure) |> Iterator.toList == Nil: List[Int32]
 
     @test
     def takeWhileImpure02(): Bool & Impure =
-        Iterator.range(0, 1000) |> Iterator.takeWhile({x -> x > 100} as & Impure) |> Iterator.toList == Nil: List[Int32]
+        Iterator.range(0, 1000) |> Iterator.takeWhile((x -> x > 100) as & Impure) |> Iterator.toList == Nil: List[Int32]
 
     @test
     def takeWhileImpure03(): Bool & Impure =
-        Iterator.range(0, 1000) |> Iterator.takeWhile({x -> x < 100} as & Impure) |> Iterator.toList == List.range(0, 100)
+        Iterator.range(0, 1000) |> Iterator.takeWhile((x -> x < 100) as & Impure) |> Iterator.toList == List.range(0, 100)
 
     @test
     def takeWhileImpure04(): Bool & Impure =
-        Iterator.repeat(0, 0) |> Iterator.takeWhile({x -> x < 100 } as & Impure) |> Iterator.toList == Nil: List[Int32]
+        Iterator.repeat(0, 0) |> Iterator.takeWhile((x -> x < 100) as & Impure) |> Iterator.toList == Nil: List[Int32]
 
     @test
     def takeWhileImpure05(): Bool & Impure =
         Iterator.repeat(10, 1000) |> Iterator.takeWhile({x -> x < 100 } as & Impure) |> Iterator.toList == List.repeat(10, 1000)
 */
+
 
     /////////////////////////////////////////////////////////////////////////////
     // findRight                                                               //
@@ -874,7 +889,7 @@ namespace TestIterator {
         Iterator.map(x -> {l := "a" :: deref l; x} as & Pure) |>
         Iterator.map(x -> {l := "b" :: deref l; x} as & Pure) |>
         Iterator.toList;
-        List.reverse(deref l) == ( "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
 
     /////////////////////////////////////////////////////////////////////////////
     // filter (pure)                                                           //
