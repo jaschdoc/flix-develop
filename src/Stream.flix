@@ -26,7 +26,9 @@ pub enum Stream[a, s] {
     case Stream(s -> Step[a, s], s)
 }
 
-*/
+
+
+
 
 namespace Stream1 {
 
@@ -265,7 +267,7 @@ namespace Stream1 {
         };
         ???
 
-/*
+
     ///
     /// Returns the result of applying `f` to every element in `s` and concatenating the results.
     ///
@@ -344,5 +346,6 @@ namespace Stream1 {
         let xs1 = f(x) |> Stream.toList;
         flatMapEAcc(f, next, xs, ks -> k(xs1 ::: ks))
     }
-*/
+
 }
+*/

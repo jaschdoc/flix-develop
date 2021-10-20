@@ -75,4 +75,23 @@ namespace Iterator1 {
             };
         Iterator(done, next)
 
+    ///
+    /// Returns the contents of `iter` as a list. Consumes the entire iterator.
+    ///
+    pub def toList(iter: Iterator[a]): List[a] & ef =
+        let Iterator(done, next) = iter;
+        toListAcc(done, next, ks -> ks as & ef)
+
+    ///
+    /// Helper function for `toList`.
+    ///
+    def toListAcc(done: Done, next: Next[a], k: List[a] -> List[a] & ef): List[a] & ef =
+        if (done()) {
+            k(Nil)
+        }
+        else {
+            let x = next();
+            toListAcc(done, next, ks -> k(x :: ks))
+        }
+
 }

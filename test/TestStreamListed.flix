@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /*
 namespace TestStreamListed {
 
@@ -97,7 +98,7 @@ namespace TestStreamListed {
     def range07(): Bool =
         StreamListed.range(-100, 100) |> StreamListed.toList == List.range(-100, 100)
 
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // filter (pure)                                                           //
     /////////////////////////////////////////////////////////////////////////////

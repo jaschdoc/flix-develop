@@ -1,3 +1,4 @@
+/*
 pub enum StreamListed[a, s] {
     case StreamL(s -> Step[a, s], s)
     case Listed(List[a])
@@ -49,7 +50,7 @@ namespace StreamListed {
     // `filterL` has multiple return types which causes an issue.
     // a simple type cast breaks is unsound (breaks during runtime).
 
-/*
+
     ///
     /// Returns a stream of every element in `s` that satisfies the predicate `f`.
     ///
@@ -104,5 +105,6 @@ namespace StreamListed {
         case Yield(x, s1) => if (f(x)) filterEAcc(f, next, s1, ks -> k(x :: ks)) else filterEAcc(f, next, s1, k)
     }
 
-*/
 }
+
+*/
