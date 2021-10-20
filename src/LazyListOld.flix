@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+/*
 namespace LazyListOld {
 
     ///
@@ -273,3 +275,4 @@ namespace LazyListOld {
     pub def zip(xs: LazyList[a], ys: LazyList[b]): LazyList[(a, b)] = zipWith((x, y) -> (x, y), xs, ys)
 
 }
+*/

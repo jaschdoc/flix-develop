@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
 namespace TestStreamListed {
 
     /////////////////////////////////////////////////////////////////////////////
@@ -544,5 +544,6 @@ namespace TestStreamListed {
         StreamListed.append(
             List1.toStreamListed(1 :: Nil),
             List1.toStreamListed(2 :: 3 :: Nil)) |> StreamListed.toList == 1 :: 2 :: 3 :: Nil
-*/
 }
+
+*/

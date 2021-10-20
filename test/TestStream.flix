@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+/*
 namespace TestStream {
 
     /////////////////////////////////////////////////////////////////////////////
@@ -650,5 +652,6 @@ namespace TestStream {
     @test
     def flatMapImpure06(): Bool & Impure =
         List.toStream(2 :: 3 :: Nil) |> Stream1.flatMap(i -> Stream1.range(i, i + 2) as & Impure) |> Stream.toList == 2 :: 3 :: 3 :: 4 :: Nil
-*/
 }
+
+*/

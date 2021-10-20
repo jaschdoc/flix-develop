@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+
+
+/*
+
 use LazyListOld.LazyList;
 
 ///
@@ -261,3 +265,4 @@ namespace LazyList2Old {
     }
 
 }
+*/
