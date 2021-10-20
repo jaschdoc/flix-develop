@@ -33,10 +33,12 @@ pub enum Iterator[a] {
 }
 */
 
-namespace Iterator {
+namespace Iterator1 {
 
-    pub def range(b: Int32, e: Int32): Iterator[Int32] & Impure = ???
+    // & impure
+    pub def range(b: Int32, e: Int32): Iterator[Int32] = ???
 
-    pub def repeat(x: a, n: Int32): Iterator[a] & Impure = ???
+    // & impure
+    pub def repeat(x: a, n: Int32): Iterator[a] = ???
 
 }
