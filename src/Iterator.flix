@@ -35,10 +35,44 @@ pub enum Iterator[a] {
 
 namespace Iterator1 {
 
-    // & impure
-    pub def range(b: Int32, e: Int32): Iterator[Int32] = ???
+    ///
+    /// Returns an iterator of all integers between `b` (inclusive) and `e` (exclusive).
+    ///
+    /// Returns an empty iterator if `b >= e`.
+    ///
+    pub def range(b: Int32, e: Int32): Iterator[Int32] & Impure =
+        let i = ref b;
+        let done = () -> deref i >= e;
+        let next = () -> {
+                let res = deref i;
+                if (res < e) {
+                    i := res + 1;
+                    res
+                }
+                else { 
+                    bug!("Empty Iterator!")
+                }
+            };
+        Iterator(done, next)
 
-    // & impure
-    pub def repeat(x: a, n: Int32): Iterator[a] = ???
+    ///
+    /// Returns an iterator over an iterable with the element `x` repeated `n` times.
+    ///
+    /// Returns an empty iterator if `n < 0`.
+    ///
+    pub def repeat(x: a, n: Int32): Iterator[a] & Impure =
+        let i = ref 0;
+        let done = () -> deref i >= n;
+        let next = () -> {
+              let j = deref i;
+              if (j < n) {
+                i := j + 1;
+                x
+              }
+              else {
+                bug!("Empty Iterator!")
+              }
+            };
+        Iterator(done, next)
 
 }
