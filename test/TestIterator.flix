@@ -62,4 +62,72 @@ namespace TestIterator {
     def repeat04(): Bool & Impure =
         Iterator1.repeat(1, 3) |> Iterator1.toList == 1 :: 1 :: 1 :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toArray                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toArray01(): Bool & Impure =
+        (Nil: List[Int32] |> List1.toIterator |> Iterator1.toArray) == []
+
+    @test
+    def toArray02(): Bool & Impure =
+        Iterator1.range(-10, -5) |> Iterator1.toArray == [-10, -9, -8, -7, -6] 
+
+    @test
+    def toArray03(): Bool & Impure =
+        Iterator1.repeat(1, 3) |> Iterator1.toArray == [1, 1, 1]
+
+    @test
+    def toArray04(): Bool & Impure =
+        Iterator1.range(-100, 200) |> Iterator1.toArray == Array.range(-100, 200)
+
+/*
+    /////////////////////////////////////////////////////////////////////////////
+    // toMap                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toMap01(): Bool & Impure =
+        (Nil: List[(String, Int32)] |> List1.toIterator |> Iterator1.toMap) == Map.empty()
+
+    @test
+    def toMap02(): Bool & Impure =
+        let list = ("A", 1) :: ("B", 2) :: ("C", 3) :: ("D", 4) :: Nil;
+        let iter = list |> List1.toIterator;
+        iter |> Iterator1.toMap == list |> List.toMap and
+        iter |> Iterator1.isEmpty
+
+    @test
+    def toMap03(): Bool & Impure =
+        let map = Map.empty() |> Map.insert("1", 2) |> Map.insert("2", 3) |> Map.insert("3", 4);
+        let iter = map |> Map.toList |> List1.toIterator;
+        iter |> Iterator1.toMap == map and
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toSet                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toSet01(): Bool & Impure =
+        Nil: List[Int32] |> List1.toIterator |> Iterator1.toSet == Set.empty()
+
+    @test
+    def toSet02(): Bool & Impure =
+        let xs = ("a" :: "b" :: "b" :: "c" :: Nil);
+        let iter = xs |> List1.toIterator;
+        iter |> Iterator1.toSet == List.toSet(xs) and
+        iter |> Iterator1.isEmpty
+
+    @test
+    def toSet03(): Bool & Impure =
+        let xs = Set.range(0, 10000);
+        let iter = xs |> Set.toList |> List1.toIterator;
+        iter |> Iterator1.toSet == xs and
+        iter |> Iterator1.isEmpty
+
+
+*/
 }
