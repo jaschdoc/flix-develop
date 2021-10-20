@@ -9,3 +9,4 @@ def main(_args: Array[String]): Int32 & Impure =
     println(Set.range(-1000, 1000) |> ParallelSet.toLazyList);
     (-11 % 9) |> println;
     0
+
