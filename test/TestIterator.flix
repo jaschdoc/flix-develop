@@ -40,4 +40,26 @@ namespace TestIterator {
     def range05(): Bool & Impure =
         Iterator1.range(-100, 200) |> Iterator1.toList == List.range(-100, 200)
 
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // repeat                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def repeat01(): Bool & Impure =
+        Iterator1.repeat(10, 0) |> Iterator1.toList == Nil
+
+    @test
+    def repeat02(): Bool & Impure =
+        Iterator1.repeat(2, -100) |> Iterator1.toList == Nil
+
+    @test
+    def repeat03(): Bool & Impure =
+        Iterator1.repeat(2, 100) |> Iterator1.toList == List.repeat(2, 100)
+
+    @test
+    def repeat04(): Bool & Impure =
+        Iterator1.repeat(1, 3) |> Iterator1.toList == 1 :: 1 :: 1 :: Nil
+
 }
