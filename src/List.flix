@@ -16,6 +16,7 @@
 
 namespace List1 {
 
+    /*
     ///
     /// Converts the list `l` to a `Stream`.
     ///
@@ -25,7 +26,8 @@ namespace List1 {
             case x :: xs => Yield(x, xs)
         };
         Stream(next, l)
-
+    */
+    
     ///
     /// Mocks `List.filter` until merged into nightly compiler.
     ///
@@ -37,10 +39,10 @@ namespace List1 {
             if (f(x)) filterAcc(f, xs, x :: rs) else filterAcc(f, xs, rs)
     }
 
-
+    /*
     pub def toStreamListed(l: List[a]): StreamListed[a, s] =
         Listed(l)
-
+    */
 
     ///
     /// Returns the elements of `l` as a `DemandList`.
