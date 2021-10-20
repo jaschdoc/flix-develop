@@ -1,5 +1,22 @@
+/*
+ * Copyright 2021 Jakob Schneider Villumsen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
 namespace TestDemandList {
-/* turn into test cases
+ turn into test cases
 
     pub def ex1(): Int32 =
         let l1 = range(1, 10);              // l1 must be eager
@@ -20,7 +37,7 @@ namespace TestDemandList {
         let l1 = range(1, 10);                            // l1 must be eager
         let l2 = filter(x -> x > 5 as & Impure, l1);      // l2 must be eager
         head(l2)
-*/
+
 
     /////////////////////////////////////////////////////////////////////////////
     // isEmpty                                                                 //
@@ -723,7 +740,7 @@ namespace TestDemandList {
     def forall10(): Bool =
         (11 :: 9 :: 31 :: Nil) |> List1.toDemandList |> DemandList1.forall(i -> i > 3)
 
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // zip                                                                     //
     /////////////////////////////////////////////////////////////////////////////
@@ -756,7 +773,7 @@ namespace TestDemandList {
     def zip07(): Bool =
         DemandList1.zip(List1.toDemandList(1 :: 3 :: 5 :: 7 :: Nil), List1.toDemandList(2 :: 4 :: 6 :: 8 :: Nil)) |> DemandList1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
 
-*/
+
     /////////////////////////////////////////////////////////////////////////////
     // takeWhile (pure)                                                        //
     /////////////////////////////////////////////////////////////////////////////
@@ -1060,3 +1077,5 @@ namespace TestDemandList {
         DemandList1.range(1, 101) |> DemandList1.sum == 5050
 
 }
+
+*/
