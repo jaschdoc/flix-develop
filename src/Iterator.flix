@@ -14,6 +14,29 @@
  * limitations under the License.
  */
 
+/*
+///
+/// The type of the done function.
+///
+type alias Done = Unit ~> Bool
+
+///
+/// The type of the next function.
+///
+type alias Next[a] = Unit ~> a
+
+///
+/// An iterator is a stream of elements that are produced on demand.
+///
+pub enum Iterator[a] {
+    case Iterator(Done, Next[a])
+}
+*/
+
 namespace Iterator {
-    
+
+    pub def range(b: Int32, e: Int32): Iterator[Int32] & Impure = ???
+
+    pub def repeat(x: a, n: Int32): Iterator[a] & Impure = ???
+
 }
