@@ -47,14 +47,14 @@ namespace Stream1 {
             case Done => true
             case _    => false
         }
-    
+
     ///
     /// Returns `s` as a `List`.
     ///
     pub def toList(s: Stream[a, s]): List[a] =
         let Stream(next0, s0) = s;
         toListAcc(next0, s0, ks -> ks)
-    
+
     ///
     /// Helper function for `toList`.
     ///
@@ -126,7 +126,7 @@ namespace Stream1 {
     /// - If `f` is impure then it is applied eagerly.
     ///
     pub def map(f: a -> b & ef, s: Stream[a, s]): Stream[b, s] & ef =
-        if (reify ef) 
+        if (reify ef)
              mapL(f as a -> b & Pure,   s)
         else
              mapE(f as a -> b & Impure, s) as & ef
@@ -294,7 +294,7 @@ namespace Stream1 {
                 case Right(ss) => match nextE(ss) {
                     case Done         => Done
                     case Skip(xs)     => Skip(    Right(xs))
-                    case Yield(x, xs) => Yield(x, Right(xs)) 
+                    case Yield(x, xs) => Yield(x, Right(xs))
                 }
                 case Left(_)   => bug!("Unreachable code!")
             };

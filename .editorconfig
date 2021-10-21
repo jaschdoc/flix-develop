@@ -2,6 +2,8 @@
 # coding styles between different editors and IDEs
 # editorconfig.org
 
+root = true
+
 [**]
 indent_style = space
 end_of_line = lf

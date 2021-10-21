@@ -27,7 +27,7 @@ namespace List1 {
         };
         Stream(next, l)
     */
-    
+
     ///
     /// Mocks `List.filter` until merged into nightly compiler.
     ///

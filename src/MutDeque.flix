@@ -88,7 +88,7 @@ namespace MutDeque1 {
     pub def isEmpty(d: MutDeque[a]): Bool & Impure =
         let MutDeque(_, f, b) = d;
         deref f == deref b
-   
+
     ///
     /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
     ///
@@ -122,7 +122,7 @@ namespace MutDeque1 {
             compress!(d);
             Some(x)
         }
-        
+
     ///
     /// Pushes `x` to the front of `d`.
     ///

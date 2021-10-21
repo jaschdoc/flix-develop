@@ -5,7 +5,7 @@ pub enum StreamListed[a, s] {
 }
 
 namespace StreamListed {
-    
+
 
     pub def empty(): StreamListed[a, s] =
         StreamL(_ -> Done, default)
@@ -21,13 +21,13 @@ namespace StreamListed {
         }
         case Listed(l)          => l |> List.isEmpty
     }
-        
+
 
     pub def toList(s: StreamListed[a, s]): List[a] = match s {
         case StreamL(next0, s0) => toListAcc(next0, s0, ks -> ks)
         case Listed(l)          => l
     }
-    
+
     ///
     /// Helper function for `toList`.
     ///

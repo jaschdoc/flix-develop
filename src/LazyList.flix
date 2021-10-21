@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- 
+
 /*
 pub enum LazyList[a] {
     case ENil,
@@ -36,7 +36,7 @@ instance Eq[LazyList[a]] with Eq[a] {
         case _                            => false
     }
 }
-    
+
 instance Foldable[LazyList] {
     pub def foldLeft( f: (b, a) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList.foldLeft( f, s, l)
     pub def foldRight(f: (a, b) -> b & ef, s: b, l: LazyList[a]): b & ef = LazyList.foldRight(f, s, l)

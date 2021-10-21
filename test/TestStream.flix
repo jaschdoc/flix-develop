@@ -55,7 +55,7 @@ namespace TestStream {
     @test
     def toStream02(): Bool =
         List1.toStream(1 :: Nil) |> Stream1.toList == 1 :: Nil
-    
+
     @test
     def toStream03(): Bool =
         List1.toStream(1 :: 2 :: 3 :: Nil) |> Stream1.toList == 1 :: 2 :: 3 :: Nil
@@ -329,8 +329,8 @@ namespace TestStream {
         Stream1.toList as & Impure;
         List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
 
-    
-    /////////////////////////////////////////////////////////////////////////////    
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
@@ -428,7 +428,7 @@ namespace TestStream {
         (5 :: Nil) |> List.toStream |> Stream1.exists(i -> i > 3)
 
     @test
-    def exists04(): Bool = 
+    def exists04(): Bool =
         not ((1 :: 2 :: Nil) |> List.toStream |> Stream1.exists(i -> i > 3))
 
     @test
@@ -583,7 +583,7 @@ namespace TestStream {
             List.toStream(2 :: 4 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: Nil
 
     @test
-    def zip06(): Bool = 
+    def zip06(): Bool =
         Stream1.zip(
             List.toStream(1 :: 3 :: 5 :: Nil),
             List.toStream(2 :: 4 :: 6 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: Nil
@@ -593,7 +593,7 @@ namespace TestStream {
         Stream1.zip(
             List.toStream(1 :: 3 :: 5 :: 7 :: Nil),
             List.toStream(2 :: 4 :: 6 :: 8 :: Nil)) |> Stream1.toList == (1, 2) :: (3, 4) :: (5, 6) :: (7, 8) :: Nil
-            
+
 
 
     /////////////////////////////////////////////////////////////////////////////

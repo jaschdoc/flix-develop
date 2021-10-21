@@ -73,7 +73,7 @@ namespace TestIterator {
 
     @test
     def toArray02(): Bool & Impure =
-        Iterator1.range(-10, -5) |> Iterator1.toArray == [-10, -9, -8, -7, -6] 
+        Iterator1.range(-10, -5) |> Iterator1.toArray == [-10, -9, -8, -7, -6]
 
     @test
     def toArray03(): Bool & Impure =

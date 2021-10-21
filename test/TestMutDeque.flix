@@ -68,7 +68,7 @@ namespace TestMutDeque {
         MutDeque.pushFront(1, d);
         MutDeque.pushFront(1, d);
         MutDeque.pushFront(1, d);
-        
+
         MutDeque.size(d) == 11
 
     @test
@@ -108,15 +108,15 @@ namespace TestMutDeque {
         MutDeque.pushFront(1, d);
         MutDeque.popBack(d);
         MutDeque.size(d) == 0
-    
+
     @test
     def size08(): Bool & Impure =
         let d = MutDeque.new();
         MutDeque.pushBack(1, d);
         MutDeque.popFront(d);
         MutDeque.size(d) == 0
-    
-    
+
+
     /////////////////////////////////////////////////////////////////////////////
     // isEmpty                                                                 //
     /////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ namespace TestMutDeque {
         let d = MutDeque.new();
         MutDeque.pushBack(1, d);
         not (MutDeque.isEmpty(d))
-    
+
     @test
     def isEmpty03(): Bool & Impure =
         let d = MutDeque.new();
@@ -160,7 +160,7 @@ namespace TestMutDeque {
     def popFront01(): Bool & Impure =
         let d = MutDeque.new();
         MutDeque.popFront(d) == None
-    
+
     @test
     def popFront02(): Bool & Impure =
         let d = MutDeque.new();
@@ -197,7 +197,7 @@ namespace TestMutDeque {
         MutDeque.popFront(d) == Some(1)     and
             MutDeque.popFront(d) == Some(2) and
             MutDeque.popFront(d) == None
-    
+
     @test
     def popFront06(): Bool & Impure =
         let d = MutDeque.new();
@@ -206,7 +206,7 @@ namespace TestMutDeque {
         MutDeque.popFront(d) == Some(2)     and
             MutDeque.popFront(d) == Some(1) and
             MutDeque.popFront(d) == None
-    
+
 
     /////////////////////////////////////////////////////////////////////////////
     // popBack                                                                 //
@@ -216,7 +216,7 @@ namespace TestMutDeque {
     def popBack01(): Bool & Impure =
         let d = MutDeque.new();
         MutDeque.popBack(d) == None
-    
+
     @test
     def popBack02(): Bool & Impure =
         let d = MutDeque.new();
@@ -253,7 +253,7 @@ namespace TestMutDeque {
         MutDeque.popBack(d) == Some(1)     and
             MutDeque.popBack(d) == Some(2) and
             MutDeque.popBack(d) == None
-    
+
     @test
     def popBack06(): Bool & Impure =
         let d = MutDeque.new();
@@ -292,7 +292,7 @@ namespace TestMutDeque {
         MutDeque.pushBack(2, d);
         MutDeque.pushBack(2, d);
         // [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
-        
+
         MutDeque.popBack(d) == Some(2) and
         MutDeque.popFront(d) == Some(1) and
         MutDeque.popBack(d) == Some(2) and

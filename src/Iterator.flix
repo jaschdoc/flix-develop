@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/*
+
 ///
 /// The type of the done function.
 ///
@@ -31,7 +31,7 @@ type alias Next[a] = Unit ~> a
 pub enum Iterator[a] {
     case Iterator(Done, Next[a])
 }
-*/
+
 
 namespace Iterator1 {
 
@@ -49,7 +49,7 @@ namespace Iterator1 {
                     i := res + 1;
                     res
                 }
-                else { 
+                else {
                     bug!("Empty Iterator!")
                 }
             };
@@ -81,7 +81,7 @@ namespace Iterator1 {
     pub def toArray(iter: Iterator[a]): Array[a] & Impure =
         let Iterator(done, next) = iter;
         toArrayAcc(done, next, MutList.new())
-    
+
     ///
     /// Helper function for `toArray`.
     ///
