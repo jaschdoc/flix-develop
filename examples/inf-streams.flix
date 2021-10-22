@@ -2,7 +2,7 @@
 def isPrime(p: Int32): Bool =
     LazyList1.from(2) |>
     LazyList.take(p - 2) |>
-    LazyList.forall(x -> p % x != 0)
+    LazyList.forall(x -> p mod x != 0)
 /// An infinite sequence of prime numbers
 
 def primes(): LazyList[Int32] =
@@ -15,7 +15,7 @@ def sieve(ps: LazyList[Int32]): LazyList[Int32] = match LazyList.head(ps) {
     case Some(p) =>
         LCons(p,
             lazy sieve(
-                LazyList.filter(x -> x % p != 0, LazyList1.tail(ps)) as LazyList[Int32] & Pure
+                LazyList.filter(x -> x mod p != 0, LazyList1.tail(ps)) as LazyList[Int32] & Pure
                 )
             )
     case None => LazyList.empty()
