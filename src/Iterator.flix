@@ -109,4 +109,9 @@ namespace Iterator1 {
             toListAcc(done, next, next() :: acc)
         }
 
+    ///
+    /// Returns the contents of `iter` as a map. Consumes the entire iterator.
+    ///
+    pub def toMap(iter: Iterator[(a, b)]): Map[a, b] = ???
+
 }
