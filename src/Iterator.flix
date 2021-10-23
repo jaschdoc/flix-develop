@@ -129,4 +129,6 @@ namespace Iterator1 {
             let (k, v) = next();
             toMapAcc(done, next, Map.insert(k, v, acc))
 
+
+    pub def toSet(iter: Iterator[a]): Set[a] = ???
 }

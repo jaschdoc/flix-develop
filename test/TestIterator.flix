@@ -103,29 +103,25 @@ namespace TestIterator {
         let map = Map#{"1" -> 2, "2" -> 3, "3" -> 4};
         map |> Map.toList |> List1.toIterator |> Iterator1.toMap == map
 
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // toSet                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
     def toSet01(): Bool & Impure =
-        Nil: List[Int32] |> List1.toIterator |> Iterator1.toSet == Set.empty()
+        List1.toIterator(Nil: List[Int32]) |> Iterator1.toSet == Set.empty()
 
     @test
     def toSet02(): Bool & Impure =
-        let xs = ("a" :: "b" :: "b" :: "c" :: Nil);
-        let iter = xs |> List1.toIterator;
-        iter |> Iterator1.toSet == List.toSet(xs) and
-        iter |> Iterator1.isEmpty
+        Set#{} |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set.empty()
 
     @test
     def toSet03(): Bool & Impure =
-        let xs = Set.range(0, 10000);
-        let iter = xs |> Set.toList |> List1.toIterator;
-        iter |> Iterator1.toSet == xs and
-        iter |> Iterator1.isEmpty
+        Set#{"a", "b", "c", "d"} |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set#{"a", "b", "c", "d"}
 
+    @test
+    def toSet04(): Bool & Impure =
+        Set.range(0, 10000) |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set.range(0, 10000)
 
-*/
 }
