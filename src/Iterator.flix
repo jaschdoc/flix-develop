@@ -99,17 +99,18 @@ namespace Iterator1 {
     ///
     pub def toList(iter: Iterator[a]): List[a] & Impure =
         let Iterator(done, next) = iter;
-        toListAcc(done, next, Nil) |> List.reverse
+        toListAcc(done, next, ks -> ks)
 
     ///
     /// Helper function for `toList`.
     ///
-    def toListAcc(done: Done, next: Next[a], l: List[a]): List[a] & Impure =
+    def toListAcc(done: Done, next: Next[a], k: List[a] -> List[a]): List[a] & Impure =
         if (done()) {
-            l
+            k(Nil)
         }
         else {
-            toListAcc(done, next, next() :: l)
+            let x = next();
+            toListAcc(done, next, ks -> k(x :: ks))
         }
 
     ///
