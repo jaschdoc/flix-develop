@@ -104,12 +104,12 @@ namespace Iterator1 {
     ///
     /// Helper function for `toList`.
     ///
-    def toListAcc(done: Done, next: Next[a], acc: List[a]): List[a] & Impure =
+    def toListAcc(done: Done, next: Next[a], l: List[a]): List[a] & Impure =
         if (done()) {
-            acc
+            l
         }
         else {
-            toListAcc(done, next, next() :: acc)
+            toListAcc(done, next, next() :: l)
         }
 
     ///
@@ -122,13 +122,26 @@ namespace Iterator1 {
     ///
     /// Helper function for `toMap`.
     ///
-    def toMapAcc(done: Done, next: Next[(a, b)], acc: Map[a, b]): Map[a, b] & Impure with Order[a] =
+    def toMapAcc(done: Done, next: Next[(a, b)], m: Map[a, b]): Map[a, b] & Impure with Order[a] =
         if (done())
-            acc
+            m
         else
             let (k, v) = next();
-            toMapAcc(done, next, Map.insert(k, v, acc))
+            toMapAcc(done, next, Map.insert(k, v, m))
 
+    ///
+    /// Returns the contents of `iter` as a set. Consumes the entire iterator.
+    ///
+    pub def toSet(iter: Iterator[a]): Set[a] & Impure with Order[a] =
+        let Iterator(done, next) = iter;
+        toSetAcc(done, next, Set.empty())
 
-    pub def toSet(iter: Iterator[a]): Set[a] = ???
+    ///
+    /// Helper function for `toSet`.
+    ///
+    def toSetAcc(done: Done, next: Next[a], s: Set[a]): Set[a] & Impure with Order[a] =
+        if (done())
+            s
+        else
+            toSetAcc(done, next, Set.insert(next(), s))
 }
