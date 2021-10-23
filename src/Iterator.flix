@@ -86,17 +86,20 @@ namespace Iterator1 {
     /// Helper function for `toArray`.
     ///
     def toArrayAcc(done: Done, next: Next[a], v: MutList[a]): Array[a] & Impure =
-        if (done())
+        if (done()) {
             MutList.toArray(v)
-        else
-            toArrayAcc(done, next, MutList.push!(next(), v))
+        }
+        else {
+            MutList.push!(next(), v);
+            toArrayAcc(done, next, v)
+        }
 
     ///
     /// Returns the contents of `iter` as a list. Consumes the entire iterator.
     ///
-    pub def toList(iter: Iterator[a]): List[a] & ef =
+    pub def toList(iter: Iterator[a]): List[a] & Impure =
         let Iterator(done, next) = iter;
-        (toListAcc(done, next, Nil) |> List.reverse) as & ef
+        toListAcc(done, next, Nil) |> List.reverse
 
     ///
     /// Helper function for `toList`.
@@ -108,7 +111,7 @@ namespace Iterator1 {
         else {
             toListAcc(done, next, next() :: acc)
         }
-
+/*
     ///
     /// Returns the contents of `iter` as a map. Consumes the entire iterator.
     ///
@@ -124,5 +127,5 @@ namespace Iterator1 {
             acc
         else
             toMapAcc(done, next, Map.insert(next(), acc))
-
+*/
 }

@@ -83,7 +83,7 @@ namespace TestIterator {
     def toArray04(): Bool & Impure =
         Iterator1.range(-100, 200) |> Iterator1.toArray == Array.range(-100, 200)
 
-
+/*
     /////////////////////////////////////////////////////////////////////////////
     // toMap                                                                   //
     /////////////////////////////////////////////////////////////////////////////
@@ -103,6 +103,7 @@ namespace TestIterator {
         let map = Map#{"1" -> 2, "2" -> 3, "3" -> 4};
         map |> Map.toList |> List1.toIterator |> Iterator1.toMap == map
 
+*/
 /*
     /////////////////////////////////////////////////////////////////////////////
     // toSet                                                                   //
