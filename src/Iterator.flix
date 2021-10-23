@@ -131,6 +131,14 @@ namespace Iterator1 {
             toMapAcc(done, next, Map.insert(k, v, m))
 
     ///
+    /// Returns the contents of `iter` as a `Some(Nel)` if `iter` is not empty. Returns None otherwise.
+    ///
+    pub def toNel(iter: Iterator[a]): Option[Nel[a]] & Impure = match toList(iter) {
+        case Nil     => None
+        case x :: xs => Some(Nel(x, xs))
+    }
+
+    ///
     /// Returns the contents of `iter` as a set. Consumes the entire iterator.
     ///
     pub def toSet(iter: Iterator[a]): Set[a] & Impure with Order[a] =
@@ -146,11 +154,4 @@ namespace Iterator1 {
         else
             toSetAcc(done, next, Set.insert(next(), s))
 
-    ///
-    /// Returns the contents of `iter` as a `Some(Nel)` if `iter` is not empty. Returns None otherwise.
-    ///
-    pub def toNel(iter: Iterator[a]): Option[Nel[a]] & Impure = match toList(iter) {
-        case Nil     => None
-        case x :: xs => Some(Nel(x, xs))
-    }
 }
