@@ -124,4 +124,21 @@ namespace TestIterator {
     def toSet04(): Bool & Impure =
         Set.range(0, 10000) |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set.range(0, 10000)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toNel                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toNel01(): Bool & Impure =
+        Nil |> List1.toIterator |> Iterator1.toNel == None
+
+    @test
+    def toNel02(): Bool & Impure =
+        (1 :: Nil) |> List1.toIterator |> Iterator1.toNel == Some(Nel(1, Nil))
+
+    @test
+    def toNel03(): Bool & Impure =
+        Iterator1.range(0, 1000) |> Iterator1.toNel == Some(Nel(0, List.range(1, 1000)))
+
 }
