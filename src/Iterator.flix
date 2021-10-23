@@ -111,21 +111,22 @@ namespace Iterator1 {
         else {
             toListAcc(done, next, next() :: acc)
         }
-/*
+
     ///
     /// Returns the contents of `iter` as a map. Consumes the entire iterator.
     ///
-    pub def toMap(iter: Iterator[(a, b)]): Map[a, b] & Impure =
+    pub def toMap(iter: Iterator[(a, b)]): Map[a, b] & Impure with Order[a] =
         let Iterator(done, next) = iter;
         toMapAcc(done, next, Map.empty())
 
     ///
     /// Helper function for `toMap`.
     ///
-    def toMapAcc(done: Done, next: Next[(a, b)], acc: Map[a, b]): Map[a, b] & Impure =
+    def toMapAcc(done: Done, next: Next[(a, b)], acc: Map[a, b]): Map[a, b] & Impure with Order[a] =
         if (done())
             acc
         else
-            toMapAcc(done, next, Map.insert(next(), acc))
-*/
+            let (k, v) = next();
+            toMapAcc(done, next, Map.insert(k, v, acc))
+
 }
