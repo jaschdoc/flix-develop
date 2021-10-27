@@ -1,4 +1,4 @@
-namespace ParallelSet {
+namespace Set1 {
   /*
     pub def count(f: a -> Bool & ef, s: Set[a]): Int32 & ef =
         if (reify ef)
@@ -24,5 +24,11 @@ namespace ParallelSet {
         case ReifiedInt32 => ???
     }
     */
+
+    ///
+    /// Returns an iterator over `s`.
+    ///
+    pub def toIterator(s: Set[a]): Iterator[a] & Impure =
+        List1.toIterator(Set.toList(s))
 
 }
