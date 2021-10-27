@@ -6,8 +6,8 @@ namespace Result1 {
     pub def toIterator(r: Result[t, e]): Iterator[t] & Impure = match r {
         case Ok(x)  =>
             let d = ref false;
-            let done = deref d;
-            let next = {
+            let done = () -> deref d;
+            let next = () -> {
                 d := true;
                 x
             };
