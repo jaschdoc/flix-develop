@@ -5,12 +5,12 @@ namespace Option1 {
     ///
     pub def toIterator(o: Option[a]): Iterator[a] & Impure = match o {
         case None    =>
-            let done = () -> true;
-            let next = () -> bug!("Empty Iterator!");
+            let done = () -> true as & Impure;
+            let next = () -> bug!("Empty Iterator") as & Impure;
             Iterator(done, next)
         case Some(x) =>
             let d = ref false;
-            let done = () -> deref d;
+            let done = () -> (deref d);
             let next = () -> {
                 d := true;
                 x
