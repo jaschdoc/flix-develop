@@ -6,7 +6,7 @@ namespace Option1 {
     pub def toIterator(o: Option[a]): Iterator[a] & Impure = match o {
         case None    =>
             let done = () -> true;
-            let next = () -> bug!("Empy Iterator!");
+            let next = () -> bug!("Empty Iterator!");
             Iterator(done, next)
         case Some(x) =>
             let d = ref false;
@@ -17,5 +17,4 @@ namespace Option1 {
             };
             Iterator(done, next)
     }
-
 }
