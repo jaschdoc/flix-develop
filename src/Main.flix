@@ -6,7 +6,7 @@ def main(_args: Array[String]): Int32 & Impure =
     Console.printLine(Epoch.nanoseconds() |> ToString.toString);
     let l = 1 :: 2 :: 3 :: Nil;
     println(l);
-    println(Set.range(-1000, 1000) |> ParallelSet.toLazyList);
+    println(Set.range(-1000, 1000) |> Set1.toLazyList);
     (-11 mod 9) |> println;
     0
 
