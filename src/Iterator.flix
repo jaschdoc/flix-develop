@@ -18,19 +18,19 @@
 ///
 /// The type of the done function.
 ///
-type alias Done = Unit ~> Bool
+//type alias Done = Unit ~> Bool
 
 ///
 /// The type of the next function.
 ///
-type alias Next[a] = Unit ~> a
+//type alias Next[a] = Unit ~> a
 
 ///
 /// An iterator is a stream of elements that are produced on demand.
 ///
-pub enum Iterator[a] {
-    case Iterator(Done, Next[a])
-}
+//pub enum Iterator[a] {
+//    case Iterator(Done, Next[a])
+//}
 
 
 namespace Iterator1 {
