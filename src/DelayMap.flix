@@ -60,5 +60,4 @@ namespace DelayMap {
             case None    => None
             case Some(x) => Some(force x)
         }
-
 }
