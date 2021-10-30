@@ -77,12 +77,29 @@ namespace DelayMap {
     pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let DMap(t) = m;
         if (reify ef)
-            let f1 = (k1, v2, v1) -> lazy (f(k1, force v2, force v1));
+            let f1 = (k1, v2, v1) -> lazy (f(k1, force v2, force v1) as & Pure);
             DMap(RedBlackTree.insertWith(f1 as & Pure, k, lazy v, t))
         else
             let f1 = (k1, v2, v1) -> {
                 let x = f(k1, force v2, force v1);
                 lazy x
             };
-            DMap(RedBlackTree.insertWith(f1 as & Impure, k, lazy v, t)) as & ef
+            DMap(RedBlackTree.insertWith(f1 as & Impure, k, lazy v, t) as & Impure) as & ef
+
+    ///
+    /// Returns the map `m` as a list of key-value pairs.
+    ///
+    // TODO return List[(k, Lazy[v])]
+    pub def toList(m: DelayMap[k, v]): List[(k, v)] =
+        foldRightWithKey((k, v, acc) -> (k, v) :: acc, Nil, m)
+
+    ///
+    /// Applies `f` to a start value `s` and all key-value pairs in `m` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(k1, v1, ...f(kn-1, vn-1, f(kn, vn, s)))`.
+    ///
+    pub def foldRightWithKey(f: (k, v, b) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
+        let DMap(t) = m;
+        let f1 = (k1, v1, b1) -> f(k1, force v1, b1);
+        RedBlackTree.foldRight(f1, s, t)
 }
