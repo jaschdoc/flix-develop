@@ -86,23 +86,31 @@ namespace TestDelayMap {
     /////////////////////////////////////////////////////////////////////////////
     // insertWith insertWith fusion                                            //
     /////////////////////////////////////////////////////////////////////////////
-/*
+
     @test
     def mapFusion01(): Bool & Impure =
         let l = ref Nil;
-        (1 :: 2 :: 3 :: Nil) |> List.toLazyList |>
-        LazyList.map(x -> { l := "a" :: deref l; x }) |>
-        LazyList.map(x -> { l := "b" :: deref l; x });
-        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+        List1.toDelayMap((1, 1) :: Nil) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v }, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v }, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v }, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v }, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v }, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v }, 1, 1);
+        List.reverse(deref l) == "a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil
 
     @test
     def mapFusion02(): Bool & Impure =
         let l = ref Nil;
-        (1 :: 2 :: 3 :: Nil) |> List.toLazyList |>
-        LazyList.map(x -> { l := "a" :: deref l; x } as & Pure) |>
-        LazyList.map(x -> { l := "b" :: deref l; x } as & Pure) |>
-        LazyList.toList as & Impure;
-        List.reverse(deref l) == ("a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil)
+        let m = List1.toDelayMap((1, 1) :: Nil) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v } as & Pure, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v } as & Pure, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v } as & Pure, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v } as & Pure, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v } as & Pure, 1, 1) |>
+        DelayMap1.insertWith((v, _) -> { l := "b" :: deref l; v } as & Pure, 1, 1);
+        let listBeforeEvaluation = deref l;
+        let _ = DelayMap1.toList(m);
+        listBeforeEvaluation == Nil and List.reverse(deref l) == "a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil
 
-*/
 }
