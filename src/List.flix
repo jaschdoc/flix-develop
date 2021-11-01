@@ -73,7 +73,7 @@ namespace List1 {
         Iterator(done, next)
 
     ///
-    /// Returns the association list `xs` as a lazy map.
+    /// Returns the association list `xs` as a `DelayMap`.
     ///
     /// If `xs` contains multiple mappings with the same key, `toDelayMap` does not
     /// make any guarantees about which mapping will be in the resulting map.
