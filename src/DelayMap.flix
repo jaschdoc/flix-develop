@@ -87,10 +87,55 @@ namespace DelayMap1 {
             DMap(RedBlackTree.insertWith(f1, k, lazy v, t)) as & ef
 
     ///
+    /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
+    ///
+    pub def mapWithKey(f: (k, a) -> b & ef, m: DelayMap[k, a]): DelayMap[k, Lazy[b]] & ef with Order[k] =
+        if (reify ef)
+            let f1 = (k, a) -> lazy (f(k, force a) as & Pure);
+            foldLeftLazyWithKey((acc, k, v) -> insert(k, f1(k, v), acc), empty(), m)
+        else
+            let f1 = (k, a) -> {
+                let x = f(k, force a);
+                lazy x
+            };
+            foldLeftLazyWithKey((acc, k, v) -> insert(k, f1(k, v), acc), empty(), m) as & ef
+
+/*
+    ///
+    /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
+    ///
+    pub def mapWithKey(f: (k, v1) -> v2 & ef, m: Map[k, v1]): Map[k, v2] & ef with Order[k] =
+        foldLeftWithKey((acc, k, v) -> insert(k, f(k, v), acc), empty(), m)
+*/
+
+    /*
+    ///
+    /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
+    ///
+    @Time(time(f) * size(m)) @Space(space(f) * size(m))
+    pub def map(f: v1 -> v2 & ef, m: Map[k, v1]): Map[k, v2] & ef with Order[k] = mapWithKey((_, v) -> f(v), m)
+    */
+
+
+    ///
     /// Returns the map `m` as a list of key-value pairs.
     ///
     pub def toList(m: DelayMap[k, v]): List[(k, v)] =
         foldRightWithKey((k, v, acc) -> (k, v) :: acc, Nil, m)
+
+    ///
+    /// Applies `f` to a start value `s` and all key-value pairs in `m` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, k1, v1), k2, v2)..., vn)`.
+    ///
+    pub def foldLeftWithKey(f: (b, k, v) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
+        let DMap(t) = m;
+        let f1 = (b1, k1, v1) -> f(b1, k1, force v1);
+        RedBlackTree.foldLeft(f1, s, t)
+
+    def foldLeftLazyWithKey(f: (b, k, Lazy[v]) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
+        let DMap(t) = m;
+        RedBlackTree.foldLeft(f, s, t)
 
     ///
     /// Applies `f` to a start value `s` and all key-value pairs in `m` going from right to left.
