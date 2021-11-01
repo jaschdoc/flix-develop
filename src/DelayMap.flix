@@ -16,12 +16,12 @@
 
 
 use RedBlackTree.RedBlackTree;
-
+/*
 pub enum DelayMap[k, v] {
     case DMap(RedBlackTree[k, Lazy[v]])
 }
-
-namespace DelayMap {
+*/
+namespace DelayMap1 {
 
     ///
     /// Returns the empty map.

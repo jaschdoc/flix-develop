@@ -23,27 +23,27 @@ namespace TestDelayMap {
 
     @test
     def insertWith01(): Bool =
-        DelayMap.insertWith((v1, v2) -> v1 + v2, 1, 3, DelayMap.empty()) |> DelayMap.toList == (1, 3) :: Nil
+        DelayMap1.insertWith((v1, v2) -> v1 + v2, 1, 3, DelayMap1.empty()) |> DelayMap1.toList == (1, 3) :: Nil
 
     @test
     def insertWith02(): Bool =
-        List1.toDelayMap((1, 4) :: Nil) |> DelayMap.insertWith((v1, v2) -> v1 + v2, 1, 3) |> DelayMap.toList == (1, 7) :: Nil
+        List1.toDelayMap((1, 4) :: Nil) |> DelayMap1.insertWith((v1, v2) -> v1 + v2, 1, 3) |> DelayMap1.toList == (1, 7) :: Nil
 
     @test
     def insertWith03(): Bool =
-        DelayMap.insertWith((v1, v2) -> v1 + v2, 2, 3, Map#{1 -> 4}) == Map#{1 -> 4, 2 -> 3}
+        List1.toDelayMap((1, 4) :: Nil) |> DelayMap1.insertWith((v1, v2) -> v1 + v2, 2, 3) |> DelayMap1.toList == (1, 4) :: (2, 3) :: Nil
 
     @test
     def insertWith04(): Bool =
-        DelayMap.insertWith((v1, v2) -> v1 + v2, 1, 1, Map#{1 -> 4, 5 -> -2}) == Map#{1 -> 5, 5 -> -2}
+        List1.toDelayMap((1, 4) :: (5, -2) :: Nil) |> DelayMap1.insertWith((v1, v2) -> v1 + v2, 1, 1) |> DelayMap1.toList == (1, 5) :: (5, -2) :: Nil
 
     @test
     def insertWith05(): Bool =
-        DelayMap.insertWith((v1, v2) -> v1 + v2, 5, 1, Map#{1 -> 4, 5 -> -2}) == Map#{1 -> 4, 5 -> -1}
+        List1.toDelayMap((1, 4) :: (5, -2) :: Nil) |> DelayMap1.insertWith((v1, v2) -> v1 + v2, 5, 1) |> DelayMap1.toList == (1, 4) :: (5, -1) :: Nil
 
     @test
     def insertWith06(): Bool =
-        DelayMap.insertWith((v1, v2) -> v1 + v2, 4, -2, Map#{1 -> 4, 5 -> -2}) == Map#{1 -> 4, 5 -> -2, 4 -> -2}
+        List1.toDelayMap((1, 4) :: (5, -2) :: Nil) |> DelayMap1.insertWith((v1, v2) -> v1 + v2, 4, -2) |> DelayMap1.toList |> List.sortBy(t -> fst(t)) == (1, 4) :: (4, -2) :: (5, -2):: Nil
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -54,32 +54,32 @@ namespace TestDelayMap {
     def insertWithInsertWith01(): Bool =
         (("a", 1) :: Nil)                                    |>
             List1.toDelayMap                                 |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b", 1) |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b", 3) |>
-            DelayMap.toList == ("a", 1) :: ("b", 4) :: Nil
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b", 1) |>
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b", 3) |>
+            DelayMap1.toList == ("a", 1) :: ("b", 4) :: Nil
 
     @test
     def insertWithInsertWith02(): Bool & Impure =
         (("a", 1) :: Nil)                                                |>
             List1.toDelayMap                                             |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 1) |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b", 3)             |>
-            DelayMap.toList == ("a", 1) :: ("b", 4) :: Nil
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 1) |>
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b", 3)             |>
+            DelayMap1.toList == ("a", 1) :: ("b", 4) :: Nil
     @test
     def insertWithInsertWith03(): Bool & Impure =
         (("a", 1) :: Nil)                                                |>
             List1.toDelayMap                                             |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b", 1)             |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 3) |>
-            DelayMap.toList == ("a", 1) :: ("b", 4) :: Nil
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b", 1)             |>
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 3) |>
+            DelayMap1.toList == ("a", 1) :: ("b", 4) :: Nil
 
     @test
     def insertWithInsertWith04(): Bool & Impure =
         (("a", 1) :: Nil)                                                |>
             List1.toDelayMap                                             |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 1) |>
-            DelayMap.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 3) |>
-            DelayMap.toList == ("a", 1) :: ("b", 4) :: Nil
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 1) |>
+            DelayMap1.insertWith((v1, v2) -> v1 + v2, "b" as & Impure, 3) |>
+            DelayMap1.toList == ("a", 1) :: ("b", 4) :: Nil
 
 
 
