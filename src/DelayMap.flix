@@ -89,7 +89,6 @@ namespace DelayMap1 {
     ///
     /// Returns the map `m` as a list of key-value pairs.
     ///
-    // TODO return List[(k, Lazy[v])]
     pub def toList(m: DelayMap[k, v]): List[(k, v)] =
         foldRightWithKey((k, v, acc) -> (k, v) :: acc, Nil, m)
 
