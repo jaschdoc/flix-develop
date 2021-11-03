@@ -164,7 +164,7 @@ namespace MutDeque1 {
         let MutDeque(a, f, _) = d;
         let c = capacity(d);
         let c1 = 2 * c;
-        a := Array.copyOfRange(0, c1, deref a); // Copy elements into array with capactiy 2c.
+        a := Array.copyOfRange(0, c1, deref a); // Copy elements into array with capacity 2c.
         f := c1 - c + (deref f)                 // Update front index.
     }
 
