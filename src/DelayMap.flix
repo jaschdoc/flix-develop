@@ -46,8 +46,14 @@ namespace DelayMap1 {
     /// Returns an updated map with `k -> v`.
     ///
     pub def insert(k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        insertLazy(k, lazy v, m)
+
+    ///
+    /// Helper function that inserts `k -> v` into `m`, where `v` is required to be lazy.
+    ///
+    def insertLazy(k: k, v: Lazy[v], m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
         let DMap(t) = m;
-        DMap(RedBlackTree.insert(k, lazy v, t))
+        DMap(RedBlackTree.insert(k, v, t))
 
     ///
     /// Returns `Some(v)` if `k -> v` is in `m`.
@@ -88,16 +94,16 @@ namespace DelayMap1 {
                 lazy x
             };
             DMap(RedBlackTree.insertWith(f1, k, v, t)) as & ef
-
+/*
     ///
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
     ///
     pub def mapWithKey(f: (k, a) -> b & ef, m: DelayMap[k, a]): DelayMap[k, b] & ef with Order[k] =
         if (reify ef)
-            ???
+            foldLeftWithKey((acc, k, v) -> insertLazy(k, lazy f(k, v), acc), empty(), m)
         else
             foldLeftWithKey((acc, k, v) -> insert(k, f(k, v), acc), empty(), m) as & ef
-
+*/
 /*
     ///
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
