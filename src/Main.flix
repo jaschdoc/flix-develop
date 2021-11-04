@@ -14,7 +14,7 @@ def main(_args: Array[String]): Int32 & Impure =
     let t3 = Epoch.nanoseconds();
     let _ = 17 &&& (8 - 1);
     let t4 = Epoch.nanoseconds();
-    println("Regular mod ${t2 - t1}");
-    println("Bitwise mod ${t4 - t3}");
+    println("Regular mod time: ${t2 - t1} nano seconds");
+    println("Bitwise mod time: ${t4 - t3} nano seconds");
     0
 
