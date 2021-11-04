@@ -8,5 +8,13 @@ def main(_args: Array[String]): Int32 & Impure =
     println(l);
     println(Set.range(-1000, 1000) |> Set1.toLazyList);
     (-11 mod 9) |> println;
+    let t1 = Epoch.nanoseconds();
+    let _ = 17 mod 8;
+    let t2 = Epoch.nanoseconds();
+    let t3 = Epoch.nanoseconds();
+    let _ = 17 &&& (8 - 1);
+    let t4 = Epoch.nanoseconds();
+    println("Regular mod ${t2 - t1}");
+    println("Bitwise mod ${t4 - t3}");
     0
 
