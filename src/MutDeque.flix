@@ -101,7 +101,7 @@ namespace MutDeque1 {
             let a1 = deref a;
             let f1 = deref f;
             let x = a1[f1];
-            f := (f1 + 1) mod capacity(d);
+            f := (f1 + 1) &&& (capacity(d) - 1); // Use bit masking since the capacity is always a power of 2.
             compress!(d);
             Some(x)
         }
@@ -116,7 +116,7 @@ namespace MutDeque1 {
         else { // Update index such that back points to a valid element `x`, get element, optionally compress array, return `Some(x)`.
             let MutDeque(a, _, b) = d;
             let a1 = deref a;
-            let b1 = (deref b - 1) mod capacity(d);
+            let b1 = (deref b - 1) &&& (capacity(d) - 1); // Use bit masking since the capacity is always a power of 2.
             let x = a1[b1];
             b := b1;
             compress!(d);
@@ -129,10 +129,10 @@ namespace MutDeque1 {
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
-        let f1 = (deref f - 1) mod capacity(d); // Update index such that it points to an empty index. This will never overlap with the back index.
-        a1[f1] = x;                               // Store `x` in the array.
-        f := f1;                                  // Update the front index reference.
-        expand!(d)                                // Optionally expand `d`.
+        let f1 = (deref f - 1) &&& (capacity(d) - 1); // Update index such that it points to an empty index. This will never overlap with the back index. Use bit masking since the capacity is always a power of 2.
+        a1[f1] = x;                                   // Store `x` in the array.
+        f := f1;                                      // Update the front index reference.
+        expand!(d)                                    // Optionally expand `d`.
 
     ///
     /// Pushes `x` to the back of `d`.
@@ -141,9 +141,9 @@ namespace MutDeque1 {
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
         let b1 = deref b;
-        a1[b1] = x;                      // Store `x` in the array.
-        b := (b1 + 1) mod capacity(d);   // Update back index reference to point to next empty index.
-        expand!(d)                       // Optionally expand `d`.
+        a1[b1] = x;                          // Store `x` in the array.
+        b := (b1 + 1) &&& (capacity(d) - 1); // Update back index reference to point to next empty index. Use bit masking since the capacity is always a power of 2.
+        expand!(d)                           // Optionally expand `d`.
 
     ///
     /// Doubles the capacity of `d` if the load factor is greater than or equal to `maxLoadFactor`.
@@ -202,7 +202,7 @@ namespace MutDeque1 {
             a := Array.copyOfRange(0, c1, a1); // Copy elements and create new backing array;
             if (f1 >= c1) { // If the new array is smaller and the elements were located at the end of the old array.
                 Array.updateSequence!(0, Array.copyOfRange(f1, b1, a1), deref a); // Copy elements of old array into new array.
-                f := 0;      // Update indexes.
+                f := 0;      // Update indices.
                 b := b1 - f1
                 }
             else {
@@ -214,7 +214,7 @@ namespace MutDeque1 {
             let f2 = c1 - c + f1;                  // Compute new front index.
             Array.updateSequence!(f2, a2, a3);     // Stitch the new array together with the front elements.
             a := a3;                               // Update reference to backing array.
-            f := f2                                // Update indexes.
+            f := f2                                // Update indices.
         }
 
     ///
