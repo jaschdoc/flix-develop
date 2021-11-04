@@ -77,10 +77,10 @@ namespace MutDeque1 {
     /// Returns the size of a MutDeque, where `l` = array length, `f` = front index, `b` = back index.
     ///
     def computeSize(c: Int32, f: Int32, b: Int32): Int32 =
-        if (f <= b) // The elements laid out without "wrapping around" the array.
+        if (f <= b) // The elements are laid out without "wrapping around" the array.
             b - f
         else
-            c - (f - b) // Subtract the complement of number of elements from the capacity
+            c - f + b // Subtract the complement of number of elements from the capacity
 
     ///
     /// Returns `true` if `d` is empty.
@@ -161,11 +161,9 @@ namespace MutDeque1 {
     /// Doubles the capacity of `d`.
     ///
     def grow!(d: MutDeque[a]): Unit & Impure = {
-        let MutDeque(a, f, _) = d;
+        let MutDeque(a, f, b) = d;
         let c = capacity(d);
-        let c1 = 2 * c;
-        a := Array.copyOfRange(0, c1, deref a); // Copy elements into array with capacity 2c.
-        f := c1 - c + (deref f)                 // Update front index.
+        copyElements!(f, b, a, c * 2)
     }
 
     ///
@@ -187,7 +185,7 @@ namespace MutDeque1 {
         let MutDeque(a, f, b) = d;
         let c = capacity(d);
         if (c > minCapacity()) { // Prevent the backing array from shrinking below `minCapacity`.
-            copyElements(f, b, a, c / 2) // Copy elements into new array and update references.
+            copyElements!(f, b, a, c / 2) // Copy elements into new array and update references.
         } else {
             ()
         }
@@ -195,20 +193,28 @@ namespace MutDeque1 {
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
-    def copyElements(f: Ref[Int32], b: Ref[Int32], a: Ref[Array[a]], c1: Int32): Unit & Impure =
-        let c = Array.length(deref a);
+    def copyElements!(f: Ref[Int32], b: Ref[Int32], a: Ref[Array[a]], c1: Int32): Unit & Impure =
         let f1 = deref f;
         let b1 = deref b;
         let a1 = deref a;
+        let c = Array.length(a1);
         if (f1 < b1) { // If this predicate is true the elements do not "wrap around" in the array, i.e. the elements are laid out sequentially from [0 .. b].
-            a := Array.copyOfRange(f1, c1, a1)
+            a := Array.copyOfRange(0, c1, a1); // Copy elements and create new backing array;
+            if (f1 >= c1) { // If the new array is smaller and the elements were located at the end of the old array.
+                Array.updateSequence!(0, Array.copyOfRange(f1, b1, a1), deref a); // Copy elements of old array into new array.
+                f := 0;      // Update indexes.
+                b := b1 - f1
+                }
+            else {
+                ()
+            }
         } else {
-            let a2 = Array.copyOfRange(f1, c1, a1); // Copy the front elements of `a` and create an array with capacity `c1`.
-            let a3 = Array.copyOfRange(0, b1, a1);  // Copy the back  elements of `a` into a1.
-            let b2 = c - f1;                        // Compute new back index.
-            Array.updateSequence!(b2, a3, a2);      // Stitch the arrays together.
-            f := 0;                                 // Update indexes.
-            b := b2 + b1
+            let a2 = Array.copyOfRange(f1, c, a1); // Copy the front elements of `a`.
+            let a3 = Array.copyOfRange(0, c1, a1); // Copy the back  elements of `a` and create an array with capacity `c1`.
+            let f2 = c1 - c + f1;                  // Compute new front index.
+            Array.updateSequence!(f2, a2, a3);     // Stitch the new array together with the front elements.
+            a := a3;                               // Update reference to backing array.
+            f := f2                                // Update indexes.
         }
 
     ///
