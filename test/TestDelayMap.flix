@@ -87,7 +87,7 @@ namespace TestDelayMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def mapFusion01(): Bool & Impure =
+    def insertWithFusion01(): Bool & Impure =
         let l = ref Nil;
         List1.toDelayMap((1, 1) :: Nil) |>
         DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v }, 1, 1) |>
@@ -99,7 +99,7 @@ namespace TestDelayMap {
         List.reverse(deref l) == "a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil
 
     @test
-    def mapFusion02(): Bool & Impure =
+    def insertWithFusion02(): Bool & Impure =
         let l = ref Nil;
         let m = List1.toDelayMap((1, 1) :: Nil) |>
         DelayMap1.insertWith((v, _) -> { l := "a" :: deref l; v } as & Pure, 1, 1) |>
@@ -200,10 +200,27 @@ namespace TestDelayMap {
                 DelayMap1.toMap == Map#{2 -> -9, 5 -> 135, 11 -> -81}
 
 
-
     /////////////////////////////////////////////////////////////////////////////
     // map map (fusion)                                                        //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def mapFusion01(): Bool & Impure =
+        let l = ref Nil;
+        ((1, 1) :: (2, 2) :: (3, 3) :: Nil) |> List1.toDelayMap |>
+        DelayMap1.map(v -> { l := "a" :: deref l; v }) |>
+        DelayMap1.map(v -> { l := "b" :: deref l; v });
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def mapFusion02(): Bool & Impure =
+        let l = ref Nil;
+        let m = ((1, 1) :: (2, 2) :: (3, 3) :: Nil) |> List1.toDelayMap |>
+        DelayMap1.map(v -> { l := "a" :: deref l; v } as & Pure) |>
+        DelayMap1.map(v -> { l := "b" :: deref l; v } as & Pure);
+        let listBeforeEvaluation = deref l;
+        let _ = DelayMap1.toList(m);
+        listBeforeEvaluation == Nil and List.reverse(deref l) == "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil
 
 
     /////////////////////////////////////////////////////////////////////////////
