@@ -226,22 +226,27 @@ namespace TestDelayMap {
     /////////////////////////////////////////////////////////////////////////////
     // mapWithKey                                                              //
     /////////////////////////////////////////////////////////////////////////////
-/*
-        @test
-        def mapWithKey01(): Bool = Map.mapWithKey((_, v) -> v, Map#{}: Map[Unit, Unit]) == Map#{}
 
         @test
-        def mapWithKey02(): Bool = Map.mapWithKey((k, v) -> k + v, Map#{1 -> 4}) == Map#{1 -> 5}
+        def mapWithKey01(): Bool =
+            Map#{}: Map[Unit, Unit] |> Map1.toDelayMap |> DelayMap1.mapWithKey((_, v) -> v) |> DelayMap1.toMap == Map#{}
 
         @test
-        def mapWithKey03(): Bool = Map.mapWithKey((k, v) -> k + v, Map#{2 -> -1, 0 -> 0}) == Map#{2 -> 1, 0 -> 0}
+        def mapWithKey02(): Bool =
+            Map#{1 -> 4} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap == Map#{1 -> 5}
 
         @test
-        def mapWithKey04(): Bool = Map.mapWithKey((k, v) -> k + v, Map#{2 -> -1, 5 -> 15, 11 -> -9}) == Map#{2 -> 1, 5 -> 20, 11 -> 2}
+        def mapWithKey03(): Bool =
+            Map#{2 -> -1, 0 -> 0} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap == Map#{2 -> 1, 0 -> 0}
 
         @test
-        def mapWithKey05(): Bool = Map.mapWithKey((k, v) -> k + v, Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8})
+        def mapWithKey04(): Bool =
+            Map#{2 -> -1, 5 -> 15, 11 -> -9} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap == Map#{2 -> 1, 5 -> 20, 11 -> 2}
+
+        @test
+        def mapWithKey05(): Bool =
+            Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap
                                         == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
 
-*/
+
 }
