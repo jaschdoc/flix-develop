@@ -248,4 +248,210 @@ namespace TestDelayMap {
         Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap
                                     == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // union                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def union01(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{}: Map[Unit, Unit]), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{}
+
+    @test
+    def union02(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def union03(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def union04(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def union05(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def union06(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def union07(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{1 -> 5})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def union08(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def union09(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def union10(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def union11(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{3 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap== Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def union12(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{2 -> 8})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3}
+
+    @test
+    def union13(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{1 -> 8})) |> DelayMap1.toMap== Map#{1 -> 2, 2 -> 3}
+
+    @test
+    def union14(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{1 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 4, 2 -> 3}
+
+    @test
+    def union15(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{2 -> 7}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 7}
+
+    @test
+    def union16(): Bool =
+        DelayMap1.union(Map1.toDelayMap(Map#{2 -> 7, 11 -> 14, 9 -> 8, 15 -> 22}), Map1.toDelayMap(Map#{15 -> 21, 1 -> 2, 2 -> 8, 44 -> 33})) |> DelayMap1.toMap == Map#{2 -> 7, 11 -> 14, 9 -> 8, 15 -> 22, 1 -> 2, 44 -> 33}
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // unionWith                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def unionWith01(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{}: Map[Int, Int]
+
+    @test
+    def unionWith02(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def unionWith03(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def unionWith04(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWith05(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWith06(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWith07(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{1 -> 5})) |> DelayMap1.toMap == Map#{1 -> -3}
+
+    @test
+    def unionWith08(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWith09(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWith10(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWith11(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{3 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWith12(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{2 -> 8})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> -5}
+
+    @test
+    def unionWith13(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{1 -> 8})) |> DelayMap1.toMap == Map#{1 -> -6, 2 -> 3}
+
+    @test
+    def unionWith14(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{1 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3}
+
+    @test
+    def unionWith15(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{2 -> 7}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 4}
+
+    @test
+    def unionWith16(): Bool =
+        DelayMap1.unionWith((v1, v2) -> v1 - v2, Map1.toDelayMap(Map#{2 -> 7, 11 -> 14, 9 -> 8, 15 -> 22}), Map1.toDelayMap(Map#{15 -> 21, 1 -> 2, 2 -> 8, 44 -> 33})) |> DelayMap1.toMap == Map#{2 -> -1, 11 -> 14, 9 -> 8, 15 -> 1, 1 -> 2, 44 -> 33}
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // unionWithKey                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def unionWithKey01(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{}: Map[Int, Int]
+
+    @test
+    def unionWithKey02(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def unionWithKey03(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2})) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def unionWithKey04(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWithKey05(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWithKey06(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 3 -> 4}
+
+    @test
+    def unionWithKey07(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2}), Map1.toDelayMap(Map#{1 -> 5})) |> DelayMap1.toMap == Map#{1 -> -2}
+
+    @test
+    def unionWithKey08(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWithKey09(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3, 3 -> 4}), Map1.toDelayMap(Map#{})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWithKey10(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{3 -> 4})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWithKey11(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{3 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 3, 3 -> 4}
+
+    @test
+    def unionWithKey12(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{2 -> 8})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> -3}
+
+    @test
+    def unionWithKey13(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 2, 2 -> 3}), Map1.toDelayMap(Map#{1 -> 8})) |> DelayMap1.toMap == Map#{1 -> -5, 2 -> 3}
+
+    @test
+    def unionWithKey14(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{1 -> 4}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 3, 2 -> 3}
+
+    @test
+    def unionWithKey15(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{2 -> 7}), Map1.toDelayMap(Map#{1 -> 2, 2 -> 3})) |> DelayMap1.toMap == Map#{1 -> 2, 2 -> 6}
+
+    @test
+    def unionWithKey16(): Bool =
+        DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2, Map1.toDelayMap(Map#{2 -> 7, 11 -> 14, 9 -> 8, 15 -> 22}), Map1.toDelayMap(Map#{15 -> 21, 1 -> 2, 2 -> 8, 44 -> 33})) |> DelayMap1.toMap == Map#{2 -> 1, 11 -> 14, 9 -> 8, 15 -> 16, 1 -> 2, 44 -> 33}
 }
