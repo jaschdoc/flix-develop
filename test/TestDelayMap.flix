@@ -201,7 +201,7 @@ namespace TestDelayMap {
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // map map (fusion)                                                        //
+    // map (fusion)                                                            //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
@@ -556,4 +556,27 @@ namespace TestDelayMap {
             DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2 as & Impure, Map1.toDelayMap(Map#{1 -> 2})) |>
             DelayMap1.unionWithKey((k, v1, v2) -> k + v1 - v2 as & Impure, Map1.toDelayMap(Map#{1 -> 3})) |>
             DelayMap1.toMap == Map#{1 -> 6}
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // unionWithKey (fusion)                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def unionWithKeyFusion01(): Bool & Impure =
+        let l = ref Nil;
+        Map#{1 -> 1, 2 -> 2, 3 -> 3} |> Map1.toDelayMap |>
+        DelayMap1.unionWithKey((_, _, v) -> { l := "a" :: deref l; v }, Map1.toDelayMap(Map#{1 -> 1, 2 -> 2, 3 -> 3})) |>
+        DelayMap1.unionWithKey((_, _, v) -> { l := "b" :: deref l; v }, Map1.toDelayMap(Map#{1 -> 1, 2 -> 2, 3 -> 3}));
+        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+
+    @test
+    def unionWithKeyFusion02(): Bool & Impure =
+        let l = ref Nil;
+        let m = Map#{1 -> 1, 2 -> 2, 3 -> 3} |> Map1.toDelayMap |>
+        DelayMap1.unionWithKey((_, _, v) -> { l := "a" :: deref l; v } as & Pure, Map1.toDelayMap(Map#{1 -> 1, 2 -> 2, 3 -> 3})) |>
+        DelayMap1.unionWithKey((_, _, v) -> { l := "b" :: deref l; v } as & Pure, Map1.toDelayMap(Map#{1 -> 1, 2 -> 2, 3 -> 3}));
+        let listBeforeEvaluation = deref l;
+        let _ = DelayMap1.toList(m);
+        listBeforeEvaluation == Nil and List.reverse(deref l) == "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil
 }
