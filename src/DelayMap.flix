@@ -195,4 +195,39 @@ namespace DelayMap1 {
     pub def toMap(m: DelayMap[k, v]): Map[k, v] =
         let DMap(t) = m;
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
+
+    ///
+    /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
+    ///
+    /// Otherwise, returns `m`.
+    ///
+    pub def adjust(f: v -> v & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        adjustWithKey((_, v1) -> f(v1), k, m)
+
+    ///
+    /// Updates `m` with `k -> f(k, v)` if `k -> v` is in `m`. Otherwise, returns `m`.
+    ///
+    pub def adjustWithKey(f: (k, v) -> v & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        updateWithKey((k1, v) -> Some(f(k1, v)), k, m)
+
+    ///
+    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(v) = Some(v1)`. Otherwise, returns `m`.
+    ///
+    pub def update(f: v -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        updateWithKey((_, v1) -> f(v1), k, m)
+
+    ///
+    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
+    ///
+    pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        if (reify ef)
+            let f1 = (k, v) -> lazy (f(k, force v)) as & Pure; // I'm not sure this is quite right... maybe use insertWith???
+            updateWithKeyHelper(f1, k, m)
+        else
+            ???
+
+    pub def updateWithKeyHelper(f: (k, Lazy[v]) -> Lazy[Option[v]] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        let DMap(xs) = m;
+        DMap(RedBlackTree.updateWith(f, k, xs))
+
 }
