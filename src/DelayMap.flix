@@ -15,14 +15,13 @@
  */
 
 
-use RedBlackTree.RedBlackTree;
 /*
 pub enum DelayMap[k, v] {
     case DMap(RedBlackTree[k, Lazy[v]])
 }
 */
 namespace DelayMap1 {
-
+    use RedBlackTree.RedBlackTree;
     ///
     /// Returns the empty map.
     ///
@@ -94,16 +93,25 @@ namespace DelayMap1 {
                 lazy x
             };
             DMap(RedBlackTree.insertWith(f1, k, v, t)) as & ef
-/*
+
+
     ///
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
     ///
-    pub def mapWithKey(f: (k, a) -> b & ef, m: DelayMap[k, a]): DelayMap[k, b] & ef with Order[k] =
+    pub def mapWithKey(f: (k, v1) -> v2 & ef, m: DelayMap[k, v1]): DelayMap[k, v2] & ef =
+        let DMap(tree) = m;
         if (reify ef)
-            foldLeftWithKey((acc, k, v) -> insertLazy(k, lazy f(k, v), acc), empty(), m)
+            let f1 = (k, v) -> lazy (f(k, force v) as & Pure) as & Pure;
+            DMap(RedBlackTree.mapWithKey(f1, tree) as RedBlackTree[k, Lazy[v2]] & Pure)
         else
-            foldLeftWithKey((acc, k, v) -> insert(k, f(k, v), acc), empty(), m) as & ef
-*/
+            let f1 = (k, v) -> {
+                let x1 = f(k, force v) as & Impure;
+                lazy x1
+            } as & Impure;
+            DMap(RedBlackTree.mapWithKey(f1 as & Impure, tree) as RedBlackTree[k, Lazy[v2]] & Impure) as & ef
+
+
+
 /*
     ///
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
@@ -119,6 +127,48 @@ namespace DelayMap1 {
     @Time(time(f) * size(m)) @Space(space(f) * size(m))
     pub def map(f: v1 -> v2 & ef, m: Map[k, v1]): Map[k, v2] & ef with Order[k] = mapWithKey((_, v) -> f(v), m)
     */
+
+
+
+
+    ///
+    /// Returns the left-biased union of `m1` and `m2`.
+    ///
+    /// That is, key collisions are resolved by taking the mapping from `m1`.
+    ///
+    pub def union(m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        unionWithKey((_, v1, _) -> v1, m1, m2)
+
+    ///
+    /// Returns the union of `m1` and `m2` where key collisions are resolved with the merge function `f`.
+    ///
+    pub def unionWith(f: (v, v) -> v & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        unionWithKey((_, v1, v2) -> f(v1, v2), m1, m2)
+
+    ///
+    /// Returns the union of `m1` and `m2` where key collisions are resolved with the merge function `f`, taking both the key and values.
+    ///
+    pub def unionWithKey(f: (k, v, v) -> v & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        if (reify ef)
+            unionWithKeyHelper((k, v1, v2) -> lazy (f(k, force v1, force v2) as & Pure) as & Pure, m1, m2)
+        else
+            let f1 = (k, v1, v2) -> {
+                let x = f(k, force v1, force v2) as & Impure;
+                lazy x
+            };
+            unionWithKeyHelper(f1 as & Impure, m1, m2) as & ef
+
+    ///
+    /// Helper function for `unionWithKey`.
+    ///
+    def unionWithKeyHelper(f: (k, Lazy[v], Lazy[v]) -> Lazy[v] & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        use RedBlackTree.{blackHeight, foldRight, insertWith};
+        let DMap(xs) = m1;
+        let DMap(ys) = m2;
+        if (blackHeight(xs) < blackHeight(ys))
+            DMap(foldRight((k, v) -> insertWith(f, k, v), ys, xs))
+        else
+            DMap(foldRight((k, v) -> insertWith((_, v1, v2) -> f(k, v2, v1), k, v), xs, ys))
 
 
     ///
