@@ -245,8 +245,7 @@ namespace TestDelayMap {
 
     @test
     def mapWithKey05(): Bool =
-        Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap
-                                    == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
+        Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8} |> Map1.toDelayMap |> DelayMap1.mapWithKey((k, v) -> k + v) |> DelayMap1.toMap == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
 
 
     /////////////////////////////////////////////////////////////////////////////
