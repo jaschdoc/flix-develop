@@ -82,6 +82,9 @@ namespace DelayMap1 {
     pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         insertWithKeyLazy(f, k, lazy v, m)
 
+    ///
+    /// Helper function for `insertWithkey`.
+    ///
     def insertWithKeyLazy(f: (k, v, v) -> v & ef, k: k, v: Lazy[v], m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let DMap(t) = m;
         if (reify ef)
@@ -93,7 +96,6 @@ namespace DelayMap1 {
                 lazy x
             };
             DMap(RedBlackTree.insertWith(f1, k, v, t)) as & ef
-
 
     ///
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
@@ -109,27 +111,6 @@ namespace DelayMap1 {
                 lazy x1
             } as & Impure;
             DMap(RedBlackTree.mapWithKey(f1 as & Impure, tree) as RedBlackTree[k, Lazy[v2]] & Impure) as & ef
-
-
-
-/*
-    ///
-    /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
-    ///
-    pub def mapWithKey(f: (k, v1) -> v2 & ef, m: Map[k, v1]): Map[k, v2] & ef with Order[k] =
-        foldLeftWithKey((acc, k, v) -> insert(k, f(k, v), acc), empty(), m)
-*/
-
-    /*
-    ///
-    /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
-    ///
-    @Time(time(f) * size(m)) @Space(space(f) * size(m))
-    pub def map(f: v1 -> v2 & ef, m: Map[k, v1]): Map[k, v2] & ef with Order[k] = mapWithKey((_, v) -> f(v), m)
-    */
-
-
-
 
     ///
     /// Returns the left-biased union of `m1` and `m2`.
@@ -170,7 +151,6 @@ namespace DelayMap1 {
         else
             DMap(foldRight((k, v) -> insertWith((_, v1, v2) -> f(k, v2, v1), k, v), xs, ys))
 
-
     ///
     /// Returns the map `m` as a list of key-value pairs.
     ///
@@ -186,9 +166,13 @@ namespace DelayMap1 {
         let f1 = (b, k, v) -> f(b, k, force v);
         foldLeftWithKeyLazy(f1, s, m)
 
+    ///
+    /// Helper function for `foldLeftWithKey`.
+    ///
     def foldLeftWithKeyLazy(f: (b, k, Lazy[v]) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
         let DMap(t) = m;
         RedBlackTree.foldLeft(f, s, t)
+
     ///
     /// Applies `f` to a start value `s` and all key-value pairs in `m` going from right to left.
     ///
