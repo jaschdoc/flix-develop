@@ -196,7 +196,6 @@ namespace DelayMap1 {
         let DMap(t) = m;
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
 
-
     ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
     ///
