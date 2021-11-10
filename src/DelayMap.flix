@@ -35,6 +35,13 @@ namespace DelayMap1 {
         insert(k, v, empty())
 
     ///
+    /// Returns the size of `m`.
+    ///
+    pub def size(m: DelayMap[k, v]): Int32 =
+        let DMap(t) = m;
+        RedBlackTree.size(t)
+
+    ///
     /// Returns `true` if and only if `m` is the empty map, i.e. `Map(Nil)`.
     ///
     pub def isEmpty(m: DelayMap[k, v]): Bool =
@@ -59,6 +66,74 @@ namespace DelayMap1 {
             case None    => None
             case Some(x) => Some(force x)
         }
+
+    ///
+    /// Returns `v` if `k -> v` is in `m`.
+    ///
+    /// Otherwise, returns `d`.
+    ///
+    pub def getWithDefault(k: k, d: v, m: DelayMap[k, v]): v with Order[k] =
+        Option.getWithDefault(get(k, m), d)
+
+    ///
+    /// Returns `true` if and only if `m` contains the key `k`.
+    ///
+    pub def memberOf(k: k, m: DelayMap[k, v]): Bool with Order[k] =
+        let DMap(t) = m;
+        RedBlackTree.memberOf(k, t)
+
+    ///
+    /// Optionally finds `k -> v` where `k` is the smallest key according to the `Order` instance of `k`.
+    ///
+    /// Returns `None` if `m` is empty.
+    ///
+    pub def minimum(m: DelayMap[k, v]): Option[(k, Lazy[v])] =
+        let DMap(t) = m;
+        RedBlackTree.minimum(t)
+
+    ///
+    /// Optionally finds `k -> v` where `k` is the smallest key according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `m` is empty.
+    ///
+    pub def minimumBy(cmp: (k, v, k, v) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+        reduceLeftWithKey((k1, v1, k2, v2) -> if (cmp(k1, v1, k2, v2) == LessThan) (k1, v1) else (k2, v2), m)
+
+    ///
+    /// Optionally finds `k -> v` where `k` is the largest key according to the `Order` instance of `k`.
+    ///
+    /// Returns `None` if `m` is empty.
+    ///
+    pub def maximum(m: DelayMap[k, v]): Option[(k, Lazy[v])] =
+        let DMap(t) = m;
+        RedBlackTree.maximum(t)
+
+    ///
+    /// Optionally finds `k -> v` where `k` is the largest key according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `m` is empty.
+    ///
+    pub def maximumBy(cmp: (k, v, k, v) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+        reduceLeftWithKey((k1, v1, k2, v2) -> if (cmp(k1, v1, k2, v2) == GreaterThan) (k1, v1) else (k2, v2), m)
+
+    ///
+    /// Returns the keys of `m`.
+    ///
+    pub def keysOf(m: DelayMap[k, v]): Set[k] with Order[k] =
+        foldLeftWithKey((acc, k, _) -> Set.insert(k, acc), Set.empty(), m)
+
+    ///
+    /// Returns the values of `m`.
+    ///
+    pub def valuesOf(m: DelayMap[k, v]): List[v] =
+        foldRight((v, acc) -> v :: acc, Nil, m)
+
+    ///
+    /// Removes the mapping `k` from the map `m`.
+    ///
+    pub def remove(k: k, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        let DMap(t) = m;
+        DMap(RedBlackTree.remove(k, t))
 
     ///
     /// Updates `m` with `k -> f(v, v1)` if `k -> v1` is in `m`.
@@ -105,6 +180,23 @@ namespace DelayMap1 {
                 lazy x1
             };
             DMap(RedBlackTree.mapWithKey(f1, tree)) as & ef
+
+    ///
+    /// Returns a map of all mappings `k -> v` in `m` where `v` satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def filter(f: v -> Bool, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        filterWithKey((_, v) -> f(v), m)
+
+    ///
+    /// Returns a map of all mappings `k -> v` in `m` where `(k, v)` satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    // TODO: Effect polymorphic split?
+    pub def filterWithKey(f: (k, v) -> Bool, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        foldLeftWithKey((acc, k, v) -> if (f(k, v)) insert(k, v, acc) else acc, empty(), m)
 
     ///
     /// Returns the left-biased union of `m1` and `m2`.
@@ -162,6 +254,14 @@ namespace DelayMap1 {
         RedBlackTree.foldLeft(f1, s, t)
 
     ///
+    /// Applies `f` to a start value `s` and all values in `m` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(v1, ...f(vn-1, f(vn, s)))`.
+    ///
+    pub def foldRight(f: (v, b) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
+        foldRightWithKey((_, v, acc) -> f(v, acc), s, m)
+
+    ///
     /// Applies `f` to a start value `s` and all key-value pairs in `m` going from right to left.
     ///
     /// That is, the result is of the form: `f(k1, v1, ...f(kn-1, vn-1, f(kn, vn, s)))`.
@@ -170,6 +270,35 @@ namespace DelayMap1 {
         let DMap(t) = m;
         let f1 = (k1, v1, b1) -> f(k1, force v1, b1);
         RedBlackTree.foldRight(f1, s, t)
+
+
+    ///
+    /// Applies `f` to all values in `m` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
+    ///
+    /// That is, the result is of the form: `Some(f(...f(f(v1, v2), v3)..., vn))`
+    ///
+    /// Returns `None` if `m` is the empty map.
+    ///
+    pub def reduceLeft(f: (v, v) -> v & ef, m: DelayMap[k, v]): Option[v] & ef =
+        reduceLeftWithKey((k, v1, _, v2) -> (k, f(v1, v2)), m) |> Option.map(snd)
+
+    ///
+    /// Applies `f` to all mappings in `m` going from left to right until a single mapping `(k, v)` is obtained.  Returns `Some((k, v))`.
+    ///
+    /// That is, the result is of the form: `Some(f(...f(f(k1, v1, k2, v2), k3, v3)..., kn, vn))`
+    ///
+    /// Returns `None` if `m` is the empty map.
+    ///
+    pub def reduceLeftWithKey(f: (k, v, k, v) -> (k, v) & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
+        let DMap(t) = m;
+        let f1 = (k1, v1, k2, v2) -> {
+            let (k, v) = f(k1, force v1, k2, force v2);
+            (k, lazy v)
+        };
+        match RedBlackTree.reduceLeft(f1, t) {
+            case Some((k, v)) => Some((k, force v))
+            case None         => None
+        }
 
     ///
     /// Returns `m` as a Map, i.e. every value is forced.
