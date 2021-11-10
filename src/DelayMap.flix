@@ -360,8 +360,6 @@ namespace DelayMap1 {
     pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
         List.toIterator(query(_ -> EqualTo, m))
 
-
-/*
     ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
     ///
@@ -386,8 +384,9 @@ namespace DelayMap1 {
     /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
     ///
     pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
-        reifyEff(f) {
-            case Pure(g) => updateWithKeyL(g, k, m)
+        let f1 = (t) -> f(fst(t), snd(t));
+        reifyEff(f1) {
+            case Pure(g) => updateWithKeyL((k1, v) -> g((k1, v)), k, m)
             case _       => updateWithKeyE(f, k, m)
         }
 
@@ -418,7 +417,7 @@ namespace DelayMap1 {
             }
         };
         DMap(RedBlackTree.updateWith(f1, k, t))
-*/
+
 /*
     ///
     /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
