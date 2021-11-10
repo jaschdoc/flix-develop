@@ -417,27 +417,4 @@ namespace DelayMap1 {
             }
         };
         DMap(RedBlackTree.updateWith(f1, k, t))
-
-/*
-    ///
-    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
-    ///
-    pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
-        let DMap(t) = m;
-        if (reify ef)
-            let f1 = (k, v) -> {
-                let res = lazy match f(k, force v) {
-                    case Some(v1) => v1
-                    case None     => force v
-                } as & Pure;
-                Some(res)
-            };
-            DMap(RedBlackTree.updateWith(f1, k, t))
-        else
-            let f1 = (k, v) -> match f(k, force v) {
-                case Some(v1) => Some(lazy v1)
-                case None     => None
-            };
-            DMap(RedBlackTree.updateWith(f1, k, t)) as & ef
-*/
 }
