@@ -405,7 +405,7 @@ namespace DelayMap1 {
         DMap(RedBlackTree.updateWith(f1, k, t))
 
     ///
-    /// Helper function for `updateWithKey`. Froces `v`.
+    /// Helper function for `updateWithKey`. Forces `v`.
     ///
     def updateWithKeyE(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let DMap(t) = m;
