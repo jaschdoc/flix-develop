@@ -720,7 +720,7 @@ namespace TestDelayMap {
         let _ = DelayMap1.toMap(m);
         List.reverse(deref l) == "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil
 
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // adjust                                                                  //
     /////////////////////////////////////////////////////////////////////////////
@@ -842,52 +842,102 @@ namespace TestDelayMap {
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // updateWithKey                                                           //
+    // updateWithKey (pure)                                                    //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def updateWithKey01(): Bool =
+    def updateWithKeyPure01(): Bool =
         let m = Map1.toDelayMap(Map#{});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 1, m) |> DelayMap1.toMap == Map#{}
 
     @test
-    def updateWithKey02(): Bool =
+    def updateWithKeyPure02(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 3});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 1, m) |> DelayMap1.toMap == Map#{1 -> 7}
 
     @test
-    def updateWithKey03(): Bool =
+    def updateWithKeyPure03(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 1, m) |> DelayMap1.toMap == Map#{1 -> 4}
 
     @test
-    def updateWithKey04(): Bool =
+    def updateWithKeyPure04(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 2, m) |> DelayMap1.toMap == Map#{1 -> 4}
 
     @test
-    def updateWithKey05(): Bool =
+    def updateWithKeyPure05(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> -14, 5 -> -2});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 1, m) |> DelayMap1.toMap == Map#{1 -> -14, 5 -> -2}
 
     @test
-    def updateWithKey06(): Bool =
+    def updateWithKeyPure06(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> -13, 5 -> -2});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 1, m) |> DelayMap1.toMap == Map#{1 -> -25, 5 -> -2}
 
     @test
-    def updateWithKey07(): Bool =
+    def updateWithKeyPure07(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -2});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 5, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> -2}
 
     @test
-    def updateWithKey08(): Bool =
+    def updateWithKeyPure08(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -1});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 5, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> 3}
 
     @test
-    def updateWithKey09(): Bool =
+    def updateWithKeyPure09(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -2});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 4, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> -2}
-*/
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // updateWithKey (pure)                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def updateWithKeyImpure01(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 1, m) |> DelayMap1.toMap == Map#{}
+
+    @test
+    def updateWithKeyImpure02(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 3});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 1, m) |> DelayMap1.toMap == Map#{1 -> 7}
+
+    @test
+    def updateWithKeyImpure03(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 4});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 1, m) |> DelayMap1.toMap == Map#{1 -> 4}
+
+    @test
+    def updateWithKeyImpure04(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 4});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 2, m) |> DelayMap1.toMap == Map#{1 -> 4}
+
+    @test
+    def updateWithKeyImpure05(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> -14, 5 -> -2});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 1, m) |> DelayMap1.toMap == Map#{1 -> -14, 5 -> -2}
+
+    @test
+    def updateWithKeyImpure06(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> -13, 5 -> -2});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 1, m) |> DelayMap1.toMap == Map#{1 -> -25, 5 -> -2}
+
+    @test
+    def updateWithKeyImpure07(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -2});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 5, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> -2}
+
+    @test
+    def updateWithKeyImpure08(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -1});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 5, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> 3}
+
+    @test
+    def updateWithKeyImpure09(): Bool & Impure =
+        let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -2});
+        DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None as & Impure, 4, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> -2}
+
 }
