@@ -307,6 +307,34 @@ namespace DelayMap1 {
         let DMap(t) = m;
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
 
+    ///
+    /// Returns `m` as a mutable set.
+    ///
+    pub def toMutMap(m: DelayMap[k, v]): MutMap[k, v] & Impure =
+        let DMap(t) = m;
+        let t1 = t |> RedBlackTree.mapWithKey((_, v) -> force v);
+        MutMap(ref Map(t1))
+
+    ///
+    /// Returns the map `m` as a set of key-value pairs.
+    ///
+    pub def toSet(m: DelayMap[k, v]): Set[(k, v)] with Order[k], Order[v] =
+        foldLeftWithKey((acc, k, v) -> Set.insert((k, v), acc), Set.empty(), m)
+
+    ///
+    /// Returns the map `m` as a `LazyList` of key-value pairs.
+    ///
+    pub def toLazyList(m: DelayMap[k, v]): LazyList[(k, v)] =
+        foldRightWithKey((k, v, acc) -> ECons((k, v), acc), ENil, m)
+/*
+    ///
+    /// Applies `f` to every element of `xs`.
+    ///
+    pub def foreach(f: (k, v) -> Unit & ef, m: DelayMap[k, v]): Unit & ef =
+        let DMap(t) = m;
+        let f1 = (k, v) -> f(k, force v);
+        RedBlackTree.foreach(f1, t)
+*/
 /*
     ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
