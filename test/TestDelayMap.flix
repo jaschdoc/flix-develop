@@ -720,7 +720,7 @@ namespace TestDelayMap {
         let _ = DelayMap1.toMap(m);
         List.reverse(deref l) == "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil
 
-
+/*
     /////////////////////////////////////////////////////////////////////////////
     // adjust                                                                  //
     /////////////////////////////////////////////////////////////////////////////
@@ -889,5 +889,5 @@ namespace TestDelayMap {
     def updateWithKey09(): Bool =
         let m = Map1.toDelayMap(Map#{1 -> 4, 5 -> -2});
         DelayMap1.updateWithKey((k, v) -> if (v rem 2 != 0) Some(k + 2 * v) else None, 4, m) |> DelayMap1.toMap == Map#{1 -> 4, 5 -> -2}
-
+*/
 }

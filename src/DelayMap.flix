@@ -196,6 +196,7 @@ namespace DelayMap1 {
         let DMap(t) = m;
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
 
+/*
     ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
     ///
@@ -220,6 +221,44 @@ namespace DelayMap1 {
     /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
     ///
     pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        reifyEff(f) {
+            case Pure(g) => updateWithKeyL(g, k, m)
+            case _       => updateWithKeyE(f, k, m)
+        }
+
+    ///
+    ///
+    ///
+    def updateWithKeyL(f: (k, v) -> Option[v], k: k, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        let DMap(t) = m;
+        let f1 = (k, v) -> {
+            let res = lazy match f(k, force v) {
+                case Some(v1) => v1
+                case None     => force v
+            };
+            Some(res)
+        };
+        DMap(RedBlackTree.updateWith(f1, k, t))
+
+    ///
+    ///
+    ///
+    def updateWithKeyE(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        let DMap(t) = m;
+        let f1 = (k, v) -> {
+            let res = f(k, force v);
+            match res {
+                case Some(v1) => Some(lazy v1)
+                case None     => None
+            }
+        };
+        DMap(RedBlackTree.updateWith(f1, k, t))
+*/
+/*
+    ///
+    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
+    ///
+    pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let DMap(t) = m;
         if (reify ef)
             let f1 = (k, v) -> {
@@ -236,5 +275,5 @@ namespace DelayMap1 {
                 case None     => None
             };
             DMap(RedBlackTree.updateWith(f1, k, t)) as & ef
-
+*/
 }
