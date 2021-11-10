@@ -45,14 +45,8 @@ namespace DelayMap1 {
     /// Returns an updated map with `k -> v`.
     ///
     pub def insert(k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
-        insertLazy(k, lazy v, m)
-
-    ///
-    /// Helper function that inserts `k -> v` into `m`, where `v` is required to be lazy.
-    ///
-    def insertLazy(k: k, v: Lazy[v], m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
         let DMap(t) = m;
-        DMap(RedBlackTree.insert(k, v, t))
+        DMap(RedBlackTree.insert(k, lazy v, t))
 
     ///
     /// Returns `Some(v)` if `k -> v` is in `m`.
@@ -80,22 +74,16 @@ namespace DelayMap1 {
     /// Otherwise, updates `m` with `k -> v`.
     ///
     pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
-        insertWithKeyLazy(f, k, lazy v, m)
-
-    ///
-    /// Helper function for `insertWithKey`.
-    ///
-    def insertWithKeyLazy(f: (k, v, v) -> v & ef, k: k, v: Lazy[v], m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let DMap(t) = m;
         if (reify ef)
             let f1 = (key, newVal, oldVal) -> lazy (f(key, force newVal, force oldVal) as & Pure);
-            DMap(RedBlackTree.insertWith(f1, k, v, t))
+            DMap(RedBlackTree.insertWith(f1, k, lazy v, t))
         else
             let f1 = (key, newVal, oldVal) -> {
                 let x = f(key, force newVal, force oldVal);
                 lazy x
             };
-            DMap(RedBlackTree.insertWith(f1, k, v, t)) as & ef
+            DMap(RedBlackTree.insertWith(f1, k, lazy v, t)) as & ef
 
     ///
     /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
@@ -169,15 +157,9 @@ namespace DelayMap1 {
     /// That is, the result is of the form: `f(...f(f(s, k1, v1), k2, v2)..., vn)`.
     ///
     pub def foldLeftWithKey(f: (b, k, v) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
-        let f1 = (b, k, v) -> f(b, k, force v);
-        foldLeftWithKeyLazy(f1, s, m)
-
-    ///
-    /// Helper function for `foldLeftWithKey`.
-    ///
-    def foldLeftWithKeyLazy(f: (b, k, Lazy[v]) -> b & ef, s: b, m: DelayMap[k, v]): b & ef =
         let DMap(t) = m;
-        RedBlackTree.foldLeft(f, s, t)
+        let f1 = (b, k, v) -> f(b, k, force v);
+        RedBlackTree.foldLeft(f1, s, t)
 
     ///
     /// Applies `f` to a start value `s` and all key-value pairs in `m` going from right to left.
