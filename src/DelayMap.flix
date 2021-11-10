@@ -335,6 +335,32 @@ namespace DelayMap1 {
         let f1 = (k, v) -> f(k, force v);
         RedBlackTree.foreach(f1, t)
 */
+
+    ///
+    /// Extracts a range of key-value pairs from the map `m`.
+    ///
+    /// That is, the result is a list of all pairs `(k, v)` where `p(k)` returns `Equal`.
+    ///
+    pub def query(p: k -> Comparison & ef, m: DelayMap[k, v]): List[(k, v)] & ef =
+        let DMap(t) = m;
+        RedBlackTree.query(p, (k, v) -> (k, force v), t)
+
+    ///
+    /// Applies `f` to all key-value pairs `(k, v)` from the map `m` where `p(k)` returns `EqualTo`.
+    ///
+    /// The function `f` must be impure.
+    ///
+    pub def queryWith(p: k -> Comparison & ef, f: (k, v) ~> Unit, m: DelayMap[k, v]): Unit & Impure =
+        let DMap(t) = m;
+        RedBlackTree.queryWith(p, (k, v) -> f(k, force v), t)
+
+    ///
+    /// Returns an iterator over all key-value pairs in `m`.
+    ///
+    pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
+        List.toIterator(query(_ -> EqualTo, m))
+
+
 /*
     ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
