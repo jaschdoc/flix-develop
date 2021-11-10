@@ -220,7 +220,7 @@ namespace TestDelayMap {
         ((1, 1) :: (2, 2) :: (3, 3) :: Nil) |> List1.toDelayMap |>
         DelayMap1.map(v -> { l := "a" :: deref l; v }) |>
         DelayMap1.map(v -> { l := "b" :: deref l; v });
-        List.reverse(deref l) == ("a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil)
+        List.reverse(deref l) == "a" :: "a" :: "a" :: "b" :: "b" :: "b" :: Nil
 
     @test
     def mapFusion02(): Bool & Impure =
