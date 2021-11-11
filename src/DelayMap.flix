@@ -310,59 +310,6 @@ namespace DelayMap1 {
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
 
     ///
-    /// Returns `m` as a mutable set.
-    ///
-    pub def toMutMap(m: DelayMap[k, v]): MutMap[k, v] & Impure =
-        let DMap(t) = m;
-        let t1 = t |> RedBlackTree.mapWithKey((_, v) -> force v);
-        MutMap(ref Map(t1))
-
-    ///
-    /// Returns the map `m` as a set of key-value pairs.
-    ///
-    pub def toSet(m: DelayMap[k, v]): Set[(k, v)] with Order[k], Order[v] =
-        foldLeftWithKey((acc, k, v) -> Set.insert((k, v), acc), Set.empty(), m)
-
-    ///
-    /// Returns the map `m` as a `LazyList` of key-value pairs.
-    ///
-    pub def toLazyList(m: DelayMap[k, v]): LazyList[(k, v)] =
-        foldRightWithKey((k, v, acc) -> ECons((k, v), acc), ENil, m)
-/*
-    ///
-    /// Applies `f` to every element of `xs`.
-    ///
-    pub def foreach(f: (k, v) -> Unit & ef, m: DelayMap[k, v]): Unit & ef =
-        let DMap(t) = m;
-        let f1 = (k, v) -> f(k, force v);
-        RedBlackTree.foreach(f1, t)
-*/
-
-    ///
-    /// Extracts a range of key-value pairs from the map `m`.
-    ///
-    /// That is, the result is a list of all pairs `(k, v)` where `p(k)` returns `Equal`.
-    ///
-    pub def query(p: k -> Comparison & ef, m: DelayMap[k, v]): List[(k, v)] & ef =
-        let DMap(t) = m;
-        RedBlackTree.query(p, (k, v) -> (k, force v), t)
-
-    ///
-    /// Applies `f` to all key-value pairs `(k, v)` from the map `m` where `p(k)` returns `EqualTo`.
-    ///
-    /// The function `f` must be impure.
-    ///
-    pub def queryWith(p: k -> Comparison & ef, f: (k, v) ~> Unit, m: DelayMap[k, v]): Unit & Impure =
-        let DMap(t) = m;
-        RedBlackTree.queryWith(p, (k, v) -> f(k, force v), t)
-
-    ///
-    /// Returns an iterator over all key-value pairs in `m`.
-    ///
-    pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
-        List.toIterator(query(_ -> EqualTo, m))
-
-    ///
     /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
     ///
     /// Otherwise, returns `m`.
@@ -419,4 +366,57 @@ namespace DelayMap1 {
             }
         };
         DMap(RedBlackTree.updateWith(f1, k, t))
+
+    ///
+    /// Returns `m` as a mutable set.
+    ///
+    pub def toMutMap(m: DelayMap[k, v]): MutMap[k, v] & Impure =
+        let DMap(t) = m;
+        let t1 = t |> RedBlackTree.mapWithKey((_, v) -> force v);
+        MutMap(ref Map(t1))
+
+    ///
+    /// Returns the map `m` as a set of key-value pairs.
+    ///
+    pub def toSet(m: DelayMap[k, v]): Set[(k, v)] with Order[k], Order[v] =
+        foldLeftWithKey((acc, k, v) -> Set.insert((k, v), acc), Set.empty(), m)
+
+    ///
+    /// Returns the map `m` as a `LazyList` of key-value pairs.
+    ///
+    pub def toLazyList(m: DelayMap[k, v]): LazyList[(k, v)] =
+        foldRightWithKey((k, v, acc) -> ECons((k, v), acc), ENil, m)
+
+    ///
+    /// Applies `f` to every element of `xs`.
+    ///
+    pub def foreach(f: (k, v) -> Unit & ef, m: DelayMap[k, v]): Unit & ef =
+        let DMap(t) = m;
+        let f1 = (k, v) -> f(k, force v);
+        RedBlackTree.foreach(f1 as & Impure, t) as & ef
+
+    ///
+    /// Extracts a range of key-value pairs from the map `m`.
+    ///
+    /// That is, the result is a list of all pairs `(k, v)` where `p(k)` returns `Equal`.
+    ///
+    pub def query(p: k -> Comparison & ef, m: DelayMap[k, v]): List[(k, v)] & ef =
+        let DMap(t) = m;
+        RedBlackTree.query(p, (k, v) -> (k, force v), t)
+
+    ///
+    /// Applies `f` to all key-value pairs `(k, v)` from the map `m` where `p(k)` returns `EqualTo`.
+    ///
+    /// The function `f` must be impure.
+    ///
+    pub def queryWith(p: k -> Comparison & ef1, f: (k, v) -> Unit & ef2, m: DelayMap[k, v]): Unit & (ef1 and ef2) =
+        let DMap(t) = m;
+        RedBlackTree.queryWith(p, (k, v) -> f(k, force v) as & Impure, t) as & (ef1 and ef2)
+
+    ///
+    /// Returns an iterator over all key-value pairs in `m`.
+    ///
+    pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
+        List.toIterator(query(_ -> EqualTo, m))
+
 }
