@@ -188,7 +188,7 @@ namespace DelayMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def filter(f: v -> Bool, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+    pub def filter(f: v -> Bool & ef, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         filterWithKey((_, v) -> f(v), m)
 
     ///
@@ -196,8 +196,8 @@ namespace DelayMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    // TODO: Effect polymorphic split?
-    pub def filterWithKey(f: (k, v) -> Bool, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+    // TODO: Effect polymorphic split? Is that even possible since some nodes have to be removed?
+    pub def filterWithKey(f: (k, v) -> Bool & ef, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         foldLeftWithKey((acc, k, v) -> if (f(k, v)) insert(k, v, acc) else acc, empty(), m)
 
     ///
@@ -272,7 +272,6 @@ namespace DelayMap1 {
         let DMap(t) = m;
         let f1 = (k1, v1, b1) -> f(k1, force v1, b1);
         RedBlackTree.foldRight(f1, s, t)
-
 
     ///
     /// Applies `f` to all values in `m` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
@@ -406,8 +405,6 @@ namespace DelayMap1 {
 
     ///
     /// Applies `f` to all key-value pairs `(k, v)` from the map `m` where `p(k)` returns `EqualTo`.
-    ///
-    /// The function `f` must be impure.
     ///
     pub def queryWith(p: k -> Comparison & ef1, f: (k, v) -> Unit & ef2, m: DelayMap[k, v]): Unit & (ef1 and ef2) =
         let DMap(t) = m;
