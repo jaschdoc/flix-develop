@@ -145,7 +145,7 @@ namespace DelayMap1 {
     pub def insertWith(f: (v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         insertWithKey((_, v1, v2) -> f(v1, v2), k, v, m)
 
-    ///
+/*    ///
     /// Updates `m` with `k -> f(k, v, v1)` if `k -> v1` is in `m`.
     ///
     /// Otherwise, updates `m` with `k -> v`.
@@ -161,6 +161,38 @@ namespace DelayMap1 {
                 lazy x
             };
             DMap(RedBlackTree.insertWith(f1, k, lazy v, t)) as & ef
+*/
+
+    ///
+    /// Updates `m` with `k -> f(k, v, v1)` if `k -> v1` is in `m`.
+    ///
+    /// Otherwise, updates `m` with `k -> v`.
+    ///
+    pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        let f1 = (r) -> f(r.k, r.v1, r.v2);
+        reifyEff(f1) {
+            case Pure(_) => insertWithKeyL(f as & Pure, k, v, m)
+            case _       => insertWithKeyL(f, k, v, m)
+        } as & ef
+
+    ///
+    /// Helper function for `insertWithKey`. Applies `f` lazily.
+    ///
+    def insertWithKeyL(f: (k, v, v) -> v, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
+        let DMap(t) = m;
+        let f1 = (k1, v1, v2) -> lazy (f(k1, force v1, force v2) as & Pure);
+        DMap(RedBlackTree.insertWith(f1, k, lazy v, t))
+
+    ///
+    /// Helper function for `insertWithKey`. Applies `f` eagerly.
+    ///
+    def insertWithKeyE(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        let DMap(t) = m;
+        let f1 = (k1, v1, v2) -> {
+                let x = f(k1, force v1, force v2);
+                lazy x
+            };
+        DMap(RedBlackTree.insertWith(f1, k, lazy v, t)) as & ef
 
     ///
     /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
