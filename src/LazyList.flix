@@ -818,10 +818,11 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def mapWithIndex(f: (a, Int32) -> b & ef, l: LazyList[a]): LazyList[b] & ef =
-        if (reify ef)
-            mapWithIndexL(f as (a, Int32) -> b & Pure,   l)
-        else
-            mapWithIndexE(f as (a, Int32) -> b & Impure, l) as & ef
+        let f1 = (args) -> f(fst(args), snd(args));
+        reifyEff(f1) {
+            case Pure(g) => mapWithIndexL((x, i) -> g((x, i)), l)
+            case _       => mapWithIndexE(f, l)
+        }
 
     ///
     /// Returns the result of applying `f` to every element in `l` along with the element's index.
@@ -846,13 +847,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def mapWithIndexE(f: (a, Int32) -> b & Impure, l: LazyList[a]): LazyList[b] & Impure =
+    def mapWithIndexE(f: (a, Int32) -> b & ef, l: LazyList[a]): LazyList[b] & ef =
         mapWithIndexEAcc(f, l, 0, ks -> ks)
 
     ///
     /// Helper function for `mapWithIndexE`.
     ///
-    def mapWithIndexEAcc(f: (a, Int32) -> b & Impure, l: LazyList[a], i: Int32, k: LazyList[b] -> LazyList[b]): LazyList[b] & Impure = match l {
+    def mapWithIndexEAcc(f: (a, Int32) -> b & ef, l: LazyList[a], i: Int32, k: LazyList[b] -> LazyList[b]): LazyList[b] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) =>
             let x1 = f(x, i);
