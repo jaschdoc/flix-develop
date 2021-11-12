@@ -105,10 +105,10 @@ namespace DemandList1 {
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
     ///
     pub def filter(f: a -> Bool & ef, l: DemandList[a, not ef or d]): DemandList[a, not ef or d] & ef =
-        if (reify ef)
-            filterL(f as a -> Bool & Pure,   l as DemandList[a, false]) as DemandList[a, not ef or d] & ef
-        else
-            filterE(f as a -> Bool & Impure, l as DemandList[a, Forced])  as DemandList[a, not ef or d] & ef
+        reifyEff(f) {
+            case Pure(g) => filterL(g, l as DemandList[a, false])  as DemandList[a, not ef or d]
+            case _       => filterE(f, l as DemandList[a, Forced]) as DemandList[a, not ef or d]
+        }
 
     ///
     /// Returns a lazy list of every element in `l` that satisfies the predicate `f`.
@@ -129,13 +129,13 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def filterE(f: a -> Bool & Impure, l: DemandList[a, Forced]): DemandList[a, Forced] & Impure =
+    def filterE(f: a -> Bool & ef, l: DemandList[a, Forced]): DemandList[a, Forced] & ef =
         filterEAcc(f, l as DemandList[a, Forced], ENil) |> reverse
 
     ///
     /// Helper function for `filterE`
     ///
-    def filterEAcc(f: a -> Bool & Impure, l: DemandList[a, f], acc: DemandList[a, f]): DemandList[a, f] & Impure = match l {
+    def filterEAcc(f: a -> Bool & ef, l: DemandList[a, f], acc: DemandList[a, f]): DemandList[a, f] & ef = match l {
         case ENil         => acc
         case ECons(x, xs) => if (f(x)) filterEAcc(f,       xs, ECons(x, acc)) else filterEAcc(f,       xs, acc)
         case LCons(x, xs) => if (f(x)) filterEAcc(f, force xs, ECons(x, acc)) else filterEAcc(f, force xs, acc)
