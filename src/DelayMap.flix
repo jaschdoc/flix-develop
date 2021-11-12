@@ -155,7 +155,7 @@ namespace DelayMap1 {
         reifyEff(f1) {
             case Pure(g) => insertWithKeyL((k1, v1, v2) -> g({k = k1, v1 = v1, v2 = v2}), k, v, m)
             case _       => insertWithKeyE(f, k, v, m)
-        } as & ef
+        }
 
     ///
     /// Helper function for `insertWithKey`. Applies `f` lazily.
@@ -174,7 +174,7 @@ namespace DelayMap1 {
                 let x = f(k1, force v1, force v2);
                 lazy x
             };
-        DMap(RedBlackTree.insertWith(f1, k, lazy v, t)) as & ef
+        DMap(RedBlackTree.insertWith(f1, k, lazy v, t))
 
     ///
     /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
@@ -186,16 +186,30 @@ namespace DelayMap1 {
     /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
     ///
     pub def mapWithKey(f: (k, v1) -> v2 & ef, m: DelayMap[k, v1]): DelayMap[k, v2] & ef =
+        let f1 = (args) -> f(fst(args), snd(args));
+        reifyEff(f1) {
+            case Pure(g) => mapWithKeyL((k, v) -> g((k, v)), m)
+            case _       => mapWithKeyE(f, m)
+        }
+
+    ///
+    /// Helper function for `mapWithKey`. Applies `f` lazily.
+    ///
+    def mapWithKeyL(f: (k, v1) -> v2, m: DelayMap[k, v1]): DelayMap[k, v2] =
         let DMap(tree) = m;
-        if (reify ef)
-            let f1 = (k, v) -> lazy (f(k, force v) as & Pure);
-            DMap(RedBlackTree.mapWithKey(f1, tree))
-        else
-            let f1 = (k, v) -> {
+        let f1 = (k, v) -> lazy (f(k, force v) as & Pure);
+        DMap(RedBlackTree.mapWithKey(f1, tree))
+
+    ///
+    /// Helper function for `mapWithKey`. Applies `f` eagerly.
+    ///
+    def mapWithKeyE(f: (k, v1) -> v2 & ef, m: DelayMap[k, v1]): DelayMap[k, v2] & ef =
+        let DMap(tree) = m;
+        let f1 = (k, v) -> {
                 let x1 = f(k, force v);
                 lazy x1
             };
-            DMap(RedBlackTree.mapWithKey(f1, tree)) as & ef
+        DMap(RedBlackTree.mapWithKey(f1, tree))
 
     ///
     /// Returns a map of all mappings `k -> v` in `m` where `v` satisfies the predicate `f`.
