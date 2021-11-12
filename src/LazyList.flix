@@ -710,10 +710,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def flatMap(f: a -> LazyList[b] & ef, l: LazyList[a]): LazyList[b] & ef =
-        if (reify ef)
-            flatMapL(f as a -> LazyList[b] & Pure,   l)
-        else
-            flatMapE(f as a -> LazyList[b] & Impure, l) as & ef
+        reifyEff(f) {
+            case Pure(g) => flatMapL(g, l)
+            case _       => flatMapE(f, l)
+        }
 
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
@@ -742,13 +742,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def flatMapE(f: a -> LazyList[b] & Impure, l: LazyList[a]): LazyList[b] & Impure =
+    def flatMapE(f: a -> LazyList[b] & ef, l: LazyList[a]): LazyList[b] & ef =
         flatMapEAcc(f, l, ks -> ks)
 
     ///
     /// Helper function for `flatMapE`.
     ///
-    def flatMapEAcc(f: a -> LazyList[b] & Impure, l: LazyList[a], k: LazyList[b] -> LazyList[b]): LazyList[b] & Impure = match l {
+    def flatMapEAcc(f: a -> LazyList[b] & ef, l: LazyList[a], k: LazyList[b] -> LazyList[b]): LazyList[b] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) =>
             let xs1 = f(x);
