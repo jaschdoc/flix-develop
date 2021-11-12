@@ -341,10 +341,10 @@ namespace DemandList1 {
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
     pub def flatMap(f: a -> DemandList[b, false] & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
-        if (reify ef)
-            flatMapL(f as a -> DemandList[b, false] & Pure,  l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
-        else
-            flatMapE(f as a -> DemandList[b, Forced] & Impure, l as DemandList[a, Forced]) as DemandList[b, not ef or d] & ef
+        reifyEff(f) {
+            case Pure(g) => flatMapL(g, l as DemandList[a, false]) as DemandList[b, not ef or d]
+            case _       => flatMapE(f as a -> DemandList[b, Forced], l as DemandList[a, Forced]) as DemandList[b, not ef or d] & ef
+        }
 
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
@@ -363,13 +363,13 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def flatMapE(f: a -> DemandList[b, Forced] & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
+    def flatMapE(f: a -> DemandList[b, Forced] & ef, l: DemandList[a, Forced]): DemandList[b, Forced] & ef =
         flatMapEHelper(f, l, ks -> ks)
 
     ///
     /// Helper function for `flatMapE`.
     ///
-    def flatMapEHelper(f: a -> DemandList[b, Forced] & Impure, l: DemandList[a, Forced], k: DemandList[b, Forced] -> DemandList[b, Forced]): DemandList[b, Forced] & Impure = match l {
+    def flatMapEHelper(f: a -> DemandList[b, Forced] & ef, l: DemandList[a, Forced], k: DemandList[b, Forced] -> DemandList[b, Forced]): DemandList[b, Forced] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) =>
             let xs1 = f(x);
