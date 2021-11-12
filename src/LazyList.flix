@@ -959,10 +959,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the tail is forced until the first element that satisfies `f`).
     ///
     pub def dropWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
-        if (reify ef)
-            dropWhileL(f as a -> Bool & Pure,   l)
-        else
-            dropWhileE(f as a -> Bool & Impure, l) as & ef
+        reifyEff(f) {
+            case Pure(g) => dropWhileL(g, l)
+            case _       => dropWhileE(f, l)
+        }
 
     ///
     /// Returns `l` without the longest prefix that satisfies the predicate `f`.
@@ -987,7 +987,7 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the tail is forced until the first element that satisfies `f`).
     ///
-    def dropWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure = match l {
+    def dropWhileE(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef = match l {
         case ENil         => ENil
         case ECons(x, xs) => if (f(x)) dropWhileE(f,       xs) else l
         case LCons(x, xs) => if (f(x)) dropWhileE(f, force xs) else l
