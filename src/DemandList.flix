@@ -443,10 +443,10 @@ namespace DemandList1 {
     /// Whether `f` is applied eagerly or lazily depends on its purity:
     ///
     pub def takeWhile(f: a -> Bool & ef, l: DemandList[a, not ef or d]): DemandList[a, not ef or d] & ef =
-        if (reify ef)
-            takeWhileL(f as a -> Bool & Pure,   l as DemandList[a, false]) as DemandList[a, not ef or d] & ef
-        else
-            takeWhileE(f as a -> Bool & Impure, l as DemandList[a, Forced]) as DemandList[a, not ef or d] & ef
+        reifyEff(f) {
+            case Pure(g) => takeWhileL(g, l as DemandList[a, false])  as DemandList[a, not ef or d]
+            case _       => takeWhileE(f, l as DemandList[a, Forced]) as DemandList[a, not ef or d]
+        }
 
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
@@ -471,13 +471,13 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def takeWhileE(f: a -> Bool & Impure, l: DemandList[a, Forced]): DemandList[a, Forced] & Impure =
+    def takeWhileE(f: a -> Bool & ef, l: DemandList[a, Forced]): DemandList[a, Forced] & ef =
         takeWhileEAcc(f, l, ks -> ks)
 
     ///
     /// Helper function for `takeWhileE`.
     ///
-    def takeWhileEAcc(f: a -> Bool & Impure, l: DemandList[a, d], k: DemandList[a, d] -> DemandList[a, d]): DemandList[a, d] & Impure = match l {
+    def takeWhileEAcc(f: a -> Bool & ef, l: DemandList[a, d], k: DemandList[a, d] -> DemandList[a, d]): DemandList[a, d] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) => if (f(x)) takeWhileEAcc(f,       xs, ks -> k(ECons(x, ks))) else k(ENil)
         case LCons(x, xs) => if (f(x)) takeWhileEAcc(f, force xs, ks -> k(ECons(x, ks))) else k(ENil)
