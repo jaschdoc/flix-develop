@@ -1023,10 +1023,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the entire list `l` is forced).
     ///
     pub def filterMap(f: a -> Option[b] & ef, l: LazyList[a]): LazyList[b] & ef =
-        if (reify ef)
-            filterMapL(f as a -> Option[b] & Pure,   l)
-        else
-            filterMapE(f as a -> Option[b] & Impure, l) as & ef
+        reifyEff(f) {
+            case Pure(g) => filterMapL(g, l)
+            case _       => filterMapE(f, l)
+        }
 
     ///
     /// Collects the results of applying the partial function `f` to every element in `l`.
@@ -1059,13 +1059,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def filterMapE(f: a -> Option[b] & Impure, l: LazyList[a]): LazyList[b] & Impure =
+    def filterMapE(f: a -> Option[b] & ef, l: LazyList[a]): LazyList[b] & ef =
         filterMapEAcc(f, l, ks -> ks)
 
     ///
     /// Helper function for `filterMapE`.
     ///
-    def filterMapEAcc(f: a -> Option[b] & Impure, l: LazyList[a], k: LazyList[b] -> LazyList[b]): LazyList[b] & Impure = match l {
+    def filterMapEAcc(f: a -> Option[b] & ef, l: LazyList[a], k: LazyList[b] -> LazyList[b]): LazyList[b] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) => match f(x) {
             case None    => filterMapEAcc(f, xs, k)
