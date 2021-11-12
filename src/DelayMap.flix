@@ -246,26 +246,40 @@ namespace DelayMap1 {
     /// Returns the union of `m1` and `m2` where key collisions are resolved with the merge function `f`, taking both the key and values.
     ///
     pub def unionWithKey(f: (k, v, v) -> v & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
-        if (reify ef)
-            unionWithKeyHelper((k, v1, v2) -> lazy (f(k, force v1, force v2) as & Pure), m1, m2)
-        else
-            let f1 = (k, v1, v2) -> {
-                let x = f(k, force v1, force v2);
-                lazy x
-            };
-            unionWithKeyHelper(f1, m1, m2) as & ef
+        let f1 = (args) -> f(args.k, args.v1, args.v2);
+        reifyEff(f1) {
+            case Pure(g) => unionWithKeyL((k, v1, v2) -> g({k = k, v1 = v1, v2 = v2}), m1, m2)
+            case _       => unionWithKeyE(f, m1, m2)
+        }
 
     ///
-    /// Helper function for `unionWithKey`.
+    /// Helper function for `unionWithKey`. Applies `f` lazily.
     ///
-    def unionWithKeyHelper(f: (k, Lazy[v], Lazy[v]) -> Lazy[v] & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+    def unionWithKeyL(f: (k, v, v) -> v, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
         use RedBlackTree.{blackHeight, foldRight, insertWith};
         let DMap(xs) = m1;
         let DMap(ys) = m2;
+        let f1 = (k, v1, v2) -> lazy (f(k, force v1, force v2));
         if (blackHeight(xs) < blackHeight(ys))
-            DMap(foldRight((k, v) -> insertWith(f, k, v), ys, xs))
+            DMap(foldRight((k, v) -> insertWith(f1, k, v), ys, xs))
         else
-            DMap(foldRight((k, v) -> insertWith((_, v1, v2) -> f(k, v2, v1), k, v), xs, ys))
+            DMap(foldRight((k, v) -> insertWith((_, v1, v2) -> f1(k, v2, v1), k, v), xs, ys))
+
+    ///
+    /// Helper function for `unionWithKey`. Applies `f` eagerly.
+    ///
+    def unionWithKeyE(f: (k, v, v) -> v & ef, m1: DelayMap[k, v], m2: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
+        use RedBlackTree.{blackHeight, foldRight, insertWith};
+        let DMap(xs) = m1;
+        let DMap(ys) = m2;
+        let f1 = (k, v1, v2) -> {
+                let x = f(k, force v1, force v2);
+                lazy x
+            };
+        if (blackHeight(xs) < blackHeight(ys))
+            DMap(foldRight((k, v) -> insertWith(f1, k, v), ys, xs))
+        else
+            DMap(foldRight((k, v) -> insertWith((_, v1, v2) -> f1(k, v2, v1), k, v), xs, ys))
 
     ///
     /// Returns the map `m` as a list of key-value pairs.
