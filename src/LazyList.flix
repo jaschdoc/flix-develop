@@ -377,7 +377,7 @@ namespace LazyList1 {
     ///
     /// Does not force any elements of the list.
     ///
-    pub def toIter(l: LazyList[a]): Iterator[a] & Impure =
+    pub def toIterator(l: LazyList[a]): Iterator[a] & Impure =
         let cursor = ref l;
         let done = () -> match head(deref cursor) {
             case None    => true
