@@ -728,7 +728,7 @@ namespace LazyList1 {
     }
 
     ///
-    /// Helper fucntion for `flatMapL`.
+    /// Helper function for `flatMapL`.
     ///
     def flatMapLHelper(f: a -> LazyList[b], l: LazyList[a]): LazyList[b] = match l {
         case ENil         => ENil
