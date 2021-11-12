@@ -490,10 +490,10 @@ namespace DemandList1 {
     /// Whether `f` is applied eagerly or lazily depends on its purity:
     ///
     pub def dropWhile(f: a -> Bool & ef, l: DemandList[a, not ef or d]): DemandList[a, not ef or d] & ef =
-        if (reify ef)
-            dropWhileL(f as a -> Bool & Pure,   l as DemandList[a, false]) as DemandList[a, not ef or d] & ef
-        else
-            dropWhileE(f as a -> Bool & Impure, l as DemandList[a, Forced]) as DemandList[a, not ef or d] & ef
+        reifyEff(f) {
+            case Pure(g) => dropWhileL(g, l as DemandList[a, false])  as DemandList[a, not ef or d]
+            case _       => dropWhileE(f, l as DemandList[a, Forced]) as DemandList[a, not ef or d]
+        }
 
     ///
     /// Returns `l` without the longest prefix that satisfies the predicate `f`.
@@ -518,7 +518,7 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def dropWhileE(f: a -> Bool & Impure, l: DemandList[a, Forced]): DemandList[a, Forced] & Impure = match l {
+    def dropWhileE(f: a -> Bool & ef, l: DemandList[a, Forced]): DemandList[a, Forced] & ef = match l {
         case ENil         => ENil
         case ECons(x, xs) => if (f(x)) dropWhileE(f,       xs) else l
         case LCons(x, xs) => if (f(x)) dropWhileE(f, force xs) else l
