@@ -909,10 +909,10 @@ namespace LazyList1 {
     /// - If `f` is impure then it is applied eagerly (i.e. the tail is forced until the first element that satisfies `f`).
     ///
     pub def takeWhile(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
-        if (reify ef)
-            takeWhileL(f as a -> Bool & Pure,   l)
-        else
-            takeWhileE(f as a -> Bool & Impure, l) as & ef
+        reifyEff(f) {
+            case Pure(g) => takeWhileL(g, l)
+            case _       => takeWhileE(f, l)
+        }
 
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
@@ -937,13 +937,13 @@ namespace LazyList1 {
     ///
     /// Applies `f` eagerly (i.e. the tail is forced until the first element that satisfies `f`).
     ///
-    def takeWhileE(f: a -> Bool & Impure, l: LazyList[a]): LazyList[a] & Impure =
+    def takeWhileE(f: a -> Bool & ef, l: LazyList[a]): LazyList[a] & ef =
         takeWhileEAcc(f, l, ks -> ks)
 
     ///
     /// Helper function for `takeWhileE`.
     ///
-    def takeWhileEAcc(f: a -> Bool & Impure, l: LazyList[a], k: LazyList[a] -> LazyList[a]): LazyList[a] & Impure = match l {
+    def takeWhileEAcc(f: a -> Bool & ef, l: LazyList[a], k: LazyList[a] -> LazyList[a]): LazyList[a] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) => if (f(x)) takeWhileEAcc(f,       xs, ks -> k(ECons(x, ks))) else k(ENil)
         case LCons(x, xs) => if (f(x)) takeWhileEAcc(f, force xs, ks -> k(ECons(x, ks))) else k(ENil)
