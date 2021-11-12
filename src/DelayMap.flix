@@ -171,8 +171,8 @@ namespace DelayMap1 {
     pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let f1 = (r) -> f(r.k, r.v1, r.v2);
         reifyEff(f1) {
-            case Pure(_) => insertWithKeyL(f as & Pure, k, v, m)
-            case _       => insertWithKeyL(f, k, v, m)
+            case Pure(g) => insertWithKeyL((k1, v1, v2) -> g({k = k1, v1 = v1, v2 = v2}), k, v, m)
+            case _       => insertWithKeyE(f, k, v, m)
         } as & ef
 
     ///
