@@ -173,10 +173,10 @@ namespace DemandList1 {
     /// Returns the result of applying `f` to every element in `l`.
     ///
     pub def map(f: a -> b & ef, l: DemandList[a, not ef or d]): DemandList[b, not ef or d] & ef =
-        if (reify ef)
-            mapL(f as a -> b & Pure,   l as DemandList[a, false]) as DemandList[b, not ef or d] & ef
-        else
-            mapE(f as a -> b & Impure, l as DemandList[a, Forced])  as DemandList[b, not ef or d] & ef
+        reifyEff(f) {
+            case Pure(g) => mapL(g, l as DemandList[a, false])  as DemandList[b, not ef or d]
+            case _       => mapE(f, l as DemandList[a, Forced]) as DemandList[b, not ef or d]
+        }
 
     ///
     /// Returns the result of applying `f` to every element in `l`.
@@ -205,13 +205,13 @@ namespace DemandList1 {
     ///
     /// Applies `f` eagerly (i.e. the entire list `l` is forced).
     ///
-    def mapE(f: a -> b & Impure, l: DemandList[a, Forced]): DemandList[b, Forced] & Impure =
+    def mapE(f: a -> b & ef, l: DemandList[a, Forced]): DemandList[b, Forced] & ef =
         mapEAcc(f, l, ks -> ks)
 
     ///
     /// Helper function for `mapE`.
     ///
-    def mapEAcc(f: a -> b & Impure, l: DemandList[a, Forced], k: DemandList[b, Forced] -> DemandList[b, Forced]): DemandList[b, Forced] & Impure = match l {
+    def mapEAcc(f: a -> b & ef, l: DemandList[a, Forced], k: DemandList[b, Forced] -> DemandList[b, Forced]): DemandList[b, Forced] & ef = match l {
         case ENil         => k(ENil)
         case ECons(x, xs) =>
             let x1 = f(x);
