@@ -1067,4 +1067,41 @@ namespace TestDelayMap {
     def singleton03(): Bool =
         DelayMap1.singleton(-99, -11) |> DelayMap1.toMap == Map#{-99 -> -11}
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // isEmpty                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def isEmpty01(): Bool =
+        Map#{}: Map[Unit, Unit] |> Map1.toDelayMap |> DelayMap1.isEmpty
+
+    @test
+    def isEmpty02(): Bool =
+        not (Map#{1 -> 2} |> Map1.toDelayMap |> DelayMap1.isEmpty)
+
+    @test
+    def isEmpty03(): Bool =
+        not (Map#{1 -> 2, 2 -> 4} |> Map1.toDelayMap |> DelayMap1.isEmpty)
+
+    @test
+    def isEmpty04(): Bool =
+        not (Map#{1 -> 2, 2 -> 4, 3 -> 6} |> Map1.toDelayMap |> DelayMap1.isEmpty)
+
+    @test
+    def isEmpty05(): Bool =
+        not (Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8} |> Map1.toDelayMap |> DelayMap1.isEmpty)
+
+/*
+foldLeft
+foldLeftWithKey
+foldRight
+foldRightWithKey
+reduceLeft
+reduceLeftWithKey
+foreach
+memberOf
+min
+max
+*/
 }
