@@ -424,6 +424,12 @@ namespace DelayMap1 {
         foldRightWithKey((k, v, acc) -> ECons((k, v), acc), ENil, m)
 
     ///
+    /// Returns an iterator over all key-value pairs in `m`.
+    ///
+    pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
+        List.toIterator(query(_ -> EqualTo, m))
+
+    ///
     /// Applies `f` to every element of `xs`.
     ///
     pub def foreach(f: (k, v) -> Unit & ef, m: DelayMap[k, v]): Unit & ef =
@@ -446,11 +452,5 @@ namespace DelayMap1 {
     pub def queryWith(p: k -> Comparison & ef1, f: (k, v) -> Unit & ef2, m: DelayMap[k, v]): Unit & (ef1 and ef2) =
         let DMap(t) = m;
         RedBlackTree.queryWith(p, (k, v) -> f(k, force v) as & Impure, t) as & (ef1 and ef2)
-
-    ///
-    /// Returns an iterator over all key-value pairs in `m`.
-    ///
-    pub def toIterator(m: DelayMap[a, b]): Iterator[(a, b)] & Impure =
-        List.toIterator(query(_ -> EqualTo, m))
 
 }

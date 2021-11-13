@@ -1021,4 +1021,33 @@ namespace TestDelayMap {
             DelayMap1.toMap;
         List.reverse(deref l) == "a" :: "b" :: "a" :: "b" :: "a" :: "b" :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // size                                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def size01(): Bool =
+        Map#{} |> Map1.toDelayMap |> DelayMap1.size == 0
+
+    @test
+    def size02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |> DelayMap1.size == 1
+
+    @test
+    def size03(): Bool =
+        Map#{1 -> 2, 2 -> 4} |> Map1.toDelayMap |> DelayMap1.size == 2
+
+    @test
+    def size04(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6} |> Map1.toDelayMap |> DelayMap1.size == 3
+
+    @test
+    def size05(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8} |> Map1.toDelayMap |> DelayMap1.size == 4
+
+    @test
+    def size06(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8, 5 -> 10} |> Map1.toDelayMap |> DelayMap1.size == 5
+
 }
