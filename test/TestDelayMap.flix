@@ -1275,13 +1275,11 @@ namespace TestDelayMap {
 */
 
 /*
-foldRight
-foldRightWithKey
-reduceLeft
-reduceLeftWithKey
 foreach
 memberOf
 min
 max
+reduceRight (needs impl)
+reduceRightWithKey (needs impl)
 */
 }
