@@ -1092,9 +1092,157 @@ namespace TestDelayMap {
     def isEmpty05(): Bool =
         not (Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8} |> Map1.toDelayMap |> DelayMap1.isEmpty)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldLeft                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldLeft01(): Bool =
+        Map#{} |> Map1.toDelayMap |>
+            DelayMap1.foldLeft((s, v) -> s + v, 0) == 0
+
+    @test
+    def foldLeft02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.foldLeft((s, v) -> s + v, 0) == 2
+
+    @test
+    def foldLeft03(): Bool =
+        Map#{1 -> 2, 3 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.foldLeft((s, v) -> s + v, 0) == 6
+
+    @test
+    def foldLeft04(): Bool =
+        Map#{1 -> 2, 3 -> 4, 5 -> 6} |> Map1.toDelayMap |>
+            DelayMap1.foldLeft((s, v) -> s + v, 0) == 12
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldLeftWithKey                                                         //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldLeftWithKey01(): Bool =
+        Map#{} |> Map1.toDelayMap |>
+            DelayMap1.foldLeftWithKey((s, k, v) -> k + s + v, 0) == 0
+
+    @test
+    def foldLeftWithKey02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.foldLeftWithKey((s, k, v) -> k + s + v, 0) == 3
+
+    @test
+    def foldLeftWithKey03(): Bool =
+        Map#{1 -> 2, 3 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.foldLeftWithKey((s, k, v) -> k + s + v, 0) == 10
+
+    @test
+    def foldLeftWithKey04(): Bool =
+        Map#{1 -> 2, 3 -> 4, 5 -> 6} |> Map1.toDelayMap |>
+            DelayMap1.foldLeftWithKey((s, k, v) -> k + s + v, 0) == 21
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldRight                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldRight01(): Bool = Map.foldRight((v, s) -> s + v, 0, Map#{}) == 0
+
+    @test
+    def foldRight02(): Bool = Map.foldRight((v, s) -> s + v, 0, Map#{1 -> 2}) == 2
+
+    @test
+    def foldRight03(): Bool = Map.foldRight((v, s) -> s + v, 0, Map#{1 -> 2, 3 -> 4}) == 6
+
+    @test
+    def foldRight04(): Bool = Map.foldRight((v, s) -> s + v, 0, Map#{1 -> 2, 3 -> 4, 5 -> 6}) == 12
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldRightWithKey                                                        //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldRightWithKey01(): Bool = Map.foldRightWithKey((k, v, s) -> k + s + v, 0, Map#{}) == 0
+
+    @test
+    def foldRightWithKey02(): Bool = Map.foldRightWithKey((k, v, s) -> k + s + v, 0, Map#{1 -> 2}) == 3
+
+    @test
+    def foldRightWithKey03(): Bool = Map.foldRightWithKey((k, v, s) -> k + s + v, 0, Map#{1 -> 2, 3 -> 4}) == 10
+
+    @test
+    def foldRightWithKey04(): Bool = Map.foldRightWithKey((k, v, s) -> k + s + v, 0, Map#{1 -> 2, 3 -> 4, 5 -> 6}) == 21
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceLeft                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceLeft01(): Bool = Map.reduceLeft((v1, v2) -> v1 - v2, Map#{}: Map[Int32, Int32]) == None
+
+    @test
+    def reduceLeft02(): Bool = Map.reduceLeft((v1, v2) -> v1 - v2, Map#{1 -> 2}) == Some(2)
+
+    @test
+    def reduceLeft03(): Bool = Map.reduceLeft((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3}) == Some(-1)
+
+    @test
+    def reduceLeft04(): Bool = Map.reduceLeft((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some(-5)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceLeftWithKey                                                       //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceLeftWithKey01(): Bool = Map.reduceLeftWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{}: Map[Int32, Int32]) == None
+
+    @test
+    def reduceLeftWithKey02(): Bool = Map.reduceLeftWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2}) == Some((1, 2))
+
+    @test
+    def reduceLeftWithKey03(): Bool = Map.reduceLeftWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3}) == Some((-1, -1))
+
+    @test
+    def reduceLeftWithKey04(): Bool = Map.reduceLeftWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some((-4, -5))
+
+
 /*
-foldLeft
-foldLeftWithKey
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceRight NOT IMPLEMENTED                                             //
+    /////////////////////////////////////////////////////////////////////////////
+    @test
+    def reduceRight01(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{}: Map[Int32, Int32]) == None
+
+    @test
+    def reduceRight02(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2}) == Some(2)
+
+    @test
+    def reduceRight03(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3}) == Some(-1)
+
+    @test
+    def reduceRight04(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some(3)
+
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceRightWithKey NOT IMPLEMENTED                                      //
+    /////////////////////////////////////////////////////////////////////////////
+    @test
+    def reduceRightWithKey01(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{}: Map[Int32, Int32]) == None
+
+    @test
+    def reduceRightWithKey02(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2}) == Some((1, 2))
+
+    @test
+    def reduceRightWithKey03(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3}) == Some((-1, -1))
+
+    @test
+    def reduceRightWithKey04(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some((2 , 3))
+*/
+
+/*
 foldRight
 foldRightWithKey
 reduceLeft
