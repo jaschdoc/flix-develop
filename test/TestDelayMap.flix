@@ -1050,4 +1050,21 @@ namespace TestDelayMap {
     def size06(): Bool =
         Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8, 5 -> 10} |> Map1.toDelayMap |> DelayMap1.size == 5
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // singleton                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def singleton01(): Bool =
+        DelayMap1.singleton(1, 2) |> DelayMap1.toMap == Map#{1 -> 2}
+
+    @test
+    def singleton02(): Bool =
+        DelayMap1.singleton(3, -1) |> DelayMap1.toMap == Map#{3 -> -1}
+
+    @test
+    def singleton03(): Bool =
+        DelayMap1.singleton(-99, -11) |> DelayMap1.toMap == Map#{-99 -> -11}
+
 }
