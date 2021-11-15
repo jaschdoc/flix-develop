@@ -1242,44 +1242,59 @@ namespace TestDelayMap {
             DelayMap1.reduceLeftWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == Some((-4, -5))
 
 
-/*
     /////////////////////////////////////////////////////////////////////////////
-    // reduceRight NOT IMPLEMENTED                                             //
+    // reduceRight                                                             //
     /////////////////////////////////////////////////////////////////////////////
-    @test
-    def reduceRight01(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{}: Map[Int32, Int32]) == None
 
     @test
-    def reduceRight02(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2}) == Some(2)
+    def reduceRight01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.reduceRight((v1, v2) -> v1 - v2) == None
 
     @test
-    def reduceRight03(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3}) == Some(-1)
+    def reduceRight02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.reduceRight((v1, v2) -> v1 - v2) == Some(2)
 
     @test
-    def reduceRight04(): Bool = Map.reduceRight((v1, v2) -> v1 - v2, Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some(3)
+    def reduceRight03(): Bool =
+        Map#{1 -> 2, 2 -> 3} |> Map1.toDelayMap |>
+            DelayMap1.reduceRight((v1, v2) -> v1 - v2) == Some(-1)
+
+    @test
+    def reduceRight04(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.reduceRight((v1, v2) -> v1 - v2) == Some(3)
+
 
     /////////////////////////////////////////////////////////////////////////////
-    // reduceRightWithKey NOT IMPLEMENTED                                      //
+    // reduceRightWithKey                                                      //
     /////////////////////////////////////////////////////////////////////////////
-    @test
-    def reduceRightWithKey01(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{}: Map[Int32, Int32]) == None
 
     @test
-    def reduceRightWithKey02(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2}) == Some((1, 2))
+    def reduceRightWithKey01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == None
 
     @test
-    def reduceRightWithKey03(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3}) == Some((-1, -1))
+    def reduceRightWithKey02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == Some((1, 2))
 
     @test
-    def reduceRightWithKey04(): Bool = Map.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2), Map#{1 -> 2, 2 -> 3, 3 -> 4}) == Some((2 , 3))
-*/
+    def reduceRightWithKey03(): Bool =
+        Map#{1 -> 2, 2 -> 3} |> Map1.toDelayMap |>
+            DelayMap1.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == Some((-1, -1))
+
+    @test
+    def reduceRightWithKey04(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == Some((2 , 3))
 
 /*
 foreach
 memberOf
 min
 max
-reduceRight (needs impl)
-reduceRightWithKey (needs impl)
 */
 }

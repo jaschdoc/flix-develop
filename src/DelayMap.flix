@@ -347,6 +347,34 @@ namespace DelayMap1 {
         }
 
     ///
+    /// Applies `f` to all values in `m` going from right to left until a single value `v` is obtained.  Returns `Some(v)`.
+    ///
+    /// That is, the result is of the form: `Some(f(v1, ...f(vn-2, f(vn-1, vn))...))`
+    ///
+    /// Returns `None` if `m` is the empty DelayMap.
+    ///
+    pub def reduceRight(f: (v, v) -> v & ef, m: DelayMap[k, v]): Option[v] & ef =
+        reduceRightWithKey((k, v1, _, v2) -> (k, f(v1, v2)), m) |> Option.map(snd)
+
+    ///
+    /// Applies `f` to all mappings in `m` going from right to left until a single mapping `(k, v)` is obtained.  Returns `Some((k, v))`.
+    ///
+    /// That is, the result is of the form: `Some(f(k1, v1, ...f(kn-2, vn-2, f(kn-1, vn-1, kn, vn))...))`
+    ///
+    /// Returns `None` if `m` is the empty DelayMap.
+    ///
+    pub def reduceRightWithKey(f: (k, v, k, v) -> (k, v) & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
+        let DMap(t) = m;
+        let f1 = (k1, v1, k2, v2) -> {
+            let (k, v) = f(k1, force v1, k2, force v2);
+            (k, lazy v)
+        };
+        match RedBlackTree.reduceRight(f1, t) {
+            case Some((k, v)) => Some((k, force v))
+            case None         => None
+        }
+
+    ///
     /// Returns `m` as a Map, i.e. every value is forced.
     ///
     pub def toMap(m: DelayMap[k, v]): Map[k, v] =
