@@ -229,4 +229,5 @@ namespace Iterator1 {
         else
             let _ = f(next());
             foreachHelper(f, done, next)
+
 }
