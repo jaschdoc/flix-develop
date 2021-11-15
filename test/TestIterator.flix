@@ -41,7 +41,6 @@ namespace TestIterator {
         Iterator1.range(-100, 200) |> Iterator1.toList == List.range(-100, 200)
 
 
-
     /////////////////////////////////////////////////////////////////////////////
     // repeat                                                                  //
     /////////////////////////////////////////////////////////////////////////////
@@ -214,4 +213,86 @@ namespace TestIterator {
     @test
     def filterImpure08(): Bool & Impure =
         (1 :: 4 :: 11 :: 2 :: -22 :: 17 :: Nil) |> List.toIterator |> Iterator1.filter(i -> i > 3 as & Impure) == 4 :: 11 :: 17 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // map (pure)                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def mapPure01(): Bool & Impure =
+        Nil |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == Nil
+
+    @test
+    def mapPure02(): Bool & Impure =
+        (1 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == false :: Nil
+
+    @test
+    def mapPure03(): Bool & Impure =
+        (3 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == true :: Nil
+
+    @test
+    def mapPure04(): Bool & Impure =
+        (1 :: 2 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == false :: false :: Nil
+
+    @test
+    def mapPure05(): Bool & Impure =
+        (1 :: 8 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == false :: true :: Nil
+
+    @test
+    def mapPure06(): Bool & Impure =
+        (8 :: 1 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == true :: false :: Nil
+
+    @test
+    def mapPure07(): Bool & Impure =
+        (7 :: 8 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2) == true :: true :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // map (impure)                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def mapImpure01(): Bool & Impure =
+        Nil |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == Nil
+
+    @test
+    def mapImpure02(): Bool & Impure =
+        (1 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == false :: Nil
+
+    @test
+    def mapImpure03(): Bool & Impure =
+        (3 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == true :: Nil
+
+    @test
+    def mapImpure04(): Bool & Impure =
+        (1 :: 2 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == false :: false :: Nil
+
+    @test
+    def mapImpure05(): Bool & Impure =
+        (1 :: 8 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == false :: true :: Nil
+
+    @test
+    def mapImpure06(): Bool & Impure =
+        (8 :: 1 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == true :: false :: Nil
+
+    @test
+    def mapImpure07(): Bool & Impure =
+        (7 :: 8 :: Nil) |> List1.toIterator |>
+            Iterator1.map(i -> i > 2 as & Impure) == true :: true :: Nil
+
+
 }
