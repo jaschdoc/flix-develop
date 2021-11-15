@@ -213,4 +213,20 @@ namespace Iterator1 {
             let x = f(next());
             mapAcc(f, done, next, ks -> k(x :: ks))
 
+    ///
+    /// Applies `f` to every element of `iter`.
+    ///
+    pub def foreach(f: a -> Unit & ef, iter: Iterator[a]): Unit & ef =
+        let Iterator(done, next) = iter;
+        foreachHelper(f, done, next) as & ef
+
+    ///
+    /// Helper function for `foreach`.
+    ///
+    def foreachHelper(f: a -> Unit & ef, done: Done, next: Next[a]): Unit & Impure =
+        if (done())
+            ()
+        else
+            let _ = f(next());
+            foreachHelper(f, done, next)
 }

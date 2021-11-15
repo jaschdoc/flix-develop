@@ -295,4 +295,22 @@ namespace TestIterator {
             Iterator1.map(i -> i > 2 as & Impure) == true :: true :: Nil
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // foreach                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foreach01(): Bool & Impure =
+        let r = ref 21;
+        Nil |> List1.toIterator |>
+            Iterator1.foreach(x -> r := x);
+        21 == deref r
+
+    @test
+    def foreach02(): Bool & Impure =
+        let r = ref 21;
+        (1 :: 2 :: 3 :: Nil) |> List1.toIterator |>
+            Iterator1.foreach(x -> r := x);
+        3 == deref r
+
 }
