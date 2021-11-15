@@ -1291,10 +1291,253 @@ namespace TestDelayMap {
         Map#{1 -> 2, 2 -> 3, 3 -> 4} |> Map1.toDelayMap |>
             DelayMap1.reduceRightWithKey((k1, v1, k2, v2) -> (k1 - k2, v1 - v2)) == Some((2 , 3))
 
-/*
-foreach
-memberOf
-min
-max
-*/
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foreach                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foreach01(): Bool & Impure =
+        let r = ref 21;
+        Map#{} |> Map1.toDelayMap |>
+            DelayMap1.foreach((k, _) -> r := k);
+        21 == deref r
+
+    @test
+    def foreach02(): Bool & Impure =
+        let r = ref 21;
+        Map#{1 -> "Hello World!"} |> Map1.toDelayMap |>
+            DelayMap1.foreach((k, _) -> r := k);
+        1 == deref r
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // memberOf                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def memberOf01(): Bool =
+        not (Map#{}: Map[_, Unit] |> Map1.toDelayMap |>
+            DelayMap1.memberOf(2))
+
+    @test
+    def memberOf02(): Bool =
+        not (Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(2))
+
+    @test
+    def memberOf03(): Bool =
+        Map#{2 -> 1} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(2)
+
+    @test
+    def memberOf04(): Bool =
+        not (Map#{2 -> 1, 3 -> 17} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(5))
+
+    @test
+    def memberOf05(): Bool =
+        Map#{2 -> 1, 5 -> 17} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(5)
+
+    @test
+    def memberOf06(): Bool =
+        Map#{5 -> 1, 3 -> 17} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(5)
+
+    @test
+    def memberOf07(): Bool =
+        not (Map#{2 -> 1, 3 -> 17, -1 -> -2} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(-2))
+
+    @test
+    def memberOf08(): Bool =
+        Map#{-2 -> 1, 3 -> 17, -1 -> -2} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(-2)
+
+    @test
+    def memberOf09(): Bool =
+        Map#{2 -> 1, -2 -> 17, -1 -> -2} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(-2)
+
+    @test
+    def memberOf10(): Bool =
+        Map#{2 -> 1, 3 -> 17, -2 -> -2} |> Map1.toDelayMap |>
+            DelayMap1.memberOf(-2)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // keysOf                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def keysOf01(): Bool =
+        Map#{}: Map[Unit, Unit] |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{}
+
+    @test
+    def keysOf02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{1}
+
+    @test
+    def keysOf03(): Bool =
+        Map#{1 -> 2, 2 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{1, 2}
+
+    @test
+    def keysOf04(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6} |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{1, 2, 3}
+
+    @test
+    def keysOf05(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8} |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{1, 2, 3, 4}
+
+    @test
+    def keysOf06(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8, 5 -> 10} |> Map1.toDelayMap |>
+            DelayMap1.keysOf == Set#{1, 2, 3, 4, 5}
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // valuesOf                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def valuesOf01(): Bool =
+        Map#{}: Map[Unit, Unit] |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == Nil
+
+    @test
+    def valuesOf02(): Bool =
+        Map#{1 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == 2 :: Nil
+
+    @test
+    def valuesOf03(): Bool =
+        Map#{1 -> 2, 2 -> 4} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == 2 :: 4 :: Nil
+
+    @test
+    def valuesOf04(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == 2 :: 4 :: 6 :: Nil
+
+    @test
+    def valuesOf05(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == 2 :: 4 :: 6 :: 8 :: Nil
+
+    @test
+    def valuesOf06(): Bool =
+        Map#{1 -> 2, 2 -> 4, 3 -> 6, 4 -> 8, 5 -> 10} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == 2 :: 4 :: 6 :: 8 :: 10 :: Nil
+
+    @test
+    def valuesOf07(): Bool =
+        Map#{1 -> -11, 2 -> 4, 3 -> -5, 4 -> 7, 5 -> -5} |> Map1.toDelayMap |>
+            DelayMap1.valuesOf == -11 :: 4 :: -5 :: 7 :: -5 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimum01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.minimum == None
+
+    @test
+    def minimum02(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5} |> Map1.toDelayMap |>
+            DelayMap1.minimum == Some((1, 2))
+
+    @test
+    def minimum03(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.minimum == Some((0, 2))
+
+    @test
+    def minimum04(): Bool =
+        Map#{1 -> 2, 2 -> 3, -44 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.minimum == Some((-44, 4))
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimumBy01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == None
+
+    @test
+    def minimumBy02(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5} |> Map1.toDelayMap |>
+            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((1, 2))
+
+    @test
+    def minimumBy03(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((0, 2))
+
+    @test
+    def minimumBy04(): Bool =
+        Map#{1 -> 2, 2 -> 3, -44 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((-44, 4))
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximum01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.maximum == None
+
+    @test
+    def maximum02(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5} |> Map1.toDelayMap |>
+            DelayMap1.maximum == Some((5, 5))
+
+    @test
+    def maximum03(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.maximum == Some((5, 5))
+
+    @test
+    def maximum04(): Bool =
+        Map#{1 -> 2, 2 -> 3, 107 -> -107, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.maximum == Some((107, -107))
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximumBy01(): Bool =
+        Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
+            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == None
+
+    @test
+    def maximumBy02(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5} |> Map1.toDelayMap |>
+            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((5, 5))
+
+    @test
+    def maximumBy03(): Bool =
+        Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((5, 5))
+
+    @test
+    def maximumBy04(): Bool =
+        Map#{1 -> 2, 2 -> 3, 107 -> -107, 5 -> 5, 0 -> 2} |> Map1.toDelayMap |>
+            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((107, -107))
+
 }

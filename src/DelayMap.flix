@@ -89,9 +89,12 @@ namespace DelayMap1 {
     ///
     /// Returns `None` if `m` is empty.
     ///
-    pub def minimum(m: DelayMap[k, v]): Option[(k, Lazy[v])] =
+    pub def minimum(m: DelayMap[k, v]): Option[(k, v)] =
         let DMap(t) = m;
-        RedBlackTree.minimum(t)
+        match RedBlackTree.minimum(t) {
+            case None       => None
+            case Some((k, v)) => Some((k, force v))
+        }
 
     ///
     /// Optionally finds `k -> v` where `k` is the smallest key according to the given comparator `cmp`.
@@ -106,9 +109,12 @@ namespace DelayMap1 {
     ///
     /// Returns `None` if `m` is empty.
     ///
-    pub def maximum(m: DelayMap[k, v]): Option[(k, Lazy[v])] =
+    pub def maximum(m: DelayMap[k, v]): Option[(k, v)] =
         let DMap(t) = m;
-        RedBlackTree.maximum(t)
+        match RedBlackTree.maximum(t) {
+            case None => None
+            case Some((k, v)) => Some((k, force v))
+        }
 
     ///
     /// Optionally finds `k -> v` where `k` is the largest key according to the given comparator `cmp`.
