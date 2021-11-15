@@ -194,5 +194,23 @@ namespace Iterator1 {
             let include = f(x);
             if (include) filterAcc(f, done, next, ks -> k(x :: ks)) else filterAcc(f, done, next, k)
 
+    ///
+    /// Returns a list with `f` applied to every element in `iter`.
+    ///
+    /// That is, the result is of the form: `f(x1) :: f(x2) :: ...`.
+    ///
+    pub def map(f: a -> b & ef, iter: Iterator[a]): List[b] & ef =
+        let Iterator(done, next) = iter;
+        mapAcc(f, done, next, ks -> ks) as & ef
+
+    ///
+    /// Helper function for `map`.
+    ///
+    def mapAcc(f: a -> b & ef, done: Done, next: Next[a], k: List[b] -> List[b]): List[b] & Impure =
+        if (done())
+            k(Nil)
+        else
+            let x = f(next());
+            mapAcc(f, done, next, ks -> k(x :: ks))
 
 }
