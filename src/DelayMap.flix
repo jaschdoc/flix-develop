@@ -168,7 +168,7 @@ namespace DelayMap1 {
     ///
     def insertWithKeyL(f: (k, v, v) -> v, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
         let DMap(t) = m;
-        let f1 = (k1, v1, v2) -> lazy (f(k1, force v1, force v2));
+        let f1 = (k1, v1, v2) -> lazy f(k1, force v1, force v2);
         DMap(RedBlackTree.insertWith(f1, k, lazy v, t))
 
     ///
@@ -203,7 +203,7 @@ namespace DelayMap1 {
     ///
     def mapWithKeyL(f: (k, v1) -> v2, m: DelayMap[k, v1]): DelayMap[k, v2] =
         let DMap(tree) = m;
-        let f1 = (k, v) -> lazy (f(k, force v));
+        let f1 = (k, v) -> lazy f(k, force v);
         DMap(RedBlackTree.mapWithKey(f1, tree))
 
     ///
@@ -260,7 +260,7 @@ namespace DelayMap1 {
         use RedBlackTree.{blackHeight, foldRight, insertWith};
         let DMap(xs) = m1;
         let DMap(ys) = m2;
-        let f1 = (k, v1, v2) -> lazy (f(k, force v1, force v2));
+        let f1 = (k, v1, v2) -> lazy f(k, force v1, force v2);
         if (blackHeight(xs) < blackHeight(ys))
             DMap(foldRight((k, v) -> insertWith(f1, k, v), ys, xs))
         else
