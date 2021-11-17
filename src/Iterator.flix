@@ -235,4 +235,17 @@ namespace Iterator1 {
             let _ = f(next());
             foreachHelper(f, done, next)
 
+    ///
+    /// Returns an iterator of every element in `iter` that satisfies the predicate `f`.
+    ///
+    pub def lazyFilter(f: a -> Bool, iter: Iterator[a]): Iterator[Option[a]] =
+        let Iterator(done, next) = iter;
+        let next1 = () -> {
+            if (done())
+                bug!("Empty Iterator!")
+            else
+                let x = next();
+                if (f(x)) Some(x) else None
+        };
+        Iterator(done, next1)
 }
