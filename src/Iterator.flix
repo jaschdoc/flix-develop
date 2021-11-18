@@ -280,4 +280,14 @@ namespace Iterator1 {
             let e = next();
             if (f(e)) Some(e) else forward(f, done, next)
         }
+
+    ///
+    /// Returns an iterator with every `f` lazily applied to each element in `iter`.
+    ///
+    /// Does *not* consume any elements from the iterator.
+    ///
+    pub def lazyMap(f: a -> b, iter: Iterator[a]): Iterator[b] =
+        let Iterator(done, next) = iter;
+        let next1 = () -> f(next());
+        Iterator(done, next1)
 }
