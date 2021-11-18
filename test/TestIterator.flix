@@ -357,29 +357,82 @@ namespace TestIterator {
 
     @test
     def lazyMap01(): Bool & Impure =
-        List1.toIterator(Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == Nil
+        List1.toIterator(Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == Nil
 
     @test
     def lazyMap02(): Bool & Impure =
-        List1.toIterator(1 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: Nil
+        List1.toIterator(1 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: Nil
 
     @test
     def lazyMap03(): Bool & Impure =
-        List1.toIterator(3 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: Nil
+        List1.toIterator(3 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: Nil
 
     @test
     def lazyMap04(): Bool & Impure =
-        List1.toIterator(1 :: 2 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: false :: Nil
+        List1.toIterator(1 :: 2 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: false :: Nil
 
     @test
     def lazyMap05(): Bool & Impure =
-        List1.toIterator(1 :: 8 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: true :: Nil
+        List1.toIterator(1 :: 8 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == false :: true :: Nil
 
     @test
     def lazyMap06(): Bool & Impure =
-        List1.toIterator(8 :: 1 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: false :: Nil
+        List1.toIterator(8 :: 1 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: false :: Nil
 
     @test
     def lazyMap07(): Bool & Impure =
-        List1.toIterator(7 :: 8 :: Nil) |> Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: true :: Nil
+        List1.toIterator(7 :: 8 :: Nil) |>
+            Iterator1.lazyMap(i -> i > 2) |> Iterator1.toList == true :: true :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // replace                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def replace01(): Bool & Impure =
+        List1.toIterator(Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == Nil
+
+    @test
+    def replace02(): Bool & Impure =
+        List1.toIterator(1 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 1 :: Nil
+
+    @test
+    def replace03(): Bool & Impure =
+        List1.toIterator(3 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 4 :: Nil
+
+    @test
+    def replace04(): Bool & Impure =
+        List1.toIterator(4 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 4 :: Nil
+
+    @test
+    def replace05(): Bool & Impure =
+        List1.toIterator(1 :: 2 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 1 :: 2 :: Nil
+
+    @test
+    def replace06(): Bool & Impure =
+        List1.toIterator(1 :: 3 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 1 :: 4 :: Nil
+
+    @test
+    def replace07(): Bool & Impure =
+        List1.toIterator(3 :: 4 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 4 :: 4 :: Nil
+
+    @test
+    def replace08(): Bool & Impure =
+        List1.toIterator(3 :: 3 :: Nil) |>
+            Iterator1.replace(3, 4) |> Iterator1.toList == 4 :: 4 :: Nil
+
 }
