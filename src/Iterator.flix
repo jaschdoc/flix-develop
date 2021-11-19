@@ -303,4 +303,14 @@ namespace Iterator1 {
             if (el == x) y else el
         };
         Iterator(done, next1)
+
+    ///
+    /// Returns `iter2` appended to `iter1`.
+    ///
+    pub def append(iter1: Iterator[a], iter2: Iterator[a]): Iterator[a] =
+        let Iterator(done1, next1) = iter1;
+        let Iterator(done2, next2) = iter2;
+        let done3 = () -> done1() and done2();
+        let next3 = () -> if (done1()) next2() else next1();
+        Iterator(done3, next3)
 }
