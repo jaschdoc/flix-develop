@@ -307,6 +307,8 @@ namespace Iterator1 {
     ///
     /// Returns `iter2` appended to `iter1`.
     ///
+    /// Does *not* consume any elements from either iterator.
+    ///
     pub def append(iter1: Iterator[a], iter2: Iterator[a]): Iterator[a] =
         let Iterator(done1, next1) = iter1;
         let Iterator(done2, next2) = iter2;
