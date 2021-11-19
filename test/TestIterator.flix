@@ -507,26 +507,26 @@ namespace TestIterator {
 
     @test
     def zip03(): Bool & Impure =
-        let iterA = Iterator1.repeat(500, "a");
+        let iterA = Iterator1.repeat(500,  "a");
         let iterB = Iterator1.repeat(1000, "b");
         Iterator1.zip(iterA, iterB) |> Iterator1.toList == List.repeat(500, ("a", "b"))
 
     @test
     def zip04(): Bool & Impure =
         let iterA = Iterator1.repeat(1000, "a");
-        let iterB = Iterator1.repeat(500, "b");
+        let iterB = Iterator1.repeat(500,  "b");
         Iterator1.zip(iterA, iterB) |> Iterator1.toList == List.repeat(500, ("a", "b"))
 
     @test
     def zip05(): Bool & Impure =
-        let iterA = Iterator1.repeat(1000,"a");
-        let iterB = Iterator1.repeat(1000,"b");
+        let iterA = Iterator1.repeat(1000, "a");
+        let iterB = Iterator1.repeat(1000, "b");
         Iterator1.zip(iterA, iterB) |> Iterator1.toList == List.repeat(1000, ("a", "b"))
 
     @test
     def zip06(): Bool & Impure =
         let iterA = Iterator1.range(0, 500);
-        let iterB = Iterator1.repeat(1000,"b");
+        let iterB = Iterator1.repeat(1000, "b");
         Iterator1.zip(iterA, iterB) |> Iterator1.toList == List.zip(List.range(0, 500), List.repeat(500, "b"))
 
 }
