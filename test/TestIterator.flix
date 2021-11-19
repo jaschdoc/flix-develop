@@ -435,4 +435,57 @@ namespace TestIterator {
         List1.toIterator(3 :: 3 :: Nil) |>
             Iterator1.replace(3, 4) |> Iterator1.toList == 4 :: 4 :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // append                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def append01(): Bool & Impure =
+        let iter1 = List.toIterator(Nil: List[Unit]);
+        let iter2 = List.toIterator(Nil: List[Unit]);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == Nil
+
+    @test
+    def append02(): Bool & Impure =
+        let iter1 = List.toIterator(Nil);
+        let iter2 = List.toIterator(1 :: Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: Nil
+
+    @test
+    def append03(): Bool & Impure =
+        let iter1 = List.toIterator(Nil);
+        let iter2 = List.toIterator(1 :: 2 :: Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: Nil
+
+    @test
+    def append04(): Bool & Impure =
+        let iter1 = List.toIterator(1 :: Nil);
+        let iter2 = List.toIterator(Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: Nil
+
+    @test
+    def append05(): Bool & Impure =
+        let iter1 = List.toIterator(1 :: 2 :: Nil);
+        let iter2 = List.toIterator(Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: Nil
+
+    @test
+    def append06(): Bool & Impure =
+        let iter1 = List.toIterator(1 :: Nil);
+        let iter2 = List.toIterator(2 :: Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: Nil
+
+    @test
+    def append07(): Bool & Impure =
+        let iter1 = List.toIterator(1 :: 2 :: Nil);
+        let iter2 = List.toIterator(3 :: Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def append08(): Bool & Impure =
+        let iter1 = List.toIterator(1 :: Nil);
+        let iter2 = List.toIterator(2 :: 3 :: Nil);
+        Iterator1.append(iter1, iter2) |> Iterator.toList == 1 :: 2 :: 3 :: Nil
+
 }
