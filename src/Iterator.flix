@@ -357,7 +357,6 @@ namespace Iterator1 {
         };
         Iterator(done, next1)
 
-
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
     /// `a` is the element at index `i` in `xs` and `b` is the element at index `i` in `ys`.
@@ -372,4 +371,5 @@ namespace Iterator1 {
     ///
     pub def zipWith(f: (a, b) -> c & ef, iterA: Iterator[a], iterB: Iterator[b]): List[c] & Impure =
         zip(iterA, iterB) |> map(xy -> f(fst(xy), snd(xy)))
+
 }
