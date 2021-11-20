@@ -372,4 +372,34 @@ namespace Iterator1 {
     pub def zipWith(f: (a, b) -> c & ef, iterA: Iterator[a], iterB: Iterator[b]): List[c] & Impure =
         zip(iterA, iterB) |> map(xy -> f(fst(xy), snd(xy)))
 
+    ///
+    /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, iter: Iterator[a]): b & Impure =
+        let Iterator(done, next) = iter;
+        foldLeftHelper(f, s, done, next)
+
+    def foldLeftHelper(f: (b, a) -> b & ef, s: b, done: Done, next: Next[a]): b & Impure =
+        if (done())
+            s
+        else
+            foldLeftHelper(f, f(s, next()), done, next)
+
+/*
+    ///
+    /// Applies `f` to all elements in `xs` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
+    ///
+    /// That is, the result is of the form: `Some(f(...f(f(x1, x2), x3)..., xn))`
+    ///
+    /// Returns `None` if `xs` is empty.
+    ///
+    pub def reduceLeft(f: (a, a) -> a & ef, xs: List[a]): Option[a] & ef = match xs {
+        case Nil => None
+        case x :: rs => Some(foldLeft(f, x, rs))
+    }
+*/
 }

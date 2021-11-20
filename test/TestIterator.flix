@@ -612,4 +612,29 @@ namespace TestIterator {
         let iterB = List.toIterator(false :: true :: true :: false :: false :: true :: true :: true :: Nil);
         Iterator1.zipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldLeft                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldLeft01(): Bool & Impure =
+        let iter = List.toIterator(Nil);
+        Iterator1.foldLeft((i, e) -> (i - e) * (e rem 2 + 1), 100, iter) == 100
+
+    @test
+    def foldLeft02(): Bool & Impure =
+        let iter = List.toIterator(1 :: Nil);
+        Iterator1.foldLeft((i, e) -> (i - e) * (e rem 2 + 1), 100, iter) == 198
+
+    @test
+    def foldLeft03(): Bool & Impure =
+        let iter = List.toIterator(1 :: 2 :: Nil);
+        Iterator1.foldLeft((i, e) -> (i - e) * (e rem 2 + 1), 100, iter) == 196
+
+    @test
+    def foldLeft04(): Bool & Impure =
+        let iter = List.toIterator(1 :: 2 :: 3 :: Nil);
+        Iterator1.foldLeft((i, e) -> (i - e) * (e rem 2 + 1), 100, iter) == 386
+
 }
