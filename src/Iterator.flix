@@ -349,7 +349,7 @@ namespace Iterator1 {
     ///
     /// An iterator should never be zipped with itself.
     ///
-    pub def zipWith(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
+    pub def lazyZipWith(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
         let Iterator(done, next) = zip(iterA, iterB);
         let next1 = () -> {
             let (x, y) = next();
