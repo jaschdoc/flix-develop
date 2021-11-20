@@ -337,4 +337,24 @@ namespace Iterator1 {
         let nextAB = () -> (nextA(), nextB());
         Iterator(doneAB, nextAB)
 
+    ///
+    /// Returns an iterator where the element at index `i` is `f(a, b)` where
+    /// `a` is the element at index `i` in `xs` and `b` is the element at index `i` in `ys`.
+    ///
+    /// Does *not* consume any elements from either iterator.
+    ///
+    /// If either `xs` or `ys` becomes depleted, then no further elements are added to the resulting list.
+    ///
+    /// The original iterators `iterA` and `iterB` should not be reused.
+    ///
+    /// An iterator should never be zipped with itself.
+    ///
+    pub def zipWith(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
+        let Iterator(done, next) = zip(iterA, iterB);
+        let next1 = () -> {
+            let (x, y) = next();
+            f(x, y)
+        };
+        Iterator(done, next1)
+
 }
