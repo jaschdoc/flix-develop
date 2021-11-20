@@ -392,17 +392,20 @@ namespace Iterator1 {
         else
             foldLeftHelper(f, f(s, next()), done, next)
 
-/*
     ///
-    /// Applies `f` to all elements in `xs` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
+    /// Applies `f` to all elements in `iter` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
     ///
     /// That is, the result is of the form: `Some(f(...f(f(x1, x2), x3)..., xn))`
     ///
-    /// Returns `None` if `xs` is empty.
+    /// Returns `None` if `iter` is empty.
     ///
-    pub def reduceLeft(f: (a, a) -> a & ef, xs: List[a]): Option[a] & ef = match xs {
-        case Nil => None
-        case x :: rs => Some(foldLeft(f, x, rs))
-    }
-*/
+    /// Consumes the entire iterator.
+    ///
+    pub def reduceLeft(f: (a, a) -> a & ef, iter: Iterator[a]): Option[a] & Impure =
+        let Iterator(done, next) = iter;
+        if (done())
+            None
+        else
+            Some(foldLeft(f, next(), iter))
+
 }

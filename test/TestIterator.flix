@@ -637,4 +637,34 @@ namespace TestIterator {
         let iter = List.toIterator(1 :: 2 :: 3 :: Nil);
         Iterator1.foldLeft((i, e) -> (i - e) * (e rem 2 + 1), 100, iter) == 386
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceLeft                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceLeft01(): Bool & Impure =
+        let iter = List.toIterator(Nil: List[Int]);
+        Iterator1.reduceLeft((a, b) -> a - b, iter) == None
+
+    @test
+    def reduceLeft02(): Bool & Impure =
+        let iter = List.toIterator(1 :: Nil);
+        Iterator1.reduceLeft((a, b) -> a - b, iter) == Some(1)
+
+    @test
+    def reduceLeft03(): Bool & Impure =
+        let iter = List.toIterator(1 :: 2 :: Nil);
+        Iterator1.reduceLeft((a, b) -> a - b, iter) == Some(-1)
+
+    @test
+    def reduceLeft04(): Bool & Impure =
+        let iter = List.toIterator(1 :: 2 :: 3 :: Nil);
+        Iterator1.reduceLeft((a, b) -> a - b, iter) == Some(-4)
+
+    @test
+    def reduceLeft05(): Bool & Impure =
+        let iter = List.toIterator(1 :: 2 :: 3 :: 4 :: Nil);
+        Iterator1.reduceLeft((a, b) -> a - b, iter) == Some(-8)
+
 }
