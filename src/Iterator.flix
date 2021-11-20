@@ -383,6 +383,9 @@ namespace Iterator1 {
         let Iterator(done, next) = iter;
         foldLeftHelper(f, s, done, next)
 
+    ///
+    /// Helper function for `foldLeft`.
+    ///
     def foldLeftHelper(f: (b, a) -> b & ef, s: b, done: Done, next: Next[a]): b & Impure =
         if (done())
             s
