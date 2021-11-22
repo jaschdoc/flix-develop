@@ -432,6 +432,9 @@ namespace Iterator1 {
         takeWhileAcc(f, done, next, ks -> ks as & ef) // NB: Cast required because the identity continuation is pure,
                                                       // but the intermediate continuations are effect polymorphic
 
+    ///
+    /// Helper function for `takeWhile`.
+    ///
     def takeWhileAcc(f: a -> Bool & ef, done: Done, next: Next[a], k: List[a] -> List[a] & ef): List[a] & Impure =
         if (done())
             k(Nil)
