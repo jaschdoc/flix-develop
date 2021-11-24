@@ -65,6 +65,26 @@ namespace Iterator1 {
     ///
     /// Assumes that `f` eventually exhausts the resource at `x`.
     ///
+    /// Assumes `f` may throw a Java Throwable.
+    ///
+    pub def ofThrowable(f: Unit -> a & Impure, x: Ref[a]): Iterator[Result[a, String]] =
+        let done = () -> Object.isNull(deref x);
+        let next = () -> {
+            try {
+                Ok(f())
+            } catch {
+                case e: ##java.lang.Throwable =>
+                    import java.lang.Throwable.getMessage();
+                    Err(getMessage(e))
+            }
+        };
+        Iterator(done, next)
+
+    ///
+    /// Returns an iterator that unfolds `f` until the resource at `x` is null.
+    ///
+    /// Assumes that `f` eventually exhausts the resource at `x`.
+    ///
     pub def ofNullable(f: Unit -> a & Impure, x: Ref[a]): Iterator[a] =
         let done = () -> Object.isNull(deref x);
         Iterator(done, f)
