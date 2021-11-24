@@ -61,9 +61,9 @@ namespace Iterator1 {
         Iterator(done, next)
 
     ///
-    /// Returns an iterator that unfolds `f` until the value of `x` is exhausted.
+    /// Returns an iterator that unfolds `f` until the resource at `x` is null.
     ///
-    /// Assumes that the value at `x` is eventually null.
+    /// Assumes that `f` eventually exhausts the resource at `x`.
     ///
     pub def ofNullable(f: Unit -> a & Impure, x: Ref[a]): Iterator[a] =
         let done = () -> Object.isNull(deref x);
