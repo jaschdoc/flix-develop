@@ -61,6 +61,15 @@ namespace Iterator1 {
         Iterator(done, next)
 
     ///
+    /// Returns an iterator that unfolds `next` until the value of `x` is exhausted.
+    ///
+    /// Assumes that the value at `x` is eventually null.
+    ///
+    pub def ofNullable(next: Next[a], x: Ref[a]): Iterator[a] =
+        let done = () -> Object.isNull(deref x);
+        Iterator(done, next)
+
+    ///
     /// Return `Some(x)` if `iter` is not empty. Return `None` otherwise.
     ///
     /// Consumes the head element of `iter`.
