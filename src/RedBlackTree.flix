@@ -11,7 +11,7 @@ namespace RedBlackTree1 {
     pub def map(f: v1 -> v2 & ef, t: RedBlackTree[k, v1]): RedBlackTree[k, v2] & ef =
         reifyEff(f) {
             case Pure(g) =>
-                if (RedBlackTree.blackHeight(t) >= 2000)
+                if (RedBlackTree.blackHeight(t) >= 10)
                     parMap(g, t)
                 else
                     seqMap(g, t)
@@ -41,7 +41,7 @@ namespace RedBlackTree1 {
             }
     }
 
-    pub def seqMap(f: v1 -> v2 & ef, t: RedBlackTree[k, v1]): RedBlackTree[k, v2] & ef= match t {
+    pub def seqMap(f: v1 -> v2 & ef, t: RedBlackTree[k, v1]): RedBlackTree[k, v2] & ef = match t {
         case Leaf                   => Leaf
         case DoubleBlackLeaf        => DoubleBlackLeaf
         case Node(c, a, k, v, b)    =>
