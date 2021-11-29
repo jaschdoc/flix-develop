@@ -80,7 +80,7 @@ namespace MutDeque1 {
         if (f <= b) // The elements are laid out without "wrapping around" the array.
             b - f
         else
-            c - f + b // Subtract the complement of number of elements from the capacity
+            c - (f - b) // Subtract the complement of number of elements from the capacity
 
     ///
     /// Returns `true` if `d` is empty.
@@ -161,9 +161,9 @@ namespace MutDeque1 {
     /// Doubles the capacity of `d`.
     ///
     def grow!(d: MutDeque[a]): Unit & Impure = {
-        let MutDeque(a, f, b) = d;
+        let MutDeque(a, _, _) = d;
         let c = capacity(d);
-        copyElements!(f, b, a, c * 2)
+        a := Array.copyOfRange(0, 2 * c, deref a) // TODO: Check that f < b.
     }
 
     ///
