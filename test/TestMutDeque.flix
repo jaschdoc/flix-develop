@@ -15,7 +15,7 @@
  */
 
 namespace TestMutDeque {
-
+/*
     /////////////////////////////////////////////////////////////////////////////
     // size                                                                    //
     /////////////////////////////////////////////////////////////////////////////
@@ -315,5 +315,5 @@ namespace TestMutDeque {
         MutDeque1.popBack(d) == Some(1) and
         MutDeque1.popBack(d) == None and
         MutDeque1.popFront(d) == None
-
+*/
 }
