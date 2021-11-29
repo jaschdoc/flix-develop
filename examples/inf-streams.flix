@@ -15,8 +15,7 @@ def sieve(ps: LazyList[Int32]): LazyList[Int32] = match LazyList.head(ps) {
     case Some(p) =>
         LCons(p,
             lazy sieve(
-                LazyList.filter(x -> x mod p != 0, LazyList1.tail(ps)) as LazyList[Int32] & Pure
-                )
+                LazyList.filter(x -> x mod p != 0, LazyList1.tail(ps)))
             )
     case None => LazyList.empty()
 }
