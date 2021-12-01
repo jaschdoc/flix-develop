@@ -483,4 +483,34 @@ namespace Iterator1 {
             case None    => Nil
             case Some(i) => i :: toList(iter)
         }
+
+    ///
+    /// Returns the result of applying `f` to every element in `iter` and concatenating the results.
+    ///
+    pub def flatMap(f: a -> Iterator[b] & ef, iter: Iterator[a]): Iterator[b] =
+        let Iterator(done, next) = iter;
+        let cursor = ref None;
+        let done1 = () -> done() or match deref cursor { // The original iterator is done or
+            case None    => {
+                let i = f(next());
+                cursor := Some(i);
+                let Iterator(d, _) = i;
+                d()
+            }
+            case Some(i) =>
+                let Iterator(d, _) = i;
+                if (d()) {
+                    let ii = f(next());
+                    cursor := Some(ii);
+                    let Iterator(d1, _) = ii;
+                    d1()
+                } else false
+        };
+        let next1 = () -> match deref cursor {
+            case None    => bug!("Empty iterator!")
+            case Some(i) =>
+                let Iterator(_, n) = i;
+                n()
+        };
+
 }
