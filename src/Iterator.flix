@@ -487,6 +487,8 @@ namespace Iterator1 {
     ///
     /// Returns the result of applying `f` to every element in `iter` and concatenating the results.
     ///
+    /// Does *not* consume any elements from the iterator.
+    ///
     pub def flatMap(f: a -> Iterator[b] & ef, iter: Iterator[a]): Iterator[b] & Impure =
         let Iterator(done, next) = iter;
         let cursor = ref None;
