@@ -487,30 +487,44 @@ namespace Iterator1 {
     ///
     /// Returns the result of applying `f` to every element in `iter` and concatenating the results.
     ///
-    pub def flatMap(f: a -> Iterator[b] & ef, iter: Iterator[a]): Iterator[b] =
+    pub def flatMap(f: a -> Iterator[b] & ef, iter: Iterator[a]): Iterator[b] & Impure =
         let Iterator(done, next) = iter;
         let cursor = ref None;
-        let done1 = () -> done() or match deref cursor { // The original iterator is done or
-            case None    => {
-                let i = f(next());
-                cursor := Some(i);
-                let Iterator(d, _) = i;
-                d()
+        let done1 = () -> match deref cursor {
+            case None     => match flatMapForward(f, done, next) {
+                case None     => true
+                case Some(it) =>
+                    cursor := Some(it);
+                    false
             }
-            case Some(i) =>
-                let Iterator(d, _) = i;
-                if (d()) {
-                    let ii = f(next());
-                    cursor := Some(ii);
-                    let Iterator(d1, _) = ii;
-                    d1()
-                } else false
+            case Some(it) =>
+                let Iterator(d, _) = it;
+                if (d())
+                    match flatMapForward(f, done, next) {
+                        case None      => true
+                        case Some(it1) =>
+                            cursor := Some(it1);
+                            false
+                    }
+                else
+                    false
         };
         let next1 = () -> match deref cursor {
-            case None    => bug!("Empty iterator!")
-            case Some(i) =>
-                let Iterator(_, n) = i;
+            case None     => bug!("Empty Iterator!")
+            case Some(it) =>
+                let Iterator(_, n) = it;
                 n()
         };
+        Iterator(done1, next1)
+
+    ///
+    /// Forwards the given iterator to the first non-empty iterator produced by `f`.
+    ///
+    def flatMapForward(f: a -> Iterator[b] & ef, done: Done, next: Next[a]): Option[Iterator[b]] & Impure =
+        if (done())
+            None
+        else
+            let Iterator(d, n) = f(next());
+            if (d()) flatMapForward(f, done, next) else Some(Iterator(d, n))
 
 }
