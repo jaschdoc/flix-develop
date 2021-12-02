@@ -9,3 +9,20 @@ namespace Result1 {
     }
 
 }
+
+namespace Result {
+
+    ///
+    /// Returns `Ok(x)` if `f` was invoked without throwing an exception.
+    /// Return `Err(e)`, if `f` throws a Java `RuntimeException`,
+    /// where `e` is the error message.
+    ///
+    pub def try(f: Unit -> a & ef): Result[a, String] & ef =
+        try {
+            Ok(f())
+        } catch {
+            case e: ##java.lang.RuntimeException =>
+                import java.lang.Throwable.getMessage();
+                Err(getMessage(e)) as & Pure
+        }
+}

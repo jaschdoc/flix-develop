@@ -65,19 +65,11 @@ namespace Iterator1 {
     ///
     /// Assumes that `f` eventually exhausts the resource at `x`.
     ///
-    /// Assumes `f` may throw a Java Throwable.
+    /// Assumes `f` may throw a Java `RuntimeException`.
     ///
-    pub def ofThrowable(f: Unit -> a & Impure, x: Ref[a]): Iterator[Result[a, String]] =
+    pub def ofException(f: Unit -> a & ef, x: Ref[a]): Iterator[Result[a, String]] =
         let done = () -> Object.isNull(deref x);
-        let next = () -> {
-            try {
-                Ok(f())
-            } catch {
-                case e: ##java.lang.Throwable =>
-                    import java.lang.Throwable.getMessage();
-                    Err(getMessage(e))
-            }
-        };
+        let next = () -> Result.try(f) as & Impure;
         Iterator(done, next)
 
     ///
@@ -85,9 +77,10 @@ namespace Iterator1 {
     ///
     /// Assumes that `f` eventually exhausts the resource at `x`.
     ///
-    pub def ofNullable(f: Unit -> a & Impure, x: Ref[a]): Iterator[a] =
+    pub def ofNullable(f: Unit -> a & ef, x: Ref[a]): Iterator[a] =
         let done = () -> Object.isNull(deref x);
-        Iterator(done, f)
+        let next = () -> f() as & Impure; // if `f` is pure it cannot be
+        Iterator(done, next)
 
     ///
     /// Return `Some(x)` if `iter` is not empty. Return `None` otherwise.
