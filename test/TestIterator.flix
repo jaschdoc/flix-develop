@@ -897,8 +897,10 @@ namespace TestIterator {
         let iterB0 = (1 :: Nil) |> List.toIterator;
         let iterB1 = (2 :: 3 :: Nil) |> List.toIterator;
         let iterB  = (iterB0 :: iterB1 :: Nil) |> List.toIterator;
-        Iterator1.intercalate(iterA, iterB) |>
-            Iterator.toList == 1 :: 2 :: 3 :: Nil
+        let res = Iterator1.intercalate(iterA, iterB) |>
+            Iterator.toList;
+        println(res);
+        res == 1 :: 2 :: 3 :: Nil
 
     @test
     def intercalate05(): Bool & Impure =

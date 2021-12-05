@@ -548,7 +548,7 @@ namespace Iterator1 {
     ///
     /// That is, returns `b1 :: a1 ... an :: b2 :: ... bn-1 :: a1 :: ... :: an :: bn :: Nil`.
     ///
-    pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure with Eq[a] =
+    pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure with Eq[a], ToString[a] =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
         let cursor = ref None;
@@ -573,20 +573,19 @@ namespace Iterator1 {
             x
         };
         let iterAA = Iterator(doneAA, nextAA);
-        let done1 = () -> doneB() or match intercalateForward(doneB, nextB) {
-            case None    => true
-            case Some(i) => match deref cursor {
-                case None    =>
-                    if (doneA()) {
-                        let it = append(i, List.toIterator(deref xs));
-                        cursor := Some(it);
+        let done1 = () -> doneB() or match deref cursor {
+            case Some(_) => false // will be set to `None` by the next function
+            case None => match intercalateForward(doneB, nextB) {
+                case None    => true
+                case Some(i) =>
+                    if (doneAA()) {
+                        cursor := Some(append(List.toIterator(deref xs), i));
                         false
                     }
                     else {
-                        cursor := Some(append(i, iterAA));
+                        cursor := Some(append(iterAA, i));
                         false
                     }
-                case Some(_) => false // the `next` function will set the cursor to `None` if the iterator is done.
             }
         };
         let next1 = () -> match deref cursor {
