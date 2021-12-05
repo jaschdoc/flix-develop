@@ -548,6 +548,67 @@ namespace Iterator1 {
     ///
     /// That is, returns `b1 :: a1 ... an :: b2 :: ... bn-1 :: a1 :: ... :: an :: bn :: Nil`.
     ///
-    pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] = ???
+    pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure with Eq[a] =
+        let Iterator(doneA, nextA) = iterA;
+        let Iterator(doneB, nextB) = iterB;
+        let cursor = ref None;
+        let xs = ref Nil;
+        let reversed = ref false;
+        let doneAA = () -> {
+            if (doneA()) {
+                if (deref reversed)
+                    ()
+                else {
+                    xs := List.reverse(deref xs);
+                    reversed := true
+                };
+                true
+            }
+            else
+                false
+        };
+        let nextAA = () -> { // store each element of `iterA` in `xs`.
+            let x = nextA();
+            xs := x :: deref xs;
+            x
+        };
+        let iterAA = Iterator(doneAA, nextAA);
+        let done1 = () -> doneB() or match intercalateForward(doneB, nextB) {
+            case None    => true
+            case Some(i) => match deref cursor {
+                case None    =>
+                    if (doneA()) {
+                        let it = append(i, List.toIterator(deref xs));
+                        cursor := Some(it);
+                        false
+                    }
+                    else {
+                        cursor := Some(append(i, iterAA));
+                        false
+                    }
+                case Some(_) => false // the `next` function will set the cursor to `None` if the iterator is done.
+            }
+        };
+        let next1 = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(i) =>
+                let Iterator(d, n) = i;
+                let x = n();
+                if (d()) cursor := None else ();
+                x
+        };
+        Iterator(done1, next1)
 
+
+    // TODO: Refactor `flatMapForward` and `intercalateForward` to use `foward`.
+
+    ///
+    /// Forwards the iterator the first non-empty iterator produced by `next`.
+    ///
+    def intercalateForward(done: Done, next: Next[Iterator[a]]): Option[Iterator[a]] & Impure =
+        if (done())
+            None
+        else
+            let Iterator(d, n) = next();
+            if (d()) intercalateForward(done, next) else Some(Iterator(d, n))
 }
