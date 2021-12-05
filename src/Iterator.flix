@@ -542,4 +542,12 @@ namespace Iterator1 {
         };
         Iterator(done, next1)
 
+
+    ///
+    /// Returns the concatenation of the elements in `iterB` with the elements of `iterA` inserted between every two adjacent elements.
+    ///
+    /// That is, returns `b1 :: a1 ... an :: b2 :: ... bn-1 :: a1 :: ... :: an :: bn :: Nil`.
+    ///
+    pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] = ???
+
 }
