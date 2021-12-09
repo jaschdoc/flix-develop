@@ -1,5 +1,65 @@
 namespace TestRedBlackTree {
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // mapWithKey                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def mapWithKey01(): Bool =
+        let Map(t) = Map#{}: Map[Int32, Int32];
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{}
+
+    @test
+    def mapWithKey02(): Bool =
+        let Map(t) = Map#{1 -> 4};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{1 -> 5}
+
+    @test
+    def mapWithKey03(): Bool =
+        let Map(t) = Map#{2 -> -1, 0 -> 0};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 0 -> 0}
+
+    @test
+    def mapWithKey04(): Bool =
+        let Map(t) = Map#{2 -> -1, 5 -> 15, 11 -> -9};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 5 -> 20, 11 -> 2}
+
+    @test
+    def mapWithKey05(): Bool =
+        let Map(t) = Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
+
+    @test
+    def mapWithKey06(): Bool =
+        let Map(t) = List.zip(List.range(0, 2000), List.range(0, 2000)) |> List.toMap;
+        let expected = List.zip(List.range(0, 2000), List.range(1, 2001)) |> List.toMap;
+        Map(RedBlackTree.mapWithKey((_, v) -> v + 1, t)) == expected
+
+    @test
+    def mapWithKey07(): Bool =
+        let Map(t) = List.zip(List.range(0, 2000), List.range(-1000, 1000)) |> List.toMap;
+        let expected = List.zip(List.range(0, 2000), List.range(-999, 1001)) |> List.toMap;
+        Map(RedBlackTree.mapWithKey((_, v) -> v + 1, t)) == expected
+
+    @test
+    def mapWithKey08(): Bool & Impure =
+        let range = List.range(0, 2000);
+        let Map(t) = List.zip(range, range) |> List.toMap;
+        let a = [default; 2000];
+        let i = ref 0;
+        RedBlackTree.mapWithKey((_, v) -> { a[deref i] = v; i := 1 + deref i; v }, t);
+        Array.sameElements(a, List.toArray(range))
+
+    @test
+    def mapWithKey09(): Bool & Impure =
+        let range = List.range(0, 2000);
+        let Map(t) = List.zip(range, range) |> List.toMap;
+        let a = MutList.new();
+        RedBlackTree.mapWithKey((_, v) -> { let b = MutList.new(); MutList.push!(v, b); MutList.append!(a, b); v }, t);
+        MutList.eq(a, List.toMutList(range))
+
+
     /////////////////////////////////////////////////////////////////////////////
     // count                                                                   //
     /////////////////////////////////////////////////////////////////////////////
@@ -37,8 +97,7 @@ namespace TestRedBlackTree {
     @test
     def count07(): Bool =
         let Map(t) = List.zip(List.range(0, 2000), List.range(-1000, 1000)) |> List.toMap;
-        let res = RedBlackTree1.count((k, v) -> k - 1000 == v, t);
-        res == 2000
+        RedBlackTree1.count((k, v) -> k - 1000 == v, t) == 2000
 
     @test
     def count08(): Bool & Impure =
