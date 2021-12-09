@@ -37,7 +37,8 @@ namespace TestRedBlackTree {
     @test
     def count07(): Bool =
         let Map(t) = List.zip(List.range(0, 2000), List.range(-1000, 1000)) |> List.toMap;
-        RedBlackTree1.count((k, v) -> k == v, t) == 1000
+        let res = RedBlackTree1.count((k, v) -> k - 1000 == v, t);
+        res == 2000
 
     @test
     def count08(): Bool & Impure =
