@@ -605,9 +605,9 @@ namespace Iterator1 {
                 false
         };
         let cursor = ref None;
-        let updateCursor = i -> {
+        let mkCursor = i -> {
             if (deref isReversed)
-            // `iterA` has been consumed, so construct a new one from `xs`
+                // `iterA` has been consumed, so construct a new one from `xs`
                 cursor := Some(append(i, List.toIterator(deref xs)))
             else
                 cursor := Some(append(i, Iterator(doneAA, nextAA)))
@@ -616,7 +616,10 @@ namespace Iterator1 {
             case None    => match intercalateForward(doneB, nextB) {
                 case None    => true
                 case Some(i) =>
-                    updateCursor(i);
+                    if (doneB())
+                        cursor := Some(i)
+                    else
+                        mkCursor(i);
                     false
             }
             case Some(i) =>
@@ -624,7 +627,10 @@ namespace Iterator1 {
                 if (d()) match intercalateForward(doneB, nextB) {
                     case None    => true
                     case Some(i) =>
-                        updateCursor(i);
+                        if (doneB())
+                            cursor := Some(i)
+                        else
+                            mkCursor(i);
                         false
                 }
                 else
