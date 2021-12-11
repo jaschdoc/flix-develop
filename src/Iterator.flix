@@ -584,87 +584,59 @@ namespace Iterator1 {
     pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
-        if (doneA()) {
-            flatten(iterB)
-        }
-        else {
-            let xs = ref Nil;
-            let isReversed = ref false;
-            let nextAA = () -> {
-                let x = nextA();
-                xs := x :: deref xs;
-                x
-            };
-            let doneAA = () -> {
-                if (doneA()) {
-                    if (deref isReversed)
-                        ()
-                    else
-                        xs := List.reverse(deref xs);
-                    true
+        let xs = ref Nil;
+        let isReversed = ref false;
+        let nextAA = () -> {
+            let x = nextA();
+            xs := x :: deref xs;
+            x
+        };
+        let doneAA = () -> {
+            if (doneA()) {
+                if (deref isReversed)
+                    ()
+                else {
+                    xs := List.reverse(deref xs);
+                    isReversed := true
+                };
+                true
+            }
+            else
+                false
+        };
+        let cursor = ref None;
+        let updateCursor = i -> {
+            if (deref isReversed)
+            // `iterA` has been consumed, so construct a new one from `xs`
+                cursor := Some(append(i, List.toIterator(deref xs)))
+            else
+                cursor := Some(append(i, Iterator(doneAA, nextAA)))
+        };
+        let done1 = () -> match deref cursor {
+            case None    => match intercalateForward(doneB, nextB) {
+                case None    => true
+                case Some(i) =>
+                    updateCursor(i);
+                    false
+            }
+            case Some(i) =>
+                let Iterator(d, _) = i;
+                if (d()) match intercalateForward(doneB, nextB) {
+                    case None    => true
+                    case Some(i) =>
+                        updateCursor(i);
+                        false
                 }
                 else
                     false
-            };
-            let cursorA = ref Some(Iterator(doneAA, nextAA));
-            let cursorB = ref None;
-            let nextFromB = ref true;
-            let done1 = () -> match deref cursorB {
-                case None    =>                                  // We should put something in the cursor
-                    match intercalateForward(doneB, nextB) {
-                        case None    => true              // The rest of `iterB` was empty
-                        case Some(i) =>
-                            cursorB := Some(i);
-                            false
-                    }
-                case Some(i) =>
-                    let Iterator(d, _) = i;
-                    if (d())
-                        match intercalateForward(doneB, nextB) {
-                            case None    => true              // The rest of `iterB` was empty
-                            case Some(it) =>
-                                cursorB := Some(it);
-                                false
-                        }
-                    else
-                        false
-            };
-            let next1 = () -> {
-                if (deref nextFromB)
-                    match deref cursorB {
-                        case None    => bug!("Empty Iterator!")
-                        case Some(i) =>
-                            let Iterator(d, n) = i;
-                            let x = n();
-                            if (d()) {
-                                nextFromB := false;
-                                cursorB := None;
-                                match deref cursorA {
-                                    case None => cursorA := Some(List.toIterator(deref xs))
-                                    case _    => ()
-                                }
-                            }
-                            else
-                                ();
-                            x
-                    }
-                else
-                    match deref cursorA {
-                        case None    => bug!("Empty Iterator!")
-                        case Some(i) =>
-                            let Iterator(d, n) = i;
-                            if (d()) {
-                                nextFromB := true;
-                                cursorA := None
-                            }
-                            else
-                                ();
-                            n()
-                    }
-            };
-            Iterator(done1, next1)
-        }
-
+        };
+        let next1 = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(i) =>
+                let Iterator(_, n) = i;
+                n()
+        };
+        Iterator(done1, next1)
 
     // TODO: Refactor `flatMapForward` and `intercalateForward` to use `foward`.
 
