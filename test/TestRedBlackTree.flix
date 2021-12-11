@@ -120,7 +120,6 @@ namespace TestRedBlackTree {
     // minimumBy                                                               //
     /////////////////////////////////////////////////////////////////////////////
 
-
     @test
     def minimumBy01(): Bool =
         let Map(t) = Map#{}: Map[Int32, Int32];
