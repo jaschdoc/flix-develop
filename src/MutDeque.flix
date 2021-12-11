@@ -64,7 +64,7 @@ namespace MutDeque1 {
     /// Returns an empty MutDeque.
     ///
     pub def new(): MutDeque[a] & Impure =
-        MutDeque(ref [default; minCapacity()], ref 0, ref 0)
+        MutDeque(ref [$DEFAULT$; minCapacity()], ref 0, ref 0)
 
     ///
     /// Returns the number of elements in `d`.

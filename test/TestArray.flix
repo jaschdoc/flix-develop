@@ -14,18 +14,18 @@ namespace TestArray {
 
     @test
     def toIterator03(): Bool & Impure =
-        [1, 2, 3] |> Array1.toIterator |> Iterator1.toArray == [1, 2, 3]
+        Array.sameElements([1, 2, 3] |> Array1.toIterator |> Iterator1.toArray,[1, 2, 3])
 
     @test
     def toIterator04(): Bool & Impure =
-        Array.range(-100, 100) |> Array1.toIterator |> Iterator1.toArray == Array.range(-100, 100)
+        Array.sameElements(
+            Array.range(-100, 100) |> Array1.toIterator |> Iterator1.toArray, Array.range(-100, 100))
 
     @test
     def toIterator05(): Bool & Impure = {
         let a = [1, 2, 3];
         let iter = Array1.toIterator(a);
         a[0] = 10000;
-        Iterator1.toArray(iter) == [1, 2, 3]
+        Array.sameElements(Iterator1.toArray(iter), [1, 2, 3])
     }
-
 }
