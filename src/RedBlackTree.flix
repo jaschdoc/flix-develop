@@ -175,4 +175,12 @@ namespace RedBlackTree1 {
             let b1 = seqCount(f, b);
             a1 + v1 + b1
     }
+
+    ///
+    /// Optionally finds `k -> v` where `k` is the smallest key according to the given comparator `cmp`.
+    ///
+    /// Returns `None` if `m` is empty.
+    ///
+    pub def minimumBy(cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] = ???
+
 }
