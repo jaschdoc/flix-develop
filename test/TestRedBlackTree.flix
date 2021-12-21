@@ -11,23 +11,23 @@ namespace TestRedBlackTree {
 
     @test
     def mapWithKey02(): Bool =
-        let Map(t) = Map#{1 -> 4};
-        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{1 -> 5}
+        let Map(t) = Map#{1 => 4};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{1 => 5}
 
     @test
     def mapWithKey03(): Bool =
-        let Map(t) = Map#{2 -> -1, 0 -> 0};
-        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 0 -> 0}
+        let Map(t) = Map#{2 => -1, 0 => 0};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 => 1, 0 => 0}
 
     @test
     def mapWithKey04(): Bool =
-        let Map(t) = Map#{2 -> -1, 5 -> 15, 11 -> -9};
-        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 5 -> 20, 11 -> 2}
+        let Map(t) = Map#{2 => -1, 5 => 15, 11 => -9};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 => 1, 5 => 20, 11 => 2}
 
     @test
     def mapWithKey05(): Bool =
-        let Map(t) = Map#{2 -> -1, 5 -> 15, 11 -> -9, 8 -> 8};
-        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 -> 1, 5 -> 20, 11 -> 2, 8 -> 16}
+        let Map(t) = Map#{2 => -1, 5 => 15, 11 => -9, 8 => 8};
+        Map(RedBlackTree.mapWithKey((k, v) -> k + v, t)) == Map#{2 => 1, 5 => 20, 11 => 2, 8 => 16}
 
     @test
     def mapWithKey06(): Bool =
@@ -70,22 +70,22 @@ namespace TestRedBlackTree {
 
     @test
     def count02(): Bool =
-        let Map(t) = Map#{1 -> 2};
+        let Map(t) = Map#{1 => 2};
         RedBlackTree1.count((k, v) -> k == v, t) == 0
 
     @test
     def count03(): Bool =
-        let Map(t) = Map#{1 -> 1};
+        let Map(t) = Map#{1 => 1};
         RedBlackTree1.count((k, v) -> k == v, t) == 1
 
     @test
     def count04(): Bool =
-        let Map(t) = Map#{1 -> 2, 2 -> 3};
+        let Map(t) = Map#{1 => 2, 2 => 3};
         RedBlackTree1.count((k, v) -> k == v, t) == 0
 
     @test
     def count05(): Bool =
-        let Map(t) = Map#{1 -> 1, 2 -> 3};
+        let Map(t) = Map#{1 => 1, 2 => 3};
         RedBlackTree1.count((k, v) -> k == v, t) == 1
 
     @test
@@ -127,17 +127,17 @@ namespace TestRedBlackTree {
 
     @test
     def minimumBy02(): Bool =
-        let Map(t) = Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5};
+        let Map(t) = Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5};
         RedBlackTree1.minimumBy((x, _, y, _) -> x <=> y, t) == Some((1, 2))
 
     @test
     def minimumBy03(): Bool =
-        let Map(t) = Map#{1 -> 2, 2 -> 3, 3 -> 4, 5 -> 5, 0 -> 2};
+        let Map(t) = Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5, 0 => 2};
         RedBlackTree1.minimumBy((x, _, y, _) -> x <=> y, t) == Some((0, 2))
 
     @test
     def minimumBy04(): Bool =
-        let Map(t) = Map#{1 -> 2, 2 -> 3, -44 -> 4, 5 -> 5, 0 -> 2};
+        let Map(t) = Map#{1 => 2, 2 => 3, -44 => 4, 5 => 5, 0 => 2};
         RedBlackTree1.minimumBy((x, _, y, _) -> x <=> y, t) == Some((-44, 4))
 
     // TODO: Adapt these tests
