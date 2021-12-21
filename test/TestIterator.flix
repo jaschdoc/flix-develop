@@ -929,4 +929,13 @@ namespace TestIterator {
         Iterator1.intercalate(iterA, iterB) |>
             Iterator.toList == 1 :: 11 :: 12 :: 13 :: 2 :: 3 :: 11 :: 12 :: 13 :: 4 :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // unfoldWithOk                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def unfoldWithOk01(): Bool & Impure =
+        let iter = Iterator1.unfoldWithOk(() -> Err(0));
+        Iterator.toList(iter) == Nil
 }
