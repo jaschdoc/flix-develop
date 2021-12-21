@@ -655,4 +655,28 @@ namespace Iterator1 {
         else
             let Iterator(d, n) = next();
             if (d()) intercalateForward(done, next) else Some(Iterator(d, n))
+
+    ///
+    /// Returns an iterator over the results of `f`.
+    ///
+    /// If `f` returns `Ok(x)`, then the next element is `x`.
+    ///
+    /// If `f` returns `Err(e)`, then the iterator is depleted.
+    ///
+    pub def unfoldWithOk(f: Unit -> Result[a, b] & ef): Iterator[a] & Impure =
+        let cursor = ref None;
+        let done = () -> match f() {
+            case Err(_) => true
+            case Ok(x)  =>
+                cursor := Some(x);
+                false
+        };
+        let next = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(x) =>
+                cursor := None;
+                x
+        };
+        Iterator(done, next)
+
 }
