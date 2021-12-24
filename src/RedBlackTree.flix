@@ -196,6 +196,7 @@ namespace RedBlackTree1 {
             case _       => seqMinimumBy(cmp, t)
         }
 
+    @Parallel
     pub def parMinimumBy(n: Int32, cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] & Impure =
         if (n <= 0)
             parSeqMinimumBy(cmp, t)
