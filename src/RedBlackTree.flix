@@ -196,11 +196,20 @@ namespace RedBlackTree1 {
             case _       => seqMinimumBy(cmp, t)
         }
 
-    pub def parMinimumBy(n: Int32, cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] = ???
+    pub def parMinimumBy(n: Int32, cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] =
+        if (n <= 0)
+            parMinimumBySeq(cmp, t)
+        else
+            match t {
+                case Leaf                => None
+                case DoubleBlackLeaf     => None
+                case Node(_, a, k, v, b) => ???
+                    // Spawn a thread that traverses left sub tree
+                    // Spawn a thread that traverses right sub tree
+                    // Wait for messages, compare left hand side with self, compare result with right hand side
+            }
 
-    pub def parMinimumBySeq(cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] = ???
-
-    pub def seqMinimumBy(cmp: (k, v, k, v) -> Comparison & ef, t: RedBlackTree[k, v]): Option[(k, v)] & ef = match t {
+    pub def parMinimumBySeq(cmp: (k, v, k, v) -> Comparison, t: RedBlackTree[k, v]): Option[(k, v)] = match t {
         case Leaf                   => None
         case DoubleBlackLeaf        => None
         case Node(_, a, k, v, b)    =>
@@ -221,6 +230,25 @@ namespace RedBlackTree1 {
                             Some(k, v)
                         else
                             Some(kr, vr)
+            }
+    }
+
+    pub def seqMinimumBy(cmp: (k, v, k, v) -> Comparison & ef, t: RedBlackTree[k, v]): Option[(k, v)] & ef = match t {
+        case Leaf                   => None
+        case DoubleBlackLeaf        => None
+        case Node(_, a, k, v, b)    =>
+            let cmpL = seqMinimumBy(cmp, a);
+            let cmpR = seqMinimumBy(cmp, b);
+            def smallest(kl, vl, kr, vr) = if (cmp(kl, vl, kr, vr) == LessThan) (kl, vl) else (kr, vr);
+            match (cmpL, cmpR) {
+                case (None, None)                 => Some(k, v)
+                case (Some(kl, vl), None)         => Some(smallest(kl, vl, k, v))
+                case (None, Some(kr, vr))         => Some(smallest(k, v, kr, vr))
+                case (Some(kl, vl), Some(kr, vr)) =>
+                    if (cmp(kl, vl, kr, vr) == LessThan)
+                        Some(smallest(kl, vl, k, v))
+                    else
+                        Some(smallest(k, v, kr, vr))
             }
     }
 }
