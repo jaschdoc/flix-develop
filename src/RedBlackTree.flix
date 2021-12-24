@@ -258,3 +258,12 @@ namespace RedBlackTree1 {
             }
     }
 }
+
+// Performs in-order tree walk.
+// Finds smallest element from the entire tree when compared according to cmp.
+// For any node, the smallest element of the left-hand sub tree is compared with the node itself
+// after which the right-hand sub tree is compared with the result of the previous comparison.
+// `cmp` is invoked twice for every node--once to compare left sub tree and once more to compare the result with
+// the right sub tree.
+// Problem how do we observe the "sequentiality" when cmp sometimes receives the same argument as the left most
+// parameter? (sometimes duplicating an argument).
