@@ -141,7 +141,7 @@ namespace TestRedBlackTree {
         RedBlackTree1.minimumBy((x, _, y, _) -> x <=> y, t) == Some((-44, 4))
 
     @test
-    def minimumBy08(): Bool & Impure =
+    def minimumBy05(): Bool & Impure =
         let range = List.range(0, 2000);
         let Map(t) = List.zip(range, range) |> List.toMap;
         let a = Array.new(-1, 2000);
@@ -150,7 +150,7 @@ namespace TestRedBlackTree {
         Array.sameElements(a, List.toArray(range))
 
     @test
-    def minimumBy09(): Bool & Impure =
+    def minimumBy06(): Bool & Impure =
         let range = List.range(0, 2000);
         let Map(t) = List.zip(range, range) |> List.toMap;
         let a = MutList.new();
@@ -159,7 +159,7 @@ namespace TestRedBlackTree {
         MutList.eq(a, List.toMutList(range))
 
     @test
-    def minimumBy10(): Bool =
+    def minimumBy07(): Bool =
         let range = List.range(0, 2000);
         let Map(t) = List.zip(range, List.reverse(range)) |> List.toMap;
         RedBlackTree1.minimumBy((_, x, _, y) -> x <=> y, t) == Some(1999, 0)
