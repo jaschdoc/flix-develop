@@ -228,18 +228,16 @@ namespace RedBlackTree1 {
         case Leaf                   => None
         case DoubleBlackLeaf        => None
         case Node(_, a, k, v, b)    =>
-            let cmpL = seqMinimumBy(cmp, a);
-            let cmpR = seqMinimumBy(cmp, b);
             def smallest(kl, vl, kr, vr) = if (cmp(kl, vl, kr, vr) == LessThan) (kl, vl) else (kr, vr);
-            match (cmpL, cmpR) {
-                case (None, None)                 => Some(k, v)
-                case (Some(kl, vl), None)         => Some(smallest(kl, vl, k, v))
-                case (None, Some(kr, vr))         => Some(smallest(k, v, kr, vr))
-                case (Some(kl, vl), Some(kr, vr)) =>
-                    if (cmp(kl, vl, kr, vr) == LessThan)
-                        Some(smallest(kl, vl, k, v))
-                    else
-                        Some(smallest(k, v, kr, vr))
+            let res = match seqMinimumBy(cmp, a) {
+                case None         => (k, v)
+                case Some(kl, vl) => smallest(kl, vl, k, v)
+            };
+            match seqMinimumBy(cmp, b) {
+                case None         => Some(res)
+                case Some(kr, vr) =>
+                    let (ks, vs) = res;
+                    Some(smallest(ks, vs, kr, vr))
             }
     }
 
@@ -247,18 +245,16 @@ namespace RedBlackTree1 {
         case Leaf                   => None
         case DoubleBlackLeaf        => None
         case Node(_, a, k, v, b)    =>
-            let cmpL = seqMinimumBy(cmp, a);
-            let cmpR = seqMinimumBy(cmp, b);
             def smallest(kl, vl, kr, vr) = if (cmp(kl, vl, kr, vr) == LessThan) (kl, vl) else (kr, vr);
-            match (cmpL, cmpR) {
-                case (None, None)                 => Some(k, v)
-                case (Some(kl, vl), None)         => Some(smallest(kl, vl, k, v))
-                case (None, Some(kr, vr))         => Some(smallest(k, v, kr, vr))
-                case (Some(kl, vl), Some(kr, vr)) =>
-                    if (cmp(kl, vl, kr, vr) == LessThan)
-                        Some(smallest(kl, vl, k, v))
-                    else
-                        Some(smallest(k, v, kr, vr))
+            let res = match seqMinimumBy(cmp, a) {
+                case None         => (k, v)
+                case Some(kl, vl) => smallest(kl, vl, k, v)
+            };
+            match seqMinimumBy(cmp, b) {
+                case None         => Some(res)
+                case Some(kr, vr) =>
+                    let (ks, vs) = res;
+                    Some(smallest(ks, vs, kr, vr))
             }
     }
 }
