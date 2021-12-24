@@ -229,11 +229,11 @@ namespace RedBlackTree1 {
         case DoubleBlackLeaf        => None
         case Node(_, a, k, v, b)    =>
             def smallest(kl, vl, kr, vr) = if (cmp(kl, vl, kr, vr) == LessThan) (kl, vl) else (kr, vr);
-            let res = match seqMinimumBy(cmp, a) {
+            let res = match parSeqMinimumBy(cmp, a) {
                 case None         => (k, v)
                 case Some(kl, vl) => smallest(kl, vl, k, v)
             };
-            match seqMinimumBy(cmp, b) {
+            match parSeqMinimumBy(cmp, b) {
                 case None         => Some(res)
                 case Some(kr, vr) =>
                     let (ks, vs) = res;
