@@ -140,6 +140,5 @@ namespace List1 {
         };
         loop(l, (ks1, ks2) -> (ks1, ks2))
 
-
 }
 
