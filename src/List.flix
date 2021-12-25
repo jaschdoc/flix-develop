@@ -129,5 +129,17 @@ namespace List1 {
         };
         loop(l, ks -> ks as & ef)
 
+    ///
+    /// Returns a pair of lists, the first containing all first components in `l`
+    /// and the second containing all second components in `l`.
+    ///
+    pub def unzip(l: List[(a, b)]): (List[a], List[b]) =
+        def loop(xs, k) = match xs {
+            case Nil            => k(Nil, Nil)
+            case (x1, x2) :: rs => loop(rs, (ks1, ks2) -> k(x1 :: ks1, x2 :: ks2))
+        };
+        loop(l, (ks1, ks2) -> (ks1, ks2))
+
+
 }
 
