@@ -16,34 +16,6 @@
 
 namespace List1 {
 
-    /*
-    ///
-    /// Converts the list `l` to a `Stream`.
-    ///
-    pub def toStream(l: List[a]): Stream[a, List[a]] =
-        let next = s -> match s {
-            case Nil     => Done
-            case x :: xs => Yield(x, xs)
-        };
-        Stream(next, l)
-    */
-
-    ///
-    /// Mocks `List.filter` until merged into nightly compiler.
-    ///
-    pub def filter(f: a -> Bool & ef, xs: List[a]): List[a] & ef = filterAcc(f, xs, Nil) |> List.reverse
-
-    pub def filterAcc(f: a -> Bool & ef, l: List[a], rs: List[a]): List[a] & ef = match l {
-        case Nil => rs
-        case x :: xs =>
-            if (f(x)) filterAcc(f, xs, x :: rs) else filterAcc(f, xs, rs)
-    }
-
-    /*
-    pub def toStreamListed(l: List[a]): StreamListed[a, s] =
-        Listed(l)
-    */
-
     ///
     /// Returns the elements of `l` as a `DemandList`.
     ///
@@ -81,4 +53,81 @@ namespace List1 {
     pub def toDelayMap(l: List[(a, b)]): DelayMap[a, b] with Order[a] =
         List.foldRight((x, m) -> DelayMap.insert(fst(x), snd(x), m), DelayMap.empty(), l)
 
+    pub def take(n: Int32, l: List[a]): List[a] =
+        def loop(m, xs, k) =
+            if (m < 0)
+                k(Nil)
+            else
+                match (m, xs) {
+                    case (_, Nil)     => k(Nil)
+                    case (0, _)       => k(Nil)
+                    case (i, x :: rs) => loop(i - 1, rs, ks -> k(x :: ks))
+                };
+        loop(n, l, ks -> ks)
+
+    ///
+    /// Returns the reverse of `l`.
+    ///
+    pub def reverse(l: List[a]): List[a] =
+        def loop(xs, acc) = match xs {
+            case Nil     => acc
+            case x :: rs => loop(rs, x :: acc)
+        };
+        loop(l, Nil)
+
+
+    ///
+    /// Returns a list of every element in `l` that satisfies the predicate `f`.
+    ///
+    /// The function `f` must be pure.
+    ///
+    pub def filter(f: a -> Bool & ef, l: List[a]): List[a] & ef =
+        def loop(xs, k) = match xs {
+            case Nil     => k(Nil)
+            case x :: rs => if (f(x)) loop(rs, ks -> k(x :: ks)) else loop(rs, k)
+        };
+        loop(l, ks -> ks)
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from left to right.
+    ///
+    /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
+    ///
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, l: List[a]): b & ef =
+         def loop(g, t, xs) = match xs {
+            case Nil     => t
+            case x :: rs => loop(g, g(t, x), rs)
+         };
+         loop(f, s, l)
+
+    ///
+    /// Returns `l` without the first `n` elements.
+    ///
+    /// Returns `Nil` if `n > length(l)`.
+    /// Returns `l` if `n < 0`.
+    ///
+    pub def drop(n: Int32, l: List[a]): List[a] =
+        def loop(m, xs) =
+            if (m <= 0)
+                xs
+            else
+                match (m, xs) {
+                    case (_, Nil)     => Nil
+                    case (i, _ :: rs) => loop(i - 1, rs)
+                };
+        loop(n, l)
+
+    ///
+    /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
+    ///
+    /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
+    ///
+    pub def foldRight(f: (a, b) -> b & ef, s: b, l: List[a]): b & ef =
+        def loop(xs, k) = match xs {
+            case Nil     => k(s)
+            case x :: rs => loop(rs, ks -> k(f(x, ks)))
+        };
+        loop(l, ks -> ks as & ef)
+
 }
+
