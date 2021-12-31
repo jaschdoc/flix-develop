@@ -10,7 +10,7 @@ namespace Result1 {
 
 }
 
-namespace Result {
+namespace Result1 {
 
     ///
     /// Returns `Ok(x)` if `f` was invoked without throwing an exception.

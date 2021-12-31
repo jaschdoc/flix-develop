@@ -22,7 +22,7 @@ namespace TestIterator {
 
     @test
     def next01(): Bool & Impure =
-        Iterator1.empty() |> Iterator1.next == None
+        Iterator1.empty(): Iterator[Int32] |> Iterator1.next == None
 
     @test
     def next02(): Bool & Impure =
@@ -139,7 +139,7 @@ namespace TestIterator {
 
     @test
     def toSet02(): Bool & Impure =
-        Set#{} |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set.empty()
+        Set#{}: Set[Int32] |> Set.toList |> List1.toIterator |> Iterator1.toSet == Set.empty()
 
     @test
     def toSet03(): Bool & Impure =
@@ -156,7 +156,7 @@ namespace TestIterator {
 
     @test
     def toNel01(): Bool & Impure =
-        Nil |> List1.toIterator |> Iterator1.toNel == None
+        Nil: List[Int32] |> List1.toIterator |> Iterator1.toNel == None
 
     @test
     def toNel02(): Bool & Impure =
@@ -872,8 +872,8 @@ namespace TestIterator {
 
     @test
     def intercalate01(): Bool & Impure =
-        let iterA = Nil |> List.toIterator;
-        let iterB = Nil |> List.toIterator;
+        let iterA: Iterator[Int32] = Nil |> List.toIterator;
+        let iterB: Iterator[Iterator[Int32]] = Nil |> List.toIterator;
         Iterator1.intercalate(iterA, iterB) |> Iterator.toList == Nil
 
     @test
@@ -936,7 +936,7 @@ namespace TestIterator {
 
     @test
     def unfoldWithOk01(): Bool & Impure =
-        let iter = Iterator1.unfoldWithOk(() -> Err(0));
+        let iter: Iterator[Int32] = Iterator1.unfoldWithOk(() -> Err(0));
         Iterator.toList(iter) == Nil
 
     @test
