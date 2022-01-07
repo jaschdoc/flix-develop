@@ -1498,22 +1498,22 @@ namespace TestDelayMap {
     @test
     def maximum01(): Bool =
         Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
-            DelayMap1.maximum == None
+            DelayMap1.maximumKey == None
 
     @test
     def maximum02(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5} |> Map1.toDelayMap |>
-            DelayMap1.maximum == Some((5, 5))
+            DelayMap1.maximumKey == Some((5, 5))
 
     @test
     def maximum03(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.maximum == Some((5, 5))
+            DelayMap1.maximumKey == Some((5, 5))
 
     @test
     def maximum04(): Bool =
         Map#{1 => 2, 2 => 3, 107 => -107, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.maximum == Some((107, -107))
+            DelayMap1.maximumKey == Some((107, -107))
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1523,22 +1523,22 @@ namespace TestDelayMap {
     @test
     def maximumBy01(): Bool =
         Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
-            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == None
+            DelayMap1.maximumKeyBy((x, y) -> x <=> y) == None
 
     @test
     def maximumBy02(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5} |> Map1.toDelayMap |>
-            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((5, 5))
+            DelayMap1.maximumKeyBy((x, y) -> x <=> y) == Some((5, 5))
 
     @test
     def maximumBy03(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((5, 5))
+            DelayMap1.maximumKeyBy((x, y) -> x <=> y) == Some((5, 5))
 
     @test
     def maximumBy04(): Bool =
         Map#{1 => 2, 2 => 3, 107 => -107, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.maximumBy((x, _, y, _) -> x <=> y) == Some((107, -107))
+            DelayMap1.maximumKeyBy((x, y) -> x <=> y) == Some((107, -107))
 
 
     /////////////////////////////////////////////////////////////////////////////
