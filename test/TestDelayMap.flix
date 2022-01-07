@@ -1448,22 +1448,22 @@ namespace TestDelayMap {
     @test
     def minimum01(): Bool =
         Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
-            DelayMap1.minimum == None
+            DelayMap1.minimumKey == None
 
     @test
     def minimum02(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5} |> Map1.toDelayMap |>
-            DelayMap1.minimum == Some((1, 2))
+            DelayMap1.minimumKey == Some((1, 2))
 
     @test
     def minimum03(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.minimum == Some((0, 2))
+            DelayMap1.minimumKey == Some((0, 2))
 
     @test
     def minimum04(): Bool =
         Map#{1 => 2, 2 => 3, -44 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.minimum == Some((-44, 4))
+            DelayMap1.minimumKey == Some((-44, 4))
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1473,22 +1473,22 @@ namespace TestDelayMap {
     @test
     def minimumBy01(): Bool =
         Map#{}: Map[Int32, Int32] |> Map1.toDelayMap |>
-            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == None
+            DelayMap1.minimumKeyBy((x, y) -> x <=> y) == None
 
     @test
     def minimumBy02(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5} |> Map1.toDelayMap |>
-            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((1, 2))
+            DelayMap1.minimumKeyBy((x, y) -> x <=> y) == Some((1, 2))
 
     @test
     def minimumBy03(): Bool =
         Map#{1 => 2, 2 => 3, 3 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((0, 2))
+            DelayMap1.minimumKeyBy((x, y) -> x <=> y) == Some((0, 2))
 
     @test
     def minimumBy04(): Bool =
         Map#{1 => 2, 2 => 3, -44 => 4, 5 => 5, 0 => 2} |> Map1.toDelayMap |>
-            DelayMap1.minimumBy((x, _, y, _) -> x <=> y) == Some((-44, 4))
+            DelayMap1.minimumKeyBy((x, y) -> x <=> y) == Some((-44, 4))
 
 
     /////////////////////////////////////////////////////////////////////////////
