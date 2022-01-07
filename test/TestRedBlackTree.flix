@@ -58,7 +58,7 @@ namespace TestRedBlackTree {
         RedBlackTree.mapWithKey((_, v) -> { let b = MutList.new(); MutList.push!(v, b); MutList.append!(a, b); v }, t);
         MutList.sameElements(a, List.toMutList(range))
 
-
+/*
     /////////////////////////////////////////////////////////////////////////////
     // count                                                                   //
     /////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ namespace TestRedBlackTree {
         RedBlackTree.count((_, v) -> { let b = MutList.new(); MutList.push!(v, b); MutList.append!(a, b); true }, t);
         MutList.sameElements(a, List.toMutList(range))
 
-
+*/
     /////////////////////////////////////////////////////////////////////////////
     // minimumBy                                                               //
     /////////////////////////////////////////////////////////////////////////////
