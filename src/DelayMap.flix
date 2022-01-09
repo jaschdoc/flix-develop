@@ -123,7 +123,7 @@ namespace DelayMap1 {
     /// Purity polymorphic: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def minimumKeyBy(cmp: (k, k) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+    pub def minimumKeyBy(cmp: (k, k) -> Comparison & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
         def min() = reduceLeftWithKey((kl, vl, kr, vr) -> if (cmp(kl, kr) == LessThan) (kl, vl) else (kr, vr), m);
         let f = r -> cmp(r.kl, r.kr);
         reifyEff(f) {
@@ -157,7 +157,7 @@ namespace DelayMap1 {
     /// Purity polymorphic: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def minimumValueBy(cmp: (v, v) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+    pub def minimumValueBy(cmp: (v, v) -> Comparison & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
         def min() = reduceLeftWithKey((kl, vl, kr, vr) -> if (cmp(vl, vr) == LessThan) (kl, vl) else (kr, vr), m);
         let f = r -> cmp(r.vl, r.vr);
         reifyEff(f) {
@@ -195,7 +195,7 @@ namespace DelayMap1 {
     /// Purity polymorphic: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def maximumKeyBy(cmp: (k, k) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+    pub def maximumKeyBy(cmp: (k, k) -> Comparison & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
         def max() = reduceLeftWithKey((kl, vl, kr, vr) -> if (cmp(kl, kr) == GreaterThan) (kl, vl) else (kr, vr), m);
         let f = r -> cmp(r.kl, r.kr);
         reifyEff(f) {
@@ -230,7 +230,7 @@ namespace DelayMap1 {
     /// Purity polymorphic: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def maximumValueBy(cmp: (v, v) -> Comparison, m: DelayMap[k, v]): Option[(k, v)] =
+    pub def maximumValueBy(cmp: (v, v) -> Comparison & ef, m: DelayMap[k, v]): Option[(k, v)] & ef =
         def max() = reduceLeftWithKey((kl, vl, kr, vr) -> if (cmp(vl, vr) == GreaterThan) (kl, vl) else (kr, vr), m);
         let f = r -> cmp(r.vl, r.vr);
         reifyEff(f) {
