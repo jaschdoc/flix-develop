@@ -70,14 +70,14 @@ namespace DelayMap1 {
         RedBlackTree.isEmpty(t)
 
     ///
-    /// Returns an updated map with `k -> v`.
+    /// Returns an updated map with `k => v`.
     ///
     pub def insert(k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] with Order[k] =
         let DMap(t) = m;
         DMap(RedBlackTree.insert(k, lazy v, t))
 
     ///
-    /// Returns `Some(v)` if `k -> v` is in `m`.
+    /// Returns `Some(v)` if `k => v` is in `m`.
     ///
     /// Otherwise returns `None`.
     ///
@@ -89,7 +89,7 @@ namespace DelayMap1 {
         }
 
     ///
-    /// Returns `v` if `k -> v` is in `m`.
+    /// Returns `v` if `k => v` is in `m`.
     ///
     /// Otherwise, returns `d`.
     ///
@@ -104,7 +104,7 @@ namespace DelayMap1 {
         RedBlackTree.memberOf(k, t)
 
     ///
-    /// Optionally finds `k -> v` where `k` is the smallest key according to the `Order` instance of `k`.
+    /// Optionally finds `k => v` where `k` is the smallest key according to the `Order` instance of `k`.
     ///
     /// Returns `None` if `m` is empty.
     ///
@@ -268,17 +268,17 @@ namespace DelayMap1 {
         DMap(RedBlackTree.remove(k, t))
 
     ///
-    /// Updates `m` with `k -> f(v, v1)` if `k -> v1` is in `m`.
+    /// Updates `m` with `k => f(v, v1)` if `k => v1` is in `m`.
     ///
-    /// Otherwise, updates `m` with `k -> v`.
+    /// Otherwise, updates `m` with `k => v`.
     ///
     pub def insertWith(f: (v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         insertWithKey((_, v1, v2) -> f(v1, v2), k, v, m)
 
     ///
-    /// Updates `m` with `k -> f(k, v, v1)` if `k -> v1` is in `m`.
+    /// Updates `m` with `k => f(k, v, v1)` if `k => v1` is in `m`.
     ///
-    /// Otherwise, updates `m` with `k -> v`.
+    /// Otherwise, updates `m` with `k => v`.
     ///
     pub def insertWithKey(f: (k, v, v) -> v & ef, k: k, v: v, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let f1 = (args) -> f(args.k, args.v1, args.v2);
@@ -307,13 +307,13 @@ namespace DelayMap1 {
         DMap(RedBlackTree.insertWith(f1, k, lazy v, t))
 
     ///
-    /// Returns a map with mappings `k -> f(v)` for every `k -> v` in `m`.
+    /// Returns a map with mappings `k => f(v)` for every `k => v` in `m`.
     ///
     pub def map(f: v1 -> v2 & ef, m: DelayMap[k, v1]): DelayMap[k, v2] & ef with Order[k] =
         mapWithKey((_, v) -> f(v), m)
 
     ///
-    /// Returns a map with mappings `k -> f(k, v)` for every `k -> v` in `m`.
+    /// Returns a map with mappings `k => f(k, v)` for every `k => v` in `m`.
     ///
     pub def mapWithKey(f: (k, v1) -> v2 & ef, m: DelayMap[k, v1]): DelayMap[k, v2] & ef =
         let f1 = (args) -> f(fst(args), snd(args));
@@ -342,13 +342,13 @@ namespace DelayMap1 {
         DMap(RedBlackTree.mapWithKey(f1, tree))
 
     ///
-    /// Returns a map of all mappings `k -> v` in `m` where `v` satisfies the predicate `f`.
+    /// Returns a map of all mappings `k => v` in `m` where `v` satisfies the predicate `f`.
     ///
     pub def filter(f: v -> Bool & ef, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         filterWithKey((_, v) -> f(v), m)
 
     ///
-    /// Returns a map of all mappings `k -> v` in `m` where `(k, v)` satisfies the predicate `f`.
+    /// Returns a map of all mappings `k => v` in `m` where `(k, v)` satisfies the predicate `f`.
     ///
     pub def filterWithKey(f: (k, v) -> Bool & ef, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         foldLeftWithKey((acc, k, v) -> if (f(k, v)) insert(k, v, acc) else acc, empty(), m)
@@ -512,7 +512,7 @@ namespace DelayMap1 {
         Map(RedBlackTree.mapWithKey((_, v) -> force v, t))
 
     ///
-    /// Updates `m` with `k -> f(v)` if `k -> v` is in `m`.
+    /// Updates `m` with `k => f(v)` if `k => v` is in `m`.
     ///
     /// Otherwise, returns `m`.
     ///
@@ -520,19 +520,19 @@ namespace DelayMap1 {
         adjustWithKey((_, v1) -> f(v1), k, m)
 
     ///
-    /// Updates `m` with `k -> f(k, v)` if `k -> v` is in `m`. Otherwise, returns `m`.
+    /// Updates `m` with `k => f(k, v)` if `k => v` is in `m`. Otherwise, returns `m`.
     ///
     pub def adjustWithKey(f: (k, v) -> v & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         updateWithKey((k1, v) -> Some(f(k1, v)), k, m)
 
     ///
-    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(v) = Some(v1)`. Otherwise, returns `m`.
+    /// Updates `m` with `k => v1` if `k => v` is in `m` and `f(v) = Some(v1)`. Otherwise, returns `m`.
     ///
     pub def update(f: v -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         updateWithKey((_, v1) -> f(v1), k, m)
 
     ///
-    /// Updates `m` with `k -> v1` if `k -> v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
+    /// Updates `m` with `k => v1` if `k => v` is in `m` and `f(k, v) = Some(v1)`. Otherwise, returns `m`.
     ///
     pub def updateWithKey(f: (k, v) -> Option[v] & ef, k: k, m: DelayMap[k, v]): DelayMap[k, v] & ef with Order[k] =
         let f1 = (t) -> f(fst(t), snd(t));
