@@ -1,7 +1,7 @@
 namespace Chain {
 
     ///
-    /// Returns the sum of all elements in the array `a`.
+    /// Returns the sum of all elements in the chain `c`.
     ///
     pub def sum(c: Chain[Int32]): Int32 =
         sumWith(x -> x, c)
