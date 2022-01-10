@@ -1127,13 +1127,13 @@ namespace LazyList1 {
     }
 
     ///
-    /// Returns the sum of all elements in the iterator `iter`.
+    /// Returns the sum of all elements in the LazyList `l`.
     ///
     pub def sum(l: LazyList[Int32]): Int32 =
         sumWith(x -> x, l)
 
     ///
-    /// Returns the sum of all elements in the list `l` according to the function `f`.
+    /// Returns the sum of all elements in the LazyList `l` according to the function `f`.
     ///
     /// Forces the entire list `l`.
     ///

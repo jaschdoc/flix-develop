@@ -230,4 +230,25 @@ namespace MutDeque1 {
         let MutDeque(a, _, _) = d;
         Array.length(deref a)
 
+    ///
+    /// Returns the sum of all elements in the deque `d`.
+    ///
+    pub def sum(d: MutDeque[Int32]): Int32 & Impure =
+        sumWith(x -> x, d)
+
+    ///
+    /// Returns the sum of all elements in the deque `d` according to the function `f`.
+    ///
+    pub def sumWith(f: a -> Int32 & ef, d: MutDeque[a]): Int32 & Impure =
+        let MutDeque(a0, f0, b0) = d;
+        let a = deref a0;
+        let f1 = deref f0;
+        let b = deref b0;
+        def loop(i, e, acc) =
+            if (i < e)
+                loop(i + 1, e, f(a[i]) + acc)
+            else
+                acc;
+        if (f1 < b) loop(f1, b, 0) else loop(b, f1, 0)
+
 }
