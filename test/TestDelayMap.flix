@@ -1568,36 +1568,36 @@ namespace TestDelayMap {
 
     @test
     def sum01(): Bool =
-        DelayMap1.empty() |> DelayMap1.sum == 0
+        DelayMap1.empty() |> DelayMap1.sumValues == 0
 
     @test
     def sum02(): Bool =
         Map#{1 => 1} |> Map1.toDelayMap |>
-            DelayMap1.sum == 1
+            DelayMap1.sumValues == 1
 
     @test
     def sum03(): Bool =
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map1.toDelayMap |>
-            DelayMap1.sum == 6
+            DelayMap1.sumValues == 6
 
     @test
     def sum04(): Bool =
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map1.toDelayMap |>
-            DelayMap1.sum == 3
+            DelayMap1.sumValues == 3
 
     @test
     def sum05(): Bool =
         Map#{-1 => -1, -2 => -2, -3 => -3, -4 => -4} |> Map1.toDelayMap |>
-            DelayMap1.sum == -10
+            DelayMap1.sumValues == -10
 
     @test
     def sum06(): Bool =
         Map#{10 => 10, -10 => -10} |> Map1.toDelayMap |>
-            DelayMap1.sum == 0
+            DelayMap1.sumValues == 0
 
     @test
     def sum07(): Bool =
         List.range(1, 101) |> List.zip(List.range(1, 101)) |> List1.toDelayMap |>
-            DelayMap1.sum == 5050
+            DelayMap1.sumValues == 5050
 
 }
