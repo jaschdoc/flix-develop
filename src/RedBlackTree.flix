@@ -263,4 +263,23 @@ namespace RedBlackTree1 {
 
 namespace RedBlackTree {
 
+    ///
+    /// Returns the sum of all keys in the tree `t`.
+    ///
+    pub def sumKeys(t: RedBlackTree[Int32, v]): Int32 =
+        sumWith((k, _) -> k, t)
+
+    ///
+    /// Returns the sum of all values in the tree `t`.
+    ///
+    pub def sumValues(t: RedBlackTree[k, Int32]): Int32 =
+        sumWith((_, v) -> v, t)
+
+    ///
+    /// Returns the sum of all key-value pairs `k => v` in the tree `t` according to the function `f`.
+    ///
+    // TODO: Parallel impl
+    pub def sumWith(f: (k, v) -> Int32 & ef, t: RedBlackTree[k, v]): Int32 & ef =
+        foldLeft((acc, k, v) -> f(k, v) + acc, 0, t)
+
 }
