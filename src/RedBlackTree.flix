@@ -260,3 +260,7 @@ namespace RedBlackTree1 {
     }
 
 }
+
+namespace RedBlackTree {
+
+}
