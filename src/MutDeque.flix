@@ -27,11 +27,9 @@
 /// Otherwise, the front index always points to an element (going counter-clockwise)
 /// and the back index always points to the first empty index (going clockwise).
 ///
-
-/*
-pub enum MutDeque[a] {
-    case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
-}*/
+// pub enum MutDeque[a] {
+//     case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
+// }
 
 namespace MutDeque1 {
 
@@ -77,7 +75,7 @@ namespace MutDeque1 {
     /// Returns the size of a MutDeque, where `l` = array length, `f` = front index, `b` = back index.
     ///
     def computeSize(c: Int32, f: Int32, b: Int32): Int32 =
-        if (f <= b) // The elements are laid out without "wrapping around" the array.
+        if (f <= b) // The elements laid out without "wrapping around" the array.
             b - f
         else
             c - (f - b) // Subtract the complement of number of elements from the capacity
@@ -101,7 +99,7 @@ namespace MutDeque1 {
             let a1 = deref a;
             let f1 = deref f;
             let x = a1[f1];
-            f := (f1 + 1) &&& (capacity(d) - 1); // Use bit masking since the capacity is always a power of 2.
+            f := (f1 + 1) mod capacity(d);
             compress!(d);
             Some(x)
         }
@@ -116,7 +114,7 @@ namespace MutDeque1 {
         else { // Update index such that back points to a valid element `x`, get element, optionally compress array, return `Some(x)`.
             let MutDeque(a, _, b) = d;
             let a1 = deref a;
-            let b1 = (deref b - 1) &&& (capacity(d) - 1); // Use bit masking since the capacity is always a power of 2.
+            let b1 = (deref b - 1) mod capacity(d);
             let x = a1[b1];
             b := b1;
             compress!(d);
@@ -129,10 +127,10 @@ namespace MutDeque1 {
     pub def pushFront(x: a, d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, _) = d;
         let a1 = deref a;
-        let f1 = (deref f - 1) &&& (capacity(d) - 1); // Update index such that it points to an empty index. This will never overlap with the back index. Use bit masking since the capacity is always a power of 2.
-        a1[f1] = x;                                   // Store `x` in the array.
-        f := f1;                                      // Update the front index reference.
-        expand!(d)                                    // Optionally expand `d`.
+        let f1 = (deref f - 1) mod capacity(d); // Update index such that it points to an empty index. This will never overlap with the back index.
+        a1[f1] = x;                               // Store `x` in the array.
+        f := f1;                                  // Update the front index reference.
+        expand!(d)                                // Optionally expand `d`.
 
     ///
     /// Pushes `x` to the back of `d`.
@@ -141,9 +139,9 @@ namespace MutDeque1 {
         let MutDeque(a, _, b) = d;
         let a1 = deref a;
         let b1 = deref b;
-        a1[b1] = x;                          // Store `x` in the array.
-        b := (b1 + 1) &&& (capacity(d) - 1); // Update back index reference to point to next empty index. Use bit masking since the capacity is always a power of 2.
-        expand!(d)                           // Optionally expand `d`.
+        a1[b1] = x;                      // Store `x` in the array.
+        b := (b1 + 1) mod capacity(d); // Update back index reference to point to next empty index.
+        expand!(d)                       // Optionally expand `d`.
 
     ///
     /// Doubles the capacity of `d` if the load factor is greater than or equal to `maxLoadFactor`.
@@ -161,9 +159,13 @@ namespace MutDeque1 {
     /// Doubles the capacity of `d`.
     ///
     def grow!(d: MutDeque[a]): Unit & Impure = {
-        let MutDeque(a, _, _) = d;
+        let MutDeque(a, f, b) = d;
         let c = capacity(d);
-        a := Array.copyOfRange(0, 2 * c, deref a) // TODO: Check that f < b.
+        let arr = [$DEFAULT$; 2 * c];                  // Allocate new array `arr` with double the capacity of `a`.
+        copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
+        a := arr;                                      // Update references.
+        b := computeSize(c, deref f, deref b);
+        f := 0
     }
 
     ///
@@ -183,9 +185,14 @@ namespace MutDeque1 {
     ///
     def shrink!(d: MutDeque[a]): Unit & Impure =
         let MutDeque(a, f, b) = d;
+        let mc = minCapacity();
         let c = capacity(d);
-        if (c > minCapacity()) { // Prevent the backing array from shrinking below `minCapacity`.
-            copyElements!(f, b, a, c / 2) // Copy elements into new array and update references.
+        if (c > mc) {                                      // Prevent the backing array from shrinking below `minCapacity`.
+            let arr = [$DEFAULT$; c / 2];                  // Allocate new array `arr` with half the capacity of `a`.
+            copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
+            a := arr;                                      // Update references.
+            b := computeSize(c, deref f, deref b);
+            f := 0
         } else {
             ()
         }
@@ -193,28 +200,13 @@ namespace MutDeque1 {
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
-    def copyElements!(f: Ref[Int32], b: Ref[Int32], a: Ref[Array[a]], c1: Int32): Unit & Impure =
-        let f1 = deref f;
-        let b1 = deref b;
-        let a1 = deref a;
-        let c = Array.length(a1);
-        if (f1 < b1) { // If this predicate is true the elements do not "wrap around" in the array, i.e. the elements are laid out sequentially from [0 .. b].
-            a := Array.copyOfRange(0, c1, a1); // Copy elements and create new backing array;
-            if (f1 >= c1) { // If the new array is smaller and the elements were located at the end of the old array.
-                Array.updateSequence!(0, Array.copyOfRange(f1, b1, a1), deref a); // Copy elements of old array into new array.
-                f := 0;      // Update indices.
-                b := b1 - f1
-                }
-            else {
-                ()
-            }
+    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit & Impure =
+        let c = Array.length(a);
+        if (f < b) { // If this predicate is true the elements do not "wrap around" in the array, i.e. the elements are laid out sequentially from [0 .. b].
+            Array.updateSequence!(0,     a[f .. b], a1)
         } else {
-            let a2 = Array.copyOfRange(f1, c, a1); // Copy the front elements of `a`.
-            let a3 = Array.copyOfRange(0, c1, a1); // Copy the back  elements of `a` and create an array with capacity `c1`.
-            let f2 = c1 - c + f1;                  // Compute new front index.
-            Array.updateSequence!(f2, a2, a3);     // Stitch the new array together with the front elements.
-            a := a3;                               // Update reference to backing array.
-            f := f2                                // Update indices.
+            Array.updateSequence!(0,     a[f .. c], a1); // Copy the front elements of `a` to a1[0 .. (c - f)].
+            Array.updateSequence!(c - f, a[0 .. b], a1)  // Copy the back  elements of `a` to a1[(c - f) .. b].
         }
 
     ///
@@ -231,24 +223,25 @@ namespace MutDeque1 {
         Array.length(deref a)
 
     ///
-    /// Returns the sum of all elements in the deque `d`.
+    /// Returns `true` if MutDeques `a` and `b` have the same elements, i.e. are structurally equal.
     ///
-    pub def sum(d: MutDeque[Int32]): Int32 & Impure =
-        sumWith(x -> x, d)
+    pub def sameElements(a: MutDeque[t], b: MutDeque[t]): Bool & Impure with Eq[t] =
+        let aSize = size(a);
+        let bSize = size(b);
+        if (aSize == bSize)
+            let MutDeque(aArray, aFront, aBack) = a;
+            let aCap = capacity(a);
+            let a1 = [$DEFAULT$; aCap];
+            copyElements!(deref aFront, deref aBack, deref aArray, a1);
 
-    ///
-    /// Returns the sum of all elements in the deque `d` according to the function `f`.
-    ///
-    pub def sumWith(f: a -> Int32 & ef, d: MutDeque[a]): Int32 & Impure =
-        let MutDeque(a0, f0, b0) = d;
-        let a = deref a0;
-        let f1 = deref f0;
-        let b = deref b0;
-        def loop(i, e, acc) =
-            if (i < e)
-                loop(i + 1, e, f(a[i]) + acc)
-            else
-                acc;
-        if (f1 < b) loop(f1, b, 0) else loop(b, f1, 0)
+
+            let MutDeque(bArray, bFront, bBack) = b;
+            let bCap = capacity(b);
+            let b1 = [$DEFAULT$; bCap];
+            copyElements!(deref bFront, deref bBack, deref bArray, b1);
+
+            Array.sameElements(a1, b1)
+        else
+            false
 
 }
