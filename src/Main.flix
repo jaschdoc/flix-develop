@@ -7,6 +7,7 @@ def main(_args: Array[String]): Int32 & Impure =
     let t4 = Epoch.nanoseconds();
     println("Regular mod time: ${t2 - t1} nano seconds");
     println("Bitwise mod time: ${t4 - t3} nano seconds");
+    println("${0xFF}");
     0
 
 // pub def foo(): Unit =
