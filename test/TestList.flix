@@ -47,7 +47,7 @@ namespace TestList1 {
 
     @test
     def productWith04(): Bool =
-        List1.productWith(x -> x + 1, 1 :: 2 :: 3 :: -3 :: Nil) == -72
+        List1.productWith(x -> x + 1, 1 :: 2 :: 3 :: -3 :: Nil) == -48
 
     @test
     def productWith05(): Bool =
