@@ -97,7 +97,17 @@ namespace MutDeque1 {
     /// Returns the sum of all elements in the deque `d` according to the function `f`.
     ///
     pub def sumWith(f: a -> Int32 & ef, d: MutDeque[a]): Int32 & Impure =
-        foldLeft((acc, x) -> acc + f(x), 0, d)
+        let MutDeque(ar_, front_, back_) = d;
+        let ar = deref ar_;
+        let front = deref front_;
+        let back = deref back_;
+        let c = capacity(d) - 1;
+        def loop(i, e, acc) =
+            if (i == e)
+                acc
+            else
+                loop((i + 1) &&& c, e, f(ar[i]) + acc);
+        loop(front, back, 0)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `d` going from left to right.
