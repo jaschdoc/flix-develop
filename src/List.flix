@@ -140,11 +140,6 @@ namespace List1 {
         };
         loop(l, (ks1, ks2) -> (ks1, ks2))
 
-}
-
-
-namespace List {
-
     ///
     /// Returns the product of all elements in the list `l`.
     ///
@@ -155,9 +150,12 @@ namespace List {
     /// Returns the product of all elements in the list `l` according to the function `f`.
     ///
     pub def productWith(f: a -> Int32 & ef, l: List[a]): Int32 & ef =
-        def loop(l1, acc) = match l1 {
-            case Nil     => acc
-            case x :: xs => loop(xs, f(x) * acc)
-        };
-        loop(l, 1)
+        if (List.isEmpty(l))
+            0
+        else
+            def loop(l1, acc) = match l1 {
+                case Nil     => acc
+                case x :: xs => loop(xs, f(x) * acc)
+            };
+            loop(l, 1)
 }
