@@ -5,7 +5,7 @@ namespace Sorting {
     /// Returns the rank of `x` in the **sorted** array `a`.
     /// The array `a` may contain duplicates
     ///
-    pub def rank(x: Int32, a: Array[Int32]): Int32 & Impure =
+    pub def rank(x: a, a: Array[a]): Int32 & Impure with Order[a] =
         def loop(lo, hi) =
             if (lo < hi) {
                 let m = (lo + hi) / 2; // Automatically floored due to truncation
@@ -18,12 +18,16 @@ namespace Sorting {
                 lo;
         loop(0, Array.length(a))
 
+
+    ///
+    /// Optionally returns the position of the first occurrence of `x` in `a`
+    /// searching from left to right.
     ///
     /// Returns `Some(i)` where `i` is the left-most index of `x` if `x` is in `a`. Returns `None` otherwise.
     ///
     /// The implementation uses binary search.
     ///
-    pub def indexOfLeft(x: Int32, a: Array[Int32]): Option[Int32] & Impure =
+    pub def indexOfLeft(x: a, a: Array[a]): Option[Int32] & Impure with Order[a] =
         let r = rank(x, a);
         if (a[r] == x) Some(r) else None
 
