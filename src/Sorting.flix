@@ -18,7 +18,21 @@ namespace Sorting {
                 lo;
         loop(0, Array.length(a))
 
-    pub def binarySearch(x: Int32, a: Array[Int32]): Int32 = ??? // & Impure
+    ///
+    /// Returns `Some(i)` where `i` is the left-most index of `x` if `x` is in `a`. Returns `None` otherwise.
+    ///
+    /// The implementation uses binary search.
+    ///
+    pub def indexOfLeft(x: Int32, a: Array[Int32]): Option[Int32] & Impure =
+        let r = rank(x, a);
+        if (a[r] == x) Some(r) else None
+
+    ///
+    /// Returns `Some(i)` where `i` is the right-most index of `x` if `x` is in `a`. Returns `None` otherwise.
+    ///
+    /// The implementation uses binary search.
+    ///
+    pub def indexOfRight(x: Int32, a: Array[Int32]): Option[Int32] = ???
 
     // Add variants that use `Comparison` for comparing
     // https://en.wikipedia.org/wiki/Binary_search_algorithm
