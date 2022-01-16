@@ -1,4 +1,4 @@
-namespace MutSet {
+namespace MutSet1 {
 
     ///
     /// Returns the sum of all elements in the mutable set `s`.
