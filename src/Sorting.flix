@@ -21,5 +21,8 @@ namespace Sorting {
     pub def binarySearch(x: Int32, a: Array[Int32]): Int32 = ??? // & Impure
 
     // Add variants that use `Comparison` for comparing
+    // https://en.wikipedia.org/wiki/Binary_search_algorithm
+    // https://en.wikipedia.org/wiki/Merge_algorithm#Parallel_merge
+    // https://en.wikipedia.org/wiki/Merge_sort
 
 }
