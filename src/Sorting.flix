@@ -43,7 +43,19 @@ namespace Sorting {
         let a1 = Array.sort(a);
         ???
 
-    // def sort(a: Array[a]): Array[a] & Impure with Order[a] =
+    @Parallel
+    def _sort(a: Array[a]): Array[a] & Impure with Order[a] =
+        sortHelper(a, 0, Array.length(a))
+
+    @Parallel
+    def sortHelper(a: Array[a], lo: Int32, hi: Int32): Array[a] & Impure with Order[a] =
+        let l = hi - lo;
+        if (l == 0)
+            ???
+        else {
+            let t = [$DEFAULT$; l];
+            ???
+        }
 
     type alias Indices = {
         i :: Int32,
@@ -54,6 +66,7 @@ namespace Sorting {
         q :: Int32
     }
 
+    @Parallel
     def _merge(a: Array[a], b: Array[a]): Array[a] & Impure with Order[a] =
         let al = Array.length(a);
         let bl = Array.length(b);
@@ -63,6 +76,7 @@ namespace Sorting {
         mergeHelper(idx, ref a, ref b, ref c);
         c
 
+    @Parallel
     def mergeHelper(idx: Indices, a: Ref[Array[a]], b: Ref[Array[a]], c: Ref[Array[a]]): Unit & Impure with Order[a] =
         let m = idx.j - idx.i;
         let n = idx.l - idx.k;
@@ -71,6 +85,7 @@ namespace Sorting {
         else
             mergeHelper2(idx, m, a, b, c)
 
+    @Parallel
     def mergeHelper2(idx: Indices, m: Int32, a: Ref[Array[a]], b: Ref[Array[a]], c: Ref[Array[a]]): Unit & Impure with Order[a] =
         if (m <= 0)
             ()
