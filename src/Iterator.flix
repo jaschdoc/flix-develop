@@ -697,4 +697,16 @@ namespace Iterator1 {
             else
                 loop(f(next()) + acc);
         loop(0)
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `iter` with `sep` inserted between each element.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def join(sep: String, iter: Iterator[a]): String & Impure with ToString[a] =
+        let sb = StringBuilder.new();
+        foldLeft((_, x) -> StringBuilder.append!(sb, "${x}" + sep), (), iter);
+        StringBuilder.toString(sb) |> String.dropRight(1)
+
 }

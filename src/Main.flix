@@ -11,6 +11,7 @@ def main(_args: Array[String]): Int32 & Impure =
     println("Bitwise mod time: ${t4 - t3} nano seconds");
     println("${0xFF}");
     println `over` 9124;
+    println("a" + "b");
     0
 
 // pub def foo(): Unit =
