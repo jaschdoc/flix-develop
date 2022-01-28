@@ -1179,3 +1179,16 @@ namespace LazyList1 {
         loop(l, 0)
 
 }
+
+namespace LazyList {
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `l` according to `f` with `sep` inserted between each element.
+    ///
+    /// Forces the entire list `l`.
+    ///
+    pub def joinWith(f: a -> String, sep: String, l: LazyList[a]): String =
+        Foldable.joinWith(f, sep, l)
+
+}
