@@ -28,4 +28,26 @@ namespace TestArray {
         a[0] = 10000;
         Array.sameElements(Iterator1.toArray(iter), [1, 2, 3])
     }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // joinWith                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def joinWith01(): Bool & Impure =
+        Array.joinWith(x -> "${x + 1}", ",", []) == ""
+
+    @test
+    def joinWith02(): Bool & Impure =
+        Array.joinWith(x -> "${x + 1}", ",", [1]) == "2"
+
+    @test
+    def joinWith03(): Bool & Impure =
+        Array.joinWith(x -> "${x + 1}", ",", [1, 2, 3]) == "2,3,4"
+
+    @test
+    def joinWith04(): Bool & Impure =
+        Array.joinWith(x -> x + x, ",", ["1", "2", "3"]) == "11,22,33"
+
 }

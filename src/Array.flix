@@ -18,3 +18,25 @@ namespace Array1 {
     }
 
 }
+
+namespace Array {
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `a` with `sep` inserted between each element.
+    ///
+    pub def join1(sep: String, a: Array[a]): String & Impure with ToString[a] =
+        joinWith(x -> ToString.toString(x), sep, a)
+
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `a` according to `f` with `sep` inserted between each element.
+    ///
+    pub def joinWith(f: a -> String & ef, sep: String, a: Array[a]): String & Impure =
+        let lastSep = 1;
+        let sb = StringBuilder.new();
+        foldLeft((_, x) -> StringBuilder.append!(sb, "${f(x)}" + sep), (), a);
+        StringBuilder.toString(sb) |> String.dropRight(lastSep)
+
+}
