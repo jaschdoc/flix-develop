@@ -598,4 +598,29 @@ namespace TestMutDeque {
         MutDeque1.pushBack(3, d);
         MutDeque1.toList(d) == 1 :: 2 :: 3 :: Nil
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // joinWith                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def joinWith01(): Bool & Impure =
+        (Nil: List[Int32]) |> List.toMutDeque |>
+            MutDeque.joinWith(x -> "${x + 1}", ",") == ""
+
+    @test
+    def joinWith02(): Bool & Impure =
+        (1 :: Nil) |> List.toMutDeque |>
+            MutDeque.joinWith(x -> "${x + 1}", ",") == "2"
+
+    @test
+    def joinWith03(): Bool & Impure =
+        (1 :: 2 :: 3 :: Nil) |> List.toMutDeque |>
+            MutDeque.joinWith(x -> "${x + 1}", ",") == "2,3,4"
+
+    @test
+    def joinWith04(): Bool & Impure =
+        ("1" :: "2" :: "3" :: Nil) |> List.toMutDeque |>
+            MutDeque.joinWith(x -> x + x, ",") == "11,22,33"
+
 }

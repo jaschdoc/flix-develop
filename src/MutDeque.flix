@@ -317,3 +317,17 @@ namespace MutDeque1 {
         foldRight((x, acc) -> x :: acc, Nil, d)
 
 }
+
+namespace MutDeque {
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `d` according to `f` with `sep` inserted between each element.
+    ///
+    pub def joinWith(f: a -> String & ef, sep: String, d: MutDeque[a]): String & Impure =
+        let lastSep = 1;
+        let sb = StringBuilder.new();
+        foldLeft((_, x) -> StringBuilder.append!(sb, "${f(x)}" + sep), (), d);
+        StringBuilder.toString(sb) |> String.dropRight(lastSep)
+
+}
