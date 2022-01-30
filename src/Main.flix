@@ -12,6 +12,7 @@ def main(_args: Array[String]): Int32 & Impure =
     println("${0xFF}");
     println `over` 9124;
     println("a" + "b");
+    println(7 rem 2 + 2);
     0
 
 // pub def foo(): Unit =
