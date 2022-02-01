@@ -183,22 +183,26 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Finds the smallest element of `t` according to the `Order` on `a`.
     ///
-    pub def minimum(t: t[a]): a with Order[a] = ???
+    pub def minimum(t: t[a]): a with Order[a] =
+        Reducible.reduceLeft((a, b) -> if (a < b) a else b, t)
 
     ///
     /// Finds the smallest element of `t` according to the given comparator `cmp`.
     ///
-    pub def minimumBy(cmp: (a, a) -> Comparison & ef, t: t[a]): a = ???
+    pub def minimumBy(cmp: (a, a) -> Comparison & ef, t: t[a]): a & ef =
+        Reducible.reduceLeft((a, b) -> if (cmp(a, b) == LessThan) a else b, t)
 
     ///
     /// Finds the largest element of `t` according to the `Order` on `a`.
     ///
-    pub def maximum(t: t[a]): a with Order[a] = ???
+    pub def maximum(t: t[a]): a with Order[a] =
+        Reducible.reduceLeft((a, b) -> if (a > b) a else b, t)
 
     ///
     /// Finds the largest element of `t` according to the given comparator `cmp`.
     ///
-    pub def maximumBy(cmp: (a, a) -> Comparison & ef, t: t[a]): a = ???
+    pub def maximumBy(cmp: (a, a) -> Comparison & ef, t: t[a]): a & ef =
+        Reducible.reduceLeft((a, b) -> if (cmp(a, b) == GreaterThan) a else b, t)
 
     ///
     /// Returns `t` as a list without the longest prefix that satisfies the predicate `f`.

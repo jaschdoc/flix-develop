@@ -509,4 +509,104 @@ namespace TestReducible {
     def memberOf06(): Bool =
         Reducible.memberOf(3, Nel(1, 2 :: 3 :: Nil))
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimum01(): Bool =
+        Reducible.minimum(Nel(1, Nil)) == 1
+
+    @test
+    def minimum02(): Bool =
+        Reducible.minimum(Nel(1, 2 :: 3 :: Nil)) == 1
+
+    @test
+    def minimum03(): Bool =
+        Reducible.minimum(Nel(1, 2 :: 0 :: 3 :: Nil)) == 0
+
+    @test
+    def minimum04(): Bool =
+        Reducible.minimum(Nel(9, 5 :: 4 :: 6 :: 7 :: 3 :: Nil)) == 3
+
+    @test
+    def minimum05(): Bool =
+        Reducible.minimum(Nel(9, 5 :: 4 :: 2 :: 7 :: 10 :: Nil)) == 2
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // minimumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimumBy01(): Bool =
+        Reducible.minimumBy((x, y) -> x <=> y, Nel(1, Nil)) == 1
+
+    @test
+    def minimumBy02(): Bool =
+        Reducible.minimumBy((x, y) -> x <=> y, Nel(1, 2 :: 3 :: Nil)) == 1
+
+    @test
+    def minimumBy03(): Bool =
+        Reducible.minimumBy((x, y) -> x <=> y, Nel(1, 2 :: 0 :: 3 :: Nil)) == 0
+
+    @test
+    def minimumBy04(): Bool =
+        Reducible.minimumBy((x, y) -> x <=> y, Nel(9, 5 :: 4 :: 6 :: 7 :: 3 :: Nil)) == 3
+
+    @test
+    def minimumBy05(): Bool =
+        Reducible.minimumBy((x, y) -> x <=> y, Nel(9, 5 :: 4 :: 2 :: 7 :: 10 :: Nil)) == 2
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximum                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximum01(): Bool =
+        Reducible.maximum(Nel(1, Nil)) == 1
+
+    @test
+    def maximum02(): Bool =
+        Reducible.maximum(Nel(1, 2 :: 3 :: Nil)) == 3
+
+    @test
+    def maximum03(): Bool =
+        Reducible.maximum(Nel(1, 2 :: 0 :: 3 :: Nil)) == 3
+
+    @test
+    def maximum04(): Bool =
+        Reducible.maximum(Nel(9, 5 :: 4 :: 6 :: 7 :: 3 :: Nil)) == 9
+
+    @test
+    def maximum05(): Bool =
+        Reducible.maximum(Nel(3, 5 :: 4 :: 9 :: 7 :: 10 :: Nil)) == 10
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // maximumBy                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximumBy01(): Bool =
+        Reducible.maximumBy((x, y) -> x <=> y, Nel(1, Nil)) == 1
+
+    @test
+    def maximumBy02(): Bool =
+        Reducible.maximumBy((x, y) -> x <=> y, Nel(1, 2 :: 3 :: Nil)) == 3
+
+    @test
+    def maximumBy03(): Bool =
+        Reducible.maximumBy((x, y) -> x <=> y, Nel(1, 2 :: 0 :: 3 :: Nil)) == 3
+
+    @test
+    def maximumBy04(): Bool =
+        Reducible.maximumBy((x, y) -> x <=> y, Nel(9, 5 :: 4 :: 6 :: 7 :: 3 :: Nil)) == 9
+
+    @test
+    def maximumBy05(): Bool =
+        Reducible.maximumBy((x, y) -> x <=> y, Nel(3, 5 :: 4 :: 9 :: 7 :: 10 :: Nil)) == 10
+
 }
