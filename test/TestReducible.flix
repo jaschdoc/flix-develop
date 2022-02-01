@@ -359,4 +359,67 @@ namespace TestReducible {
     def productWith05(): Bool =
         Reducible.productWith(x -> x + 1, Nel(10, -10 :: Nil)) == -99
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // exists                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def exists01(): Bool =
+        Reducible.exists(x -> x == 1, Nel(1, Nil)) == true
+
+    @test
+    def exists02(): Bool =
+        Reducible.exists(x -> x == 2, Nel(1, Nil)) == false
+
+    @test
+    def exists03(): Bool =
+        Reducible.exists(x -> x == 1, Nel(1, 2 :: Nil)) == true
+
+    @test
+    def exists04(): Bool =
+        Reducible.exists(x -> x == 2, Nel(1, 2 :: Nil)) == true
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // forall                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def forall01(): Bool =
+        Reducible.forall(x -> x == 1, Nel(1, Nil)) == true
+
+    @test
+    def forall02(): Bool =
+        Reducible.forall(x -> x == 2, Nel(1, Nil)) == false
+
+    @test
+    def forall03(): Bool =
+        Reducible.forall(x -> x == 1, Nel(1, 1 :: Nil)) == true
+
+    @test
+    def forall04(): Bool =
+        Reducible.forall(x -> x == 1, Nel(1, 2 :: Nil)) == false
+
+    @test
+    def forall05(): Bool =
+        Reducible.forall(x -> x == 1, Nel(2, 1 :: Nil)) == false
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foreach                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foreach01(): Bool & Impure =
+        let r = ref 21;
+        Reducible.foreach(x -> r := x, Nel(1, Nil));
+        1 == deref r
+
+    @test
+    def foreach02(): Bool & Impure =
+        let r = ref 21;
+        Reducible.foreach(x -> r := x, Nel(1, 2 :: 3 :: Nil));
+        3 == deref r
+
 }
