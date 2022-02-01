@@ -422,4 +422,62 @@ namespace TestReducible {
         Reducible.foreach(x -> r := x, Nel(1, 2 :: 3 :: Nil));
         3 == deref r
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // findLeft                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def findLeft01(): Bool =
+        Reducible.findLeft(x -> x == 0, Nel(1, Nil)) == None
+
+    @test
+    def findLeft02(): Bool =
+        Reducible.findLeft(x -> x == 0, Nel(1, 2 :: Nil)) == None
+
+    @test
+    def findLeft03(): Bool =
+        Reducible.findLeft(x -> x == 0, Nel(1, 2 :: 3 :: Nil)) == None
+
+    @test
+    def findLeft04(): Bool =
+        Reducible.findLeft(x -> x == 1, Nel(1, 2 :: 3 :: Nil)) == Some(1)
+
+    @test
+    def findLeft05(): Bool =
+        Reducible.findLeft(x -> x == 2, Nel(1, 2 :: 3 :: Nil)) == Some(2)
+
+    @test
+    def findLeft06(): Bool =
+        Reducible.findLeft(x -> x == 3, Nel(1, 2 :: 3 :: Nil)) == Some(3)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // findRight                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def findRight01(): Bool =
+        Reducible.findRight(x -> x == 0, Nel(1, Nil)) == None
+
+    @test
+    def findRight02(): Bool =
+        Reducible.findRight(x -> x == 0, Nel(1, 2 :: Nil)) == None
+
+    @test
+    def findRight03(): Bool =
+        Reducible.findRight(x -> x == 0, Nel(1, 2 :: 3 :: Nil)) == None
+
+    @test
+    def findRight04(): Bool =
+        Reducible.findRight(x -> x == 1, Nel(1, 2 :: 3 :: Nil)) == Some(1)
+
+    @test
+    def findRight05(): Bool =
+        Reducible.findRight(x -> x == 2, Nel(1, 2 :: 3 :: Nil)) == Some(2)
+
+    @test
+    def findRight06(): Bool =
+        Reducible.findRight(x -> x == 3, Nel(1, 2 :: 3 :: Nil)) == Some(3)
+
 }

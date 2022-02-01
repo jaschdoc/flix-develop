@@ -153,17 +153,26 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Optionally returns the first element of `t` that satisfies the predicate `f` when searching from left to right.
     ///
-    pub def find(f: a -> Bool & ef, t: t[a]): Option[a] = ???
+    pub def find(f: a -> Bool & ef, t: t[a]): Option[a] & ef =
+        Reducible.findLeft(f, t)
 
     ///
     /// Optionally returns the first element of `t` that satisfies the predicate `f` when searching from left to right.
     ///
-    pub def findLeft(f: a -> Bool & ef, t: t[a]): Option[a] = ???
+    pub def findLeft(f: a -> Bool & ef, t: t[a]): Option[a] & ef =
+        Reducible.foldLeft((acc, a) -> match acc {
+            case None   => if (f(a)) Some(a) else None
+            case _      => acc
+        }, None, t)
 
     ///
     /// Optionally returns the first element of `t` that satisfies the predicate `f` when searching from right to left.
     ///
-    pub def findRight(f: a -> Bool & ef, t: t[a]): Option[a] = ???
+    pub def findRight(f: a -> Bool & ef, t: t[a]): Option[a] & ef =
+        Reducible.foldRight((a, acc) -> match acc {
+            case None   => if (f(a)) Some(a) else None
+            case _      => acc
+        }, None, t)
 
     ///
     /// Returns `true` if and only if the element `x` is in `t`.
