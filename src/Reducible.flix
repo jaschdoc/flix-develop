@@ -92,13 +92,13 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns the last element of `t`.
     ///
     pub def last(t: t[a]): a =
-        Reducible.reduceRight((_, acc) -> acc, t) // Could use reduceLeft w. lambda (_, a) -> a
+        Reducible.reduceRight((_, acc) -> acc, t)
 
     ///
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
     ///
     pub def count(f: a -> Bool, t: t[a]): Int32 =
-        Reducible.foldLeft((acc, a) -> if (f(a)) 1 + acc else acc, 0, t) // use foldleft
+        Reducible.foldLeft((acc, a) -> if (f(a)) 1 + acc else acc, 0, t)
 
     ///
     /// Returns the number of elements in `t`.
