@@ -109,12 +109,14 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the sum of all elements in `t`.
     ///
-    pub def sum(t: t[Int32]): Int32 = ???
+    pub def sum(t: t[Int32]): Int32 =
+        Reducible.foldLeft((acc, a) -> a + acc, 0, t)
 
     ///
     /// Returns the sum of all elements in `t` according to the function `f`.
     ///
-    pub def sumWith(f: a -> Int32 & ef, t: t[a]): Int32 = ???
+    pub def sumWith(f: a -> Int32 & ef, t: t[a]): Int32 & ef =
+        Reducible.foldLeft((acc, a) -> f(a) + acc, 0, t)
 
     ///
     /// Returns the product of all elements in `t`.

@@ -255,6 +255,62 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // sum                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sum01(): Bool =
+        Reducible.sum(Nel(1, Nil)) == 1
+
+    @test
+    def sum02(): Bool =
+        Reducible.sum(Nel(1, 2 :: 3 :: Nil)) == 6
+
+    @test
+    def sum03(): Bool =
+        Reducible.sum(Nel(1, 2 :: 3 :: -3 :: Nil)) == 3
+
+    @test
+    def sum04(): Bool =
+        Reducible.sum(Nel(-1, -2 :: -3 :: -4 :: Nil)) == -10
+
+    @test
+    def sum05(): Bool =
+        Reducible.sum(Nel(10, -10 :: Nil)) == 0
+
+    @test
+    def sum06(): Bool = match List.range(1, 101) {
+        case x :: xs => Reducible.sum(Nel(x, xs)) == 5050
+        case _       => unreachable!()
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // sumWith                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sumWith01(): Bool =
+        Reducible.sumWith(x -> x + 1, Nel(1, Nil)) == 2
+
+    @test
+    def sumWith02(): Bool =
+        Reducible.sumWith(x -> x + 1, Nel(1, 2 :: 3 :: Nil)) == 9
+
+    @test
+    def sumWith03(): Bool =
+        Reducible.sumWith(x -> x + 1, Nel(1, 2 :: 3 :: -3 :: Nil)) == 7
+
+    @test
+    def sumWith04(): Bool =
+        Reducible.sumWith(x -> x + 1, Nel(-1, -2 :: -3 :: -4 :: Nil)) == -6
+
+    @test
+    def sumWith05(): Bool =
+        Reducible.sumWith(x -> x + 1, Nel(10, -10 :: Nil)) == 2
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // product                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
