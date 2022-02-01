@@ -86,7 +86,7 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the tail of `t`.
     ///
-    pub def tail(t: t[a]): a = ???
+    pub def tail(t: t[a]): t[a] = ???
 
     ///
     /// Returns the last element of `t`.
@@ -98,7 +98,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
     ///
     pub def count(f: a -> Bool, t: t[a]): Int32 =
-        Reducible.reduceMap(a -> if (f(a)) 1 else 0, t)
+        Reducible.foldLeft((acc, a) -> if (f(a)) 1 + acc else acc, 0, t) // use foldleft
 
     ///
     /// Returns the number of elements in `t`.
@@ -119,12 +119,14 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the product of all elements in `t`.
     ///
-    pub def product(t: t[Int32]): Int32 = ???
+    pub def product(t: t[Int32]): Int32 =
+        Reducible.foldLeft((acc, a) -> a * acc, 1, t)
 
     ///
     /// Returns the product of all elements in `t` according to the function `f`.
     ///
-    pub def productWith(f: a -> Int32 & ef, t: t[a]): Int32 = ???
+    pub def productWith(f: a -> Int32 & ef, t: t[a]): Int32 & ef =
+        Reducible.foldLeft((acc, a) -> f(a) * acc, 1, t)
 
     ///
     /// Returns `true` if and only if at least one element in `t` satisfies the predicate `f`.
