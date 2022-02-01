@@ -175,9 +175,10 @@ pub lawless class Reducible[t: Type -> Type] {
         }, None, t)
 
     ///
-    /// Returns `true` if and only if the element `x` is in `t`.
+    /// Returns `true` if and only if the element `a` is in `t`.
     ///
-    pub def memberOf(a: a, t: t[a]): Bool with Eq[a] = ???
+    pub def memberOf(a: a, t: t[a]): Bool with Eq[a] =
+        Reducible.foldLeft((acc, x) -> a == x or acc, false, t)
 
     ///
     /// Finds the smallest element of `t` according to the `Order` on `a`.

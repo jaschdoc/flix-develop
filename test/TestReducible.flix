@@ -480,4 +480,33 @@ namespace TestReducible {
     def findRight06(): Bool =
         Reducible.findRight(x -> x == 3, Nel(1, 2 :: 3 :: Nil)) == Some(3)
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // memberOf                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def memberOf01(): Bool =
+        Reducible.memberOf(0, Nel(1, Nil)) == false
+
+    @test
+    def memberOf02(): Bool =
+        Reducible.memberOf(0, Nel(1, 2 :: Nil)) == false
+
+    @test
+    def memberOf03(): Bool =
+        Reducible.memberOf(0, Nel(1, 2 :: 3 :: Nil)) == false
+
+    @test
+    def memberOf04(): Bool =
+        Reducible.memberOf(1, Nel(1, 2 :: 3 :: Nil))
+
+    @test
+    def memberOf05(): Bool =
+        Reducible.memberOf(2, Nel(1, 2 :: 3 :: Nil))
+
+    @test
+    def memberOf06(): Bool =
+        Reducible.memberOf(3, Nel(1, 2 :: 3 :: Nil))
+
 }
