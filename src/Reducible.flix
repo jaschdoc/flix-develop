@@ -222,16 +222,19 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns `t` as a non-empty list.
     ///
-    pub def toNel(t: t[a]): Nel[a] = ???
+    pub def toNel(t: t[a]): Nel[a] =
+        Reducible.reduceLeftTo((acc, a) -> Nel.append(acc, Nel(a, Nil)), a -> Nel(a, Nil), t)
 
     ///
     /// Returns `t` as a list.
     ///
-    pub def toList(t: t[a]): List[a] = ???
+    pub def toList(t: t[a]): List[a] =
+        Reducible.foldRight((a, acc) -> a :: acc, Nil, t)
 
     ///
     /// Returns `t` as a set.
     ///
-    pub def toSet(t: t[a]): Set[a] with Order[a] = ???
+    pub def toSet(t: t[a]): Set[a] with Order[a] =
+        Reducible.foldLeft((acc, a) -> Set.insert(a, acc), Set.empty(), t)
 
 }

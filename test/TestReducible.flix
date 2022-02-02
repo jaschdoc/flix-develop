@@ -609,4 +609,55 @@ namespace TestReducible {
     def maximumBy05(): Bool =
         Reducible.maximumBy((x, y) -> x <=> y, Nel(3, 5 :: 4 :: 9 :: 7 :: 10 :: Nil)) == 10
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toNel                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toNel01(): Bool =
+        Reducible.toNel(Nel(1, Nil)) == Nel(1, Nil)
+
+    @test
+    def toNel02(): Bool =
+        Reducible.toNel(Nel(1, 2 :: 3 :: Nil)) == Nel(1, 2 :: 3 :: Nil)
+
+    @test
+    def toNel03(): Bool =
+        Reducible.toNel(Nel(1, 1 :: 2 :: 3 :: Nil)) == Nel(1, 1 :: 2 :: 3 :: Nil)
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toList                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toList01(): Bool =
+        Reducible.toList(Nel(1, Nil)) == 1 :: Nil
+
+    @test
+    def toList02(): Bool =
+        Reducible.toList(Nel(1, 2 :: 3 :: Nil)) == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def toList03(): Bool =
+        Reducible.toList(Nel(1, 1 :: 2 :: 3 :: Nil)) == 1 :: 1 :: 2 :: 3 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toSet                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toSet01(): Bool =
+        Reducible.toSet(Nel(1, Nil)) == Set#{1}
+
+    @test
+    def toSet02(): Bool =
+        Reducible.toSet(Nel(1, 2 :: 3 :: Nil)) == Set#{1, 2, 3}
+
+    @test
+    def toSet03(): Bool =
+        Reducible.toSet(Nel(1, 1 :: 2 :: 3 :: Nil)) == Set#{1, 2, 3}
+
 }
