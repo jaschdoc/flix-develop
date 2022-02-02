@@ -22,7 +22,6 @@
 ///
 /// `Reducible` is like a non-empty `Foldable` and may only be implemented on non-empty data structures.
 ///
-///
 pub lawless class Reducible[t: Type -> Type] {
 
     ///
@@ -99,7 +98,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns the tail of `t`.
     ///
     pub def tail(t: t[a]): List[a] =
-        Reducible.reduceLeftTo((acc, a) -> a :: acc, _ -> Nil, t) |> List.reverse
+        Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks), _ -> identity, t)(Nil)
 
     ///
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
