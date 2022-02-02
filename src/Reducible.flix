@@ -92,7 +92,8 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns a list with the first element of `t`.
     ///
-    pub def init(t: t[a]): List[a] = ???
+    pub def init(t: t[a]): List[a] =
+        Reducible.reduceLeftTo((acc, _) -> acc, a -> a :: Nil, t)
 
     ///
     /// Returns the tail of `t`.
