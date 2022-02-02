@@ -661,6 +661,40 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // takeWhile                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def takeWhile01(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(1, Nil)) == Nil
+
+    @test
+    def takeWhile02(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(4, Nil)) == 4 :: Nil
+
+    @test
+    def takeWhile03(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(1, 2 :: Nil)) == Nil
+
+    @test
+    def takeWhile04(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(1, 5 :: Nil)) == Nil
+
+    @test
+    def takeWhile05(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(5, 1 :: Nil)) == 5 :: Nil
+
+    @test
+    def takeWhile06(): Bool =
+        Reducible.takeWhile(a -> a > 3, Nel(5, 8 :: Nil)) == 5 :: 8 :: Nil
+
+    @test
+    def takeWhile07(): Bool =
+        Nel(4, 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil) |>
+            Reducible.takeWhile(a -> a > 3) == 4 :: 6 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // toNel                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 

@@ -98,7 +98,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns the tail of `t`.
     ///
     pub def tail(t: t[a]): List[a] =
-        Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks), _ -> identity, t)(Nil)
+        Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks),  _ -> identity, t)(Nil)
 
     ///
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
@@ -218,7 +218,10 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the longest prefix of `t` as a list that satisfies the predicate `f`.
     ///
-    pub def takeWhile(f: a -> Bool & ef, t: t[a]): List[a] = ???
+    pub def takeWhile(f: a -> Bool & ef, t: t[a]): List[a] & ef = reifyEff(f) {
+        case Pure(g) => Reducible.foldRight((a, acc) -> if (f(a)) a :: acc else Nil, Nil, t)
+        case _       => ??? // Traverse in correct order (maybe just use this impl in both cases)
+    }
 
     ///
     /// Returns `t` as a list with `a` inserted between every two adjacent elements.
