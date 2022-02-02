@@ -626,6 +626,13 @@ namespace TestReducible {
     def toNel03(): Bool =
         Reducible.toNel(Nel(1, 1 :: 2 :: 3 :: Nil)) == Nel(1, 1 :: 2 :: 3 :: Nil)
 
+    @test
+    def toNel04(): Bool =
+        match List.range(0, 100) {
+            case x :: xs => Reducible.toNel(Nel(x, xs)) |> Nel.toList == List.range(0, 100)
+            case _       => unreachable!()
+        }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // toList                                                                  //
