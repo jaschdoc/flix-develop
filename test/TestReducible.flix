@@ -234,6 +234,31 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // tail                                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def tail01(): Bool =
+        Reducible.tail(Nel(1, Nil)) == Nil
+
+    @test
+    def tail02(): Bool =
+        Reducible.tail(Nel(2, Nil)) == Nil
+
+    @test
+    def tail03(): Bool =
+        Reducible.tail(Nel(1, 2 :: Nil)) == 2 :: Nil
+
+    @test
+    def tail04(): Bool =
+        Reducible.tail(Nel(1, 2 :: 3 :: Nil)) == 2 :: 3 :: Nil
+
+    @test
+    def tail05(): Bool =
+        Reducible.tail(Nel(3, 2 :: 1 :: Nil)) == 2 :: 1 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // count                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 

@@ -98,7 +98,8 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the tail of `t`.
     ///
-    pub def tail(t: t[a]): List[a] = ???
+    pub def tail(t: t[a]): List[a] =
+        Reducible.reduceLeftTo((acc, a) -> a :: acc, _ -> Nil, t) |> List.reverse
 
     ///
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
