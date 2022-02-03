@@ -74,6 +74,14 @@ pub lawless class Reducible[t: Type -> Type] {
         Reducible.reduceRightTo(f, a -> f(a, s), t)
 
     ///
+    /// Alias for `reduce`.
+    ///
+    /// Reduce `t` using the derived `SemiGroup` instance.
+    ///
+    pub def fold(t: t[a]): a with SemiGroup[a] =
+        Reducible.reduceLeft(SemiGroup.combine, t)
+
+    ///
     /// Returns the first element of `t`.
     ///
     pub def head(t: t[a]): a =
