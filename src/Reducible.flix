@@ -14,9 +14,6 @@
  *  limitations under the License.
  */
 
-// This type class is inspired by the Cats implementation of Reducible:
-// https://github.com/typelevel/cats/blob/main/core/src/main/scala/cats/Reducible.scala
-
 ///
 /// A type class for types that can be reduced to a summary value.
 ///
