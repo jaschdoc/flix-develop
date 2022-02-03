@@ -210,7 +210,14 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns `t` as a list without the longest prefix that satisfies the predicate `f`.
     ///
-    pub def dropWhile(f: a -> Bool & ef, t: t[a]): List[a] = ???
+    pub def dropWhile(f: a -> Bool & ef, t: t[a]): List[a] & ef =
+        (Reducible.foldLeft((acc, a) -> {
+            let (c, k) = acc;
+            if (c and f(a))
+                (true, k)
+            else
+                (false, ks -> k(a :: ks))
+        }, (true, identity), t) |> snd)(Nil)
 
     ///
     /// Returns the longest prefix of `t` as a list that satisfies the predicate `f`.

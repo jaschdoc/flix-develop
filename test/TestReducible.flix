@@ -661,6 +661,40 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // dropWhile                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def dropWhile01(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(1, Nil)) == 1 :: Nil
+
+    @test
+    def dropWhile02(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(4, Nil)) == Nil
+
+    @test
+    def dropWhile03(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(1, 2 :: Nil)) == 1 :: 2 :: Nil
+
+    @test
+    def dropWhile04(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(1, 5 :: Nil)) == 1 :: 5 :: Nil
+
+    @test
+    def dropWhile05(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(5, 1 :: Nil)) == 1 :: Nil
+
+    @test
+    def dropWhile06(): Bool =
+        Reducible.dropWhile(a -> a > 3, Nel(5, 8 :: Nil)) == Nil
+
+    @test
+    def dropWhile07(): Bool =
+        Nel(4, 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil) |>
+            Reducible.dropWhile(a -> a > 3) == -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // takeWhile                                                               //
     /////////////////////////////////////////////////////////////////////////////
 
