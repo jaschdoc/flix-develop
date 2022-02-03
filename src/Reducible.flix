@@ -218,10 +218,14 @@ pub lawless class Reducible[t: Type -> Type] {
     ///
     /// Returns the longest prefix of `t` as a list that satisfies the predicate `f`.
     ///
-    pub def takeWhile(f: a -> Bool & ef, t: t[a]): List[a] & ef = reifyEff(f) {
-        case Pure(g) => Reducible.foldRight((a, acc) -> if (f(a)) a :: acc else Nil, Nil, t)
-        case _       => ??? // Traverse in correct order (maybe just use this impl in both cases)
-    }
+    pub def takeWhile(f: a -> Bool & ef, t: t[a]): List[a] & ef =
+        (Reducible.foldLeft((acc, a) -> {
+            let (c, k) = acc;
+            if (c and f(a))
+                (true, ks -> k(a :: ks))
+            else
+                (false, k)
+        }, (true, identity), t) |> snd)(Nil)
 
     ///
     /// Returns `t` as a list with `a` inserted between every two adjacent elements.
@@ -238,7 +242,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns `t` as a list.
     ///
     pub def toList(t: t[a]): List[a] =
-        Reducible.foldRight((a, acc) -> a :: acc, Nil, t)
+        Reducible.foldLeft((k, a) -> ks -> k(a :: ks), identity, t)(Nil)
 
     ///
     /// Returns `t` as a set.
