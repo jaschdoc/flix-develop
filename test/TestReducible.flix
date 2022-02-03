@@ -732,6 +732,18 @@ namespace TestReducible {
     // intersperse                                                             //
     /////////////////////////////////////////////////////////////////////////////
 
+    @test
+    def intersperse01(): Bool =
+        Reducible.intersperse(7, Nel(1, Nil)) == 1 :: Nil
+
+    @test
+    def intersperse02(): Bool =
+        Reducible.intersperse(7, Nel(1, 2 :: Nil)) == 1 :: 7 :: 2 :: Nil
+
+    @test
+    def intersperse03(): Bool =
+        Reducible.intersperse(7, Nel(1, 2 :: 3 :: Nil)) == 1 :: 7 :: 2 :: 7 :: 3 :: Nil
+
 
     /////////////////////////////////////////////////////////////////////////////
     // toNel                                                                   //
