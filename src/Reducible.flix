@@ -180,10 +180,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Optionally returns the first element of `t` that satisfies the predicate `f` when searching from right to left.
     ///
     pub def findRight(f: a -> Bool & ef, t: t[a]): Option[a] & ef =
-        Reducible.foldRight((a, acc) -> match acc {
-            case None   => if (f(a)) Some(a) else None
-            case _      => acc
-        }, None, t)
+        Reducible.foldLeft((acc, a) -> if (f(a)) Some(a) else acc, None, t)
 
     ///
     /// Returns `true` if and only if the element `a` is in `t`.
