@@ -214,23 +214,27 @@ namespace TestReducible {
 
     @test
     def init01(): Bool =
-        Reducible.init(Nel(1, Nil)) == 1 :: Nil
+        Reducible.init(Nel(1, Nil)) == Nil
 
     @test
     def init02(): Bool =
-        Reducible.init(Nel(2, Nil)) == 2 :: Nil
+        Reducible.init(Nel(2, Nil)) == Nil
 
     @test
     def init03(): Bool =
-        Reducible.init(Nel(1, 2 :: Nil)) == 1 :: Nil
+        Reducible.init(Nel(1, 2 :: Nil)) == Nil
 
     @test
     def init04(): Bool =
-        Reducible.init(Nel(1, 2 :: 3 :: Nil)) == 1 :: Nil
+        Reducible.init(Nel(1, 2 :: 3 :: Nil)) == 2 :: Nil
 
     @test
     def init05(): Bool =
-        Reducible.init(Nel(3, 2 :: 1 :: Nil)) == 3 :: Nil
+        Reducible.init(Nel(3, 2 :: 1 :: Nil)) == 2 :: Nil
+
+    @test
+    def init06(): Bool =
+        Reducible.init(Nel(1, 2 :: 3 :: 4 :: Nil)) == 2 :: 3 :: Nil
 
 
     /////////////////////////////////////////////////////////////////////////////

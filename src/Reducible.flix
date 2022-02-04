@@ -94,16 +94,16 @@ pub lawless class Reducible[t: Type -> Type] {
         Reducible.reduceLeft((_, a) -> a, t)
 
     ///
-    /// Returns a list with the first element of `t`.
+    /// Returns a list without the first and last element of `t`.
     ///
     pub def init(t: t[a]): List[a] =
-        Reducible.reduceLeftTo((acc, _) -> acc, a -> a :: Nil, t)
+        Reducible.reduceRightTo((a, acc) -> a :: acc, _ -> Nil, t) |> List.drop(1)
 
     ///
     /// Returns the tail of `t`.
     ///
     pub def tail(t: t[a]): List[a] =
-        Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks),  _ -> identity, t)(Nil)
+        Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks),  _ -> identity, t)(Nil) // Builds a continuation function without the first element that is immediately invoked to avoid `foldRight`.
 
     ///
     /// Returns the number of elements in `t` that satisfy the predicate `f`.
