@@ -91,7 +91,7 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns the last element of `t`.
     ///
     pub def last(t: t[a]): a =
-        Reducible.reduceRight((_, acc) -> acc, t)
+        Reducible.reduceLeft((_, a) -> a, t)
 
     ///
     /// Returns a list with the first element of `t`.
