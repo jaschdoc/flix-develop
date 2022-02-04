@@ -222,19 +222,19 @@ namespace TestReducible {
 
     @test
     def init03(): Bool =
-        Reducible.init(Nel(1, 2 :: Nil)) == Nil
+        Reducible.init(Nel(1, 2 :: Nil)) == 1 :: Nil
 
     @test
     def init04(): Bool =
-        Reducible.init(Nel(1, 2 :: 3 :: Nil)) == 2 :: Nil
+        Reducible.init(Nel(1, 2 :: 3 :: Nil)) == 1 :: 2 :: Nil
 
     @test
     def init05(): Bool =
-        Reducible.init(Nel(3, 2 :: 1 :: Nil)) == 2 :: Nil
+        Reducible.init(Nel(3, 2 :: 1 :: Nil)) == 3 :: 2 :: Nil
 
     @test
     def init06(): Bool =
-        Reducible.init(Nel(1, 2 :: 3 :: 4 :: Nil)) == 2 :: 3 :: Nil
+        Reducible.init(Nel(1, 2 :: 3 :: 4 :: Nil)) == 1 :: 2 :: 3 :: Nil
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -260,6 +260,23 @@ namespace TestReducible {
     @test
     def tail05(): Bool =
         Reducible.tail(Nel(3, 2 :: 1 :: Nil)) == 2 :: 1 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // reverse                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reverse01(): Bool =
+        Reducible.reverse(Nel(1, Nil)) == 1 :: Nil
+
+    @test
+    def reverse02(): Bool =
+        Reducible.reverse(Nel(1, 2 :: Nil)) == 2 :: 1 :: Nil
+
+    @test
+    def reverse03(): Bool =
+        Reducible.reverse(Nel(1, 2 :: 3 :: Nil)) == 3 :: 2 :: 1 :: Nil
 
 
     /////////////////////////////////////////////////////////////////////////////
