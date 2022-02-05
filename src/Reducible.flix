@@ -105,7 +105,6 @@ pub lawless class Reducible[t: Type -> Type] {
     pub def tail(t: t[a]): List[a] =
         Reducible.reduceLeftTo((k, a) -> ks -> k(a :: ks),  _ -> identity, t)(Nil) // NB: Builds a continuation function without the first
                                                                                    // element that is immediately invoked to avoid `foldRight`.
-
     ///
     /// Returns the reverse of `t` as a list.
     ///
