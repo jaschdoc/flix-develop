@@ -246,16 +246,24 @@ pub lawless class Reducible[t: Type -> Type] {
         Reducible.reduceLeftTo((k, x) -> ks -> k(a :: x :: ks), x -> ks -> x :: ks , t)(Nil)
 
     ///
-    /// Returns `t` as a non-empty list.
+    /// Returns `t` as an array.
     ///
-    pub def toNel(t: t[a]): Nel[a] =
-        Reducible.reduceLeftTo((acc, a) -> Nel.append(acc, Nel(a, Nil)), a -> Nel(a, Nil), t)
+    pub def toArray(t: t[a]): Array[a] & Impure =
+        let v = MutList.new();
+        Reducible.foldLeft((_, a) -> MutList.push!(a, v), (), t);
+        MutList.toArray(v)
 
     ///
     /// Returns `t` as a list.
     ///
     pub def toList(t: t[a]): List[a] =
         Reducible.foldLeft((k, a) -> ks -> k(a :: ks), identity, t)(Nil)
+
+    ///
+    /// Returns `t` as a non-empty list.
+    ///
+    pub def toNel(t: t[a]): Nel[a] =
+        Reducible.reduceLeftTo((acc, a) -> Nel.append(acc, Nel(a, Nil)), a -> Nel(a, Nil), t)
 
     ///
     /// Returns `t` as a set.
