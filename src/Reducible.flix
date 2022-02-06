@@ -257,7 +257,13 @@ pub lawless class Reducible[t: Type -> Type] {
     /// Returns `t` as a list.
     ///
     pub def toList(t: t[a]): List[a] =
-        Reducible.foldLeft((k, a) -> ks -> k(a :: ks), identity, t)(Nil)
+        Reducible.foldLeft((k, a) -> ks -> k(a :: ks), identity, t)(Nil) // NB: Builds a continuation function without the first
+                                                                         // element that is immediately invoked to avoid `foldRight`.
+    ///
+    /// Returns `t` as a map.
+    ///
+    pub def toMap(t: t[(k, v)]): Map[k, v] with Order[k] =
+        Reducible.foldLeft((acc, a) -> Map.insert(fst(a), snd(a), acc), Map.empty(), t)
 
     ///
     /// Returns `t` as a non-empty list.

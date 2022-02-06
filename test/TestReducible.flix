@@ -819,6 +819,63 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // toArray                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toArray01(): Bool & Impure =
+        let a = Reducible.toArray(Nel(1, Nil));
+        println(a);
+        Array.sameElements(a, [1])
+
+    @test
+    def toArray02(): Bool & Impure =
+        let a = Reducible.toArray(Nel(1, 2 :: 3 :: Nil));
+        println(a);
+        Array.sameElements(a, [1, 2, 3])
+
+    @test
+    def toArray03(): Bool & Impure =
+        let a = Reducible.toArray(Nel(1, 1 :: 2 :: 3 :: Nil));
+        println(a);
+        Array.sameElements(a, [1, 1, 2, 3])
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toList                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toList01(): Bool =
+        Reducible.toList(Nel(1, Nil)) == 1 :: Nil
+
+    @test
+    def toList02(): Bool =
+        Reducible.toList(Nel(1, 2 :: 3 :: Nil)) == 1 :: 2 :: 3 :: Nil
+
+    @test
+    def toList03(): Bool =
+        Reducible.toList(Nel(1, 1 :: 2 :: 3 :: Nil)) == 1 :: 1 :: 2 :: 3 :: Nil
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // toMap                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toMap01(): Bool =
+        Reducible.toMap(Nel((1, 1), Nil)) == Map#{1 => 1}
+
+    @test
+    def toMap02(): Bool =
+        Reducible.toMap(Nel(("a", 1), ("b", 2) :: ("c", 3) :: Nil)) == Map#{"a" => 1, "b" => 2, "c" => 3}
+
+    @test
+    def toMap03(): Bool =
+        Reducible.toMap(Nel((1, 2), (4, 3) :: (2, 2) :: (3, 3) :: Nil)) == Map#{1 => 2, 2 => 2, 3 => 3, 4 => 3}
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // toNel                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
@@ -843,23 +900,6 @@ namespace TestReducible {
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // toList                                                                  //
-    /////////////////////////////////////////////////////////////////////////////
-
-    @test
-    def toList01(): Bool =
-        Reducible.toList(Nel(1, Nil)) == 1 :: Nil
-
-    @test
-    def toList02(): Bool =
-        Reducible.toList(Nel(1, 2 :: 3 :: Nil)) == 1 :: 2 :: 3 :: Nil
-
-    @test
-    def toList03(): Bool =
-        Reducible.toList(Nel(1, 1 :: 2 :: 3 :: Nil)) == 1 :: 1 :: 2 :: 3 :: Nil
-
-
-    /////////////////////////////////////////////////////////////////////////////
     // toSet                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
@@ -874,27 +914,5 @@ namespace TestReducible {
     @test
     def toSet03(): Bool =
         Reducible.toSet(Nel(1, 1 :: 2 :: 3 :: Nil)) == Set#{1, 2, 3}
-
-    /////////////////////////////////////////////////////////////////////////////
-    // toArray                                                                 //
-    /////////////////////////////////////////////////////////////////////////////
-
-    @test
-    def toArray01(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, Nil));
-        println(a);
-        Array.sameElements(a, [1])
-
-    @test
-    def toArray02(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, 2 :: 3 :: Nil));
-        println(a);
-        Array.sameElements(a, [1, 2, 3])
-
-    @test
-    def toArray03(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, 1 :: 2 :: 3 :: Nil));
-        println(a);
-        Array.sameElements(a, [1, 1, 2, 3])
 
 }
