@@ -824,21 +824,15 @@ namespace TestReducible {
 
     @test
     def toArray01(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, Nil));
-        println(a);
-        Array.sameElements(a, [1])
+        Array.sameElements(Reducible.toArray(Nel(1, Nil)), [1])
 
     @test
     def toArray02(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, 2 :: 3 :: Nil));
-        println(a);
-        Array.sameElements(a, [1, 2, 3])
+        Array.sameElements(Reducible.toArray(Nel(1, 2 :: 3 :: Nil)), [1, 2, 3])
 
     @test
     def toArray03(): Bool & Impure =
-        let a = Reducible.toArray(Nel(1, 1 :: 2 :: 3 :: Nil));
-        println(a);
-        Array.sameElements(a, [1, 1, 2, 3])
+        Array.sameElements(Reducible.toArray(Nel(1, 1 :: 2 :: 3 :: Nil)), [1, 1, 2, 3])
 
 
     /////////////////////////////////////////////////////////////////////////////
