@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/*
+
 namespace TestArray {
 
 use Array1.sameElements;
@@ -4576,3 +4578,5 @@ def sortBy!09(): Bool & Impure = testSortBy!VsSortBy([2,3,0,4,1,2])
         Array1.joinWith(x -> x + x, ",", ["1", "2", "3"]) == "11,22,33"
 
 }
+
+*/
