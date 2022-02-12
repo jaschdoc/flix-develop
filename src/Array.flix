@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-instance Iterable[Array] {
-    pub def iterator(t: Array[a]): Iterator[a] & Impure =
-        Array.toIterator(t)
-}
-
 namespace Array1 {
 
     ///
