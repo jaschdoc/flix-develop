@@ -260,3 +260,93 @@ namespace RedBlackTree1 {
     }
 
 }
+
+namespace RedBlackTree {
+
+    ///
+    /// Returns the sum of all key-value pairs `k => v` in the tree `t`
+    /// according to the function `f`.
+    ///
+    /// The implementation spawns `n` threads each applying `f` sequentially
+    /// from left to right on some subtree that is disjoint from the rest of
+    /// the threads.
+    ///
+    @Parallel
+    pub def parSumWith(n: Int32, f: (k, v) -> Int32, t: RedBlackTree[k, v]): Int32 & Impure = {
+        if (n <= 1)
+            seqSumWith(f, t)
+        else
+            match t {
+                case Leaf                   => 0
+                case DoubleBlackLeaf        => 0
+                case Node(_, a, k, v, b)    =>
+                    let chanL = chan Int32 1;
+                    let chanR = chan Int32 1;
+                    spawn (chanL <- parSumWith((n - 2) / 2, f, a)); // We divide the rest of the threads as follows:
+                    spawn (chanR <- parSumWith((n - 2) / 2, f, b)); // We spawn two new threads leaving us with n - 2
+                    let v1 = f(k, v);                               // that we distribute over the two spanned threads.
+                    let a1 = <- chanL;
+                    let b1 = <- chanR;
+                    a1 + v1 + b1
+            }
+    }
+
+    ///
+    /// Returns the sum of all key-value pairs `k => v` in the tree `t`
+    /// according to the function `f`.
+    ///
+    /// Note that this is equivalent to `sumWith` but for performance reasons -- to avoid
+    /// megamorphic calls -- we use a copy here.
+    ///
+    def seqSumWith(f: (k, v) -> Int32, t: RedBlackTree[k, v]): Int32 =
+        def loop(tt) = match tt {
+            case Leaf                => 0
+            case DoubleBlackLeaf     => 0
+            case Node(_, a, k, v, b) => f(k, v) + loop(a) + loop(b)
+        };
+        loop(t)
+
+    ///
+    /// Returns the product of all key-value pairs `k => v` in the tree `t`
+    /// according to the function `f`.
+    ///
+    /// The implementation spawns `n` threads each applying `f` sequentially
+    /// from left to right on some subtree that is disjoint from the rest of
+    /// the threads.
+    ///
+    @Parallel
+    pub def parProductWith(n: Int32, f: (k, v) -> Int32, t: RedBlackTree[k, v]): Int32 & Impure = {
+        if (n <= 1)
+            seqProductWith(f, t)
+        else
+            match t {
+                case Leaf                   => 1
+                case DoubleBlackLeaf        => 1
+                case Node(_, a, k, v, b)    =>
+                    let chanL = chan Int32 1;
+                    let chanR = chan Int32 1;
+                    spawn (chanL <- parProductWith((n - 2) / 2, f, a)); // We divide the rest of the threads as follows:
+                    spawn (chanR <- parProductWith((n - 2) / 2, f, b)); // We spawn two new threads leaving us with n - 2
+                    let v1 = f(k, v);                                   // that we distribute over the two spanned threads.
+                    let a1 = <- chanL;
+                    let b1 = <- chanR;
+                    a1 * v1 * b1
+            }
+    }
+
+    ///
+    /// Returns the product of all key-value pairs `k => v` in the tree `t`
+    /// according to the function `f`.
+    ///
+    /// Note that this is equivalent to `productWith` but for performance reasons -- to avoid
+    /// megamorphic calls -- we use a copy here.
+    ///
+    def seqProductWith(f: (k, v) -> Int32, t: RedBlackTree[k, v]): Int32 =
+        def loop(tt) = match tt {
+            case Leaf                => 1
+            case DoubleBlackLeaf     => 1
+            case Node(_, a, k, v, b) => f(k, v) * loop(a) * loop(b)
+        };
+        loop(t)
+
+}
