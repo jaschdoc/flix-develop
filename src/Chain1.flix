@@ -230,7 +230,7 @@ namespace Chain1 {
         def loop(v) = match v {
             case NoneLeft                 => false
             case SomeLeft(x, _) if x == a => true
-            case SomeLeft(_, cc)          => loop(viewLeft(cc))
+            case SomeLeft(_, xs)          => loop(viewLeft(xs))
         };
         loop(viewLeft(c))
 
@@ -239,15 +239,12 @@ namespace Chain1 {
     ///
     /// Returns `-1` if `a` does not exist in `c`.
     ///
-    pub def indexOf(a: a, c: Chain[a]): Int32 with Eq[a] = indexOfHelper(a, 0, viewLeft(c))
-
-    ///
-    /// Helper function for `indexOf`.
-    ///
-    def indexOfHelper(a: a, acc: Int32, v: ViewLeft[a]): Int32 with Eq[a] = match v {
-        case NoneLeft       => -1
-        case SomeLeft(x, c) => if (x == a) acc else indexOfHelper(a, acc + 1, viewLeft(c))
-    }
+    pub def indexOf(a: a, c: Chain[a]): Int32 with Eq[a] =
+        def loop(v, acc) = match v {
+            case NoneLeft       => -1
+            case SomeLeft(x, xs) => if (x == a) acc else loop(viewLeft(xs), acc + 1)
+        };
+        loop(viewLeft(c), 0)
 
     ///
     /// Alias for `findLeft`.
@@ -281,13 +278,9 @@ namespace Chain1 {
     ///
     /// Returns `Nil` if `b >= e`.
     ///
-    pub def range(b: Int32, e: Int32): Chain[Int32] = rangeHelper(b, e, Chain.empty())
-
-    ///
-    /// Helper function for `range`.
-    ///
-    def rangeHelper(b: Int32, e: Int32, acc: Chain[Int32]): Chain[Int32] =
-        if (b >= e) acc else rangeHelper(b + 1, e, snoc(acc, b))
+    pub def range(b: Int32, e: Int32): Chain[Int32] =
+        def loop(i, c) = if (i >= e) c else loop(i + 1, snoc(c, b));
+        loop(b, Chain.empty())
 
     ///
     /// Returns a list with the element `a` repeated `n` times.
