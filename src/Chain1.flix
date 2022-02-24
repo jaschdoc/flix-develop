@@ -563,21 +563,15 @@ namespace Chain1 {
     /// Returns `Nil` if `n < 0`.
     ///
     pub def takeLeft(n: Int32, c: Chain[a]): Chain[a] =
+        def loop(i, cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case _ if i < 1      => acc
+            case SomeLeft(a, rs) => loop(i - 1, rs, snoc(acc, a))
+        };
         if (n < 0)
             Empty
         else
-            takeLeftHelper(n, c, Empty)
-
-    ///
-    /// Helper for function for `takeLeft`.
-    ///
-    /// Precondition n >= 0
-    ///
-    def takeLeftHelper(n: Int32, c: Chain[a], acc: Chain[a]): Chain[a] = match (n, viewLeft(c)) {
-        case (_, NoneLeft)        => acc
-        case (i, _) if i < 1      => acc
-        case (i, SomeLeft(x, rs)) => takeLeftHelper(i-1, rs, snoc(acc, x))
-    }
+            loop(n, c, Empty)
 
     ///
     /// Returns the last `n` elements of `c`.
@@ -586,51 +580,39 @@ namespace Chain1 {
     /// Returns `Nil` if `n < 0`.
     ///
     pub def takeRight(n: Int32, c: Chain[a]): Chain[a] =
+        def loop(i, cc, acc) = match viewRight(cc) {
+            case NoneRight        => acc
+            case _ if i < 1       => acc
+            case SomeRight(rs, a) => loop(i - 1, rs, cons(a, acc))
+        };
         if (n < 0)
             Empty
         else
-            takeRightHelper(n, c, Empty)
-
-    ///
-    /// Helper for function for `takeRight`.
-    ///
-    /// Precodition: n >= 0
-    ///
-    def takeRightHelper(n: Int32, c: Chain[a], acc: Chain[a]): Chain[a] = match (n, viewRight(c)) {
-        case (_, NoneRight)        => acc
-        case (i, _)  if i < 1      => acc
-        case (i, SomeRight(rs, x)) => takeRightHelper(i-1, rs, cons(x, acc))
-    }
+            loop(n, c, Empty)
 
     ///
     /// Returns the longest prefix of `c` that satisfies the predicate `f`.
     ///
     /// The function `f` must be pure.
     ///
-    pub def takeWhileLeft(f: a -> Bool, c: Chain[a]): Chain[a] = takeWhileLeftHelper(f, c, Empty)
-
-    ///
-    /// Helper for function for `takeWhileLeft`.
-    ///
-    def takeWhileLeftHelper(f: a -> Bool, c: Chain[a], acc: Chain[a]): Chain[a] = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => if (f(x)) takeWhileLeftHelper(f, rs, snoc(acc, x)) else acc
-    }
+    pub def takeWhileLeft(f: a -> Bool, c: Chain[a]): Chain[a] =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => if (f(a)) loop(rs, snoc(acc, a)) else acc
+        };
+        loop(c, Empty)
 
     ///
     /// Returns the longest suffix of `c` that satisfies the predicate `f`.
     ///
     /// The function `f` must be pure.
     ///
-    pub def takeWhileRight(f: a -> Bool, c: Chain[a]): Chain[a] = takeWhileRightHelper(f, c, Empty)
-
-    ///
-    /// Helper for function for `takeWhileRight`.
-    ///
-    def takeWhileRightHelper(f: a -> Bool, c: Chain[a], acc: Chain[a]): Chain[a] = match viewRight(c) {
-        case SomeRight(rs, x) if (f(x)) => takeWhileRightHelper(f, rs, cons(x, acc))
-        case _                          => acc
-    }
+    pub def takeWhileRight(f: a -> Bool, c: Chain[a]): Chain[a] =
+        def loop(cc, acc) = match viewRight(cc) {
+            case SomeRight(rs, a) if (f(a)) => loop(rs, cons(a, acc))
+            case _                          => acc
+        };
+        loop(c, Empty)
 
     ///
     /// Collects the results of applying the partial function `f` to every element in `c`.
@@ -647,14 +629,15 @@ namespace Chain1 {
     ///
     /// Returns `None` if every element of `c` is `None`.
     ///
-    pub def findMap(f: a -> Option[b] & ef, c: Chain[a]): Option[b] & ef = match viewLeft(c) {
-        case NoneLeft        => None
-        case SomeLeft(x, rs) => match f(x) {
-            case None    => findMap(f, rs)
-            case Some(v) => Some(v)
-        }
-    }
-
+    pub def findMap(f: a -> Option[b] & ef, c: Chain[a]): Option[b] & ef =
+        def loop(cc) = match viewLeft(cc) {
+            case NoneLeft        => None
+            case SomeLeft(a, rs) => match f(a) {
+                case None    => loop(rs)
+                case Some(v) => Some(v)
+            }
+        };
+        loop(c)
 
     ///
     /// Returns a chain where the element at index `i` is `(a, b)` where
