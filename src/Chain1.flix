@@ -507,10 +507,9 @@ namespace Chain1 {
             if (i <= 0)
                 cc
             else
-                match (i, viewLeft(cc)) {
-                    case (_, NoneLeft)        => Empty
-                    case (0, _)               => cc
-                    case (_, SomeLeft(_, rs)) => loop(i - 1, rs)
+                match viewLeft(cc) {
+                    case NoneLeft        => Empty
+                    case SomeLeft(_, rs) => loop(i - 1, rs)
                 }
         };
         loop(n, c)
@@ -526,10 +525,9 @@ namespace Chain1 {
             if (i <= 0)
                 cc
             else
-                match (i, viewRight(cc)) {
-                    case (_, NoneRight)        => Empty
-                    case (0, _)                => cc
-                    case (_, SomeRight(rs, _)) => dropRight(i - 1, rs)
+                match viewRight(cc) {
+                    case NoneRight        => Empty
+                    case SomeRight(rs, _) => loop(i - 1, rs)
                 }
         };
         loop(n, c)
