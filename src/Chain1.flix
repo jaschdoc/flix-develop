@@ -372,31 +372,25 @@ namespace Chain1 {
     ///
     /// Returns the reverse of `c`.
     ///
-    pub def reverse(c: Chain[a]): Chain[a] = reverseHelper(c, Empty)
-
-    ///
-    /// Helper function for `reverse`.
-    ///
-    def reverseHelper(c: Chain[a], acc: Chain[a]): Chain[a] = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => reverseHelper(rs, cons(x, acc))
-    }
+    pub def reverse(c: Chain[a]): Chain[a] =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(x, rs) => loop(rs, cons(x, acc))
+        };
+        loop(c, Empty)
 
     ///
     /// Returns `c` with `a` inserted between every two adjacent elements.
     ///
-    pub def intersperse(a: a, c: Chain[a]): Chain[a] = match viewLeft(c) {
-        case NoneLeft        => Empty
-        case SomeLeft(x, rs) => intersperseHelper(a, rs, singleton(x))
-    }
-
-    ///
-    /// Helper function for `reverse`.
-    ///
-    def intersperseHelper(sep: a, c: Chain[a], acc: Chain[a]): Chain[a] = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => intersperseHelper(sep, rs, acc `snoc` sep `snoc` x)
-    }
+    pub def intersperse(a: a, c: Chain[a]): Chain[a] =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(x, rs) => loop(rs, acc `snoc` a `snoc` x)
+        };
+        match viewLeft(c) {
+            case NoneLeft        => Empty
+            case SomeLeft(x, rs) => loop(rs, singleton(x))
+        }
 
     ///
     /// Returns the number of elements in `c` that satisfy the predicate `f`.
