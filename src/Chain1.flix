@@ -465,41 +465,36 @@ namespace Chain1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def filter(f: a -> Bool & ef, c: Chain[a]): Chain[a] & ef = filterHelper(f, c, Empty)
-
-    ///
-    /// Helper function for `filter`.
-    ///
-    def filterHelper(f: a -> Bool & ef, c: Chain[a], acc: Chain[a]): Chain[a] & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => if (f(x)) filterHelper(f, rs, snoc(acc, x)) else filterHelper(f, rs, acc)
-    }
+    pub def filter(f: a -> Bool & ef, c: Chain[a]): Chain[a] & ef =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => if (f(a)) loop(rs, snoc(acc, a)) else loop(rs, acc)
+        };
+        loop(c, Empty)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `c` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
-    pub def foldLeft(f: (b, a) -> b & ef, acc: b, c: Chain[a]): b & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => {
-            let b = f(acc, x);
-            foldLeft(f, b, rs)
-        }
-    }
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, c: Chain[a]): b & ef =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => loop(rs, f(acc, a))
+        };
+        loop(c, s)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `c` going from right to left.
     ///
     /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
     ///
-    pub def foldRight(f: (a, b) -> b & ef, acc: b, c: Chain[a]): b & ef = match viewRight(c) {
-        case NoneRight        => acc
-        case SomeRight(rs, x) => {
-            let b = f(x, acc);
-            foldRight(f, b, rs)
-        }
-    }
+    pub def foldRight(f: (a, b) -> b & ef, s: b, c: Chain[a]): b & ef =
+        def loop(cc, acc) = match viewRight(cc) {
+            case NoneRight        => acc
+            case SomeRight(rs, a) => loop(rs, f(a, acc))
+        };
+        loop(c, s)
 
     ///
     /// Returns `c` without the first `n` elements.
