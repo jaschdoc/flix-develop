@@ -259,10 +259,6 @@ namespace RedBlackTree1 {
             }
     }
 
-}
-
-namespace RedBlackTree {
-
     ///
     /// Returns the sum of all key-value pairs `k => v` in the tree `t`
     /// according to the function `f`.

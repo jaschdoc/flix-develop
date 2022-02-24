@@ -99,18 +99,18 @@ namespace Array1 {
     ///
     /// Returns the array `a` as a lazy list.
     ///
-    pub def toLazyList(a: Array[a]): LazyList[a] & Impure =
-        LList(lazy toLazyListHelper(a, 0)) as & Impure
+    pub def toDelayList(a: Array[a]): DelayList[a] & Impure =
+        LList(lazy toDelayListHelper(a, 0)) as & Impure
 
     ///
     /// Helper function for `toList`.
     ///
-    def toLazyListHelper(a: Array[a], i: Int32): LazyList[a] =
+    def toDelayListHelper(a: Array[a], i: Int32): DelayList[a] =
         if (i == a.length) {
             ENil
         } else {
             let x = a[i] as & Pure; // TODO: Unsafe cast.
-            LCons(x, lazy toLazyListHelper(a, i + 1))
+            LCons(x, lazy toDelayListHelper(a, i + 1))
         }
 
     ///
