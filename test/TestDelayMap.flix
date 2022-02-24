@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-
+/*
 namespace TestDelayMap {
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1601,3 +1601,4 @@ namespace TestDelayMap {
             DelayMap1.sumValues == 5050
 
 }
+*/
