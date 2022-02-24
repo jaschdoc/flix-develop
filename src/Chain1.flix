@@ -226,16 +226,13 @@ namespace Chain1 {
     ///
     /// Returns `true` if and only if `c` contains the element `a`.
     ///
-    pub def memberOf(a: a, c: Chain[a]): Bool with Eq[a] = memberOfHelper(a, viewLeft(c))
-
-    ///
-    /// Helper function for `memberOf`.
-    ///
-    def memberOfHelper(a: a, v: ViewLeft[a]): Bool with Eq[a] = match v {
-        case NoneLeft                 => false
-        case SomeLeft(x, _) if x == a => true
-        case SomeLeft(_, c)           => memberOfHelper(a, viewLeft(c))
-    }
+    pub def memberOf(a: a, c: Chain[a]): Bool with Eq[a] =
+        def loop(v) = match v {
+            case NoneLeft                 => false
+            case SomeLeft(x, _) if x == a => true
+            case SomeLeft(_, cc)          => loop(viewLeft(cc))
+        };
+        loop(viewLeft(c))
 
     ///
     /// Returns the position of `a` in `c`.
