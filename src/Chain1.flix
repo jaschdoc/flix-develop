@@ -375,7 +375,7 @@ namespace Chain1 {
     pub def reverse(c: Chain[a]): Chain[a] =
         def loop(cc, acc) = match viewLeft(cc) {
             case NoneLeft        => acc
-            case SomeLeft(x, rs) => loop(rs, cons(x, acc))
+            case SomeLeft(a, rs) => loop(rs, cons(a, acc))
         };
         loop(c, Empty)
 
@@ -395,17 +395,12 @@ namespace Chain1 {
     ///
     /// Returns the number of elements in `c` that satisfy the predicate `f`.
     ///
-    /// The function `f` must be pure.
-    ///
-    pub def count(f: a -> Bool, c: Chain[a]): Int32 = countHelper(f, c, 0)
-
-    ///
-    /// Helper function for `count`.
-    ///
-    def countHelper(f: a -> Bool, c: Chain[a], acc: Int32): Int32 = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => if (f(x)) countHelper(f, rs, acc + 1) else countHelper(f, rs, acc)
-    }
+    pub def count(f: a -> Bool & ef, c: Chain[a]): Int32 & ef =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => if (f(a)) loop(rs, acc + 1) else loop(rs, acc)
+        };
+        loop(c, 0)
 
     ///
     /// Returns the sum of all elements in the chain `c`.
@@ -444,10 +439,12 @@ namespace Chain1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def exists(f: a -> Bool, c: Chain[a]): Bool = match viewLeft(c) {
-        case NoneLeft        => false
-        case SomeLeft(x, rs) => if (f(x)) true else exists(f, rs)
-    }
+    pub def exists(f: a -> Bool, c: Chain[a]): Bool =
+        def loop(cc) = match viewLeft(cc) {
+            case NoneLeft        => false
+            case SomeLeft(a, rs) => if (f(a)) true else loop(rs)
+        };
+        loop(c)
 
     ///
     /// Returns `true` if and only if all elements in `c` satisfy the predicate `f`.
@@ -456,10 +453,12 @@ namespace Chain1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def forall(f: a -> Bool, c: Chain[a]): Bool = match viewLeft(c) {
-        case NoneLeft        => true
-        case SomeLeft(x, rs) => if (not f(x)) false else forall(f, rs)
-    }
+    pub def forall(f: a -> Bool, c: Chain[a]): Bool =
+        def loop(cc) = match viewLeft(cc) {
+            case NoneLeft        => true
+            case SomeLeft(a, rs) => if (not f(a)) false else loop(rs)
+        };
+        loop(c)
 
     ///
     /// Returns a list of every element in `c` that satisfies the predicate `f`.
