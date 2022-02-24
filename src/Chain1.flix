@@ -339,15 +339,11 @@ namespace Chain1 {
     /// That is, the result is of the form: `f(x1) :: f(x2) :: ...`.
     ///
     pub def map(f: a -> b & ef, c: Chain[a]): Chain[b] & ef =
-        mapHelper(f, c, Empty)
-
-    ///
-    /// Helper function for `map`.
-    ///
-    def mapHelper(f: a -> b & ef, c: Chain[a], acc: Chain[b]): Chain[b] & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(a, rs) => mapHelper(f, rs, snoc(acc, f(a)))
-    }
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => loop(rs, snoc(acc, f(a)))
+        };
+        loop(c, Empty)
 
     ///
     /// Returns the result of applying `f` to every element in `c` along with that element's index.
@@ -355,28 +351,23 @@ namespace Chain1 {
     /// That is, the result is of the form: `f(x1, 0) :: f(x2, 1) :: ...`.
     ///
     pub def mapWithIndex(f: (a, Int32) -> b & ef, c: Chain[a]): Chain[b] & ef =
-        mapWithIndexHelper(f, c, 0, Empty)
-
-    ///
-    /// Helper function for `mapWithIndex`.
-    ///
-    def mapWithIndexHelper(f: (a, Int32) -> b & ef, c: Chain[a], i: Int32, acc: Chain[b]): Chain[b] & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => {let a = f(x, i); mapWithIndexHelper(f, rs, i+1, snoc(acc, a))}
-    }
+        def loop(cc, i, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(x, rs) =>
+                let a = f(x, i);
+                loop(rs, i + 1, snoc(acc, a))
+        };
+        loop(c, 0, Empty)
 
     ///
     /// Returns the result of applying `f` to every element in `c` and concatenating the results.
     ///
-    pub def flatMap(f: a -> Chain[b] & ef, c: Chain[a]): Chain[b] & ef = flatMapHelper(f, c, Empty)
-
-    ///
-    /// Helper function for `flatMap`.
-    ///
-    def flatMapHelper(f: a -> Chain[b] & ef, c: Chain[a], acc: Chain[b]): Chain[b] & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => flatMapHelper(f, rs, append(acc, f(x)))
-    }
+    pub def flatMap(f: a -> Chain[b] & ef, c: Chain[a]): Chain[b] & ef =
+        def loop(cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(a, rs) => loop(rs, append(acc, f(a)))
+        };
+        loop(c, Empty)
 
     ///
     /// Returns the reverse of `c`.
