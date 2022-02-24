@@ -310,15 +310,14 @@ namespace Chain1 {
     ///
     /// That is, the result is of the form: `s :: f(s, x1) :: f(f(s, x1), x2)  ...`.
     ///
-    pub def scanLeft(f: (b, a) -> b & ef, s: b, c: Chain[a]): Chain[b] & ef = scanLeftHelper(f, s, c, singleton(s))
-
-    ///
-    /// Helper function for `scanLeft`.
-    ///
-    def scanLeftHelper(f: (b, a) -> b & ef, s: b, c: Chain[a], acc: Chain[b]): Chain[b] & ef = match viewLeft(c) {
-        case NoneLeft        => acc
-        case SomeLeft(x, rs) => {let a = f(s, x); scanLeftHelper(f, a, rs, snoc(acc, a))}
-    }
+    pub def scanLeft(f: (b, a) -> b & ef, s: b, c: Chain[a]): Chain[b] & ef =
+        def loop(a, cc, acc) = match viewLeft(cc) {
+            case NoneLeft        => acc
+            case SomeLeft(x, xs) =>
+                let aa = f(a, x);
+                loop(aa, xs, snoc(acc, aa))
+        };
+        loop(s, c, singleton(s))
 
     ///
     /// Accumulates the result of applying `f` to `c` going right to left.
