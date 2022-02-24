@@ -645,15 +645,12 @@ namespace Chain1 {
     ///
     /// If either `c1` or `c2` becomes depleted, then no further elements are added to the resulting chain.
     ///
-    pub def zip(c1: Chain[a], c2: Chain[b]): Chain[(a,b)] = zipHelper(c1, c2, Chain.empty())
-
-    ///
-    /// Helper function for `zip`.
-    ///
-    def zipHelper(c1: Chain[a], c2: Chain[b], acc: Chain[(a,b)]): Chain[(a,b)] = match (viewLeft(c1), viewLeft(c2)) {
-        case (SomeLeft(x, rs), SomeLeft(y, qs)) => zipHelper(rs, qs, snoc(acc, (x, y)))
-        case _                                  => acc
-    }
+    pub def zip(c1: Chain[a], c2: Chain[b]): Chain[(a,b)] =
+        def loop(cc1, cc2, acc) = match (viewLeft(cc1), viewLeft(cc2)) {
+            case (SomeLeft(a, rs), SomeLeft(b, qs)) => loop(rs, qs, snoc(acc, (a, b)))
+            case _                                  => acc
+        };
+        loop(c1, c2, empty())
 
     ///
     /// Returns a chain where the element at index `i` is `f(a, b)` where
@@ -661,18 +658,12 @@ namespace Chain1 {
     ///
     /// If either `c1` or `c2` becomes depleted, then no further elements are added to the resulting chain.
     ///
-    pub def zipWith(f: (a, b) -> c & ef, c1: Chain[a], c2: Chain[b]): Chain[c] & ef = zipWithHelper(f, c1, c2, Chain.empty())
-
-    ///
-    /// Helper function for `zipWith`.
-    ///
-    def zipWithHelper(f: (a, b) -> c & ef, c1: Chain[a], c2: Chain[b], acc: Chain[c]): Chain[c] & ef = match (viewLeft(c1), viewLeft(c2)) {
-        case (SomeLeft(x, rs), SomeLeft(y, qs)) => {
-            let a = f(x, y);
-            zipWithHelper(f, rs, qs, snoc(acc, a))
-        }
-        case _                                  => acc
-    }
+    pub def zipWith(f: (a, b) -> c & ef, c1: Chain[a], c2: Chain[b]): Chain[c] & ef =
+        def loop(cc1, cc2, acc) = match (viewLeft(cc1), viewLeft(cc2)) {
+            case (SomeLeft(a, rs), SomeLeft(b, qs)) => loop(rs, qs, snoc(acc, f(a, b)))
+            case _                                  => acc
+        };
+        loop(c1, c2, empty())
 
     ///
     /// Returns a pair of chains, the first containing all first components in `c`
