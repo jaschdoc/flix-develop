@@ -503,13 +503,17 @@ namespace Chain1 {
     /// Returns `c` if `n < 0`.
     ///
     pub def dropLeft(n: Int32, c: Chain[a]): Chain[a] =
-        if (n < 0)
-            c
-        else match (n, viewLeft(c)) {
-            case (_, NoneLeft)        => Empty
-            case (0, _)               => c
-            case (i, SomeLeft(_, rs)) => dropLeft(i - 1, rs)
-        }
+        def loop(i, cc) = {
+            if (i <= 0)
+                cc
+            else
+                match (i, viewLeft(cc)) {
+                    case (_, NoneLeft)        => Empty
+                    case (0, _)               => cc
+                    case (_, SomeLeft(_, rs)) => loop(i - 1, rs)
+                }
+        };
+        loop(n, c)
 
     ///
     /// Returns `c` without the last `n` elements.
@@ -518,13 +522,17 @@ namespace Chain1 {
     /// Returns `c` if `n < 0`.
     ///
     pub def dropRight(n: Int32, c: Chain[a]): Chain[a] =
-        if (n < 0)
-            c
-        else match (n, viewRight(c)) {
-            case (_, NoneRight)        => Empty
-            case (0, _)                => c
-            case (i, SomeRight(rs, _)) => dropRight(i - 1, rs)
-        }
+        def loop(i, cc) = {
+            if (i <= 0)
+                cc
+            else
+                match (i, viewRight(cc)) {
+                    case (_, NoneRight)        => Empty
+                    case (0, _)                => cc
+                    case (_, SomeRight(rs, _)) => dropRight(i - 1, rs)
+                }
+        };
+        loop(n, c)
 
     ///
     /// Returns `c` without the longest prefix that satisfies the predicate `f`.
