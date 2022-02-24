@@ -324,15 +324,14 @@ namespace Chain1 {
     ///
     /// That is, the result is of the form: `... f(xn-1, f(xn, s)) :: f(xn, s) :: s`.
     ///
-    pub def scanRight(f: (a, b) -> b & ef, s: b, c: Chain[a]): Chain[b] & ef = scanRightHelper(f, s, c, singleton(s))
-
-    ///
-    /// Helper function for `scanRight`.
-    ///
-    def scanRightHelper(f: (a, b) -> b & ef, s: b, c: Chain[a], acc: Chain[b]): Chain[b] & ef = match viewRight(c) {
-        case NoneRight        => acc
-        case SomeRight(rs, x) => {let a = f(x, s); scanRightHelper(f, a, rs, cons(a, acc))}
-    }
+    pub def scanRight(f: (a, b) -> b & ef, s: b, c: Chain[a]): Chain[b] & ef =
+        def loop(a, cc, acc) = match viewRight(cc) {
+            case NoneRight        => acc
+            case SomeRight(xs, x) =>
+                let aa = f(x, a);
+                loop(aa, xs, cons(aa, acc))
+        };
+        loop(s, c, singleton(s))
 
     ///
     /// Returns the result of applying `f` to every element in `c`.
