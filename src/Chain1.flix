@@ -85,7 +85,11 @@ instance ToString[Chain[a]] with ToString[a] {
 
 */
 namespace Chain1 {
+    use Chain.{ViewLeft, ViewRight};
+    use Chain.ViewLeft.{NoneLeft, SomeLeft};
+    use Chain.ViewRight.{NoneRight, SomeRight};
 
+/*
     ///
     /// A datatype for pattern matching on a chain (traversing left-to-right).
     ///
@@ -101,7 +105,7 @@ namespace Chain1 {
         case NoneRight
         case SomeRight(Chain[t], t)
     }
-
+*/
     ///
     /// Return the empty chain.
     ///
@@ -287,7 +291,10 @@ namespace Chain1 {
     ///
     /// Returns `Nil` if `n < 0`.
     ///
-    pub def repeat(n: Int32, a: a): Chain[a] = repeatHelper(n, a, Empty)
+    pub def repeat(n: Int32, a: a): Chain[a] =
+        def loop() = ???;
+        empty()
+    //repeatHelper(n, a, Empty)
 
     ///
     /// Helper function for `repeat`.
