@@ -283,7 +283,7 @@ namespace Chain1 {
     /// Returns `Nil` if `b >= e`.
     ///
     pub def range(b: Int32, e: Int32): Chain[Int32] =
-        def loop(i, c) = if (i >= e) c else loop(i + 1, snoc(c, b));
+        def loop(i, acc) = if (i >= e) acc else loop(i + 1, snoc(acc, i));
         loop(b, Chain.empty())
 
     ///
@@ -292,20 +292,13 @@ namespace Chain1 {
     /// Returns `Nil` if `n < 0`.
     ///
     pub def repeat(n: Int32, a: a): Chain[a] =
-        def loop() = ???;
-        empty()
-    //repeatHelper(n, a, Empty)
-
-    ///
-    /// Helper function for `repeat`.
-    ///
-    def repeatHelper(n: Int32, a: a, acc: Chain[a]): Chain[a] =
-        if (n <= 0)
-            acc
-        else {
-            let ac1 = cons(a, acc);
-            repeatHelper(n-1, a, ac1)
-        }
+        def loop(i, acc) = {
+            if (i <= 0)
+                acc
+            else
+                loop(i - 1, cons(a, acc))
+        };
+        loop(n, Empty)
 
     ///
     /// Alias for `scanLeft`.
