@@ -133,7 +133,7 @@ namespace Chain1 {
     }
 
     ///
-    /// Add element `x` to the left end of Chain `c`.
+    /// Add element `x` to the left end of chain `c`.
     ///
     pub def cons(x: a, c: Chain[a]): Chain[a] = match c {
         case Empty => One(x)
@@ -199,24 +199,13 @@ namespace Chain1 {
     ///
     /// Returns `NoneLeft` if the chain is empty.
     ///
-    pub def viewLeft(c: Chain[a]): ViewLeft[a] = viewLeftHelper(c, Empty, x -> x)
-
-    ///
-    /// Helper function for `viewLeft`.
-    ///
-    /// This traverses the chain from left-to-right, because the chain is represented
-    /// by a binary tree, the function may have recursively descend the tree to find
-    /// the leftmost node.
-    ///
-    /// Precondition: `c` has been properly formed with no internal `Empty` nodes.
-    /// This means that `Empty` can only be encountered on the first match and it
-    /// can ignore the accumulator which is also `Empty` the first time this is called.
-    ///
-    def viewLeftHelper(c: Chain[a], acc: Chain[a], k: ViewLeft[a] -> ViewLeft[a]): ViewLeft[a] = match c {
-        case Empty       => k(NoneLeft)
-        case One(x)      => k(SomeLeft(x, acc))
-        case Chain(l, r) => viewLeftHelper(l, append(r, acc),  k)
-    }
+    pub def viewLeft(c: Chain[a]): ViewLeft[a] =
+        def loop(cc, acc, k) = match cc {
+            case Empty       => k(NoneLeft)
+            case One(x)      => k(SomeLeft(x, acc))
+            case Chain(l, r) => loop(l, append(r, acc), k)
+        };
+        loop(c, Empty, identity)
 
     ///
     /// Deconstruct a Chain from right-to-left.
@@ -226,24 +215,13 @@ namespace Chain1 {
     ///
     /// Returns `NoneRight` if the chain is empty.
     ///
-    pub def viewRight(c: Chain[a]): ViewRight[a] = viewRightHelper(c, Empty, x -> x)
-
-    ///
-    /// Helper function for `viewRight`.
-    ///
-    /// This traverses the chain from right-to-left, because the chain is represented
-    /// by a binary tree, the function may have recursively descend the tree to find
-    /// the rightmost node.
-    ///
-    /// Precondition: `c` has been properly formed with no internal `Empty` nodes.
-    /// This means that `Empty` can only be encountered on the first match and it
-    /// can ignore the accumulator which is also `Empty` the first time this is called.
-    ///
-    def viewRightHelper(c: Chain[a], acc: Chain[a], k: ViewRight[a] -> ViewRight[a]): ViewRight[a] = match c {
-        case Empty       => k(NoneRight)
-        case One(x)      => k(SomeRight(acc, x))
-        case Chain(l, r) => viewRightHelper(r, append(acc, l),  k)
-    }
+    pub def viewRight(c: Chain[a]): ViewRight[a] =
+        def loop(cc, acc, k) = match cc {
+            case Empty       => k(NoneRight)
+            case One(x)      => k(SomeRight(acc, x))
+            case Chain(l, r) => loop(r, append(acc, l),  k)
+        };
+        loop(c, Empty, identity)
 
     ///
     /// Returns `true` if and only if `c` contains the element `a`.
