@@ -669,15 +669,12 @@ namespace Chain1 {
     /// Returns a pair of chains, the first containing all first components in `c`
     /// and the second containing all second components in `c`.
     ///
-    pub def unzip(c: Chain[(a, b)]): (Chain[a], Chain[b]) = unzipHelper(c, Chain.empty(), Chain.empty())
-
-    ///
-    /// Helper function for `unzip`.
-    ///
-    def unzipHelper(c: Chain[(a, b)], ac1: Chain[a], ac2: Chain[b]): (Chain[a], Chain[b]) = match viewLeft(c) {
-        case NoneLeft               => (ac1, ac2)
-        case SomeLeft((x1, x2), rs) => unzipHelper(rs, snoc(ac1, x1), snoc(ac2, x2))
-    }
+    pub def unzip(c: Chain[(a, b)]): (Chain[a], Chain[b]) =
+        def loop(cc, acc1, acc2) = match viewLeft(cc) {
+            case NoneLeft             => (acc1, acc2)
+            case SomeLeft((a, b), rs) => loop(rs, snoc(acc1, a), snoc(acc2, b))
+        };
+        loop(c, Chain.empty(), Chain.empty())
 
     ///
     /// `mapAccumLeft` is a stateful version of `map`. The accumulating paramter `s` is updated at each
