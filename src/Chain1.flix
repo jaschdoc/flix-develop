@@ -695,27 +695,24 @@ namespace Chain1 {
     /// step in a right-to-left traversal.
     ///
     pub def mapAccumRight(f: (s, a) -> (s, b) & ef, start: s, c: Chain[a]): (s, Chain[b]) & ef =
-        mapAccumRightHelper(f, start, c, (s1, ks) -> (s1, ks))
-
-    ///
-    /// Helper function for `mapAccumRight`.
-    ///
-    def mapAccumRightHelper(f: (s, a) -> (s, b) & ef, s1: s, c: Chain[a], k: (s, Chain[b]) -> (s, Chain[b])): (s, Chain[b]) & ef =
-        match viewRight(c) {
-            case NoneRight        => k(s1, empty())
-            case SomeRight(rs, x) => {
-                let (s2, x1) = f(s1, x);
-                mapAccumRightHelper(f, s2, rs, (s3, ks) -> k(s3, snoc(ks, x1)))
+        def loop(s1, cc, k) = match viewRight(cc) {
+            case NoneRight        => k((s1, empty()))
+            case SomeRight(rs, a) => {
+                let (s2, b) = f(s1, a);
+                loop(s2, rs, match (s3, ks) -> k((s3, snoc(ks, b))))
            }
-        }
+        };
+        loop(start, c, identity)
 
     ///
     /// Applies `f` to every element of `c`.
     ///
-    pub def foreach(f: a -> Unit & ef, c: Chain[a]): Unit & ef = match viewLeft(c) {
-        case NoneLeft        => ()
-        case SomeLeft(x, rs) => f(x); foreach(f, rs)
-    }
+    pub def foreach(f: a -> Unit & ef, c: Chain[a]): Unit & ef =
+        def loop(cc) = match viewLeft(cc) {
+            case NoneLeft        => ()
+            case SomeLeft(a, rs) => f(a); loop(rs)
+        };
+        loop(c)
 
     ///
     /// Returns `c` as a list.
