@@ -638,11 +638,11 @@ namespace List1 {
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, l: List[a]): b & ef =
-         def loop(t, ll) = match ll {
-            case Nil     => t
-            case x :: xs => loop(f(t, x), xs)
+         def loop(ll, acc) = match ll {
+            case Nil     => acc
+            case x :: xs => loop(xs, f(acc, x))
          };
-         loop(s, l)
+         loop(l, s)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `l` going from right to left.
@@ -650,7 +650,7 @@ namespace List1 {
     /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
     ///
     pub def foldRight(f: (a, b) -> b & ef, s: b, l: List[a]): b & ef =
-        def loop(l2, k) = match l2 {
+        def loop(ll, k) = match ll {
             case Nil     => k(s)
             case x :: xs => loop(xs, ks -> k(f(x, ks)))
         };
@@ -665,7 +665,7 @@ namespace List1 {
     /// The foldRightLazy function exists to allow early termination of a fold.
     ///
     pub def foldRightLazy(f: (a, Lazy[b]) -> b, s: b, l: List[a]): b =
-        def loop(l2) = match l2 {
+        def loop(ll) = match ll {
             case Nil     => s
             case y :: ys => f(y, lazy loop(ys))
         };
@@ -690,13 +690,15 @@ namespace List1 {
     ///
     /// Returns `None` if `l` is empty.
     ///
-    pub def reduceRight(f: (a, a) -> a & ef, l: List[a]): Option[a] & ef = match l {
-        case Nil     => None
-        case x :: xs => match reduceRight(f, xs) {
-            case None    => Some(x)
-            case Some(v) => Some(f(x, v))
-        }
-    }
+    pub def reduceRight(f: (a, a) -> a & ef, l: List[a]): Option[a] & ef =
+        def loop(ll, k) = match ll {
+            case Nil     => k(None)
+            case x :: xs => loop(xs, ks -> k(match ks {
+                case None    => Some(x)
+                case Some(v) => Some(f(x, v))
+            }))
+        };
+        loop(l, ks -> ks as & ef)
 
     ///
     /// Returns the number of elements in `l` that satisfy the predicate `f`.
