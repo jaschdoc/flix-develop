@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/*
 namespace TestChain {
 
 
@@ -1611,3 +1612,4 @@ namespace TestChain {
             Chain1.joinWith(x -> x + x, ",") == "11,22,33"
 
 }
+*/
