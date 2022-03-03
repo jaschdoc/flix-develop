@@ -306,8 +306,8 @@ namespace List1 {
         def loop(ll, k) = match ll {
             case Nil     => k(s :: Nil)
             case x :: xs => loop(xs, ks -> match ks {
-                case ss :: ys => k(f(x, ss) :: ss :: ys)
-                case _        => unreachable!()})
+                case ss :: _ => k(f(x, ss) :: ks)
+                case _       => unreachable!()})
         };
         loop(l, ks -> ks as & ef)
 
@@ -317,7 +317,7 @@ namespace List1 {
     /// That is, the result is of the form: `f(x1) :: f(x2) :: ...`.
     ///
     pub def map(f: a -> b & ef, l: List[a]): List[b] & ef =
-        def loop(l2, k) = match l2 {
+        def loop(ll, k) = match ll {
             case Nil     => k(Nil)
             case x :: xs => {
                 let y = f(x);
@@ -376,42 +376,32 @@ namespace List1 {
     /// That is, the result is of the form: `f(x1, 0) :: f(x2, 1) :: ...`.
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
-    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: List[a]): List[b] & ef = mapWithIndexHelper(f, l, 0, ks -> ks)
-
-    ///
-    /// Helper function for `mapWithIndex`.
-    ///
-    def mapWithIndexHelper(f: (a, Int32) -> b & ef, l: List[a], i: Int32, k: List[b] -> List[b]): List[b] & ef = match l {
-        case Nil     => k(Nil)
-        case x :: xs => {
-            let y = f(x, i);
-            mapWithIndexHelper(f, xs, i+1, ys -> k(y :: ys))
-        }
-    }
+    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: List[a]): List[b] & ef =
+        def loop(ll, i, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                let y = f(x, i);
+                loop(xs, i + 1, ys -> k(y :: ys))
+        };
+        loop(l, 0, identity)
 
     ///
     /// Returns the result of applying `f` to every element in `l` and concatenating the results.
     ///
     @Time(time(f) * length(l)) @Space(time(f) * length(l))
-    pub def flatMap(f: a -> List[b] & ef, l: List[a]): List[b] & ef = flatMapHelper(f, l, ks -> ks)
-
-    ///
-    /// Helper function for `flatMap`.
-    ///
-    def flatMapHelper(f: a -> List[b] & ef, l: List[a], k: List[b] -> List[b]): List[b] & ef = match l {
-        case Nil     => k(Nil)
-        case x :: xs => {
-            let y = f(x);
-            flatMapHelper(f, xs, ys -> k(y ::: ys))
-        }
-    }
+    pub def flatMap(f: a -> List[b] & ef, l: List[a]): List[b] & ef =
+        def loop(ll, acc) = match ll {
+            case Nil     => acc
+            case x :: xs => loop(xs, acc ::: f(x))
+        };
+        loop(l, Nil)
 
     ///
     /// Returns the reverse of `l`.
     ///
     @Time(length(l)) @Space(length(l))
     pub def reverse(l: List[a]): List[a] =
-        def loop(l2, acc) = match l2 {
+        def loop(ll, acc) = match ll {
             case Nil     => acc
             case x :: xs => loop(xs, x :: acc)
         };
