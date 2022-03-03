@@ -302,13 +302,14 @@ namespace List1 {
     ///
     /// That is, the result is of the form: `... f(xn-1, f(xn, s)) :: f(xn, s) :: s`.
     ///
-    pub def scanRight(f: (a, b) -> b & ef, s: b, l: List[a]): List[b] & ef = match l {
-        case Nil     => s :: Nil
-        case x :: xs => match scanRight(f, s, xs) {
-            case y :: ys => f(x, y) :: y :: ys
-            case _       => unreachable!()
-        }
-    }
+    pub def scanRight(f: (a, b) -> b & ef, s: b, l: List[a]): List[b] & ef =
+        def loop(ll, k) = match ll {
+            case Nil     => k(s :: Nil)
+            case x :: xs => loop(xs, ks -> match ks {
+                case ss :: ys => k(f(x, ss) :: ss :: ys)
+                case _        => unreachable!()})
+        };
+        loop(l, ks -> ks as & ef)
 
     ///
     /// Returns the result of applying `f` to every element in `l`.
