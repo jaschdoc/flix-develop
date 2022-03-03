@@ -529,24 +529,23 @@ namespace List1 {
     /// Helper function for `permutations` and `subsequences`.
     /// Returns `l` with `x` added to the beginning of each element in `l`.
     ///
-    def applyHelper(a: a, l: List[List[a]]): List[List[a]] = match l {
-        case Nil     => Nil
-        case x :: xs => (a :: x) :: applyHelper(a, xs)
-    }
+    def applyHelper(a: a, l: List[List[a]]): List[List[a]] =
+        def loop(ll, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs => loop(xs, ks -> k((a :: x) :: ks))
+        };
+        loop(l, identity)
 
     ///
     /// Returns `l` with `x` inserted between every two adjacent elements.
     ///
     @Time(length(l)) @Space(length(l))
-    pub def intersperse(a: a, l: List[a]): List[a] = intersperseHelper(a, l, ks -> ks)
-
-    ///
-    /// Helper function for `intersperse`.
-    ///
-    def intersperseHelper(a: a, l: List[a], k: List[a] -> List[a]): List[a] = match l {
-        case x1 :: x2 :: xs => intersperseHelper(a, x2 :: xs, ks -> k(x1 :: a :: ks))
-        case _              => k(l)
-    }
+    pub def intersperse(a: a, l: List[a]): List[a] =
+        def loop(ll, k) = match ll {
+            case x1 :: x2 :: xs => loop(x2 :: xs, ks -> k(x1 :: a :: ks))
+            case _              => k(ll)
+        };
+        loop(l, identity)
 
     ///
     /// Returns the concatenation of the elements in `l2` with the elements of `l1` inserted between every two adjacent elements.
