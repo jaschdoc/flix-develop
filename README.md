@@ -5,3 +5,8 @@ Repository for handling new features / experiments with the Flix programming lan
 - Generate LazyList tests: `bash mkllisttest.sh`
 - Generate markdown overview: `bash generate-overview.sh`
 - Run Flix Tests: `bash alltests`
+
+## Experiments
+- Parallel sorting algos (see sorting algos branch)
+- TODO: Matrix & vectors, gaussian elimination i.e. solving systems of linear equation
+- Math library? `Additive`, `Multiplicative` type classes?
