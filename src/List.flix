@@ -279,13 +279,6 @@ namespace List1 {
         loop(0, Nil)
 
     ///
-    /// Helper function for `repeat`.
-    ///
-    def repeatHelper(a: a, n: Int32, k: List[a] -> List[a]): List[a] =
-        if (n <= 0) k(Nil) else repeatHelper(a, n - 1, ks -> k(a :: ks))
-
-
-    ///
     /// Alias for `scanLeft`.
     ///
     pub def scan(f: (b, a) -> b & ef, s: b, l: List[a]): List[b] & ef = scanLeft(f, s, l)
@@ -295,15 +288,14 @@ namespace List1 {
     ///
     /// That is, the result is of the form: `s :: f(s, x1) :: f(f(s, x1), x2)  ...`.
     ///
-    pub def scanLeft(f: (b, a) -> b & ef, s: b, l: List[a]): List[b] & ef = s :: scanLeftHelper(f, s, l)
-
-    ///
-    /// Helper function for `scanLeft`.
-    ///
-    def scanLeftHelper(f: (b, a) -> b & ef, s: b, l: List[a]): List[b] & ef = match l {
-        case Nil     => Nil
-        case x :: xs => f(s, x) :: scanLeftHelper(f, f(s, x), xs)
-    }
+    pub def scanLeft(f: (b, a) -> b & ef, s: b, l: List[a]): List[b] & ef =
+        def loop(ll, k, acc) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                let y = f(acc, x);
+                loop(xs, ks -> k(y :: ks), y)
+        };
+        loop(l, ks -> s :: ks, s)
 
     ///
     /// Accumulates the result of applying `f` to `l` going right to left.
