@@ -553,16 +553,13 @@ namespace List1 {
     /// That is, returns `y1 :: x1 ... xn :: y2 :: ... yn-1 :: x1 :: ... :: xn :: yn :: Nil`.
     ///
     @Time(length(l2) * length(l1)) @Space(length(l2) * length(l1))
-    pub def intercalate(l1: List[a], l2: List[List[a]]): List[a] = intercalateHelper(l1, l2, ks -> ks)
-
-    ///
-    /// Helper function for `intercalate`.
-    ///
-    def intercalateHelper(l1: List[a], l2: List[List[a]], k: List[a] -> List[a]): List[a] = match l2 {
-        case Nil            => k(Nil)
-        case y :: Nil       => k(y)
-        case y1 :: y2 :: ys => intercalateHelper(l1, y2 :: ys, ks -> k(y1 ::: l1 ::: ks))
-    }
+    pub def intercalate(l1: List[a], l2: List[List[a]]): List[a] =
+        def loop(ll, k) = match ll {
+            case Nil            => k(Nil)
+            case y :: Nil       => k(y)
+            case y1 :: y2 :: ys => loop(y2 :: ys, ks -> k(y1 ::: l1 ::: ks))
+        };
+        loop(l2, identity)
 
     ///
     /// Returns the transpose of `l`.
