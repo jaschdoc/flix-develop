@@ -439,16 +439,13 @@ namespace List1 {
     /// Returns `l` if `i < 0` or `i > length(l)-1`.
     ///
     @Time(i) @Space(i)
-    pub def update(i: Int32, a: a, l: List[a]): List[a] = updateHelper(i, a, l, ks -> ks)
-
-    ///
-    /// Helper function for `update`.
-    ///
-    def updateHelper(i: Int32, a: a, l: List[a], k: List[a] -> List[a]): List[a] = match (i, l) {
-        case (_, Nil)     => k(l)
-        case (0, _ :: xs) => k(a :: xs)
-        case (p, x :: xs) => updateHelper(p - 1, a, xs, ks -> k(x :: ks))
-    }
+    pub def update(i: Int32, a: a, l: List[a]): List[a] =
+        def loop(ll, j, k) = match (j, ll) {
+            case (_, Nil)     => k(Nil)
+            case (0, _ :: xs) => k(a :: xs)
+            case (_, x :: xs) => loop(xs, j - 1, ks -> k(x :: ks))
+        };
+        loop(l, i, identity)
 
     ///
     /// Returns `l` with every occurrence of `from` replaced by `to`.
@@ -464,20 +461,17 @@ namespace List1 {
     /// If patching occurs at index `i+j` in `l2`, then the element at index `j` in `l1` is used.
     ///
     @Time(n) @Space(length(l2))
-    pub def patch(i: Int32, n: Int32, l1: List[a], l2: List[a]): List[a] = patchHelper(i, n, drop(-i, l1), l2, 0, ks -> ks)
-
-    ///
-    /// Helper function for `patch`.
-    ///
-    def patchHelper(i: Int32, n: Int32, l1: List[a], l2: List[a], c: Int32, k: List[a] -> List[a]): List[a] = match (l1, l2) {
-        case (x :: xs, y :: ys) => {
-            if (c >= i and c < i + n)
-                patchHelper(i, n, xs, ys, c + 1, ks -> k(x :: ks))
-            else
-                patchHelper(i, n, l1, ys, c + 1, ks -> k(y :: ks))
-        }
-        case _ => k(l2)
-    }
+    pub def patch(i: Int32, n: Int32, l1: List[a], l2: List[a]): List[a] =
+        def loop(ll1, ll2, c, k) = match (ll1, ll2) {
+            case (x :: xs, y :: ys) => {
+                if (c >= i and c < i + n)
+                    loop(xs, ys, c + 1, ks -> k(x :: ks))
+                else
+                    loop(l1, ys, c + 1, ks -> k(y :: ks))
+            }
+            case _ => k(ll2)
+        };
+        loop(drop(-i, l1), l2, 0, identity)
 
     ///
     /// Returns all permutations of `l` in lexicographical order by element indices in `l`.
