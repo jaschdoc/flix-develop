@@ -603,11 +603,13 @@ namespace List1 {
     /// Returns `true` if and only if `l1` is a prefix of `l2`.
     ///
     @Time(length(l1)) @Space(1)
-    pub def isPrefixOf(l1: List[a], l2: List[a]): Bool with Eq[a] = match (l1, l2) {
-        case (Nil, _)           => true
-        case (_, Nil)           => false
-        case (x :: xs, y :: ys) => if (x == y) isPrefixOf(xs, ys) else false
-    }
+    pub def isPrefixOf(l1: List[a], l2: List[a]): Bool with Eq[a] =
+        def loop(ll1, ll2) = match (ll1, ll2) {
+            case (Nil, _)           => true
+            case (_, Nil)           => false
+            case (x :: xs, y :: ys) => if (x == y) loop(xs, ys) else false
+        };
+        loop(l1, l2)
 
     ///
     /// Returns `true` if and only if `l1` is an infix of `l2`.
@@ -636,7 +638,7 @@ namespace List1 {
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, l: List[a]): b & ef =
-         def loop(t, l2) = match l2 {
+         def loop(t, ll) = match ll {
             case Nil     => t
             case x :: xs => loop(f(t, x), xs)
          };
