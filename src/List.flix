@@ -725,15 +725,12 @@ namespace List1 {
     /// Returns the concatenation of the elements in `l`.
     ///
     @Time(length(l)) @Space(length(l))
-    pub def flatten(l: List[List[a]]): List[a] = flattenHelper(l, ks -> ks)
-
-    ///
-    /// Helper function for `flatten`.
-    ///
-    def flattenHelper(l: List[List[a]], k: List[a] -> List[a]): List[a] = match l {
-        case Nil     => k(Nil)
-        case x :: xs => flattenHelper(xs, ks -> k(x ::: ks))
-    }
+    pub def flatten(l: List[List[a]]): List[a] =
+        def loop(ll, k) = match ll {
+            case Nil => k(Nil)
+            case x :: xs => loop(xs, ks -> k(x ::: ks))
+        };
+        loop(l, identity)
 
     ///
     /// Returns `true` if and only if at least one element in `l` satisfies the predicate `f`.
@@ -742,7 +739,7 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f))
     pub def exists(f: a -> Bool & ef, l: List[a]): Bool & ef =
-        def loop(l2) = match l2 {
+        def loop(ll) = match ll {
             case Nil     => false
             case x :: xs => if (f(x)) true else loop(xs)
         };
@@ -755,7 +752,7 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f))
     pub def forall(f: a -> Bool & ef, l: List[a]): Bool & ef =
-        def loop(l2) = match l2 {
+        def loop(ll) = match ll {
             case Nil     => true
             case x :: xs => if (not f(x)) false else loop(xs)
         };
@@ -766,28 +763,24 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
     pub def filter(f: a -> Bool & ef, l: List[a]): List[a] & ef =
-        def loop(l2, k) = match l2 {
+        def loop(ll, k) = match ll {
             case Nil     => k(Nil)
             case x :: xs => if (f(x)) loop(xs, ks -> k(x :: ks)) else loop(xs, k)
         };
         loop(l, ks -> ks as & ef) // NB: Cast required because the identity continuation is pure,
                                   // but the intermediate continuations are effect polymorphic
-
     ///
     /// Returns the sublist of `l` without the last element.
     /// Returns `None` if the list `l` is `Nil`.
     ///
     @Time(length(l)) @Space(length(l))
-    pub def init(l: List[a]): Option[List[a]] = initHelper(l, Nil)
-
-    ///
-    /// Helper function for `init`.
-    ///
-    def initHelper(l: List[a], acc: List[a]): Option[List[a]] = match l {
-        case Nil      => None
-        case _ :: Nil => Some(reverse(acc))
-        case x :: xs  => initHelper(xs, x :: acc)
-    }
+    pub def init(l: List[a]): Option[List[a]] =
+        def loop(ll, k) = match ll {
+            case Nil      => None
+            case _ :: Nil => Some(k(Nil))
+            case x :: xs  => loop(xs, ks -> k(x :: ks))
+        };
+        loop(l, identity)
 
     ///
     /// Returns the sublist of `l` from index `b` (inclusive) to index `e` (exclusive).
