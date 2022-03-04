@@ -1043,17 +1043,13 @@ namespace List1 {
     ///
     @Time(time(f) * Int32.min(length(l1), length(l2))) @Space(space(f) * Int32.min(length(l1), length(l2)))
     pub def foldRight2(f: (a, b, c) -> c & ef, c: c, l1: List[a], l2: List[b]): c & ef =
+        def loop(ll1, ll2, k) = match (ll1, ll2) {
+            case (x :: xs, y :: ys) => loop(xs, ys, ks -> k(f(x, y, ks)))
+            case _                  => k(c)
+        };
         let len1 = length(l1);
         let len2 = length(l2);
-            foldRight2Helper(f, c, drop(len1 - len2, l1), drop(len2 - len1, l2))
-
-    ///
-    /// Helper function for `foldRight2`.
-    ///
-    def foldRight2Helper(f: (a, b, c) -> c & ef, c: c, l1: List[a], l2: List[b]): c & ef = match (l1, l2) {
-        case (x :: xs, y :: ys) => f(x, y, foldRight2(f, c, xs, ys))
-        case _ => c
-    }
+        loop(drop(len1 - len2, l1), drop(len2 - len1, l2), ks -> ks as & ef)
 
     ///
     /// Collects the results of applying the partial function `f` to every element in `l`.
