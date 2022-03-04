@@ -1284,16 +1284,13 @@ namespace List1 {
     ///
     /// `next` should return `Err(e)` to signal that an error occurred. The function returns `Err(e)`.
     ///
-    pub def unfoldWithOkIter(next: Unit -> Result[Option[a], e] & ef): Result[List[a], e] & ef = unfoldWithOkIterHelper(next, ks -> ks)
-
-    ///
-    /// Helper function for `unfoldWithOkIter`.
-    ///
-    def unfoldWithOkIterHelper(next: Unit -> Result[Option[a], e] & ef, k: Result[List[a], e] -> Result[List[a], e]): Result[List[a], e] & ef = match next() {
-        case Ok(None)    => k(Ok(Nil))
-        case Err(e)      => k(Err(e))
-        case Ok(Some(a)) => unfoldWithOkIterHelper(next, Result.flatMap(ks -> k(Ok(a :: ks))))
-    }
+    pub def unfoldWithOkIter(next: Unit -> Result[Option[a], e] & ef): Result[List[a], e] & ef =
+        def loop(k) = match next() {
+            case Ok(None)    => k(Ok(Nil))
+            case Err(e)      => k(Err(e))
+            case Ok(Some(x)) => loop(Result.flatMap(ks -> k(Ok(x :: ks))))
+        };
+        loop(identity)
 
     ///
     /// Returns the list `l` with duplicates removed. The first occurence of
