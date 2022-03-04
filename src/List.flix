@@ -809,19 +809,16 @@ namespace List1 {
     /// `l2` contains all elements of `l` that do not satisfy the predicate `f`.
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
-    pub def partition(f: a -> Bool & ef, l: List[a]): (List[a], List[a]) & ef = partitionHelper(f, l, (ks, ls) -> (ks, ls))
-
-    ///
-    /// Helper function for `partition`.
-    ///
-    def partitionHelper(f: a -> Bool & ef, l: List[a], k: (List[a], List[a]) -> (List[a], List[a])): (List[a], List[a]) & ef = match l {
-        case Nil     => k(Nil, Nil)
-        case x :: xs =>
-            if (f(x))
-                partitionHelper(f, xs, (ks, ls) -> k(x :: ks, ls))
-            else
-                partitionHelper(f, xs, (ks, ls) -> k(ks, x :: ls))
-    }
+    pub def partition(f: a -> Bool & ef, l: List[a]): (List[a], List[a]) & ef =
+        def loop(ll, k) = match ll {
+            case Nil => k((Nil, Nil))
+            case x :: xs =>
+                if (f(x))
+                    loop(xs, match (ks, ls) -> k((x :: ks, ls)))
+                else
+                    loop(xs, match (ks, ls) -> k((ks, x :: ls)))
+        };
+        loop(l, identity)
 
     ///
     /// Returns a pair of lists `(l1, l2)`.
