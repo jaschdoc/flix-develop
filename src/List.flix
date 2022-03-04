@@ -908,13 +908,13 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
     pub def groupBy(f: (a, a) -> Bool, l: List[a]): List[List[a]] =
-        def loop(l1, k) = match l1 {
-            case Nil => k(Nil)
+        def loop(ll, k) = match ll {
+            case Nil     => k(Nil)
             case x :: xs =>
-                let (r1, r2) = extractHelper(f, xs, x :: Nil, ks -> ks);
+                let (r1, r2) = extractHelper(f, xs, x :: Nil);
                 loop(r2, ks -> k(r1 :: ks))
         };
-        loop(l, ks -> ks)
+        loop(l, identity)
 
     ///
     /// Helper function for `groupBy`.
@@ -922,18 +922,22 @@ namespace List1 {
     /// The list `l2` is needed by `agreeHelper` so it must be materialized (rather than a continuation).
     /// We have no choice but to reverse it.
     ///
-    def extractHelper(f: (a, a) -> Bool, l1: List[a], l2: List[a], k: List[a] -> List[a]): (List[a], List[a]) = match l1 {
-        case Nil     => (reverse(l2), k(Nil))
-        case x :: xs => if (agreeHelper(f, x, l2)) extractHelper(f, xs, x :: l2, k) else extractHelper(f, xs, l2, ks -> k(x :: ks))
-    }
+    def extractHelper(f: (a, a) -> Bool, l1: List[a], l2: List[a]): (List[a], List[a]) =
+        def loop(ll, ll2, k) = match ll {
+            case Nil     => (reverse(ll2), k(Nil))
+            case x :: xs => if (agreeHelper(f, x, ll2)) loop(xs, x :: ll2, k) else loop(xs, ll2, ks -> k(x :: ks))
+        };
+        loop(l1, l2, identity)
 
     ///
     /// Helper function for `groupBy`.
     ///
-    def agreeHelper(f: (a, a) -> Bool, a: a, l: List[a]): Bool = match l {
-        case Nil     => true
-        case x :: xs => if (f(x, a) and f(a, x)) agreeHelper(f, a, xs) else false
-    }
+    def agreeHelper(f: (a, a) -> Bool, a: a, l: List[a]): Bool =
+        def loop(ll) = match ll {
+            case Nil     => true
+            case x :: xs => if (f(x, a) and f(a, x)) loop(xs) else false
+        };
+        loop(l)
 
     ///
     /// Returns a list where the element at index `i` is `(a, b)` where
