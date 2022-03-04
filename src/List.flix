@@ -1252,15 +1252,12 @@ namespace List1 {
     ///
     /// `f` should return `None` to signal the end of building the list.
     ///
-    pub def unfold(f: s -> Option[(a, s)] & ef, st: s): List[a] & ef = unfoldHelper(f, st, ks -> ks)
-
-    ///
-    /// Helper function for `unfold`.
-    ///
-    def unfoldHelper(f: s -> Option[(a, s)] & ef, st: s, k: List[a] -> List[a]): List[a] & ef = match f(st) {
-        case None         => k(Nil)
-        case Some(a, st1) => unfoldHelper(f, st1, ks -> k(a :: ks))
-    }
+    pub def unfold(f: s -> Option[(a, s)] & ef, st: s): List[a] & ef =
+        def loop(sst, k) = match f(sst) {
+            case None         => k(Nil)
+            case Some(a, st1) => loop(st1, ks -> k(a :: ks))
+        };
+        loop(st, identity)
 
     ///
     /// Build a list by applying the function `next` to `()`. `next` is expected to encapsulate
