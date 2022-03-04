@@ -1056,18 +1056,15 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
     pub def filterMap(f: a -> Option[b] & ef, l: List[a]): List[b] & ef =
-        filterMapHelper(f, l, ks -> ks)
+        def loop(ll, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs => match f(x) {
+                case None    => loop(xs, k)
+                case Some(v) => loop(xs, ks -> k(v :: ks))
+            }
+        };
+        loop(l, identity)
 
-    ///
-    /// Helper function for `filterMap`.
-    ///
-    def filterMapHelper(f: a -> Option[b] & ef, l: List[a], k: List[b] -> List[b]): List[b] & ef = match l {
-        case Nil     => k(Nil)
-        case x :: xs => match f(x) {
-            case None    => filterMapHelper(f, xs, k)
-            case Some(v) => filterMapHelper(f, xs, vs -> k(v :: vs))
-        }
-    }
     ///
     /// Returns the first non-None result of applying the partial function `f` to each element of `l`.
     ///
