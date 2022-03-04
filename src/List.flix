@@ -946,15 +946,12 @@ namespace List1 {
     /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
     ///
     @Time(Int32.min(length(l1), length(l2))) @Space(Int32.min(length(l1), length(l2)))
-    pub def zip(l1: List[a], l2: List[b]): List[(a, b)] = zipHelper(l1, l2, ks -> ks)
-
-    ///
-    /// Helper function for `zip`.
-    ///
-    def zipHelper(l1: List[a], l2: List[b], k: List[(a,b)] -> List[(a, b)]): List[(a, b)] = match (l1, l2) {
-            case (x :: xs, y :: ys) => zipHelper(xs, ys, ks -> k((x, y) :: ks))
+    pub def zip(l1: List[a], l2: List[b]): List[(a, b)] =
+        def loop(ll1, ll2, k) = match (ll1, ll2) {
+            case (x :: xs, y :: ys) => loop(xs, ys, ks -> k((x, y) :: ks))
             case _                  => k(Nil)
-        }
+        };
+        loop(l1, l2, identity)
 
     ///
     /// Returns a list where the element at index `i` is `f(a, b)` where
@@ -963,18 +960,14 @@ namespace List1 {
     /// If either `l1` or `l2` becomes depleted, then no further elements are added to the resulting list.
     ///
     @Time(time(f) * Int32.min(length(l1), length(l2))) @Space(space(f) * Int32.min(length(l1), length(l2)))
-    pub def zipWith(f: (a, b) -> c & ef, l1: List[a], l2: List[b]): List[c] & ef = zipWithHelper(f, l1, l2, ks -> ks)
-
-    ///
-    /// Helper function for `zipWith`.
-    ///
-    def zipWithHelper(f: (a, b) -> c & ef, l1: List[a], l2: List[b], k: List[c] -> List[c]): List[c] & ef = match (l1, l2) {
-        case (x :: xs, y :: ys) => {
-            let z = f(x, y);
-            zipWithHelper(f, xs, ys, ks -> k(z :: ks))
-        }
-        case _ => k(Nil)
-    }
+    pub def zipWith(f: (a, b) -> c & ef, l1: List[a], l2: List[b]): List[c] & ef =
+        def loop(ll1, ll2, k) = match (ll1, ll2) {
+            case (x :: xs, y :: ys) =>
+                let z = f(x, y);
+                loop(xs, ys, ks -> k(z :: ks))
+            case _ => k(Nil)
+        };
+        loop(l1, l2, identity)
 
     ///
     /// Returns a pair of lists, the first containing all first components in `l`
