@@ -1012,15 +1012,12 @@ namespace List1 {
     /// the second containing all second components in `l` and the third containing all
     /// third components in `l`.
     ///
-    pub def unzip3(l: List[(a, b, c)]): (List[a], List[b], List[c]) = unzip3Helper(l, (ks1, ks2, ks3) -> (ks1, ks2, ks3))
-
-    ///
-    /// Helper function for `unzip3`.
-    ///
-    def unzip3Helper(l: List[(a, b, c)], k: (List[a], List[b], List[c]) -> (List[a], List[b], List[c])): (List[a], List[b], List[c]) = match l {
-        case Nil                => k(Nil, Nil, Nil)
-        case (x1, x2, x3) :: xs => unzip3Helper(xs, (ks1, ks2, ks3) -> k(x1 :: ks1, x2 :: ks2, x3 :: ks3))
-    }
+    pub def unzip3(l: List[(a, b, c)]): (List[a], List[b], List[c]) =
+        def loop(ll, k) = match ll {
+            case Nil             => k((Nil, Nil, Nil))
+            case (x, y, z) :: xs => loop(xs, match (ks, ls, ms) -> k((x :: ks, y :: ls, z :: ms)))
+        };
+        loop(l, identity)
 
     ///
     /// Helper function for `flatMap2`.
