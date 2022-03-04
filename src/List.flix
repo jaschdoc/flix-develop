@@ -975,11 +975,11 @@ namespace List1 {
     ///
     @Time(length(l)) @Space(length(l))
     pub def unzip(l: List[(a, b)]): (List[a], List[b]) =
-        def loop(l2, k) = match l2 {
-            case Nil            => k(Nil, Nil)
-            case (x1, x2) :: xs => loop(xs, (ks1, ks2) -> k(x1 :: ks1, x2 :: ks2))
+        def loop(ll, k) = match ll {
+            case Nil            => k((Nil, Nil))
+            case (x1, x2) :: xs => loop(xs, match (ks, ls) -> k((x1 :: ks, x2 :: ls)))
         };
-        loop(l, (ks1, ks2) -> (ks1, ks2))
+        loop(l, identity)
 
     ///
     /// Returns a list where the element at index `i` is `(a, b, c)` where
