@@ -999,19 +999,13 @@ namespace List1 {
     /// If any one of `l1`, `l2` or `l3` become depleted, then no further elements are added to the resulting list.
     ///
     pub def zipWith3(f: (a, b, c) -> d & ef, l1: List[a], l2: List[b], l3: List[c]): List[d] & ef =
-        zipWith3Helper(f, l1, l2, l3, ks -> ks)
-
-    ///
-    /// Helper function for `zipWith3`.
-    ///
-    def zipWith3Helper(f: (a, b, c) -> d & ef, l1: List[a], l2: List[b], l3: List[c], k: List[d] -> List[d]): List[d] & ef =
-        match (l1, l2, l3) {
-            case (x :: xs, y :: ys, z :: zs) => {
+        def loop(ll1, ll2, ll3, k) = match (ll1, ll2, ll3) {
+            case (x :: xs, y :: ys, z :: zs) =>
                 let r = f(x, y, z);
-                zipWith3Helper(f, xs, ys, zs, ks -> k(r :: ks))
-            }
+                loop(xs, ys, zs, ks -> k(r :: ks))
             case _ => k(Nil)
-        }
+        };
+        loop(l1, l2, l3, identity)
 
     ///
     /// Returns a triple of lists, the first containing all first components in `l`
