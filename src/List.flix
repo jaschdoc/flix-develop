@@ -1134,11 +1134,10 @@ namespace List1 {
     ///
     /// Returns `l` as a mutable list.
     ///
-    pub def toMutList(l: List[a]): MutList[a] & Impure = {
+    pub def toMutList(l: List[a]): MutList[a] & Impure =
         let v = MutList.new();
         foreach(x -> MutList.push!(x, v), l);
         v
-    }
 
     ///
     /// Returns the list `l` as a set.
@@ -1176,10 +1175,12 @@ namespace List1 {
     /// Applies `f` to every element of `l`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def foreach(f: a -> Unit & ef, l: List[a]): Unit & ef = match l {
-        case Nil     => ()
-        case x :: xs => f(x); foreach(f, xs)
-    }
+    pub def foreach(f: a -> Unit & ef, l: List[a]): Unit & ef =
+        def loop(ll) = match ll {
+            case Nil     => ()
+            case x :: xs => f(x); loop(xs)
+        };
+        loop(l)
 
     ///
     /// Returns the list `l` as an array.
