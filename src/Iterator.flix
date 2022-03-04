@@ -605,6 +605,7 @@ namespace Iterator1 {
     ///
     /// Does *not* consume any elements from either iterator.
     ///
+    @Lazy
     pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
@@ -672,11 +673,14 @@ namespace Iterator1 {
     /// Forwards the iterator the first non-empty iterator produced by `next`.
     ///
     def intercalateForward(done: Done, next: Next[Iterator[a]]): Option[Iterator[a]] & Impure =
-        if (done())
-            None
-        else
-            let Iterator(d, n) = next();
-            if (d()) intercalateForward(done, next) else Some(Iterator(d, n))
+        def loop() = {
+            if (done())
+                None
+            else
+                let Iterator(d, n) = next();
+                if (d()) loop() else Some(Iterator(d, n))
+        };
+        loop()
 
     ///
     /// Returns the concatenation of the string representation
