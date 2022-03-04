@@ -303,6 +303,7 @@ namespace Iterator1 {
     ///
     /// The original iterator `iter` should not be reused.
     ///
+    @Lazy
     pub def filterL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
 
@@ -346,6 +347,7 @@ namespace Iterator1 {
     ///
     /// Does *not* consume any elements from the iterator.
     ///
+    @Lazy
     pub def mapL(f: a -> b, iter: Iterator[a]): Iterator[b] =
         let Iterator(done, next) = iter;
         let next1 = () -> f(next());
@@ -356,6 +358,7 @@ namespace Iterator1 {
     ///
     /// Does *not* consume any elements from the iterator.
     ///
+    @Lazy
     pub def replace(from: {from :: a}, to: {to :: a}, iter: Iterator[a]): Iterator[a] with Eq[a] =
         let Iterator(done, next) = iter;
         let next1 = () -> {
@@ -371,6 +374,7 @@ namespace Iterator1 {
     ///
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
+    @Lazy
     pub def append(iterA: Iterator[a], iterB: Iterator[a]): Iterator[a] =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
@@ -390,6 +394,7 @@ namespace Iterator1 {
     ///
     /// An iterator should never be zipped with itself.
     ///
+    @Lazy
     pub def zip(iterA: Iterator[a], iterB: Iterator[b]): Iterator[(a, b)] =
         let Iterator(doneA, nextA) = iterA;
         let Iterator(doneB, nextB) = iterB;
@@ -409,6 +414,7 @@ namespace Iterator1 {
     ///
     /// An iterator should never be zipped with itself.
     ///
+    @Lazy
     pub def zipWithL(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
         let Iterator(done, next) = zip(iterA, iterB);
         let next1 = () -> {
@@ -430,7 +436,7 @@ namespace Iterator1 {
     /// An iterator should never be zipped with itself.
     ///
     pub def zipWith(f: (a, b) -> c & ef, iterA: Iterator[a], iterB: Iterator[b]): List[c] & Impure =
-        zip(iterA, iterB) |> map(xy -> f(fst(xy), snd(xy)))
+        zip(iterA, iterB) |> map(match (x, y) -> f(x, y))
 
     ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
