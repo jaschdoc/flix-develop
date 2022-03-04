@@ -1332,14 +1332,12 @@ namespace List1 {
     ///
     /// This is a generalization of `memberOf` that uses the function `f` for comparison.
     ///
-    def memberOfWith(f: (a, a) -> Bool, a: a, l: List[a]): Bool = match l {
-        case Nil     => false
-        case x :: xs =>
-            if (f(a, x))
-                true
-            else
-                memberOfWith(f, a, xs)
-    }
+    def memberOfWith(f: (a, a) -> Bool, a: a, l: List[a]): Bool =
+        def loop(ll) = match ll {
+            case Nil     => false
+            case x :: xs => if (f(a, x)) true else loop(xs)
+        };
+        loop(l)
 
     ///
     /// Returns the sum of all elements in the list `l`.
