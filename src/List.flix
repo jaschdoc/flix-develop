@@ -1267,16 +1267,12 @@ namespace List1 {
     ///
     /// `next` should return `None` to signal the end of building the list.
     ///
-    pub def unfoldWithIter(next: Unit -> Option[a] & ef): List[a] & ef = unfoldWithIterHelper(next, ks -> ks)
-
-    ///
-    /// Helper function for `unfoldWithIter`.
-    ///
-    def unfoldWithIterHelper(next: Unit -> Option[a] & ef, k: List[a] -> List[a]): List[a] & ef = match next() {
-        case None    => k(Nil)
-        case Some(a) => unfoldWithIterHelper(next, ks -> k(a :: ks))
-    }
-
+    pub def unfoldWithIter(next: Unit -> Option[a] & ef): List[a] & ef =
+        def loop(k) = match next() {
+            case None    => k(Nil)
+            case Some(x) => loop(ks -> k(x :: ks))
+        };
+        loop(identity)
 
     ///
     /// Build a list by applying the function `next` to `()`. `next` is expected to encapsulate
