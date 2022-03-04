@@ -790,21 +790,17 @@ namespace List1 {
     ///
     @Time(e - b) @Space(e - b)
     pub def slice(b: Int32, e: Int32, l: List[a]): List[a] =
-        if (b < e) sliceHelper(b, e, l, 0, ks -> ks) else Nil
-
-    ///
-    /// Helper function for `slice`.
-    ///
-    /// Precondition:  b < e
-    ///
-    def sliceHelper(b: Int32, e: Int32, l: List[a], i: Int32, k: List[a] -> List[a]): List[a] = match l {
-        case Nil     => k(Nil)
-        case x :: xs => match i {
-            case pos if (pos < b)  => sliceHelper(b, e, xs, i + 1, k)
-            case pos if (pos >= e) => k(Nil)
-            case _                 => sliceHelper(b, e, xs, i + 1, ks -> k(x :: ks))
-        }
-    }
+        def loop(ll, i, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                if (i < b)
+                    loop(xs, i + 1, k)
+                else if (i >= e)
+                    k(Nil)
+                else
+                    loop(xs, i + 1, ks -> k(x :: ks))
+        };
+        if (b < e) loop(l, 0, identity) else Nil
 
     ///
     /// Returns a pair of lists `(l1, l2)`.
