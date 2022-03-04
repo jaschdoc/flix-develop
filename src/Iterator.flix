@@ -14,24 +14,26 @@
  * limitations under the License.
  */
 
+/*
 
 ///
 /// The type of the done function.
 ///
-//type alias Done = Unit ~> Bool
+type alias Done = Unit -> Bool & Impure
 
 ///
 /// The type of the next function.
 ///
-//type alias Next[a] = Unit ~> a
+type alias Next[a] = Unit -> a & Impure
 
 ///
 /// An iterator is a stream of elements that are produced on demand.
 ///
-//pub enum Iterator[a] {
-//    case Iterator(Done, Next[a])
-//}
+pub enum Iterator[a] {
+    case Iterator(Done, Next[a])
+}
 
+*/
 
 namespace Iterator1 {
 
@@ -61,29 +63,7 @@ namespace Iterator1 {
         Iterator(done, next)
 
     ///
-    /// Returns an iterator that unfolds `f` until the resource at `x` is null.
-    ///
-    /// Assumes that `f` eventually exhausts the resource at `x`.
-    ///
-    /// Assumes `f` may throw a Java `RuntimeException`.
-    ///
-    pub def ofException(f: Unit -> a & ef, x: Ref[a]): Iterator[Result[a, String]] =
-        let done = () -> Object.isNull(deref x);
-        let next = () -> Result.try(f) as & Impure;
-        Iterator(done, next)
-
-    ///
-    /// Returns an iterator that unfolds `f` until the resource at `x` is null.
-    ///
-    /// Assumes that `f` eventually exhausts the resource at `x`.
-    ///
-    pub def ofNullable(f: Unit -> a & ef, x: Ref[a]): Iterator[a] =
-        let done = () -> Object.isNull(deref x);
-        let next = () -> f() as & Impure; // if `f` is pure it cannot be
-        Iterator(done, next)
-
-    ///
-    /// Return `Some(x)` if `iter` is not empty. Return `None` otherwise.
+    /// Returns `Some(x)` if `iter` is not empty. Returns `None` otherwise.
     ///
     /// Consumes the head element of `iter`.
     ///
@@ -95,10 +75,20 @@ namespace Iterator1 {
             Some(next())
 
     ///
+    /// Returns true if the iterator is empty.
+    ///
+    /// Does **not** consume any elements of the iterator.
+    ///
+    pub def isEmpty(iter: Iterator[a]): Bool & Impure =
+        let Iterator(done, _) = iter;
+        done()
+
+    ///
     /// Returns an iterator of all integers between `b` (inclusive) and `e` (exclusive).
     ///
     /// Returns an empty iterator if `b >= e`.
     ///
+    @Lazy
     pub def range(b: Int32, e: Int32): Iterator[Int32] & Impure =
         let i = ref b;
         let done = () -> deref i >= e;
@@ -119,6 +109,7 @@ namespace Iterator1 {
     ///
     /// Returns an empty iterator if `n < 0`.
     ///
+    @Lazy
     pub def repeat(n: Int32, x: a): Iterator[a] & Impure =
         let i = ref 0;
         let done = () -> deref i >= n;
@@ -135,7 +126,47 @@ namespace Iterator1 {
         Iterator(done, next)
 
     ///
+    /// Returns the sum of all elements in the iterator `iter`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def sum(iter: Iterator[Int32]): Int32 & Impure =
+        foldLeft((acc, x) -> acc + x, 0, iter)
+
+    ///
+    /// Returns the sum of all elements in the iterator `iter` according to the function `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def sumWith(f: a -> Int32 & ef, iter: Iterator[a]): Int32 & Impure =
+        foldLeft((acc, x) -> acc + f(x), 0, iter)
+
+    ///
+    /// Returns the product of all elements in the iterator `iter`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def product(iter: Iterator[Int32]): Int32 & Impure =
+        if (isEmpty(iter))
+            0
+        else
+            foldLeft((acc, x) -> acc * x, 1, iter)
+
+    ///
+    /// Returns the product of all elements in the iterator `iter` according to the function `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def productWith(f: a -> Int32 & ef, iter: Iterator[a]): Int32 & Impure =
+        if (isEmpty(iter))
+            0
+        else
+            foldLeft((acc, x) -> acc * f(x), 1, iter)
+
+    ///
     /// Returns an array with the elements of `iter`.
+    ///
+    /// Consumes the entire iterator.
     ///
     pub def toArray(iter: Iterator[a]): Array[a] & Impure =
         let Iterator(done, next) = iter;
@@ -198,6 +229,28 @@ namespace Iterator1 {
     }
 
     ///
+    /// Returns the contents of `iter` as a nec. Consumes the entire iterator.
+    ///
+    pub def toNec(iter: Iterator[a]): Option[Nec[a]] & Impure =
+        let Iterator(done, next) = iter;
+        toNecAcc(done, next, ks -> ks)
+
+    ///
+    /// Helper function for `toNec`.
+    ///
+    def toNecAcc(done: Done, next: Next[a], k: Option[Nec[a]] -> Option[Nec[a]]): Option[Nec[a]] & Impure =
+        if (done()) {
+            k(None)
+        }
+        else {
+            let x = next();
+            toNecAcc(done, next, k1 -> match k1 {
+                case None      => k(Some(Nec.singleton(x)))
+                case Some(nec) => k(Some(Nec.cons(x, nec)))
+            })
+        }
+
+    ///
     /// Returns the contents of `iter` as a set. Consumes the entire iterator.
     ///
     pub def toSet(iter: Iterator[a]): Set[a] & Impure with Order[a] =
@@ -238,6 +291,8 @@ namespace Iterator1 {
     ///
     /// That is, the result is of the form: `f(x1) :: f(x2) :: ...`.
     ///
+    /// Consumes the entire iterator.
+    ///
     pub def map(f: a -> b & ef, iter: Iterator[a]): List[b] & Impure =
         let Iterator(done, next) = iter;
         mapAcc(f, done, next, ks -> ks)
@@ -255,6 +310,8 @@ namespace Iterator1 {
     ///
     /// Applies `f` to every element of `iter`.
     ///
+    /// Consumes the entire iterator.
+    ///
     pub def foreach(f: a -> Unit & ef, iter: Iterator[a]): Unit & Impure =
         let Iterator(done, next) = iter;
         foreachHelper(f, done, next)
@@ -268,16 +325,15 @@ namespace Iterator1 {
         else
             let _ = f(next());
             foreachHelper(f, done, next)
-
     ///
     /// Returns an iterator with every element of the iterator `iter` that
     /// satisfies the predicate `f`.
-	///
-	/// Does *not* consume any elements from the iterator.
-	///
-	/// The original iterator `iter` should not be reused.
     ///
-	pub def lazyFilter(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
+    /// Does *not* consume any elements from the iterator.
+    ///
+    /// The original iterator `iter` should not be reused.
+    ///
+    pub def filterL(f: a -> Bool, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
 
         // Allocate a reference to hold the next element.
@@ -303,10 +359,10 @@ namespace Iterator1 {
         };
         Iterator(done1, next1)
 
-	///
-	/// Fast forwards the given iterator until the next element that satisfies
-	/// the given predicate `f`. Returns it (if it exists).
-	///
+    ///
+    /// Fast forwards the given iterator until the next element that satisfies
+    /// the given predicate `f`. Returns it (if it exists).
+    ///
     def forward(f: a -> Bool & ef, done: Done, next: Next[a]): Option[a] & Impure =
         if (done())
             None
@@ -320,21 +376,21 @@ namespace Iterator1 {
     ///
     /// Does *not* consume any elements from the iterator.
     ///
-    pub def lazyMap(f: a -> b, iter: Iterator[a]): Iterator[b] =
+    pub def mapL(f: a -> b, iter: Iterator[a]): Iterator[b] =
         let Iterator(done, next) = iter;
         let next1 = () -> f(next());
         Iterator(done, next1)
 
     ///
-    /// Returns an iterator with every occurrence of `x` replaced by `y` in `iter`.
+    /// Returns an iterator with every occurrence of `from` replaced by `to` in `iter`.
     ///
     /// Does *not* consume any elements from the iterator.
     ///
-    pub def replace(x: a, y: a, iter: Iterator[a]): Iterator[a] with Eq[a] =
+    pub def replace(from: {from :: a}, to: {to :: a}, iter: Iterator[a]): Iterator[a] with Eq[a] =
         let Iterator(done, next) = iter;
         let next1 = () -> {
             let el = next();
-            if (el == x) y else el
+            if (el == from.from) to.to else el
         };
         Iterator(done, next1)
 
@@ -373,17 +429,17 @@ namespace Iterator1 {
 
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
-    /// `a` is the element at index `i` in `xs` and `b` is the element at index `i` in `ys`.
+    /// `a` is the element at index `i` in `iterA` and `b` is the element at index `i` in `iterB`.
     ///
     /// Does *not* consume any elements from either iterator.
     ///
-    /// If either `xs` or `ys` becomes depleted, then no further elements are added to the resulting list.
+    /// If either `iterA` or `iterB` becomes depleted, then no further elements are added to the resulting list.
     ///
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
     /// An iterator should never be zipped with itself.
     ///
-    pub def lazyZipWith(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
+    pub def zipWithL(f: (a, b) -> c, iterA: Iterator[a], iterB: Iterator[b]): Iterator[c] =
         let Iterator(done, next) = zip(iterA, iterB);
         let next1 = () -> {
             let (x, y) = next();
@@ -393,11 +449,11 @@ namespace Iterator1 {
 
     ///
     /// Returns an iterator where the element at index `i` is `f(a, b)` where
-    /// `a` is the element at index `i` in `xs` and `b` is the element at index `i` in `ys`.
+    /// `a` is the element at index `i` in `iterA` and `b` is the element at index `i` in `iterB`.
     ///
     /// Consumes the entire iterator.
     ///
-    /// If either `xs` or `ys` becomes depleted, then no further elements are added to the resulting list.
+    /// If either `iterA` or `iterB` becomes depleted, then no further elements are added to the resulting list.
     ///
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
@@ -441,6 +497,32 @@ namespace Iterator1 {
             None
         else
             Some(foldLeft(f, next(), iter))
+
+    ///
+    /// Returns an iterator over the results of `f`.
+    ///
+    /// If `f` returns `Ok(x)`, then the next element is `x`.
+    ///
+    /// If `f` returns `Err(e)`, then the iterator is depleted.
+    ///
+    pub def unfoldWithOk(f: Unit -> Result[a, b] & ef): Iterator[a] & Impure =
+        let cursor = ref None;
+        let done = () -> match deref cursor {
+            case None    => match f() {
+                case Err(_) => true
+                case Ok(x)  =>
+                    cursor := Some(x);
+                    false
+            }
+            case Some(_) => false
+        };
+        let next = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(x) =>
+                cursor := None;
+                x
+        };
+        Iterator(done, next)
 
     ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
@@ -543,43 +625,11 @@ namespace Iterator1 {
         Iterator(done, next1)
 
     ///
-    ///
-    ///
-    pub def flatten(iter: Iterator[Iterator[a]]): Iterator[a] & Impure =
-        let Iterator(done, next) = iter;
-        let cursor = ref None;
-        let done1 = () -> match deref cursor {
-            case None => match intercalateForward(done, next) { // refactor to use `forward` instead
-                case None    => true
-                case Some(i) =>
-                    cursor := Some(i);
-                    false
-            }
-            case Some(i) =>
-                let Iterator(d, _) = i;
-                if (d())
-                    match intercalateForward(done, next) { // refactor to use `forward` instead
-                        case None    => true
-                        case Some(it) =>
-                          cursor := Some(it);
-                          false
-                    }
-                else
-                    false
-        };
-        let next1 = () -> match deref cursor {
-            case None    => bug!("Empty Iterator!")
-            case Some(i) =>
-                let Iterator(_, n) = i;
-                n()
-        };
-        Iterator(done1, next1)
-
-
-    ///
     /// Returns the concatenation of the elements in `iterB` with the elements of `iterA` inserted between every two adjacent elements.
     ///
     /// That is, returns `b1 :: a1 ... an :: b2 :: ... bn-1 :: a1 :: ... :: an :: bn :: Nil`.
+    ///
+    /// Does *not* consume any elements from either iterator.
     ///
     pub def intercalate(iterA: Iterator[a], iterB: Iterator[Iterator[a]]): Iterator[a] & Impure =
         let Iterator(doneA, nextA) = iterA;
@@ -644,8 +694,6 @@ namespace Iterator1 {
         };
         Iterator(done1, next1)
 
-    // TODO: Refactor `flatMapForward` and `intercalateForward` to use `foward`.
-
     ///
     /// Forwards the iterator the first non-empty iterator produced by `next`.
     ///
@@ -657,57 +705,25 @@ namespace Iterator1 {
             if (d()) intercalateForward(done, next) else Some(Iterator(d, n))
 
     ///
-    /// Returns an iterator over the results of `f`.
-    ///
-    /// If `f` returns `Ok(x)`, then the next element is `x`.
-    ///
-    /// If `f` returns `Err(e)`, then the iterator is depleted.
-    ///
-    pub def unfoldWithOk(f: Unit -> Result[a, b] & ef): Iterator[a] & Impure =
-        let cursor = ref None;
-        let done = () -> match f() {
-            case Err(_) => true
-            case Ok(x)  =>
-                cursor := Some(x);
-                false
-        };
-        let next = () -> match deref cursor {
-            case None    => bug!("Empty Iterator!")
-            case Some(x) =>
-                cursor := None;
-                x
-        };
-        Iterator(done, next)
-
-
-    ///
-    /// Returns the sum of all elements in the iterator `iter`.
-    ///
-    pub def sum(iter: Iterator[Int32]): Int32 & Impure =
-        sumWith(x -> x, iter)
-
-    ///
-    /// Returns the sum of all elements in the iterator `iter` according to the function `f`.
-    ///
-    pub def sumWith(f: a -> Int32 & ef, iter: Iterator[a]): Int32 & Impure =
-        let Iterator(done, next) = iter;
-        def loop(acc) =
-            if (done())
-                acc
-            else
-                loop(f(next()) + acc);
-        loop(0)
-
-    ///
     /// Returns the concatenation of the string representation
     /// of each element in `iter` with `sep` inserted between each element.
     ///
     /// Consumes the entire iterator.
     ///
     pub def join(sep: String, iter: Iterator[a]): String & Impure with ToString[a] =
+        joinWith(x -> ToString.toString(x), sep, iter)
+
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `iter` according to `f` with `sep` inserted between each element.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def joinWith(f: a -> String & ef, sep: String, iter: Iterator[a]): String & Impure =
+        use StringBuilder.append!;
+        let lastSep = String.length(sep);
         let sb = StringBuilder.new();
-        foldLeft((_, x) -> StringBuilder.append!(sb, "${x}" + sep), (), iter);
-        StringBuilder.toString(sb) |> String.dropRight(1)
+        foldLeft((_, x) -> { append!(sb, f(x)); append!(sb, sep) }, (), iter);
+        StringBuilder.toString(sb) |> String.dropRight(lastSep)
 
 }
-
