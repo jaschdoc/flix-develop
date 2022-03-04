@@ -447,16 +447,13 @@ namespace Iterator1 {
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, iter: Iterator[a]): b & Impure =
         let Iterator(done, next) = iter;
-        foldLeftHelper(f, s, done, next)
-
-    ///
-    /// Helper function for `foldLeft`.
-    ///
-    def foldLeftHelper(f: (b, a) -> b & ef, s: b, done: Done, next: Next[a]): b & Impure =
-        if (done())
-            s
-        else
-            foldLeftHelper(f, f(s, next()), done, next)
+        def loop(acc) = {
+            if (done())
+                acc
+            else
+                loop(f(acc, next()))
+        };
+        loop(s)
 
     ///
     /// Applies `f` to all elements in `iter` going from left to right until a single value `v` is obtained.  Returns `Some(v)`.
