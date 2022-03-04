@@ -811,7 +811,7 @@ namespace List1 {
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
     pub def partition(f: a -> Bool & ef, l: List[a]): (List[a], List[a]) & ef =
         def loop(ll, k) = match ll {
-            case Nil => k((Nil, Nil))
+            case Nil     => k((Nil, Nil))
             case x :: xs =>
                 if (f(x))
                     loop(xs, match (ks, ls) -> k((x :: ks, ls)))
@@ -829,19 +829,16 @@ namespace List1 {
     /// The function `f` must be pure.
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
-    pub def span(f: a -> Bool, l: List[a]): (List[a], List[a]) = spanHelper(f, l, (ks, ls) -> (ks, ls))
-
-    ///
-    /// Helper function for `span`.
-    ///
-    def spanHelper(f: a -> Bool, l: List[a], k: (List[a], List[a]) -> (List[a], List[a])): (List[a], List[a]) = match l {
-        case Nil     => k(Nil, Nil)
-        case x :: xs =>
-            if (f(x))
-                spanHelper(f, xs, (ks, ls) -> k(x :: ks, ls))
-            else
-                k(Nil, l)
-    }
+    pub def span(f: a -> Bool, l: List[a]): (List[a], List[a]) =
+        def loop(ll, k) = match ll {
+            case Nil     => k((Nil, Nil))
+            case x :: xs =>
+                if (f(x))
+                    loop(xs, match (ks, ls) -> k((x :: ks, ls)))
+                else
+                    k((Nil, ll))
+        };
+        loop(l, identity)
 
     ///
     /// Returns `l` without the first `n` elements.
