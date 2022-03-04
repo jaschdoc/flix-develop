@@ -892,15 +892,11 @@ namespace List1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
     pub def takeWhile(f: a -> Bool & ef, l: List[a]): List[a] & ef =
-        takeWhileHelper(f, l, ks -> ks as & ef)
-
-    ///
-    /// Helper function for `takeWhile`.
-    ///
-    def takeWhileHelper(f: a -> Bool & ef, l: List[a], k: List[a] -> List[a] & ef): List[a] & ef = match l {
-        case Nil     => k(Nil)
-        case x :: xs => if (f(x)) takeWhileHelper(f, xs, ks -> k(x :: ks)) else k(Nil)
-    }
+        def loop(ll, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs => if (f(x)) loop(xs, ks -> k(x :: ks)) else k(Nil)
+        };
+        loop(l, identity)
 
     ///
     /// Partitions `l` into sublists such that for any two elements `x` and `y` in a sublist, `f(x, y)` is true.
