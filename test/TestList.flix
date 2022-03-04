@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/*
+
 namespace TestList {
 
     use ToString.toString;
@@ -2601,3 +2603,4 @@ def distinctWith09(): Bool =
         List1.toMutDeque(1 :: 2 :: 3 :: Nil) |> MutDeque.toList == 1 :: 2 :: 3 :: Nil
 
 }
+*/
