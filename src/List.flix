@@ -877,16 +877,15 @@ namespace List1 {
     ///
     @Time(n) @Space(n)
     pub def take(n: Int32, l: List[a]): List[a] =
-        def loop(m, l2, k) =
-            if (m < 0)
+        def loop(ll, i, k) =
+            if (i <= 0)
                 k(Nil)
             else
-                match (m, l2) {
-                    case (_, Nil)     => k(Nil)
-                    case (0, _)       => k(Nil)
-                    case (i, x :: xs) => loop(i - 1, xs, ks -> k(x :: ks))
+                match ll {
+                    case Nil     => k(Nil)
+                    case x :: xs => loop(xs, i - 1, ks -> k(x :: ks))
                 };
-        loop(n, l, ks -> ks)
+        loop(l, n, identity)
 
     ///
     /// Returns the longest prefix of `l` that satisfies the predicate `f`.
