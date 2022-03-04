@@ -1301,19 +1301,15 @@ namespace List1 {
     /// need a custom equality test.
     ///
     pub def distinct(l: List[a]): List[a] with Eq[a] =
-        distinctHelper(l, Nil, ks -> ks)
-
-    ///
-    /// Helper function for `distinct`.
-    ///
-    def distinctHelper(l1: List[a], l2: List[a], k: List[a] -> List[a]): List[a] with Eq[a] = match l1 {
-        case Nil     => k(Nil)
-        case x :: xs =>
-            if (memberOf(x, l2))
-                distinctHelper(xs, l2, k)
-            else
-                distinctHelper(xs, (x :: l2), ks -> k(x :: ks))
-    }
+        def loop(ll1, ll2, k) = match ll1 {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                if (memberOf(x, ll2))
+                    loop(xs, ll2, k)
+                else
+                    loop(xs, x :: ll2, ks -> k(x :: ks))
+        };
+        loop(l, Nil, identity)
 
     ///
     /// Returns the list `l` with duplicates removed using the supplied function
@@ -1321,19 +1317,15 @@ namespace List1 {
     /// for the removal of subsequent duplicates the order of `l` is preserved.
     ///
     pub def distinctWith(f: (a, a) -> Bool, l: List[a]): List[a] =
-        distinctWithHelper(f, l, Nil, ks -> ks)
-
-    ///
-    /// Helper function for `distinctWith`.
-    ///
-    def distinctWithHelper(f: (a, a) -> Bool, l1: List[a], l2: List[a], k: List[a] -> List[a]): List[a] = match l1 {
-        case Nil     => k(Nil)
-        case x :: xs =>
-            if (memberOfWith(f, x, l2))
-                distinctWithHelper(f, xs, l2, k)
-            else
-                distinctWithHelper(f, xs, (x :: l2), ks -> k(x :: ks))
-    }
+        def loop(ll1, ll2, k) = match ll1 {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                if (memberOfWith(f, x, ll2))
+                    loop(xs, ll2, k)
+                else
+                    loop(xs, x :: ll2, ks -> k(x :: ks))
+        };
+        loop(l, Nil, identity)
 
     ///
     /// Helper function for `distinctWith`.
