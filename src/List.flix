@@ -848,15 +848,15 @@ namespace List1 {
     ///
     @Time(n) @Space(length(l) - n)
     pub def drop(n: Int32, l: List[a]): List[a] =
-        def loop(m, l2) =
-            if (m <= 0)
-                l2
+        def loop(ll, i) =
+            if (i <= 0)
+                ll
             else
-                match (m, l2) {
-                    case (_, Nil)     => Nil
-                    case (i, _ :: xs) => loop(i - 1, xs)
+                match ll {
+                    case Nil     => Nil
+                    case _ :: xs => loop(xs, i - 1)
                 };
-        loop(n, l)
+        loop(l, n)
 
     ///
     /// Returns `l` without the longest prefix that satisfies the predicate `f`.
