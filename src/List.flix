@@ -1071,13 +1071,15 @@ namespace List1 {
     /// Returns `None` if every element of `l` is `None`.
     ///
     @Time(time(f) * length(l)) @Space(space(f))
-    pub def findMap(f: a -> Option[b] & ef, l: List[a]): Option[b] & ef = match l {
-        case Nil     => None
-        case x :: xs => match f(x) {
-            case None    => findMap(f, xs)
-            case Some(v) => Some(v)
-        }
-    }
+    pub def findMap(f: a -> Option[b] & ef, l: List[a]): Option[b] & ef =
+        def loop(ll) = match ll {
+            case Nil     => None
+            case x :: xs => match f(x) {
+                case None    => loop(xs)
+                case Some(v) => Some(v)
+            }
+        };
+        loop(l)
 
     ///
     /// Render the list `l` as a String. Elements are rendered with the
