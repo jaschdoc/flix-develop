@@ -1391,18 +1391,18 @@ namespace List1 {
     /// Returns the result of running all the actions in the list `l`.
     ///
     pub def sequence(l: List[m[a]]): m[List[a]] with Applicative[m] =
-        def loop(l2, k) = match l2 {
+        def loop(ll, k) = match ll {
             case Nil      => k(Applicative.point(Nil))
             case mx :: rs => loop(rs, ks -> k(consA(mx, ks)))
         };
-        loop(l, ks -> ks)
+        loop(l, identity)
 
     ///
     /// Returns the result of applying the applicative mapping function `f` to all the elements of the
     /// list `l`.
     ///
     pub def traverse(f: a -> m[b] & ef, l: List[a]): m[List[b]] & ef with Applicative[m] =
-        def loop(l2, k) = match l2 {
+        def loop(ll, k) = match ll {
             case Nil     => k(Applicative.point(Nil))
             case x :: xs => loop(xs, ks -> k(consA(f(x), ks)))
         };
