@@ -335,12 +335,14 @@ namespace Iterator1 {
     /// the given predicate `f`. Returns it (if it exists).
     ///
     def forward(f: a -> Bool & ef, done: Done, next: Next[a]): Option[a] & Impure =
-        if (done())
-            None
-        else {
-            let e = next();
-            if (f(e)) Some(e) else forward(f, done, next)
-        }
+        def loop() = {
+            if (done())
+                None
+            else
+                let e = next();
+                if (f(e)) Some(e) else loop()
+        };
+        loop()
 
     ///
     /// Returns an iterator with every `f` lazily applied to each element in `iter`.
@@ -478,6 +480,7 @@ namespace Iterator1 {
     ///
     /// If `f` returns `Err(e)`, then the iterator is depleted.
     ///
+    @Lazy
     pub def unfoldWithOk(f: Unit -> Result[a, b] & ef): Iterator[a] & Impure =
         let cursor = ref None;
         let done = () -> match deref cursor {
@@ -504,21 +507,14 @@ namespace Iterator1 {
     ///
     pub def takeWhile(f: a -> Bool & ef, iter: Iterator[a]): List[a] & Impure =
         let Iterator(done, next) = iter;
-        takeWhileAcc(f, done, next, ks -> ks as & ef) // NB: Cast required because the identity continuation is pure,
-                                                      // but the intermediate continuations are effect polymorphic
-
-    ///
-    /// Helper function for `takeWhile`.
-    ///
-    def takeWhileAcc(f: a -> Bool & ef, done: Done, next: Next[a], k: List[a] -> List[a] & ef): List[a] & Impure =
-        if (done())
-            k(Nil)
-        else
-            let x = next();
-            if (f(x))
-                takeWhileAcc(f, done, next, ks -> k(x :: ks))
-            else
+        def loop(k) = {
+            if (done())
                 k(Nil)
+            else
+                let x = next();
+                if (f(x)) loop(ks -> k(x :: ks)) else k(Nil)
+        };
+        loop(identity)
 
     ///
     /// Returns `iter` without the longest prefix that satisfies the predicate `f`.
@@ -537,6 +533,7 @@ namespace Iterator1 {
     ///
     /// Does *not* consume any elements from the iterator.
     ///
+    @Lazy
     pub def flatMap(f: a -> Iterator[b] & ef, iter: Iterator[a]): Iterator[b] & Impure =
         let Iterator(done, next) = iter;
         let cursor = ref None;
@@ -571,17 +568,21 @@ namespace Iterator1 {
     /// Forwards the given iterator to the first non-empty iterator produced by `f`.
     ///
     def flatMapForward(f: a -> Iterator[b] & ef, done: Done, next: Next[a]): Option[Iterator[b]] & Impure =
-        if (done())
-            None
-        else
-            let Iterator(d, n) = f(next());
-            if (d()) flatMapForward(f, done, next) else Some(Iterator(d, n))
+        def loop() = {
+            if (done())
+                None
+            else
+                let Iterator(d, n) = f(next());
+                if (d()) loop() else Some(Iterator(d, n))
+        };
+        loop()
 
     ///
     /// Returns an iterator with `a` inserted between every of `iter`.
     ///
     /// Does *not* consume any elements from the iterator.
     ///
+    @Lazy
     pub def intersperse(x: a, iter: Iterator[a]): Iterator[a] & Impure =
         let Iterator(done, next) = iter;
         let returnX = ref false;
