@@ -252,18 +252,14 @@ namespace Iterator1 {
     ///
     pub def filter(f: a -> Bool & ef, iter: Iterator[a]): List[a] & Impure =
         let Iterator(done, next) = iter;
-        filterAcc(f, done, next, ks -> ks)
-
-    ///
-    /// Helper function for `filter`.
-    ///
-    def filterAcc(f: a -> Bool & ef, done: Done, next: Next[a], k: List[a] -> List[a]): List[a] & Impure =
-        if (done())
-            k(Nil)
-        else
-            let x = next();
-            let include = f(x);
-            if (include) filterAcc(f, done, next, ks -> k(x :: ks)) else filterAcc(f, done, next, k)
+        def loop(k) = {
+            if (done())
+                k(Nil)
+            else
+                let x = next();
+                if (f(x)) loop(ks -> k(x :: ks)) else loop(k)
+        };
+        loop(identity)
 
     ///
     /// Returns a list with `f` applied to every element in `iter`.
@@ -274,17 +270,14 @@ namespace Iterator1 {
     ///
     pub def map(f: a -> b & ef, iter: Iterator[a]): List[b] & Impure =
         let Iterator(done, next) = iter;
-        mapAcc(f, done, next, ks -> ks)
-
-    ///
-    /// Helper function for `map`.
-    ///
-    def mapAcc(f: a -> b & ef, done: Done, next: Next[a], k: List[b] -> List[b]): List[b] & Impure =
-        if (done())
-            k(Nil)
-        else
-            let x = f(next());
-            mapAcc(f, done, next, ks -> k(x :: ks))
+        def loop(k) = {
+            if (done())
+                k(Nil)
+            else
+                let x = f(next());
+                loop(ks -> k(x :: ks))
+        };
+        loop(identity)
 
     ///
     /// Applies `f` to every element of `iter`.
