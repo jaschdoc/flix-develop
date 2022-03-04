@@ -286,17 +286,15 @@ namespace Iterator1 {
     ///
     pub def foreach(f: a -> Unit & ef, iter: Iterator[a]): Unit & Impure =
         let Iterator(done, next) = iter;
-        foreachHelper(f, done, next)
+        def loop() = {
+            if (done())
+                ()
+            else
+                let _ = f(next());
+                loop()
+        };
+        loop()
 
-    ///
-    /// Helper function for `foreach`.
-    ///
-    def foreachHelper(f: a -> Unit & ef, done: Done, next: Next[a]): Unit & Impure =
-        if (done())
-            ()
-        else
-            let _ = f(next());
-            foreachHelper(f, done, next)
     ///
     /// Returns an iterator with every element of the iterator `iter` that
     /// satisfies the predicate `f`.
