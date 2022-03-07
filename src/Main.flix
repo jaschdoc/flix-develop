@@ -1,3 +1,3 @@
 def main(_args: Array[String]): Int32 & Impure =
-    println(f(true));
+    println("Ran main!");
     0

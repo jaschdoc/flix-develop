@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
 namespace TestIterator {
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1222,3 +1222,4 @@ namespace TestIterator {
             Iterator1.joinWith(x -> x + x, ",") == "11,22,33"
 
 }
+*/
