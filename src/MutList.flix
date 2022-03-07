@@ -249,17 +249,16 @@ namespace MutList1 {
     /// searching from right to left.
     ///
     pub def indexOfRight(x: a, v: MutList[a]): Option[Int32] & Impure with Eq[a] =
-        let MutList(a, l) = v;
-        indexOfRightHelper(x, deref a, (deref l) - 1)
-
-    ///
-    /// Helper function for `indexOfRight`.
-    ///
-    def indexOfRightHelper(x: a, a: Array[a], i: Int32): Option[Int32] & Impure with Eq[a] =
-        if (i < 0)
-            None
-        else
-            if (x == a[i]) Some(i) else indexOfRightHelper(x, a, i - 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i < 0)
+                None
+            else
+                if (x == a[i]) Some(i) else loop(i - 1)
+        };
+        loop(l - 1)
 
     ///
     /// Alias for `findLeft`.
