@@ -173,17 +173,16 @@ namespace MutList1 {
     /// Returns `false` if the given mutable list `v` is empty.
     ///
     pub def exists(f: a -> Bool, v: MutList[a]): Bool & Impure =
-        let MutList(a, l) = v;
-        existsHelper(f, deref a, deref l, 0)
-
-    ///
-    /// Helper function for `exists`.
-    ///
-    def existsHelper(f: a -> Bool, a: Array[a], len: Int32, i: Int32): Bool & Impure =
-        if (i >= len)
-            false
-        else
-            f(a[i]) or existsHelper(f, a, len, i + 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                false
+            else
+                if (f(a[i])) true else loop(i + 1)
+        };
+        loop(0)
 
     ///
     /// Returns `true` if the given predicate `f` holds for all elements of the given mutable list `v`.
@@ -191,17 +190,16 @@ namespace MutList1 {
     /// Returns `true` if the given mutable list `v` is empty.
     ///
     pub def forall(f: a -> Bool, v: MutList[a]): Bool & Impure =
-        let MutList(a, l) = v;
-        forallHelper(f, deref a, deref l, 0)
-
-    ///
-    /// Helper function for `forall`.
-    ///
-    def forallHelper(f: a -> Bool, a: Array[a], len: Int32, i: Int32): Bool & Impure =
-        if (i >= len)
-            true
-        else
-            f(a[i]) and existsHelper(f, a, len, i + 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                true
+            else
+                if (f(a[i])) loop(i + 1) else false
+        };
+        loop(0)
 
     ///
     /// Optionally returns the first element of the given mutable list `v`.
