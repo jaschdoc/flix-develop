@@ -22,7 +22,7 @@
 ///   - The length is always higher than the total capacity of the array.
 ///   - The capacity of the array is always 8 or more.
 ///
-pub enum MutList1[a] {
+pub enum MutList[a] {
     case MutList(Ref[Array[a]], Ref[Int32])
 }
 
@@ -233,17 +233,16 @@ namespace MutList1 {
     /// searching from left to right.
     ///
     pub def indexOfLeft(x: a, v: MutList[a]): Option[Int32] & Impure with Eq[a] =
-        let MutList(a, l) = v;
-        indexOfLeftHelper(x, deref a, deref l, 0)
-
-    ///
-    /// Helper function for `indexOfLeft`.
-    ///
-    def indexOfLeftHelper(x: a, a: Array[a], len: Int32, i: Int32): Option[Int32] & Impure with Eq[a] =
-        if (i >= len)
-            None
-        else
-            if (x == a[i]) Some(i) else indexOfLeftHelper(x, a, len, i + 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                None
+            else
+                if (x == a[i]) Some(i) else loop(i + 1)
+        };
+        loop(0)
 
     ///
     /// Optionally returns the position of the first occurrence of `x` in `v`
