@@ -355,9 +355,25 @@ namespace MutList1 {
     /// The result is a new mutable list.
     ///
     pub def map(f: a -> b & ef, v: MutList[a]): MutList[b] & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        MutList(ref Array.init(i -> f((deref a)[i]), len), ref len)
+        if (isEmpty(v))
+            new()
+        else {
+            let MutList(ra, rl) = v;
+            let a = deref ra;
+            let l = deref rl;
+            let x = f(a[0]);
+            let b = [x; Array.length(a)];
+            def loop(i) = {
+                if (i >= l)
+                    ()
+                else {
+                    b[i] = f(a[i]);
+                    loop(i + 1)
+                }
+            };
+            loop(1);
+            MutList(ref b, ref l)
+        }
 
     ///
     /// Apply `f` to every element in `v`.
