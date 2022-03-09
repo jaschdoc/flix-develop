@@ -529,9 +529,9 @@ namespace MutList1 {
         let MutList(a, l) = v;
         let len = deref l;
         if (len > minCapacity())
-            MutList(ref Array.slice(0, len, deref a), ref len)
+            MutList(ref Array.copyOfRange(0, len, deref a), ref len)
         else
-            MutList(ref Array.slice(0, capacity(v), deref a), ref len)
+            MutList(ref Array.copyOfRange(0, capacity(v), deref a), ref len)
 
     ///
     /// Optionally removes and returns the last element in the given mutable list `v`.
@@ -573,7 +573,7 @@ namespace MutList1 {
         if (capacity(v) - len == 0)
             reserve!(len, v)
         else ();
-        let sub = Array.slice(i, len, deref a);
+        let sub = Array.copyOfRange(i, len, deref a);
         Array.updateSequence!(i + 1, sub, deref a);
         (deref a)[i] = x;
         l := len + 1
@@ -586,26 +586,26 @@ namespace MutList1 {
     /// If the given index `i` exceeds the length of the mutable list, no element is removed.
     ///
     pub def remove!(i: Int32, v: mut MutList[a]): Unit & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        if (i < len) {
-            removeHelper!(i, len, deref a);
-            l := len - 1;
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        let n = l - 1;
+        def loop(i) = {
+            if (i < n) {
+                a[i] = a[i + 1];
+                loop(i + 1)
+            }
+            else if (i == n) {
+                a[i] = $DEFAULT$
+            }
+            else
+                ()
+        };
+        if (i < l) {
+            loop(i);
+            rl := n;
             compress!(v)
         }
-        else
-            ()
-
-    ///
-    /// Helper function for `remove!`.
-    ///
-    def removeHelper!(i: Int32, n: Int32, a: Array[a]): Unit & Impure =
-        if (i < n - 1) {
-            a[i] = a[i + 1];
-            removeHelper!(i + 1, n, a)
-        }
-        else if (i == n - 1)
-            a[i] = $DEFAULT$
         else
             ()
 
