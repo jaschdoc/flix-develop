@@ -316,11 +316,11 @@ namespace MutList1 {
         let l = deref rl;
         let n = l + 1;
         let b = [s; n];
-        def loop(i, ss) = {
+        def loop(i, acc) = {
             if (i >= n)
                 ()
             else {
-                let s1 = f(ss, a[i - 1]);
+                let s1 = f(acc, a[i - 1]);
                 b[i] = s1;
                 loop(i + 1, s1)
             }
@@ -337,11 +337,11 @@ namespace MutList1 {
         let l = deref rl;
         let n = l + 1;
         let b = [s; n];
-        def loop(i, ss) = {
+        def loop(i, acc) = {
             if (i < 0)
                 ()
             else {
-                let s1 = f(a[i], ss);
+                let s1 = f(a[i], acc);
                 b[i] = s1;
                 loop(i - 1, s1)
             }
@@ -439,18 +439,18 @@ namespace MutList1 {
     /// That is, the result is of the form: `f(...f(f(s, a[0]), a[1])..., xn)`.
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, v: MutList[a]): b & Impure =
-        let len = length(v);
-        foldLeftHelper(f, s, v, len, 0)
-
-    ///
-    /// Helper function for `foldLeft`.
-    ///
-    def foldLeftHelper(f: (b, a) -> b & ef, s: b, v: MutList[a], len: Int32, i: Int32): b & Impure =
-        if (i < len)
-            let s1 = f(s, get(i, v)) as & Impure;
-            foldLeftHelper(f, s1, v, len, i + 1)
-        else
-            s
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i, acc) = {
+            if (i >= l)
+                acc
+            else {
+                let s1 = f(acc, a[i]);
+                loop(i + 1, s1)
+            }
+        };
+        loop(0, s)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `a` going from left to right.
