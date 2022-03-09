@@ -299,7 +299,6 @@ namespace MutList1 {
                 None
             else
                 if (f(a[i])) Some(a[i]) else loop(i - 1)
-
         };
         loop(l - 1)
 
@@ -312,23 +311,22 @@ namespace MutList1 {
     /// Accumulates the result of applying `f` to `v` going left to right.
     ///
     pub def scanLeft(f: (b, a) -> b & ef, s: b, v: MutList[a]): MutList[b] & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        let b = [s; len + 1];
-        scanLeftHelper(f, s, deref a, b, 1, len + 1);
-        MutList(ref b, ref (len + 1))
-
-    ///
-    /// Helper function for `scanLeft`.
-    ///
-    def scanLeftHelper(f: (b, a) -> b & ef, s: b, a: Array[a], b: Array[b], i: Int32, n: Int32): Unit & Impure =
-        if (i >= n)
-            ()
-        else {
-            let s1 = f(s, a[i - 1]);
-            b[i] = s1;
-            scanLeftHelper(f, s1, a, b, i + 1, n)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        let n = l + 1;
+        let b = [s; n];
+        def loop(i, ss) = {
+            if (i >= n)
+                ()
+            else {
+                let s1 = f(ss, a[i - 1]);
+                b[i] = s1;
+                loop(i + 1, s1)
+            }
+        };
+        loop(1, s);
+        MutList(ref b, ref n)
 
     ///
     /// Accumulates the result of applying `f` to `v` going right to left.
