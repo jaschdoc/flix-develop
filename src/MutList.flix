@@ -396,27 +396,42 @@ namespace MutList1 {
     /// Returns the result of applying `f` to every element in `v` along with that element's index.
     ///
     pub def mapWithIndex(f: (a, Int32) -> b & ef, v: MutList[a]): MutList[b] & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        MutList(ref Array.init(i -> f((deref a)[i], i), len), ref len)
+        if (isEmpty(v))
+            new()
+        else {
+            let MutList(ra, rl) = v;
+            let a = deref ra;
+            let l = deref rl;
+            let x = f(a[0], 0);
+            let b = [x; Array.length(a)];
+            def loop(i) = {
+                if (i >= l)
+                    ()
+                else {
+                    b[i] = f(a[i], i);
+                    loop(i + 1)
+                }
+            };
+            loop(1);
+            MutList(ref b, ref l)
+        }
 
     ///
     /// Apply `f` to every element in `v` along with that element's index.
     ///
     pub def transformWithIndex!(f: (a, Int32) -> a, v: mut MutList[a]): Unit & Impure =
-        let MutList(a, l) = v;
-        transformWithIndexHelper!(f, deref a, 0, deref l)
-
-    ///
-    /// Helper function for `transformWithIndex!`
-    ///
-    def transformWithIndexHelper!(f: (a, Int32) -> a, a: Array[a], i: Int32, n: Int32): Unit & Impure =
-        if (i >= n)
-            ()
-        else {
-            a[i] = f(a[i], i);
-            transformWithIndexHelper!(f, a, i + 1, n)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                ()
+            else {
+                a[i] = f(a[i], i);
+                loop(i + 1)
+            }
+        };
+        loop(0)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `a` going from left to right.
