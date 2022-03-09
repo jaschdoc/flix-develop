@@ -332,23 +332,22 @@ namespace MutList1 {
     /// Accumulates the result of applying `f` to `v` going right to left.
     ///
     pub def scanRight(f: (a, b) -> b & ef, s: b, v: MutList[a]): MutList[b] & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        let b = [s; len + 1];
-        scanRightHelper(f, s, deref a, b, len - 1);
-        MutList(ref b, ref (len + 1))
-
-    ///
-    /// Helper function for `scanRight`.
-    ///
-    def scanRightHelper(f: (a, b) -> b & ef, s: b, a: Array[a], b: Array[b], i: Int32): Unit & Impure =
-        if (i < 0)
-            ()
-        else {
-            let s1 = f(a[i], s);
-            b[i] = s1;
-            scanRightHelper(f, s1, a, b, i - 1)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        let n = l + 1;
+        let b = [s; n];
+        def loop(i, ss) = {
+            if (i < 0)
+                ()
+            else {
+                let s1 = f(a[i], ss);
+                b[i] = s1;
+                loop(i - 1, s1)
+            }
+        };
+        loop(l - 1, s);
+        MutList(ref b, ref n)
 
     ///
     /// Apply `f` to every element in `v`.
