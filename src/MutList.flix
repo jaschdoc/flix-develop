@@ -480,18 +480,18 @@ namespace MutList1 {
     /// The foldRightLazy function exists to allow early termination of a fold.
     ///
     pub def foldRightLazy(f: (a, Lazy[b]) -> b & ef, s: b, v: MutList[a]): b & Impure =
-        let len = length(v);
-        foldRightLazyHelper(f, s, v, len - 1)
-
-    ///
-    /// Helper function for `foldRightLazy`.
-    ///
-    def foldRightLazyHelper(f: (a, Lazy[b]) -> b & ef, s: b, v: MutList[a], i: Int32): b & Impure =
-        if (i < 0)
-            s
-        else
-            let s1 = f(get(i, v), lazy s) as & Impure;
-            foldRightLazyHelper(f, s1, v, i - 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i, acc) = {
+            if (i < 0)
+                acc
+            else {
+                let s1 = f(a[i], lazy acc);
+                loop(i - 1, s1)
+            }
+        };
+        loop(l - 1, s)
 
     ///
     /// Applies `f` to all elements in `v` going from left to right until a single value `v` is obtained. Returns `Some(v)`.
