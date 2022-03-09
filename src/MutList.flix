@@ -460,18 +460,18 @@ namespace MutList1 {
     /// The implementation is tail recursive.
     ///
     pub def foldRight(f: (a, b) -> b & ef, s: b, v: MutList[a]): b & Impure =
-        let len = length(v);
-        foldRightHelper(f, s, v, len - 1)
-
-    ///
-    /// Helper function for `foldRight`.
-    ///
-    def foldRightHelper(f: (a, b) -> b & ef, s: b, v: MutList[a], i: Int32): b & Impure =
-        if (i < 0)
-            s
-        else
-            let s1 = f(get(i, v), s) as & Impure;
-            foldRightHelper(f, s1, v, i - 1)
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i, acc) = {
+            if (i < 0)
+                acc
+            else {
+                let s1 = f(a[i], acc);
+                loop(i - 1, s1)
+            }
+        };
+        loop(l - 1, s)
 
     ///
     /// Applies `f` to a start value `s` and all elements in `v` going from left to right.
