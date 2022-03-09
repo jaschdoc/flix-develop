@@ -1131,7 +1131,7 @@ namespace TestMutList {
     def foreach01(): Bool & Impure =
         let v = MutList1.new();
         let sb = StringBuilder.new();
-        let f = x -> if (x > 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = x -> if (x > 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreach(f, v);
         StringBuilder.toString(sb) == ""
 
@@ -1139,7 +1139,7 @@ namespace TestMutList {
     def foreach02(): Bool & Impure =
         let v = MutList1.range(0, 5);
         let sb = StringBuilder.new();
-        let f = x -> if (x rem 2 == 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = x -> if (x rem 2 == 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreach(f, v);
         StringBuilder.toString(sb) == "TFTFT"
 
@@ -1147,7 +1147,7 @@ namespace TestMutList {
     def foreach03(): Bool & Impure =
         let v = MutList1.range(0, 2);
         let sb = StringBuilder.new();
-        let f = x -> if (x > 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = x -> if (x > 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreach(f, v);
         StringBuilder.toString(sb) == "FT"
 
@@ -1155,7 +1155,7 @@ namespace TestMutList {
     def foreach04(): Bool & Impure =
         let v = MutList1.range(0, 2);
         let sb = StringBuilder.new();
-        let f = x -> if (x < 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = x -> if (x < 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreach(f, v);
         StringBuilder.toString(sb) == "FF"
 
@@ -1174,7 +1174,7 @@ namespace TestMutList {
     def foreachWithIndex02(): Bool & Impure =
         let v = MutList1.range(1, 4);
         let sb = StringBuilder.new();
-        let f = (x, i) -> if (x rem 2 == 1 and i == 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = (x, i) -> if (x rem 2 == 1 and i == 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreachWithIndex(f, v);
         StringBuilder.toString(sb) == "TFF"
 
@@ -1182,7 +1182,7 @@ namespace TestMutList {
     def foreachWithIndex03(): Bool & Impure =
         let v = MutList1.range(0, 5);
         let sb = StringBuilder.new();
-        let f = (x, _) -> if (x rem 2 == 0) StringBuilder.append!(sb, 'T') else StringBuilder.append!(sb, 'F');
+        let f = (x, _) -> if (x rem 2 == 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MutList1.foreachWithIndex(f, v);
         StringBuilder.toString(sb) == "TFTFT"
 
