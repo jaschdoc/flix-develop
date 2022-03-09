@@ -379,19 +379,18 @@ namespace MutList1 {
     /// Apply `f` to every element in `v`.
     ///
     pub def transform!(f: a -> a, v: mut MutList[a]): Unit & Impure =
-        let MutList(a, l) = v;
-        transformHelper!(f, deref a, 0, deref l)
-
-    ///
-    /// Helper function for `transform!`
-    ///
-    def transformHelper!(f: a -> a, a: Array[a], i: Int32, n: Int32): Unit & Impure =
-        if (i >= n)
-            ()
-        else {
-            a[i] = f(a[i]);
-            transformHelper!(f, a, i + 1, n)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                ()
+            else {
+                a[i] = f(a[i]);
+                loop(i + 1)
+            }
+        };
+        loop(0)
 
     ///
     /// Returns the result of applying `f` to every element in `v` along with that element's index.
