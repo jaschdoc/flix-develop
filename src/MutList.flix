@@ -44,6 +44,7 @@ instance Iterable[MutList] {
         Iterator(done, next)
 }
 */
+/*
 namespace MutList1 {
 
     ///
@@ -904,3 +905,5 @@ namespace MutList1 {
         Array.sortWithin!(cmp, 0, (deref l) - 1, deref a)
 
 }
+
+*/
