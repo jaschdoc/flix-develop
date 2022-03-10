@@ -801,23 +801,18 @@ namespace MutList1 {
     /// Applies `f` to all the elements in `v`.
     ///
     pub def foreachWithIndex(f: (a, Int32) -> Unit & ef, v: MutList[a]): Unit & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        if (len < 1)
-            ()
-        else
-            foreachWithIndexHelper(f, deref a, 0, len)
-
-    ///
-    /// Helper function for `foreachWithIndex`.
-    ///
-    def foreachWithIndexHelper(f: (a, Int32) -> Unit & ef, a: Array[a], i: Int32, n: Int32): Unit & Impure =
-        if (i >= n)
-            ()
-        else {
-            f(a[i], i);
-            foreachWithIndexHelper(f, a, i + 1, n)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                ()
+            else {
+                f(a[i], i);
+                loop(i + 1)
+            }
+        };
+        loop(0)
 
     ///
     /// Compresses the given mutable list `v` if needed.
