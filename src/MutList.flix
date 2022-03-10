@@ -784,23 +784,18 @@ namespace MutList1 {
     /// Applies `f` to all the elements in `v`.
     ///
     pub def foreach(f: a -> Unit & ef, v: MutList[a]): Unit & Impure =
-        let MutList(a, l) = v;
-        let len = deref l;
-        if (len < 1)
-            ()
-        else
-            foreachHelper(f, deref a, 0, len)
-
-    ///
-    /// Helper function for `foreach`.
-    ///
-    def foreachHelper(f: a -> Unit & ef, a: Array[a], i: Int32, n: Int32): Unit & Impure =
-        if (i >= n)
-            ()
-        else {
-            f(a[i]);
-            foreachHelper(f, a, i + 1, n)
-        }
+        let MutList(ra, rl) = v;
+        let a = deref ra;
+        let l = deref rl;
+        def loop(i) = {
+            if (i >= l)
+                ()
+            else {
+                f(a[i]);
+                loop(i + 1)
+            }
+        };
+        loop(0)
 
     ///
     /// Applies `f` to all the elements in `v`.
