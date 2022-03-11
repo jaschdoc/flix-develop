@@ -17,7 +17,7 @@
 ///
 /// The Mutable Set type.
 ///
-opaque type MutSet1[t: Type, r: Bool] = ScopedRef[Set[t], r]
+opaque type MutSet1[t: Type, r: Region] = ScopedRef[Set[t], r]
 
 namespace MutSet1 {
 

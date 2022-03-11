@@ -16,8 +16,9 @@
 
 namespace TestMutSet1 {
 
-    def toMutSet1(s: Set[a]): MutSet1[a, r] & reg(r) =
+    def toMutSet1(s: Set[a]): MutSet1[a, r] & reg(r) = region r {
         MutSet1(ref s)
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
@@ -25,8 +26,8 @@ namespace TestMutSet1 {
 
     @test
     def sameElements01(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        let s2 = MutSet1.emptyWithRegion(r);
+        let s = MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure];
+        let s2 = MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure];
         MutSet1.sameElements(s, s2)
     }
 
@@ -245,8 +246,7 @@ namespace TestMutSet1 {
 
     @test
     def join01(): Bool = region r {
-        MutSet1.join(",", MutSet1.emptyWithRegion(r)) == ""
-    }
+        MutSet1.join(",", MutSet1.emptyWithRegion(r): MutSet1[Int32, false]) == ""
     }
 
     @test
@@ -269,22 +269,24 @@ namespace TestMutSet1 {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def foldRightLazy01(): Bool = region r { MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.emptyWithRegion(r)) == 100
+    def foldRightLazy01(): Bool = region r {
+        MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.emptyWithRegion(r)) == 100
     }
 
     @test
-    def foldRightLazy02(): Bool = region r { MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
+    def foldRightLazy02(): Bool = region r {
+        MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
     }
 
     @test
     def foldRightLazy03(): Bool = region r {
-        let s = MutSet1(ref Set#{2, 1});
+        let s = Set#{2, 1} |> toMutSet1;
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 194
     }
 
     @test
     def foldRightLazy04(): Bool = region r {
-        let s = MutSet1(ref Set#{3, 2, 1});
+        let s = Set#{3, 2, 1} |> toMutSet1;
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 382
-
+    }
 }
