@@ -13,84 +13,88 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace TestMutSet1 {
 
-    def toMutSet1(s: Set[a]): MutSet1[a, r] & reg(r) = region r {
+    def toMutSet1(s: Set[a]): MutSet1[a, r] & reg(r) =
         MutSet1(ref s)
-    }
-
 
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sameElements01(): Bool & reg(r) = region r {
-        let s = MutSet1.emptyWithRegion(r): MutSet1[Int32];
-        let s2 = MutSet1.emptyWithRegion(r): MutSet1[Int32];
+    def sameElements01(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.sameElements(s, s2)
     }
 
     @test
-    def sameElements02(): Bool & Impure =
-        let s = MutSet1.empty();
+    def sameElements02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
         MutSet1.add!(1, s);
 
-        let s2 = MutSet1.empty();
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(1, s2);
 
         MutSet1.sameElements(s, s2)
+    }
 
     @test
-    def sameElements03(): Bool & Impure =
-        let s = MutSet1.empty();
+    def sameElements03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
         MutSet1.add!(1, s);
 
-        let s2 = MutSet1.empty();
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(2, s2);
 
         not MutSet1.sameElements(s, s2)
+    }
 
     @test
-    def sameElements04(): Bool & Impure =
-        let s = MutSet1.empty();
+    def sameElements04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
         MutSet1.add!(1, s);
         MutSet1.add!(2, s);
         MutSet1.add!(3, s);
 
-        let s2 = MutSet1.empty();
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(2, s2);
         MutSet1.add!(3, s2);
         MutSet1.add!(1, s2);
 
         MutSet1.sameElements(s, s2)
+    }
 
     @test
-    def sameElements05(): Bool & Impure =
-        let s = MutSet1.empty();
+    def sameElements05(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
         MutSet1.add!("a", s);
         MutSet1.add!("b", s);
         MutSet1.add!("c", s);
 
-        let s2 = MutSet1.empty();
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!("c", s2);
         MutSet1.add!("a", s2);
         MutSet1.add!("b", s2);
 
         MutSet1.sameElements(s, s2)
+    }
 
     @test
-    def setSameElements06(): Bool & Impure =
-        let s = MutSet1.empty();
+    def setSameElements06(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
         MutSet1.add!("a", s);
         MutSet1.add!("b", s);
         MutSet1.add!("c", s);
 
-        let s2 = MutSet1.empty();
+        let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!("c", s2);
         MutSet1.add!("a", s2);
 
         not MutSet1.sameElements(s, s2)
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -98,61 +102,73 @@ namespace TestMutSet1 {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sum01(): Bool & Impure =
-        MutSet1.empty() |> MutSet1.sum == 0
+    def sum01(): Bool = region r {
+        MutSet1.emptyWithRegion(r) |> MutSet1.sum == 0
+    }
 
     @test
-    def sum02(): Bool & Impure =
+    def sum02(): Bool = region r {
         Set#{1} |> toMutSet1 |> MutSet1.sum == 1
+    }
 
     @test
-    def sum03(): Bool & Impure =
+    def sum03(): Bool = region r {
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sum == 6
+    }
 
     @test
-    def sum04(): Bool & Impure =
+    def sum04(): Bool = region r {
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sum == 3
+    }
 
     @test
-    def sum05(): Bool & Impure =
+    def sum05(): Bool = region r {
         Set#{1, 2, -3, -4} |> toMutSet1 |> MutSet1.sum == -4
+    }
 
     @test
-    def sum06(): Bool & Impure =
+    def sum06(): Bool = region r {
         Set#{10, -10} |> toMutSet1 |> MutSet1.sum == 0
+    }
 
     @test
-    def sum07(): Bool & Impure =
+    def sum07(): Bool = region r {
         Set.range(1, 101) |> toMutSet1 |> MutSet1.sum == 5050
-
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sumWith                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sumWith01(): Bool & Impure =
-        MutSet1.empty() |> MutSet1.sumWith(x -> x + 1) == 0
+    def sumWith01(): Bool = region r {
+        MutSet1.emptyWithRegion(r) |> MutSet1.sumWith(x -> x + 1) == 0
+    }
 
     @test
-    def sumWith02(): Bool & Impure =
+    def sumWith02(): Bool = region r {
         Set#{1} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
+    }
 
     @test
-    def sumWith03(): Bool & Impure =
+    def sumWith03(): Bool = region r {
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 9
+    }
 
     @test
-    def sumWith04(): Bool & Impure =
+    def sumWith04(): Bool = region r {
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 7
+    }
 
     @test
-    def sumWith05(): Bool & Impure =
+    def sumWith05(): Bool = region r {
         Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == -6
+    }
 
     @test
-    def sumWith06(): Bool & Impure =
+    def sumWith06(): Bool = region r {
         Set#{10, -10} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -160,96 +176,114 @@ namespace TestMutSet1 {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def product01(): Bool & Impure =
-        MutSet1.product(MutSet1.empty()) == 0
+    def product01(): Bool = region r {
+        MutSet1.product(MutSet1.emptyWithRegion(r)) == 0
+    }
 
     @test
-    def product02(): Bool & Impure =
+    def product02(): Bool = region r {
         Set#{1} |> toMutSet1 |> MutSet1.product == 1
+    }
 
     @test
-    def product03(): Bool & Impure =
+    def product03(): Bool = region r {
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.product == 6
+    }
 
     @test
-    def product04(): Bool & Impure =
+    def product04(): Bool = region r {
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.product == -18
+    }
 
     @test
-    def product05(): Bool & Impure =
+    def product05(): Bool = region r {
         Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.product == 24
+    }
 
     @test
-    def product06(): Bool & Impure =
+    def product06(): Bool = region r {
         Set#{10, -10} |> toMutSet1 |> MutSet1.product == -100
-
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // productWith                                                             //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def productWith01(): Bool & Impure =
-        MutSet1.empty() |> MutSet1.productWith(x -> x + 1) == 0
+    def productWith01(): Bool = region r {
+        MutSet1.emptyWithRegion(r) |> MutSet1.productWith(x -> x + 1) == 0
+    }
 
     @test
-    def productWith02(): Bool & Impure =
+    def productWith02(): Bool = region r {
         Set#{1} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 2
+    }
 
     @test
-    def productWith03(): Bool & Impure =
+    def productWith03(): Bool = region r {
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
+    }
 
     @test
-    def productWith04(): Bool & Impure =
+    def productWith04(): Bool = region r {
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -48
+    }
 
     @test
-    def productWith05(): Bool & Impure =
+    def productWith05(): Bool = region r {
         Set#{-2, -3, -4, -5} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
+    }
 
     @test
-    def productWith06(): Bool & Impure =
+    def productWith06(): Bool = region r {
         Set#{10, -10} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -99
-
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // join                                                                    //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def join01(): Bool & Impure =
-        MutSet1.join(",", MutSet1.empty(): MutSet1[Int32]) == ""
+    def join01(): Bool = region r {
+        MutSet1.join(",", MutSet1.emptyWithRegion(r)) == ""
+    }
+    }
 
     @test
-    def join02(): Bool & Impure =
+    def join02(): Bool = region r {
         Set#{1} |> toMutSet1 |> MutSet1.join(",") == "1"
+    }
 
     @test
-    def join03(): Bool & Impure =
+    def join03(): Bool = region r {
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
+    }
 
     @test
-    def join04(): Bool & Impure =
+    def join04(): Bool = region r {
         Set#{"1", "2", "3"} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
-
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // foldRightLazy                                                           //
     /////////////////////////////////////////////////////////////////////////////
-    @test
-    def foldRightLazy01(): Bool & Impure = MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.empty()) == 100
 
     @test
-    def foldRightLazy02(): Bool & Impure = MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
+    def foldRightLazy01(): Bool = region r { MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.emptyWithRegion(r)) == 100
+    }
 
     @test
-    def foldRightLazy03(): Bool & Impure =
+    def foldRightLazy02(): Bool = region r { MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
+    }
+
+    @test
+    def foldRightLazy03(): Bool = region r {
         let s = MutSet1(ref Set#{2, 1});
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 194
+    }
 
     @test
-    def foldRightLazy04(): Bool & Impure =
+    def foldRightLazy04(): Bool = region r {
         let s = MutSet1(ref Set#{3, 2, 1});
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 382
 
