@@ -323,18 +323,20 @@ namespace Option1 {
         loop(l, ys -> Some(ys))
 
     ///
-    /// Returns `Some()` if each of `f(xs_i)` is `Some(_)`. Otherwise returns `None`.
+    /// Returns `Some()` if each of `f(l_i)` is `Some(_)`. Otherwise returns `None`.
     ///
     /// This function is the "forgetful" version of `traverse`, use it when the you want the effect
     /// of applying `f` to each element but do not care about collecting the results.
     ///
-    pub def traverseX(f: a -> Option[b] & ef, xs: List[a]): Option[Unit] & ef = match xs {
-        case Nil            => Some()
-        case x :: rs        => match f(x) {
-            case None    => None
-            case Some(_) => traverseX(f, rs)
-        }
-    }
+    pub def traverseX(f: a -> Option[b] & ef, l: List[a]): Option[Unit] & ef =
+        def loop(ll) = match ll {
+            case Nil     => Some()
+            case x :: xs => match f(x) {
+                case None    => None
+                case Some(_) => loop(xs)
+            }
+        };
+        loop(l)
 
     ///
     /// Returns the result of applying `f` to a start value `s` and the elements in `xs`
