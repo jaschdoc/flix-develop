@@ -339,22 +339,24 @@ namespace Option1 {
         loop(l)
 
     ///
-    /// Returns the result of applying `f` to a start value `s` and the elements in `xs`
+    /// Returns the result of applying `f` to a start value `s` and the elements in `l`
     /// going from left to right.
     ///
     /// If at any step applying `f` fails (i.e. it produces a `None` value) the traversal
-    /// of `xs` is short-circuited and `None` is returned.
+    /// of `l` is short-circuited and `None` is returned.
     ///
-    /// If `f` is successfully applied to all the elements in `xs` the result is of the form:
+    /// If `f` is successfully applied to all the elements in `l` the result is of the form:
     /// `Some(f(...f(f(s, x1), x2)..., xn))`.
     ///
-    pub def foldLeftM(f: (b, a) -> Option[b] & f, s: b, xs: List[a]): Option[b] & f = match xs {
-        case Nil => Some(s)
-        case x :: rs => match f(s, x) {
-            case Some(s1) => foldLeftM(f, s1, rs)
-            case None => None
-        }
-    }
+    pub def foldLeftM(f: (b, a) -> Option[b] & ef, s: b, l: List[a]): Option[b] & ef =
+        def loop(ll, acc) = match ll {
+            case Nil     => Some(acc)
+            case x :: xs => match f(acc, x) {
+                case Some(s1) => loop(xs, s1)
+                case None     => None
+            }
+        };
+        loop(l, s)
 
     ///
     /// Returns the result of applying `f` to a start value `s` and the elements in `xs`
@@ -366,13 +368,13 @@ namespace Option1 {
     /// If `f` is successfully applied to al elements in `xs` the result is of the form:
     /// `Some(f(x1, ...f(xn-1, f(xn, s))...))`.
     ///
-    pub def foldRightM(f: (a, b) -> Option[b] & f, s: b, xs: List[a]): Option[b] & f =
-        foldRightMHelper(f, s, xs, _ -> None as & f, s1 -> Some(s1) as & f)
+    pub def foldRightM(f: (a, b) -> Option[b] & ef, s: b, xs: List[a]): Option[b] & ef =
+        foldRightMHelper(f, s, xs, _ -> None as & ef, s1 -> Some(s1) as & ef)
 
     ///
     /// Helper function for `foldRightM`.
     ///
-    def foldRightMHelper(f: (a, b) -> Option[b] & f, s: b, xs: List[a], fk: Unit -> Option[b] & f, sk: b -> Option[b] & f): Option[b] & f = match xs {
+    def foldRightMHelper(f: (a, b) -> Option[b] & ef, s: b, xs: List[a], fk: Unit -> Option[b] & ef, sk: b -> Option[b] & ef): Option[b] & ef = match xs {
         case Nil => sk(s)
         case x :: rs =>
             foldRightMHelper(f, s, rs, fk, s1 -> match f(x, s1) {
@@ -484,7 +486,7 @@ namespace Option1 {
     /// Returns `None` if either `o1` or `o2` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift2(f: (t1, t2) -> u & f, o1: Option[t1], o2: Option[t2]): Option[u] & f =
+    pub def lift2(f: (t1, t2) -> u & ef, o1: Option[t1], o2: Option[t2]): Option[u] & ef =
         ap(map(f, o1), o2)
 
     ///
@@ -493,7 +495,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2` and `o3` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift3(f: (t1, t2, t3) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3]): Option[u] & f =
+    pub def lift3(f: (t1, t2, t3) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3]): Option[u] & ef =
         ap(lift2(f, o1, o2), o3)
 
     ///
@@ -502,7 +504,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, `o3` and `o4` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift4(f: (t1, t2, t3, t4) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4]): Option[u] & f =
+    pub def lift4(f: (t1, t2, t3, t4) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4]): Option[u] & ef =
         ap(lift3(f, o1, o2, o3), o4)
 
     ///
@@ -511,7 +513,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o5` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift5(f: (t1, t2, t3, t4, t5) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5]): Option[u] & f =
+    pub def lift5(f: (t1, t2, t3, t4, t5) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5]): Option[u] & ef =
         ap(lift4(f, o1, o2, o3, o4), o5)
 
     ///
@@ -520,7 +522,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o6` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift6(f: (t1, t2, t3, t4, t5, t6) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6]): Option[u] & f =
+    pub def lift6(f: (t1, t2, t3, t4, t5, t6) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6]): Option[u] & ef =
         ap(lift5(f, o1, o2, o3, o4, o5), o6)
 
     ///
@@ -529,7 +531,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o7` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift7(f: (t1, t2, t3, t4, t5, t6, t7) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7]): Option[u] & f=
+    pub def lift7(f: (t1, t2, t3, t4, t5, t6, t7) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7]): Option[u] & ef=
         ap(lift6(f, o1, o2, o3, o4, o5, o6), o7)
 
     ///
@@ -538,7 +540,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o8` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift8(f: (t1, t2, t3, t4, t5, t6, t7, t8) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8]): Option[u] & f =
+    pub def lift8(f: (t1, t2, t3, t4, t5, t6, t7, t8) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8]): Option[u] & ef =
         ap(lift7(f, o1, o2, o3, o4, o5, o6, o7), o8)
 
     ///
@@ -547,7 +549,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o9` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift9(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8], o9: Option[t9]): Option[u] & f =
+    pub def lift9(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8], o9: Option[t9]): Option[u] & ef =
         ap(lift8(f, o1, o2, o3, o4, o5, o6, o7, o8), o9)
 
     ///
@@ -556,7 +558,7 @@ namespace Option1 {
     /// Returns `None` if any of `o1`, `o2`, ... `o10` are `None`.
     ///
     @Time(time(f)) @Space(space(f))
-    pub def lift10(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) -> u & f, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8], o9: Option[t9], o10: Option[t10]): Option[u] & f =
+    pub def lift10(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) -> u & ef, o1: Option[t1], o2: Option[t2], o3: Option[t3], o4: Option[t4], o5: Option[t5], o6: Option[t6], o7: Option[t7], o8: Option[t8], o9: Option[t9], o10: Option[t10]): Option[u] & ef =
         ap(lift9(f, o1, o2, o3, o4, o5, o6, o7, o8, o9), o10)
 
     ///
