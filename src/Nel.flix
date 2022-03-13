@@ -180,7 +180,7 @@ namespace Nel1 {
     ///
     @Time(length(l)) @Space(1)
     pub def memberOf(a: a, l: Nel[a]): Bool with Eq[a] = match l {
-        case Nel(x, xs) => x == a or List.memberOf(a, xs)
+        case Nel(x, xs) => if (x == a) true else List.memberOf(a, xs)
     }
 
     ///
@@ -248,17 +248,16 @@ namespace Nel1 {
     /// That is, the result is of the form: `f(x1, 0) :: f(x2, 1) :: ...`.
     ///
     @Time(time(f) * length(l)) @Space(space(f) * length(l))
-    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: Nel[a]): Nel[b] & ef = match l {
-        case Nel(x, xs) => Nel(f(x, 0), mapWithIndexHelper(f, xs, 1))
-    }
-
-    ///
-    /// Helper function for `mapWithIndex`.
-    ///
-    def mapWithIndexHelper(f: (a, Int32) -> b & ef, l: List[a], i: Int32): List[b] & ef = match l {
-        case Nil     => Nil
-        case x :: xs => f(x, i) :: mapWithIndexHelper(f, xs, i + 1)
-    }
+    pub def mapWithIndex(f: (a, Int32) -> b & ef, l: Nel[a]): Nel[b] & ef =
+        def loop(i, ll, k) = match ll {
+            case Nil     => k(Nil)
+            case x :: xs =>
+                let y = f(x, i);
+                loop(i + 1, xs, ks -> k(y :: ks))
+        };
+        match l {
+            case Nel(x, xs) => Nel(f(x, 0), loop(1, xs, identity))
+        }
 
     ///
     /// Apply every function from `f` to every argument from `l` and return a non-empty list with all results.
