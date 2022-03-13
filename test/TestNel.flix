@@ -1,4 +1,4 @@
-namespace Nel {
+namespace Nel1 {
 
     use Hash.hash;
 

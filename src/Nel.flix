@@ -472,7 +472,7 @@ namespace Nel1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f))
     pub def exists(f: a -> Bool & ef, l: Nel[a]): Bool & ef = match l {
-        case Nel(x, xs) => f(x) or List.exists(f, xs)
+        case Nel(x, xs) => if (f(x)) true else List.exists(f, xs)
     }
 
     ///
@@ -480,7 +480,7 @@ namespace Nel1 {
     ///
     @Time(time(f) * length(l)) @Space(space(f))
     pub def forall(f: a -> Bool & ef, l: Nel[a]): Bool & ef = match l {
-        case Nel(x, xs) => f(x) and List.forall(f, xs)
+        case Nel(x, xs) => if (f(x)) List.forall(f, xs) else false
     }
 
     ///
