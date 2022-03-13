@@ -359,29 +359,24 @@ namespace Option1 {
         loop(l, s)
 
     ///
-    /// Returns the result of applying `f` to a start value `s` and the elements in `xs`
+    /// Returns the result of applying `f` to a start value `s` and the elements in `l`
     /// going from right to left.
     ///
     /// If at any step applying `f` fails (i.e. it produces a `None` value) the traversal
-    /// of `xs` is short-circuited and `None` is returned.
+    /// of `l` is short-circuited and `None` is returned.
     ///
-    /// If `f` is successfully applied to al elements in `xs` the result is of the form:
+    /// If `f` is successfully applied to al elements in `l` the result is of the form:
     /// `Some(f(x1, ...f(xn-1, f(xn, s))...))`.
     ///
-    pub def foldRightM(f: (a, b) -> Option[b] & ef, s: b, xs: List[a]): Option[b] & ef =
-        foldRightMHelper(f, s, xs, _ -> None as & ef, s1 -> Some(s1) as & ef)
-
-    ///
-    /// Helper function for `foldRightM`.
-    ///
-    def foldRightMHelper(f: (a, b) -> Option[b] & ef, s: b, xs: List[a], fk: Unit -> Option[b] & ef, sk: b -> Option[b] & ef): Option[b] & ef = match xs {
-        case Nil => sk(s)
-        case x :: rs =>
-            foldRightMHelper(f, s, rs, fk, s1 -> match f(x, s1) {
-                    case Some(s2) => sk(s2)
-                    case None => fk()
-                })
-    }
+    pub def foldRightM(f: (a, b) -> Option[b] & ef, s: b, l: List[a]): Option[b] & ef =
+        def loop(ll, k) = match ll {
+            case Nil     => k(s)
+            case x :: xs => loop(xs, s1 -> match f(x, s1) {
+                case Some(s2) => k(s2)
+                case None     => None
+            })
+        };
+        loop(l, s1 -> Some(s1) as & ef)
 
     ///
     /// Returns a one-element list of the value `v` if `o` is `Some(v)`. Otherwise returns the empty list.
