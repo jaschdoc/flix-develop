@@ -108,34 +108,28 @@ namespace TestMutSet1 {
     }
 
     @test
-    def sum02(): Bool = region r {
+    def sum02(): Bool =
         Set#{1} |> toMutSet1 |> MutSet1.sum == 1
-    }
 
     @test
-    def sum03(): Bool = region r {
+    def sum03(): Bool =
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sum == 6
-    }
 
     @test
-    def sum04(): Bool = region r {
+    def sum04(): Bool =
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sum == 3
-    }
 
     @test
-    def sum05(): Bool = region r {
+    def sum05(): Bool =
         Set#{1, 2, -3, -4} |> toMutSet1 |> MutSet1.sum == -4
-    }
 
     @test
-    def sum06(): Bool = region r {
+    def sum06(): Bool =
         Set#{10, -10} |> toMutSet1 |> MutSet1.sum == 0
-    }
 
     @test
-    def sum07(): Bool = region r {
+    def sum07(): Bool =
         Set.range(1, 101) |> toMutSet1 |> MutSet1.sum == 5050
-    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sumWith                                                                 //
@@ -147,29 +141,24 @@ namespace TestMutSet1 {
     }
 
     @test
-    def sumWith02(): Bool = region r {
+    def sumWith02(): Bool =
         Set#{1} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
-    }
 
     @test
-    def sumWith03(): Bool = region r {
+    def sumWith03(): Bool =
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 9
-    }
 
     @test
-    def sumWith04(): Bool = region r {
+    def sumWith04(): Bool =
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 7
-    }
 
     @test
-    def sumWith05(): Bool = region r {
+    def sumWith05(): Bool =
         Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == -6
-    }
 
     @test
-    def sumWith06(): Bool = region r {
+    def sumWith06(): Bool =
         Set#{10, -10} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
-    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -182,29 +171,25 @@ namespace TestMutSet1 {
     }
 
     @test
-    def product02(): Bool = region r {
+    def product02(): Bool =
         Set#{1} |> toMutSet1 |> MutSet1.product == 1
-    }
 
     @test
-    def product03(): Bool = region r {
+    def product03(): Bool =
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.product == 6
-    }
 
     @test
-    def product04(): Bool = region r {
+    def product04(): Bool =
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.product == -18
-    }
 
     @test
-    def product05(): Bool = region r {
+    def product05(): Bool =
         Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.product == 24
-    }
 
     @test
-    def product06(): Bool = region r {
+    def product06(): Bool =
         Set#{10, -10} |> toMutSet1 |> MutSet1.product == -100
-    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // productWith                                                             //
@@ -216,29 +201,25 @@ namespace TestMutSet1 {
     }
 
     @test
-    def productWith02(): Bool = region r {
+    def productWith02(): Bool =
         Set#{1} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 2
-    }
 
     @test
-    def productWith03(): Bool = region r {
+    def productWith03(): Bool =
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
-    }
 
     @test
-    def productWith04(): Bool = region r {
+    def productWith04(): Bool =
         Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -48
-    }
 
     @test
-    def productWith05(): Bool = region r {
+    def productWith05(): Bool =
         Set#{-2, -3, -4, -5} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
-    }
 
     @test
-    def productWith06(): Bool = region r {
+    def productWith06(): Bool =
         Set#{10, -10} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -99
-    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // join                                                                    //
@@ -250,19 +231,17 @@ namespace TestMutSet1 {
     }
 
     @test
-    def join02(): Bool = region r {
+    def join02(): Bool =
         Set#{1} |> toMutSet1 |> MutSet1.join(",") == "1"
-    }
 
     @test
-    def join03(): Bool = region r {
+    def join03(): Bool =
         Set#{1, 2, 3} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
-    }
 
     @test
-    def join04(): Bool = region r {
+    def join04(): Bool =
         Set#{"1", "2", "3"} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
-    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foldRightLazy                                                           //
@@ -274,19 +253,17 @@ namespace TestMutSet1 {
     }
 
     @test
-    def foldRightLazy02(): Bool = region r {
+    def foldRightLazy02(): Bool =
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
-    }
 
     @test
-    def foldRightLazy03(): Bool = region r {
+    def foldRightLazy03(): Bool =
         let s = Set#{2, 1} |> toMutSet1;
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 194
-    }
 
     @test
-    def foldRightLazy04(): Bool = region r {
+    def foldRightLazy04(): Bool =
         let s = Set#{3, 2, 1} |> toMutSet1;
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 382
-    }
+
 }

@@ -31,13 +31,13 @@ namespace MutSet1 {
     /// Returns a fresh empty set.
     ///
     pub def emptyWithRegion(r: Region[r]): MutSet1[a, r] & reg(r) =
-        MutSet1(ref Set.empty())
+        MutSet1(ref Set.empty() @ r)
 
     ///
     /// Returns the singleton set containing `x`.
     ///
     pub def singleton(x: a): MutSet1[a, r] & reg(r) with Order[a] =
-        MutSet1(ref Set.singleton(x))
+        MutSet1(ref Set.singleton(x) @ r)
 
     ///
     /// Adds the element `x` to the mutable set `s`.
