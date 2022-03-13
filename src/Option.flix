@@ -310,21 +310,17 @@ namespace Option1 {
         loop(xs, ys -> Some(ys))
 
     ///
-    /// Returns `Some(v1 :: v2 :: ... v :: vn)` if each of `f(xs_i)` is `Some(v_i)`. Otherwise returns `None`.
+    /// Returns `Some(v1 :: v2 :: ... v :: vn)` if each of `f(l_i)` is `Some(v_i)`. Otherwise returns `None`.
     ///
-    pub def traverse(f: a -> Option[b] & ef, xs: List[a]): Option[List[b]] & ef =
-        traverseHelper(f, xs, _ -> None, ys -> Some(ys))
-
-    ///
-    /// Helper function for `traverse`.
-    ///
-    def traverseHelper(f: a -> Option[b] & f, xs: List[a], fk: Unit -> Option[List[b]], sk: List[b] -> Option[List[b]]): Option[List[b]] & f = match xs {
-        case Nil            => sk(Nil)
-        case x :: rs        => match f(x) {
-            case None    => fk()
-            case Some(y) => traverseHelper(f, rs, fk, ys -> sk(y :: ys))
-        }
-    }
+    pub def traverse(f: a -> Option[b] & ef, l: List[a]): Option[List[b]] & ef =
+        def loop(ll, sk) = match ll {
+            case Nil     => sk(Nil)
+            case x :: xs => match f(x) {
+                case None    => None
+                case Some(y) => loop(xs, ys -> sk(y :: ys))
+            }
+        };
+        loop(l, ys -> Some(ys))
 
     ///
     /// Returns `Some()` if each of `f(xs_i)` is `Some(_)`. Otherwise returns `None`.
