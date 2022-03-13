@@ -304,7 +304,8 @@ namespace Nel1 {
     /// Returns `l` with every occurrence of `from` replaced by `to`.
     ///
     @Time(length(l)) @Space(length(l))
-    pub def replace(from: {from :: a}, to: {to :: a}, l: Nel[a]): Nel[a] with Eq[a] = map(e -> if (e == from.from) to.to else e, l)
+    pub def replace(from: {from :: a}, to: {to :: a}, l: Nel[a]): Nel[a] with Eq[a] =
+        map(e -> if (e == from.from) to.to else e, l)
 
     ///
     /// Returns all permutations of `l` in lexicographical order by element indices in `l`.
@@ -390,13 +391,13 @@ namespace Nel1 {
     /// with the remainder of `l` using `f` going from right to left.
     ///
     pub def reduceRightTo(f: (a, b) -> b & ef1, g: a -> b & ef2, l: Nel[a]): b & (ef1 and ef2) =
-        def loop(ll) = match ll { // TODO: Tail recursive impl
-            case x :: Nil => g(x)
-            case x :: xs  => f(x, loop(xs))
+        def loop(ll, k) = match ll {
+            case x :: Nil => k(g(x))
+            case x :: xs  => loop(xs, ks -> k(f(x, ks)))
             case _        => unreachable!()
         };
         let Nel(x, xs) = l;
-        loop(x :: xs)
+        loop(x :: xs, ks -> ks as & (ef1 and ef2))
 
     ///
     /// Applies `combine` to all elements in `l` until a single value is obtained.
