@@ -16,9 +16,8 @@
 
 namespace TestMutSet1 {
 
-    def toMutSet1(s: Set[a]): MutSet1[a, r] & reg(r) = region r {
+    def toMutSet1(s: Set[a]): MutSet1[a, r] =
         MutSet1(ref s)
-    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
@@ -227,7 +226,7 @@ namespace TestMutSet1 {
 
     @test
     def join01(): Bool = region r {
-        MutSet1.join(",", MutSet1.emptyWithRegion(r): MutSet1[Int32, false]) == ""
+        MutSet1.join(",", MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure]) == ""
     }
 
     @test
@@ -253,7 +252,7 @@ namespace TestMutSet1 {
     }
 
     @test
-    def foldRightLazy02(): Bool =
+    def foldRightLazy02(): Bool & Impure =
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
 
     @test
