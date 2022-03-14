@@ -137,7 +137,13 @@ namespace Set1 {
     ///
     @Time(e - b) @Space(e - b)
     pub def range(b: Int32, e: Int32): Set[Int32] =
-        if (b >= e) empty() else rangeHelper(b, e - 1, empty())
+        def loop(i, s) = {
+            if (i >= e)
+                s
+            else
+                loop(i + 1, insert(i, s))
+        };
+        loop(b, empty())
 
     ///
     /// Adds `x` to `s`.
@@ -590,12 +596,6 @@ namespace Set1 {
         case None => acc
         case Some(a) => unfoldWithIterHelper(next, insert(a, acc))
     }
-
-    ///
-    /// Helper function for `range`.
-    ///
-    def rangeHelper(b: Int32, n: Int32, acc: Set[Int32]): Set[Int32] =
-        if (n < b) acc else rangeHelper(b, n - 1, insert(n, acc))
 
     ///
     /// Returns the set `s` as a `DelayList`.
