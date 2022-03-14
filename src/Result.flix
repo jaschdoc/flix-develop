@@ -236,25 +236,27 @@ namespace Result1 {
         def loop(ll, k) = match ll {
             case Nil     => k(Nil)
             case x :: xs => match f(x) {
-                case Err(e) => Err(e)
                 case Ok(y)  => loop(xs, ks -> k(y :: ks))
+                case Err(e) => Err(e)
             }
         };
         loop(l, ks -> Ok(ks))
 
     ///
-    /// Returns `Ok()` if each of `f(xs_i)` is `Ok(_)`. Otherwise returns `None`.
+    /// Returns `Ok()` if each of `f(l_i)` is `Ok(_)`. Otherwise returns `None`.
     ///
     /// This function is the "forgetful" version of `traverse`, use it when the you want the effect
     /// of applying `f` to each element but do not care about collecting the results.
     ///
-    pub def traverseX(f: a -> Result[b, e] & ef, xs: List[a]): Result[Unit, e] & ef = match xs {
-        case Nil            => Ok()
-        case x :: rs        => match f(x) {
-            case Err(e) => Err(e)
-            case Ok(_)  => traverseX(f, rs)
-        }
-    }
+    pub def traverseX(f: a -> Result[b, e] & ef, l: List[a]): Result[Unit, e] & ef =
+        def loop(ll) = match ll {
+            case Nil     => Ok()
+            case x :: xs => match f(x) {
+                case Ok(_)  => loop(xs)
+                case Err(e) => Err(e)
+            }
+        };
+        loop(l)
 
     ///
     /// Returns the result of applying `f` to a start value `s` and the elements in `l`
@@ -266,13 +268,15 @@ namespace Result1 {
     /// If `f` is successfully applied to all elements in `l` the result is of the form:
     /// `Ok(f(...f(f(s, x1), x2)..., xn))`.
     ///
-    pub def foldLeftM(f: (b, a) -> Result[b, e] & ef, s: b, l: List[a]): Result[b, e] & ef = match l {
-        case Nil => Ok(s)
-        case x :: rs => match f(s, x) {
-            case Ok(s1) => foldLeftM(f, s1, rs)
-            case Err(e) => Err(e)
-        }
-    }
+    pub def foldLeftM(f: (b, a) -> Result[b, e] & ef, s: b, l: List[a]): Result[b, e] & ef =
+        def loop(ll, acc) = match ll {
+            case Nil     => Ok(acc)
+            case x :: xs => match f(acc, x) {
+                case Ok(s1) => loop(xs, s1)
+                case Err(e) => Err(e)
+            }
+        };
+        loop(l, s)
 
     ///
     /// Returns the result of applying `f` to a start value `s` and the elements in `l`
