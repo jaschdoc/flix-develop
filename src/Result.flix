@@ -303,7 +303,7 @@ namespace Result1 {
     ///
     @Time(1) @Space(1)
     pub def toList(r: Result[t, e]): List[t] = match r {
-        case Ok(v) => v :: Nil
+        case Ok(v)  => v :: Nil
         case Err(_) => Nil
     }
 
@@ -329,7 +329,7 @@ namespace Result1 {
     /// Returns a map with elements of `s` as keys and `f` applied as values.
     ///
     pub def toMapWith(f: a -> b, s: Result[a, a]): Map[a, b] with Order[a] =
-            Result.foldRight((x, m) -> Map.insert(x, f(x), m), s, Map.empty())
+        Result.foldRight((x, m) -> Map.insert(x, f(x), m), s, Map.empty())
 
     ///
     /// Returns `Some(v)` if `r` is `Ok(v)`. Otherwise returns `None`.
@@ -356,11 +356,11 @@ namespace Result1 {
     ///
     @Time(foldLeft((_, f) -> time(f), 1, r1)) @Space(foldLeft((_, f) -> time(f), 1, r1))
     pub def ap(r1: Result[t -> u & ef, e], r2: Result[t, e]): Result[u, e] & ef = match r1 {
+        case Err(e) => Err(e)
         case Ok(f)  => match r2 {
             case Ok(a)  => Ok(f(a))
             case Err(e) => Err(e)
         }
-        case Err(e) => Err(e)
     }
 
     ///
