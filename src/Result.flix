@@ -289,19 +289,14 @@ namespace Result1 {
     /// `Ok(f(x1, ...f(xn-1, f(xn, s))...))`.
     ///
     pub def foldRightM(f: (a, b) -> Result[b, e] & ef, s: b, l: List[a]): Result[b, e] & ef =
-        foldRightMHelper(f, s, l, e1 -> Err(e1) as & ef, s1 -> Ok(s1) as & ef)
-
-    ///
-    /// Helper function for `foldRightM`.
-    ///
-    def foldRightMHelper(f: (a, b) -> Result[b, e] & ef, s: b, l: List[a], fk: e -> Result[b, e] & ef, sk: b -> Result[b, e] & ef): Result[b, e] & ef = match l {
-        case Nil => sk(s)
-        case x :: rs =>
-            foldRightMHelper(f, s, rs, fk, s1 -> match f(x, s1) {
-                    case Ok(s2) => sk(s2)
-                    case Err(e) => fk(e)
-                })
-    }
+        def loop(ll, k) = match ll {
+            case Nil     => k(s)
+            case x :: xs => loop(xs, s1 -> match f(x, s1) {
+                case Ok(s2) => k(s2)
+                case Err(e) => Err(e)
+            })
+        };
+        loop(l, s1 -> Ok(s1) as & ef)
 
     ///
     /// Returns a one-element list of the value `v` if `r` is `Ok(v)`. Otherwise returns the empty list.
