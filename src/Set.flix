@@ -311,8 +311,7 @@ namespace Set1 {
     /// That is, the result is of the form: `f(x1, ...lazy f(xn-1, lazy f(xn, s))...)`.
     /// The foldRightLazy function exists to allow early termination of a fold.
     ///
-    @Experimental
-    @Lazy
+    @Experimental @Lazy
     pub def foldRightLazy(f: (a, Lazy[b]) -> b, i: b, s: Set[a]): b =
         let Set(es) = s;
         RedBlackTree.foldRightLazy((k, _, acc) -> f(k, acc), i, es)
@@ -552,7 +551,7 @@ namespace Set1 {
     /// Returns a map with elements of `s` as keys and `f` applied as values.
     ///
     pub def toMapWith(f: a -> b, s: Set[a]): Map[a, b] with Order[a] =
-            Set.foldRight((x, m) -> Map.insert(x, f(x), m), Map.empty(), s)
+        Set.foldRight((x, m) -> Map.insert(x, f(x), m), Map.empty(), s)
 
     ///
     /// Applies `f` to every element of `s`.
@@ -569,15 +568,12 @@ namespace Set1 {
     ///
     /// `f` should return `None` to signal the end of building the set.
     ///
-    pub def unfold(f: s -> Option[(a, s)] & ef, st: s): Set[a] & ef with Order[a] = unfoldHelper(f, st, empty())
-
-    ///
-    /// Helper function for `unfold`.
-    ///
-    def unfoldHelper(f: s -> Option[(a, s)] & ef, st: s, acc: Set[a]): Set[a] & ef with Order[a] = match f(st) {
-        case None => acc
-        case Some((a, st1)) => unfoldHelper(f, st1, insert(a, acc))
-    }
+    pub def unfold(f: s -> Option[(a, s)] & ef, st: s): Set[a] & ef with Order[a] =
+        def loop(sst, s) = match f(sst) {
+            case None         => s
+            case Some(a, st1) => loop(st1, insert(a, s))
+        };
+        loop(st, empty())
 
     ///
     /// Build a set by applying the function `next` to `()`. `next` is expected to encapsulate
@@ -605,7 +601,6 @@ namespace Set1 {
 
     ///
     /// Returns an iterator over `s`.
-    /// TODO: rewrite to not use `toList`.
     ///
     pub def toIterator(s: Set[a]): Iterator[a] & Impure =
         List.toIterator(Set.toList(s))
