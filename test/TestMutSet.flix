@@ -16,17 +16,14 @@
 
 namespace TestMutSet1 {
 
-    def toMutSet1(s: Set[a]): MutSet1[a, r] =
-        MutSet1(ref s)
-
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
     def sameElements01(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure];
-        let s2 = MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure];
+        let s = MutSet1.emptyWithRegion(r): MutSet1[Int32, _];
+        let s2 = MutSet1.emptyWithRegion(r): MutSet1[Int32, _];
         MutSet1.sameElements(s, s2)
     }
 
@@ -107,28 +104,49 @@ namespace TestMutSet1 {
     }
 
     @test
-    def sum02(): Bool =
-        Set#{1} |> toMutSet1 |> MutSet1.sum == 1
+    def sum02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.sum(s) == 1
+    }
 
     @test
-    def sum03(): Bool =
-        Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sum == 6
+    def sum03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.sum(s) == 6
+    }
 
     @test
-    def sum04(): Bool =
-        Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sum == 3
+    def sum04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.add!(-3, s);
+        MutSet1.sum(s) == 3
+    }
 
     @test
-    def sum05(): Bool =
-        Set#{1, 2, -3, -4} |> toMutSet1 |> MutSet1.sum == -4
+    def sum05(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(-3, s);
+        MutSet1.add!(-4, s);
+        MutSet1.sum(s) == -4
+    }
 
     @test
-    def sum06(): Bool =
-        Set#{10, -10} |> toMutSet1 |> MutSet1.sum == 0
+    def sum06(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(10, s);
+        MutSet1.add!(-10, s);
+        MutSet1.sum(s) == 0
+    }
 
-    @test
-    def sum07(): Bool =
-        Set.range(1, 101) |> toMutSet1 |> MutSet1.sum == 5050
 
     /////////////////////////////////////////////////////////////////////////////
     // sumWith                                                                 //
@@ -140,24 +158,48 @@ namespace TestMutSet1 {
     }
 
     @test
-    def sumWith02(): Bool =
-        Set#{1} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
+    def sumWith02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.sumWith(x -> x + 1, s) == 2
+    }
 
     @test
-    def sumWith03(): Bool =
-        Set#{1, 2, 3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 9
+    def sumWith03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.sumWith(x -> x + 1, s) == 9
+    }
 
     @test
-    def sumWith04(): Bool =
-        Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 7
+    def sumWith04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.add!(-3, s);
+        MutSet1.sumWith(x -> x + 1, s) == 7
+    }
 
     @test
-    def sumWith05(): Bool =
-        Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == -6
+    def sumWith05(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(-1, s);
+        MutSet1.add!(-2, s);
+        MutSet1.add!(-3, s);
+        MutSet1.add!(-4, s);
+        MutSet1.sumWith(x -> x + 1, s) == -6
+    }
 
     @test
-    def sumWith06(): Bool =
-        Set#{10, -10} |> toMutSet1 |> MutSet1.sumWith(x -> x + 1) == 2
+    def sumWith06(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(10, s);
+        MutSet1.add!(-10, s);
+        MutSet1.sumWith(x -> x + 1, s) == 2
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -170,24 +212,48 @@ namespace TestMutSet1 {
     }
 
     @test
-    def product02(): Bool =
-        Set#{1} |> toMutSet1 |> MutSet1.product == 1
+    def product02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.product(s) == 1
+    }
 
     @test
-    def product03(): Bool =
-        Set#{1, 2, 3} |> toMutSet1 |> MutSet1.product == 6
+    def product03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.product(s) == 6
+    }
 
     @test
-    def product04(): Bool =
-        Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.product == -18
+    def product04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.add!(-3, s);
+        MutSet1.product(s) == -18
+    }
 
     @test
-    def product05(): Bool =
-        Set#{-1, -2, -3, -4} |> toMutSet1 |> MutSet1.product == 24
+    def product05(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(-1, s);
+        MutSet1.add!(-2, s);
+        MutSet1.add!(-3, s);
+        MutSet1.add!(-4, s);
+        MutSet1.product(s) == 24
+    }
 
     @test
-    def product06(): Bool =
-        Set#{10, -10} |> toMutSet1 |> MutSet1.product == -100
+    def product06(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(10, s);
+        MutSet1.add!(-10, s);
+        MutSet1.product(s) == -100
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -200,24 +266,48 @@ namespace TestMutSet1 {
     }
 
     @test
-    def productWith02(): Bool =
-        Set#{1} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 2
+    def productWith02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.productWith(x -> x + 1, s) == 2
+    }
 
     @test
-    def productWith03(): Bool =
-        Set#{1, 2, 3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
+    def productWith03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.productWith(x -> x + 1, s) == 24
+    }
 
     @test
-    def productWith04(): Bool =
-        Set#{1, 2, 3, -3} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -48
+    def productWith04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.add!(-3, s);
+        MutSet1.productWith(x -> x + 1, s) == -48
+    }
 
     @test
-    def productWith05(): Bool =
-        Set#{-2, -3, -4, -5} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == 24
+    def productWith05(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(-2, s);
+        MutSet1.add!(-3, s);
+        MutSet1.add!(-4, s);
+        MutSet1.add!(-5, s);
+        MutSet1.productWith(x -> x + 1, s) == 24
+    }
 
     @test
-    def productWith06(): Bool =
-        Set#{10, -10} |> toMutSet1 |> MutSet1.productWith(x -> x + 1) == -99
+    def productWith06(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(10, s);
+        MutSet1.add!(-10, s);
+        MutSet1.productWith(x -> x + 1, s) == -99
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -226,20 +316,34 @@ namespace TestMutSet1 {
 
     @test
     def join01(): Bool = region r {
-        MutSet1.join(",", MutSet1.emptyWithRegion(r): MutSet1[Int32, Pure]) == ""
+        let s: MutSet1[Int32, _] = MutSet1.emptyWithRegion(r);
+        MutSet1.join(",", s) == ""
     }
 
     @test
-    def join02(): Bool =
-        Set#{1} |> toMutSet1 |> MutSet1.join(",") == "1"
+    def join02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.join(",", s) == "1"
+    }
 
     @test
-    def join03(): Bool =
-        Set#{1, 2, 3} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
+    def join03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(3, s);
+        MutSet1.join(",", s) == "1,2,3"
+    }
 
     @test
-    def join04(): Bool =
-        Set#{"1", "2", "3"} |> toMutSet1 |> MutSet1.join(",") == "1,2,3"
+    def join04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!("1", s);
+        MutSet1.add!("2", s);
+        MutSet1.add!("3", s);
+        MutSet1.join(",", s) == "1,2,3"
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -252,17 +356,27 @@ namespace TestMutSet1 {
     }
 
     @test
-    def foldRightLazy02(): Bool & Impure =
-        MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, MutSet1.singleton(1)) == 198
+    def foldRightLazy02(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s);
+        MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 198
+    }
 
     @test
-    def foldRightLazy03(): Bool =
-        let s = Set#{2, 1} |> toMutSet1;
+    def foldRightLazy03(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(2, s);
+        MutSet1.add!(1, s);
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 194
+    }
 
     @test
-    def foldRightLazy04(): Bool =
-        let s = Set#{3, 2, 1} |> toMutSet1;
+    def foldRightLazy04(): Bool = region r {
+        let s = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(3, s);
+        MutSet1.add!(2, s);
+        MutSet1.add!(1, s);
         MutSet1.foldRightLazy((e, i) -> (force i - e) * (e rem 2 + 1), 100, s) == 382
+    }
 
 }
