@@ -192,7 +192,7 @@ namespace Result1 {
     ///
     @Time(time(f)) @Space(space(f))
     pub def foldLeft(f: (a, t) -> a & f, z: a, r: Result[t, e]): a & f = match r {
-        case Ok(v) => f(z, v)
+        case Ok(v)  => f(z, v)
         case Err(_) => z
     }
 
@@ -201,7 +201,7 @@ namespace Result1 {
     ///
     @Time(time(f)) @Space(space(f))
     pub def foldRight(f: (t, a) -> a & f, r: Result[t, e], z: a): a & f = match r {
-        case Ok(v) => f(v, z)
+        case Ok(v)  => f(v, z)
         case Err(_) => z
     }
 
@@ -212,25 +212,21 @@ namespace Result1 {
     ///
     @Time(time(f)) @Space(space(f))
     pub def foldRightLazy(f: (t, Lazy[a]) -> a, r: Result[t, e], z: a): a = match r {
-        case Ok(v) => f(v, lazy z)
+        case Ok(v)  => f(v, lazy z)
         case Err(_) => z
     }
 
     ///
-    /// Returns `Ok(v1 :: v2 :: ... :: vn)` if each of `xs_i` is `Ok(v_i)`.
+    /// Returns `Ok(v1 :: v2 :: ... :: vn)` if each of `l_i` is `Ok(v_i)`.
     /// Otherwise returns the first `Err` encountered.
     ///
-    pub def sequence(xs: List[Result[a, e]]): Result[List[a], e] =
-        sequenceHelper(xs, e -> Err(e), ys -> Ok(ys))
-
-    ///
-    /// Helper function for `sequence`.
-    ///
-    def sequenceHelper(xs: List[Result[a, e]], fk: e -> Result[List[a], e], sk: List[a] -> Result[List[a], e]): Result[List[a], e] = match xs {
-        case Nil            => sk(Nil)
-        case Err(e) :: _    => fk(e)
-        case Ok(y) :: rs    => sequenceHelper(rs, fk, ys -> sk(y :: ys))
-    }
+    pub def sequence(l: List[Result[a, e]]): Result[List[a], e] =
+        def loop(ll, k) = match ll {
+            case Nil         => k(Nil)
+            case Err(e) :: _ => Err(e)
+            case Ok(x) :: xs => loop(xs, ks -> k(x :: ks))
+        };
+        loop(l, ks -> Ok(ks))
 
     ///
     /// Returns `Some(v1 :: v2 :: ... v :: vn)` if each of `f(xs_i)` is `Ok(v_i)`.
