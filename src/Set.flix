@@ -583,15 +583,12 @@ namespace Set1 {
     ///
     /// `next` should return `None` to signal the end of building the set.
     ///
-    pub def unfoldWithIter(next: Unit -> Option[a] & ef): Set[a] & ef with Order[a] = unfoldWithIterHelper(next, empty())
-
-    ///
-    /// Helper function for `unfoldWithIter`.
-    ///
-    def unfoldWithIterHelper(next: Unit -> Option[a] & ef, acc: Set[a]): Set[a] & ef with Order[a] = match next() {
-        case None => acc
-        case Some(a) => unfoldWithIterHelper(next, insert(a, acc))
-    }
+    pub def unfoldWithIter(next: Unit -> Option[a] & ef): Set[a] & ef with Order[a] =
+        def loop(s) = match next() {
+            case None    => s
+            case Some(a) => loop(insert(a, s))
+        };
+        loop(empty())
 
     ///
     /// Returns the set `s` as a `DelayList`.
