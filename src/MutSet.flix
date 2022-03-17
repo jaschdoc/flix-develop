@@ -332,10 +332,10 @@ namespace MutSet1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def partition(f: a -> Bool, s: MutSet1[a, r]): (MutSet1[a, Impure], MutSet1[a, Impure]) & Impure with Order[a] =
+    pub def partition(f: a -> Bool, s: MutSet1[a, r]): (MutSet1[a, r], MutSet1[a, r]) & reg(r) with Order[a] =
         let MutSet1(ms) = s;
         let (ys, zs) = Set.partition(f, deref ms);
-            (MutSet1(ref ys), MutSet1(ref zs))
+            (MutSet1(ref ys), MutSet1(ref zs)) as (MutSet1[a, r], MutSet1[a, r]) & reg(r)
 
     ///
     /// Returns the mutable set `s` as an immutable set.
