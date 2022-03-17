@@ -24,7 +24,7 @@ namespace MutSet1 {
     ///
     /// Returns a fresh empty set.
     ///
-    pub def emptyWithRegion(r: Region[r]): MutSet1[a, r] & reg(r) =
+    pub def newWithRegion(r: Region[r]): MutSet1[a, r] & reg(r) =
         MutSet1(ref Set.empty() @ r)
 
     ///
