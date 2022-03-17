@@ -24,20 +24,8 @@ namespace MutSet1 {
     ///
     /// Returns a fresh empty set.
     ///
-    pub def empty(): MutSet1[a, Impure] & Impure =
-        MutSet1(ref Set.empty())
-
-    ///
-    /// Returns a fresh empty set.
-    ///
     pub def emptyWithRegion(r: Region[r]): MutSet1[a, r] & reg(r) =
         MutSet1(ref Set.empty() @ r)
-
-    ///
-    /// Returns the singleton set containing `x`.
-    ///
-    pub def singleton(x: a): MutSet1[a, Impure] & Impure with Order[a] =
-        MutSet1(ref Set.singleton(x))
 
     ///
     /// Adds the element `x` to the mutable set `s`.
