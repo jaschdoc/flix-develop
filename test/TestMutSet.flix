@@ -22,75 +22,75 @@ namespace TestMutSet1 {
 
     @test
     def sameElements01(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r): MutSet1[Int32, _];
+        let s1 = MutSet1.emptyWithRegion(r): MutSet1[Int32, _];
         let s2 = MutSet1.emptyWithRegion(r): MutSet1[Int32, _];
-        MutSet1.sameElements(s, s2)
+        MutSet1.sameElements(s1, s2)
     }
 
     @test
     def sameElements02(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        MutSet1.add!(1, s);
+        let s1 = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s1);
 
         let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(1, s2);
 
-        MutSet1.sameElements(s, s2)
+        MutSet1.sameElements(s1, s2)
     }
 
     @test
     def sameElements03(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        MutSet1.add!(1, s);
+        let s1 = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s1);
 
         let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(2, s2);
 
-        not MutSet1.sameElements(s, s2)
+        not MutSet1.sameElements(s1, s2)
     }
 
     @test
     def sameElements04(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        MutSet1.add!(1, s);
-        MutSet1.add!(2, s);
-        MutSet1.add!(3, s);
+        let s1 = MutSet1.emptyWithRegion(r);
+        MutSet1.add!(1, s1);
+        MutSet1.add!(2, s1);
+        MutSet1.add!(3, s1);
 
         let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!(2, s2);
         MutSet1.add!(3, s2);
         MutSet1.add!(1, s2);
 
-        MutSet1.sameElements(s, s2)
+        MutSet1.sameElements(s1, s2)
     }
 
     @test
     def sameElements05(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        MutSet1.add!("a", s);
-        MutSet1.add!("b", s);
-        MutSet1.add!("c", s);
+        let s1 = MutSet1.emptyWithRegion(r);
+        MutSet1.add!("a", s1);
+        MutSet1.add!("b", s1);
+        MutSet1.add!("c", s1);
 
         let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!("c", s2);
         MutSet1.add!("a", s2);
         MutSet1.add!("b", s2);
 
-        MutSet1.sameElements(s, s2)
+        MutSet1.sameElements(s1, s2)
     }
 
     @test
     def setSameElements06(): Bool = region r {
-        let s = MutSet1.emptyWithRegion(r);
-        MutSet1.add!("a", s);
-        MutSet1.add!("b", s);
-        MutSet1.add!("c", s);
+        let s1 = MutSet1.emptyWithRegion(r);
+        MutSet1.add!("a", s1);
+        MutSet1.add!("b", s1);
+        MutSet1.add!("c", s1);
 
         let s2 = MutSet1.emptyWithRegion(r);
         MutSet1.add!("c", s2);
         MutSet1.add!("a", s2);
 
-        not MutSet1.sameElements(s, s2)
+        not MutSet1.sameElements(s1, s2)
     }
 
 
