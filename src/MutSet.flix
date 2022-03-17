@@ -320,9 +320,9 @@ namespace MutSet1 {
     ///
     /// Returns a shallow copy of the mutable set `s`.
     ///
-    pub def copy(s: MutSet1[a, r]): MutSet1[a, Impure] & Impure =
+    pub def copy(s: MutSet1[a, r]): MutSet1[a, r] & reg(r) =
         let MutSet1(ms) = s;
-        MutSet1(ref (deref ms))
+        MutSet1(ref (deref ms)) as MutSet1[a, r] & reg(r)
 
     ///
     /// Returns a pair of mutable sets `(s1, s2)` such that:
