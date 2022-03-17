@@ -288,6 +288,5 @@ namespace VValidation {
     pub def lift10(f: (t1, t2, t3, t4, t5, t6, t7, t8, t9, t10) -> u & ef, v1: Validation[t1, e], v2: Validation[t2, e], v3: Validation[t3, e], v4: Validation[t4, e], v5: Validation[t5, e], v6: Validation[t6, e], v7: Validation[t7, e], v8: Validation[t8, e], v9: Validation[t9, e], v10: Validation[t10, e]): Validation[u, e] & ef =
         ap(lift9(f, v1, v2, v3, v4, v5, v6, v7, v8, v9), v10)
 
-
 }
 
