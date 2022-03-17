@@ -147,41 +147,29 @@ namespace VValidation {
         loop(l, ks -> Success(ks))
 
     ///
-    /// Returns `Success()` if each of `f(xs_i)` is `Success(_)`.
+    /// Returns `Success()` if each of `f(l_i)` is `Success(_)`.
     ///
     /// Otherwise returns `Failure(e1 :: ... :: en)` with all of the failures concatenated.
     ///
     /// This function is the "forgetful" version of `traverse`, use it when the you want the effect
     /// of applying `f` to each element but do not care about collecting the results.
     ///
-    pub def traverseX(f: a -> Validation[b, e] & ef, xs: List[a]): Validation[Unit, e] & ef =
-        traverseXHelperSuccess(f, xs)
-
-    ///
-    /// Helper function for `traverseX`.
-    ///
-    /// Precondition: no Failure has been encountered.
-    ///
-    def traverseXHelperSuccess(f: a -> Validation[b, e] & ef, xs: List[a]): Validation[Unit, e] & ef = match xs {
-        case Nil        => Success()
-        case v :: vs    => match f(v) {
-            case Success(_) => traverseXHelperSuccess(f, vs)
-            case Failure(e) => traverseXHelperFailure(f, vs, e)
-        }
-    }
-
-    ///
-    /// Helper function for `traverseX`.
-    ///
-    /// Precondition: at least one Failure has been encountered.
-    ///
-    def traverseXHelperFailure(f: a -> Validation[b, e] & ef, xs: List[a], ac: Nec[e]): Validation[Unit, e] & ef = match xs {
-        case Nil        => Failure(ac)
-        case v :: vs    => match f(v) {
-            case Success(_) => traverseXHelperFailure(f, vs, ac)
-            case Failure(e) => traverseXHelperFailure(f, vs, Nec.append(ac, e))
-        }
-    }
+    pub def traverseX(f: a -> Validation[b, e] & ef, l: List[a]): Validation[Unit, e] & ef =
+        def loopFailure(ll, acc) = match ll {
+            case Nil     => Failure(acc)
+            case x :: xs => match f(x) {
+                case Success(_) => loopFailure(xs, acc)
+                case Failure(e) => loopFailure(xs, Nec.append(acc, e))
+            }
+        };
+        def loop(ll) = match ll {
+            case Nil     => Success()
+            case x :: xs => match f(x) {
+                case Success(_) => loop(xs)
+                case Failure(e) => loopFailure(xs, e)
+            }
+        };
+        loop(l)
 
     ///
     /// Converts a Validation to an Option.
