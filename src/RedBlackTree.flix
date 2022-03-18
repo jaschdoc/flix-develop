@@ -280,7 +280,7 @@ namespace RedBlackTree1 {
     pub def findRight(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] =
         def loop(t) = match t {
             case Node(_, a, k, v, b) => match loop(b) {
-                case None           => if (f(k, v)) Some(k, v) else loop(a)
+                case None         => if (f(k, v)) Some(k, v) else loop(a)
                 case Some(k1, v1) => Some(k1, v1)
             }
             case _ => None
