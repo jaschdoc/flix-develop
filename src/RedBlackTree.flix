@@ -119,7 +119,7 @@ namespace RedBlackTree1 {
     @Time(size(tree)) @Space(Int32.log2(size(tree)))
     pub def size(tree: RedBlackTree[k, v]): Int32 = match tree {
         case Node(_, a, _, _, b) => 1 + size(a) + size(b)
-        case _ => 0
+        case _                   => 0
     }
 
     ///
@@ -134,7 +134,7 @@ namespace RedBlackTree1 {
     @Time(1) @Space(1)
     pub def isEmpty(tree: RedBlackTree[k, v]): Bool = match tree {
         case Leaf => true
-        case _ => false
+        case _    => false
     }
 
     ///
@@ -144,7 +144,16 @@ namespace RedBlackTree1 {
     ///
     @Time(Int32.log2(size(tree))) @Space(Int32.log2(size(tree)))
     pub def insert(k: k, v: v, tree: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] =
-        blacken(insertHelper(k, v, tree))
+        def loop(t) = match t {
+            case Leaf                  => Node(Red, Leaf, k, v, Leaf)
+            case Node(c, a, k1, v1, b) => match k <=> k1 {
+                case LessThan    => balance(Node(c, loop(a), k1, v1, b))
+                case EqualTo     => Node(c , a, k, v, b)
+                case GreaterThan => balance(Node(c, a, k1, v1, loop(b)))
+            }
+            case _ => t
+        };
+        blacken(loop(tree))
 
     ///
     /// Updates `tree` with `k => f(k, v, v1)` if `k => v1` is in `tree`.
@@ -169,7 +178,8 @@ namespace RedBlackTree1 {
     ///
     /// Otherwise, returns `tree`.
     ///
-    pub def remove(k: k, tree: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] = redden(removeHelper(k, tree))
+    pub def remove(k: k, tree: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] =
+        redden(removeHelper(k, tree))
 
     ///
     /// Returns `Some(v)` if `k => v` is in `tree`.
@@ -353,20 +363,6 @@ namespace RedBlackTree1 {
             Node(Black, Node(Red, a, k1, v1, b), k2, v2, c)
         case Node(Red, a, k1, v1, Node(Red, b, k2, v2, c)) =>
             Node(Black, a, k1, v1, Node(Red, b, k2, v2, c))
-        case _ => tree
-    }
-
-    ///
-    /// Helper function for `insert`.
-    ///
-    def insertHelper(k: k, v: v, tree: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] = match tree {
-        case Leaf => Node(Red, Leaf, k, v, Leaf)
-        case Node(color, a, k1, v1, b) =>
-            match k <=> k1 {
-                case LessThan => balance(Node(color, insertHelper(k, v, a), k1, v1, b))
-                case EqualTo => Node(color, a, k, v, b)
-                case GreaterThan => balance(Node(color, a, k1, v1, insertHelper(k, v, b)))
-            }
         case _ => tree
     }
 
