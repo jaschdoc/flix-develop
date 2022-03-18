@@ -511,29 +511,31 @@ namespace RedBlackTree1 {
     /// Extracts `k => v` where `k` is the leftmost (i.e. smallest) key in the tree.
     ///
     pub def minimumKey(tree: RedBlackTree[k, v]): Option[(k, v)] = match tree {
-        case Node(_, Leaf, k, v, _) => Some((k, v))
-        case Node(_, a, _, _, _) => minimumKey(a)
-        case _ => None
+        case Node(_, Leaf, k, v, _) => Some(k, v)
+        case Node(_, a, _, _, _)    => minimumKey(a)
+        case _                      => None
     }
 
     ///
     /// Extracts `k => v` where `k` is the rightmost (i.e. largest) key in the tree.
     ///
     pub def maximumKey(tree: RedBlackTree[k, v]): Option[(k, v)] = match tree {
-        case Node(_, _, k, v, Leaf) => Some((k, v))
-        case Node(_, _, _, _, b) => maximumKey(b)
-        case _ => None
+        case Node(_, _, k, v, Leaf) => Some(k, v)
+        case Node(_, _, _, _, b)    => maximumKey(b)
+        case _                      => None
     }
 
     ///
     /// Returns the black height of `tree`.
     ///
     @Time(Int32.log2(size(tree))) @Space(1)
-    pub def blackHeight(tree: RedBlackTree[k, v]): Int32 = match tree {
-        case Node(Black, a, _, _, _) => 1 + blackHeight(a)
-        case Node(_, a, _, _, _) => blackHeight(a)
-        case _ => 0
-    }
+    pub def blackHeight(tree: RedBlackTree[k, v]): Int32 =
+        def loop(tt, acc) = match tt {
+            case Node(Black, a, _, _, _) => loop(a, 1 + acc)
+            case Node(_, a, _, _, _)     => loop(a, acc)
+            case _                       => acc
+        };
+        loop(tree, 0)
 
     ///
     /// Returns a RedBlackTree with mappings `k => f(k, v)` for every `k => v` in `t`.
