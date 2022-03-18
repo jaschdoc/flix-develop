@@ -1,13 +1,33 @@
 def main(_args: Array[String]): Int32 & Impure =
     let Map(t) = List.zip(List.range(0, 10000), List.range(0, 10000)) |> List.toMap;
 
+    // Warmup
+    let _ = Test.insertOld(10001, 10001, t);
+    let _ = Test.insertOld(10001, 10001, t);
+    let _ = Test.insertOld(10001, 10001, t);
+    let _ = Test.insertOld(10001, 10001, t);
+    let _ = Test.insertOld(10001, 10001, t);
+
     let t0Old = Time/Epoch.nanoseconds();
     let _ = Test.insertOld(10001, 10001, t);
     let t1Old = Time/Epoch.nanoseconds();
 
+    // Warmup
+    let _ = Test.insertInner(10001, 10001, t);
+    let _ = Test.insertInner(10001, 10001, t);
+    let _ = Test.insertInner(10001, 10001, t);
+    let _ = Test.insertInner(10001, 10001, t);
+    let _ = Test.insertInner(10001, 10001, t);
+
     let t0Inner = Time/Epoch.nanoseconds();
     let _ = Test.insertInner(10001, 10001, t);
     let t1Inner = Time/Epoch.nanoseconds();
+
+    let _ = Test.insertInnerTail(10001, 10001, t);
+    let _ = Test.insertInnerTail(10001, 10001, t);
+    let _ = Test.insertInnerTail(10001, 10001, t);
+    let _ = Test.insertInnerTail(10001, 10001, t);
+    let _ = Test.insertInnerTail(10001, 10001, t);
 
     let t0InnerTail = Time/Epoch.nanoseconds();
     let _ = Test.insertInnerTail(10001, 10001, t);
