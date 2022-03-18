@@ -145,16 +145,16 @@ namespace RedBlackTree1 {
     ///
     @Time(Int32.log2(size(tree))) @Space(Int32.log2(size(tree)))
     pub def insert(k: k, v: v, tree: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] =
-        def loop(t, sk) = match t {
-            case Leaf                  => sk(Node(Red, Leaf, k, v, Leaf))
+        def loop(t) = match t {
+            case Leaf                  => Node(Red, Leaf, k, v, Leaf)
             case Node(c, a, k1, v1, b) => match k <=> k1 {
-                case LessThan    => loop(a, ts -> sk(balance(Node(c, ts, k1, v1, b))))
-                case EqualTo     => sk(Node(c, a, k, v, b))
-                case GreaterThan => loop(b, ts -> sk(balance(Node(c, a, k1, v1, ts))))
+                case LessThan    => balance(Node(c, loop(a), k1, v1, b))
+                case EqualTo     => Node(c , a, k, v, b)
+                case GreaterThan => balance(Node(c, a, k1, v1, loop(b)))
             }
-            case _ => sk(t)
+            case _ => t
         };
-        blacken(loop(tree, identity))
+        blacken(loop(tree))
 
     ///
     /// Updates `tree` with `k => f(k, v, v1)` if `k => v1` is in `tree`.
