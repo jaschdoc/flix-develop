@@ -259,14 +259,17 @@ namespace RedBlackTree1 {
     ///
     /// The function `f` must be pure.
     ///
+    // TODO: Tail recursive
     @Time(time(f) * size(tree)) @Space(space(f) * Int32.log2(size(tree)))
-    pub def findLeft(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] = match tree {
-        case Node(_, a, k, v, b) => match findLeft(f, a) {
-            case None => if (f(k, v)) Some((k, v)) else findLeft(f, b)
-            case Some((k1, v1)) => Some((k1, v1))
-        }
-        case _ => None
-    }
+    pub def findLeft(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] =
+        def loop(t) = match t {
+            case Node(_, a, k, v, b) => match loop(a) {
+                case None         => if (f(k, v)) Some(k, v) else loop(b)
+                case Some(k1, v1) => Some(k1, v1)
+            }
+            case _ => None
+        };
+        loop(tree)
 
     ///
     /// Optionally returns the first key-value pair in `tree` that satisfies the predicate `f` when searching from right to left.
