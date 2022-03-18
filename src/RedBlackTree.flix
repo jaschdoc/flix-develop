@@ -213,7 +213,7 @@ namespace RedBlackTree1 {
         case Node(c, a, k1, v1, b) =>
             match k <=> k1 {
                 case LessThan => loop(a, ks -> sk(rotate(Node(c, ks, k1, v1, b))))
-                case EqualTo =>
+                case EqualTo  =>
                     let (k2, v2, e) = minDelete(b);
                     sk(rotate(Node(c, a, k2, v2, e)))
                 case GreaterThan => loop(b, ks -> sk(rotate(Node(c, a, k1, v1, ks))))
@@ -228,15 +228,16 @@ namespace RedBlackTree1 {
     /// Otherwise returns `None`.
     ///
     @Time(Int32.log2(size(tree))) @Space(1)
-    pub def get(k: k, tree: RedBlackTree[k, v]): Option[v] with Order[k] = match tree {
-        case Node(_, a, k1, v, b) =>
-            match k <=> k1 {
-                case LessThan => get(k, a)
-                case EqualTo => Some(v)
-                case GreaterThan => get(k, b)
+    pub def get(k: k, tree: RedBlackTree[k, v]): Option[v] with Order[k] =
+        def loop(t) = match t {
+            case Node(_, a, k1, v, b) => match k <=> k1 {
+                case LessThan    => loop(a)
+                case EqualTo     => Some(v)
+                case GreaterThan => loop(b)
             }
-        case _ => None
-    }
+            case _ => None
+        };
+        loop(tree)
 
     ///
     /// Returns `true` if and only if `tree` contains the key `k`.
