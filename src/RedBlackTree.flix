@@ -166,9 +166,9 @@ namespace RedBlackTree1 {
         def loop(t, sk) = match t {
             case Leaf                  => sk(Node(Red, Leaf, k, v, Leaf))
             case Node(c, a, k1, v1, b) => match k <=> k1 {
-                case LessThan    => loop(a, ks -> balance(Node(c, ks, k1, v1, b)))
+                case LessThan    => loop(a, ks -> sk(balance(Node(c, ks, k1, v1, b))))
                 case EqualTo     => sk(Node(c, a, k, f(k, v, v1), b))
-                case GreaterThan => loop(b, ks -> balance(Node(c, a, k1, v1, ks)))
+                case GreaterThan => loop(b, ks -> sk(balance(Node(c, a, k1, v1, ks))))
             }
             case _ => sk(t)
         };
@@ -181,7 +181,19 @@ namespace RedBlackTree1 {
     ///
     @Time(time(f) + Int32.log2(size(tree))) @Space(space(f) + Int32.log2(size(tree)))
     pub def updateWith(f: (k, v) -> Option[v] & ef, k: k, tree: RedBlackTree[k, v]): RedBlackTree[k, v] & ef with Order[k] =
-        blacken(updateWithHelper(f, k, tree))
+        def loop(t, sk) = match t {
+            case Leaf                  => sk(t)
+            case Node(c, a, k1, v1, b) => match k <=> k1 {
+                case LessThan => loop(a, ks -> sk(balance(Node(c, ks, k1, v1, b))))
+                case EqualTo  => match f(k1, v1) {
+                    case None    => sk(t)
+                    case Some(v) => sk(Node(c, a, k, v, b))
+                }
+                case GreaterThan => loop(b, ks -> sk(balance(Node(c, a, k1, v1, ks))))
+            }
+            case _ => sk(t)
+        };
+        blacken(loop(tree, identity))
 
     ///
     /// Removes `k => v` from `tree` if `tree` contains the key `k`.
@@ -373,23 +385,6 @@ namespace RedBlackTree1 {
             Node(Black, Node(Red, a, k1, v1, b), k2, v2, c)
         case Node(Red, a, k1, v1, Node(Red, b, k2, v2, c)) =>
             Node(Black, a, k1, v1, Node(Red, b, k2, v2, c))
-        case _ => tree
-    }
-
-    ///
-    /// Helper function for `updateWith`.
-    ///
-    def updateWithHelper(f: (k, v) -> Option[v] & ef, k: k, tree: RedBlackTree[k, v]): RedBlackTree[k, v] & ef with Order[k] = match tree {
-        case Leaf => tree
-        case Node(color, a, k1, v1, b) =>
-            match k <=> k1 {
-                case LessThan => balance(Node(color, updateWithHelper(f, k, a), k1, v1, b))
-                case EqualTo => match f(k1, v1) {
-                    case None => tree
-                    case Some(v) => Node(color, a, k, v, b)
-                }
-                case GreaterThan => balance(Node(color, a, k1, v1, updateWithHelper(f, k, b)))
-            }
         case _ => tree
     }
 
