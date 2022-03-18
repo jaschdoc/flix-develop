@@ -115,7 +115,7 @@ namespace RedBlackTree1 {
         minSize >= 1024
 
     ///
-    /// Returns the number of nodes in `tree`.
+    /// Returns the number of nodes in `t`.
     ///
     @Time(size(t)) @Space(Int32.log2(size(t)))
     pub def size(t: RedBlackTree[k, v]): Int32 = match t {
@@ -130,7 +130,7 @@ namespace RedBlackTree1 {
     pub def empty(): RedBlackTree[k, v] = Leaf
 
     ///
-    /// Returns `true` if and only if `tree` is the empty tree.
+    /// Returns `true` if and only if `t` is the empty tree.
     ///
     @Time(1) @Space(1)
     pub def isEmpty(tree: RedBlackTree[k, v]): Bool = match tree {
@@ -139,9 +139,9 @@ namespace RedBlackTree1 {
     }
 
     ///
-    /// Updates `tree` with `k => v` if `k => v1` is in `tree`.
+    /// Updates `t` with `k => v` if `k => v1` is in `t`.
     ///
-    /// Otherwise, updates `tree` with `k => v`.
+    /// Otherwise, updates `t` with `k => v`.
     ///
     @Time(Int32.log2(size(t))) @Space(Int32.log2(size(t)))
     pub def insert(k: k, v: v, t: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] =
@@ -157,9 +157,9 @@ namespace RedBlackTree1 {
         blacken(loop(t, identity))
 
     ///
-    /// Updates `tree` with `k => f(k, v, v1)` if `k => v1` is in `tree`.
+    /// Updates `t` with `k => f(k, v, v1)` if `k => v1` is in `t`.
     ///
-    /// Otherwise, updates `tree` with `k => v`.
+    /// Otherwise, updates `t` with `k => v`.
     ///
     @Time(time(f) + Int32.log2(size(t))) @Space(space(f) + Int32.log2(size(t)))
     pub def insertWith(f: (k, v, v) -> v & ef, k: k, v: v, t: RedBlackTree[k, v]): RedBlackTree[k, v] & ef with Order[k] =
@@ -175,9 +175,9 @@ namespace RedBlackTree1 {
         blacken(loop(t, identity))
 
     ///
-    /// Updates `tree` with `k => v1` if `k => v` is in `tree` and `f(k, v) = Some(v1)`.
+    /// Updates `t` with `k => v1` if `k => v` is in `t` and `f(k, v) = Some(v1)`.
     ///
-    /// Otherwise, returns `tree`.
+    /// Otherwise, returns `t`.
     ///
     @Time(time(f) + Int32.log2(size(t))) @Space(space(f) + Int32.log2(size(t)))
     pub def updateWith(f: (k, v) -> Option[v] & ef, k: k, t: RedBlackTree[k, v]): RedBlackTree[k, v] & ef with Order[k] =
@@ -196,9 +196,9 @@ namespace RedBlackTree1 {
         blacken(loop(t, identity))
 
     ///
-    /// Removes `k => v` from `tree` if `tree` contains the key `k`.
+    /// Removes `k => v` from `t` if `t` contains the key `k`.
     ///
-    /// Otherwise, returns `tree`.
+    /// Otherwise, returns `t`.
     ///
     pub def remove(k: k, t: RedBlackTree[k, v]): RedBlackTree[k, v] with Order[k] =
         def loop(tt, sk) = match tt {
@@ -223,7 +223,7 @@ namespace RedBlackTree1 {
         redden(loop(t, identity))
 
     ///
-    /// Returns `Some(v)` if `k => v` is in `tree`.
+    /// Returns `Some(v)` if `k => v` is in `t`.
     ///
     /// Otherwise returns `None`.
     ///
@@ -240,7 +240,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Returns `true` if and only if `tree` contains the key `k`.
+    /// Returns `true` if and only if `t` contains the key `k`.
     ///
     @Time(Int32.log2(size(t))) @Space(1)
     pub def memberOf(k: k, t: RedBlackTree[k, v]): Bool with Order[k] =
@@ -255,7 +255,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Optionally returns the first key-value pair in `tree` that satisfies the predicate `f` when searching from left to right.
+    /// Optionally returns the first key-value pair in `t` that satisfies the predicate `f` when searching from left to right.
     ///
     /// The function `f` must be pure.
     ///
@@ -272,7 +272,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Optionally returns the first key-value pair in `tree` that satisfies the predicate `f` when searching from right to left.
+    /// Optionally returns the first key-value pair in `t` that satisfies the predicate `f` when searching from right to left.
     ///
     /// The function `f` must be pure.
     ///
@@ -288,7 +288,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Applies `f` to a start value `s` and all key-value pairs in `tree` going from left to right.
+    /// Applies `f` to a start value `s` and all key-value pairs in `t` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, k1, v1), k2, v2)..., vn)`.
     ///
@@ -300,7 +300,7 @@ namespace RedBlackTree1 {
         loop(t, s)
 
     ///
-    /// Applies `f` to a start value `s` and all key-value pairs in `tree` going from right to left.
+    /// Applies `f` to a start value `s` and all key-value pairs in `t` going from right to left.
     ///
     /// That is, the result is of the form: `f(k1, v1, ...f(kn-1, vn-1, f(kn, vn, s)))`.
     ///
@@ -312,7 +312,7 @@ namespace RedBlackTree1 {
         loop(s, t)
 
     ///
-    /// Lazily applies `f` to a start value `s` and all key-value pairs in `tree` going from right to left.
+    /// Lazily applies `f` to a start value `s` and all key-value pairs in `t` going from right to left.
     ///
     /// That is, the result is of the form: `f(k1, v1, ... lazy f(kn-1, vn-1, lazy f(kn, vn, s)))`.
     /// The foldRightLazy function exists to allow early termination of a fold.
@@ -326,11 +326,11 @@ namespace RedBlackTree1 {
         loop(s, t)
 
 
-    /// Applies `f` to all key-value pairs in `tree` going from left to right until a single pair `(k, v)` is obtained.
+    /// Applies `f` to all key-value pairs in `t` going from left to right until a single pair `(k, v)` is obtained.
     ///
     /// That is, the result is of the form: `Some(f(...f(f(k1, v1, k2, v2), k3, v3)..., kn, vn))`
     ///
-    /// Returns `None` if `tree` is the empty tree.
+    /// Returns `None` if `t` is the empty tree.
     ///
     pub def reduceLeft(f: (k, v, k, v) -> (k, v) & ef, tree: RedBlackTree[k, v]): Option[(k, v)] & ef =
         foldLeft((x, k1, v1) -> match x {
@@ -339,11 +339,11 @@ namespace RedBlackTree1 {
         }, None, tree)
 
     ///
-    /// Applies `f` to all key-value pairs in `tree` going from right to left until a single pair `(k, v)` is obtained.
+    /// Applies `f` to all key-value pairs in `t` going from right to left until a single pair `(k, v)` is obtained.
     ///
     /// That is, the result is of the form: `Some(f(k1, v1, ...f(kn-2, vn-2, f(kn-1, vn-1, kn, vn))...))`.
     ///
-    /// Returns `None` if `tree` is the empty tree.
+    /// Returns `None` if `t` is the empty tree.
     ///
     pub def reduceRight(f: (k, v, k, v) -> (k, v) & ef, tree: RedBlackTree[k, v]): Option[(k, v)] & ef =
         foldRight((k1, v1, x) -> match x {
@@ -352,9 +352,9 @@ namespace RedBlackTree1 {
         }, None, tree)
 
     ///
-    /// Returns `true` if and only if at least one key-value pair in `tree` satisfies the predicate `f`.
+    /// Returns `true` if and only if at least one key-value pair in `t` satisfies the predicate `f`.
     ///
-    /// Returns `false` if `tree` is the empty tree.
+    /// Returns `false` if `t` is the empty tree.
     ///
     /// The function `f` must be pure.
     ///
@@ -367,9 +367,9 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Returns `true` if and only if all key-value pairs in `tree` satisfy the predicate `f`.
+    /// Returns `true` if and only if all key-value pairs in `t` satisfy the predicate `f`.
     ///
-    /// Returns `true` if `tree` is the empty tree.
+    /// Returns `true` if `t` is the empty tree.
     ///
     /// The function `f` must be pure.
     ///
@@ -382,7 +382,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Applies `f` to every key-value pair of `tree`.
+    /// Applies `f` to every key-value pair of `t`.
     ///
     @Time(time(f) * size(t)) @Space(space(f) * Int32.log2(size(t)))
     pub def foreach(f: (k, v) -> Unit & ef, t: RedBlackTree[k, v]): Unit & ef =
@@ -478,7 +478,7 @@ namespace RedBlackTree1 {
         loop(t, identity)
 
     ///
-    /// Applies `f` to all key-value pairs from `tree` where `p(k)` returns `EqualTo`.
+    /// Applies `f` to all key-value pairs from `t` where `p(k)` returns `EqualTo`.
     ///
     /// The function `f` must be impure.
     ///
@@ -495,7 +495,7 @@ namespace RedBlackTree1 {
         loop(t)
 
     ///
-    /// Extracts a range of key-value pairs from `tree`.
+    /// Extracts a range of key-value pairs from `t`.
     ///
     /// That is, the result is a list of all pairs `f(k, v)` where `p(k)` returns `Equal`.
     ///
@@ -526,7 +526,7 @@ namespace RedBlackTree1 {
     }
 
     ///
-    /// Returns the black height of `tree`.
+    /// Returns the black height of `t`.
     ///
     @Time(Int32.log2(size(t))) @Space(1)
     pub def blackHeight(t: RedBlackTree[k, v]): Int32 =
@@ -828,10 +828,10 @@ namespace RedBlackTree1 {
         ((((l, v, r) -> Node(color, l, k, v, r)) `Functor.map` left) `Applicative.ap` value) `Applicative.ap` right
 
     ///
-    /// Returns a RedBlackTree with mappings `k => f(v)` for every `k => v` in `tree`.
+    /// Returns a RedBlackTree with mappings `k => f(v)` for every `k => v` in `t`.
     ///
-    pub def mapAWithKey(f: (k, v1) -> m[v2] & ef, tree: RedBlackTree[k, v1]): m[RedBlackTree[k, v2]] & ef with Applicative[m] =
-        mapAWithKeyHelper(f, tree, t -> t as & ef)
+    pub def mapAWithKey(f: (k, v1) -> m[v2] & ef, t: RedBlackTree[k, v1]): m[RedBlackTree[k, v2]] & ef with Applicative[m] =
+        mapAWithKeyHelper(f, t, s -> s as & ef)
 
     ///
     /// Helper function for `mapAWithKey`.
