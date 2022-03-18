@@ -259,7 +259,7 @@ namespace RedBlackTree1 {
     ///
     /// The function `f` must be pure.
     ///
-    // TODO: Tail recursive
+    // TODO: Tail recursive w. early return (instead of collapsing continuation function)
     @Time(time(f) * size(tree)) @Space(space(f) * Int32.log2(size(tree)))
     pub def findLeft(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] =
         def loop(t) = match t {
@@ -277,23 +277,27 @@ namespace RedBlackTree1 {
     /// The function `f` must be pure.
     ///
     @Time(time(f) * size(tree)) @Space(space(f) * Int32.log2(size(tree)))
-    pub def findRight(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] = match tree {
-        case Node(_, a, k, v, b) => match findRight(f, b) {
-            case None => if (f(k, v)) Some(k, v) else findRight(f, a)
-            case Some((k1, v1)) => Some((k1, v1))
-        }
-        case _ => None
-    }
+    pub def findRight(f: (k, v) -> Bool, tree: RedBlackTree[k, v]): Option[(k, v)] =
+        def loop(t) = match t {
+            case Node(_, a, k, v, b) => match loop(b) {
+                case None           => if (f(k, v)) Some(k, v) else loop(a)
+                case Some(k1, v1) => Some(k1, v1)
+            }
+            case _ => None
+        };
+        loop(tree)
 
     ///
     /// Applies `f` to a start value `s` and all key-value pairs in `tree` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, k1, v1), k2, v2)..., vn)`.
     ///
-    pub def foldLeft(f: (b, k, v) -> b & ef, s: b, tree: RedBlackTree[k, v]): b & ef = match tree {
-        case Node(_, a, k, v, b) => foldLeft(f, f(foldLeft(f, s, a), k, v), b)
-        case _ => s
-    }
+    pub def foldLeft(f: (b, k, v) -> b & ef, s: b, tree: RedBlackTree[k, v]): b & ef =
+        def loop(t, acc) = match t {
+            case Node(_, a, k, v, b) => loop(b, f(loop(a, acc), k, v))
+            case _                   => acc
+        };
+        loop(tree, s)
 
     ///
     /// Applies `f` to a start value `s` and all key-value pairs in `tree` going from right to left.
