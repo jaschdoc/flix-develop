@@ -42,6 +42,7 @@ namespace RedBlackTree1 {
 /*
 
     pub enum RedBlackTree[k, v] {
+
         ///
         /// A black leaf.
         ///
