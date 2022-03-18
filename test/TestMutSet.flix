@@ -95,6 +95,83 @@ namespace TestMutSet1 {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // addAll! and mulitple regions                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    // This section of tests serve two purposes:
+    //  1. to test `addAll`
+    //  2. to test the use of mulitple regions.
+    // Thus not all tests end with a simple comparison of two sets.
+
+    @test
+    def addAll01(): Bool = region r {
+        let s1 = MutSet1.newWithRegion(r): MutSet1[Int32, _];
+        let s2 = MutSet1.newWithRegion(r): MutSet1[Int32, _];
+        MutSet1.addAll!(s1, s2);
+        MutSet1.isEmpty(s2)
+    }
+
+    @test
+    def addAll02(): Bool = region r {
+        let s1 = MutSet1.newWithRegion(r);
+        let s2 = MutSet1.newWithRegion(r);
+        MutSet1.add!(1, s1);
+        MutSet1.add!(1, s1);
+        MutSet1.addAll!(s1, s2);
+        MutSet1.sameElements(s1, s2)
+    }
+
+    @test
+    def addAll03(): Bool = region r {
+        let s1 = MutSet1.newWithRegion(r);
+        let s2 = MutSet1.newWithRegion(r);
+        MutSet1.add!(1, s1);
+        MutSet1.add!(2, s1);
+        MutSet1.addAll!(s1, s2);
+        MutSet1.foldLeft((acc, a) -> acc + a, 0, s2) == 3
+    }
+
+    @test
+    def addAll04(): Bool = region r {
+        let s1 = MutSet1.newWithRegion(r);
+        let s2 = MutSet1.newWithRegion(r);
+        MutSet1.add!(1, s1);
+        MutSet1.add!(2, s1);
+        MutSet1.add!(3, s1);
+        MutSet1.addAll!(s1, s2);
+        MutSet1.foldLeft((acc, a) -> acc + a, 0, s2) == 6
+    }
+
+    @test
+    def addAll05(): Bool = region r1 {
+        let s1 = MutSet1.newWithRegion(r1);
+        MutSet1.add!("a", s1);
+        MutSet1.add!("b", s1);
+        MutSet1.add!("c", s1);
+
+        region r2 {
+            let s2 = MutSet1.newWithRegion(r2);
+            MutSet1.addAll!(s1, s2);
+            MutSet1.toList(s2) == "c" :: "b" :: "a" :: Nil
+        }
+    }
+
+    @test
+    def addAll06(): Bool = region r {
+        let s1 = MutSet1.newWithRegion(r);
+        MutSet1.add!("a", s1);
+        MutSet1.add!("b", s1);
+        MutSet1.add!("c", s1);
+
+        region r2 {
+            let s2 = MutSet1.newWithRegion(r2);
+            MutSet1.addAll!(s1, s2);
+            MutSet1.isSubsetOf(s1, s2) and MutSet1.isSubsetOf(s2, s1)
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // sum                                                                     //
     /////////////////////////////////////////////////////////////////////////////
 
