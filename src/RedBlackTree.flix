@@ -243,15 +243,16 @@ namespace RedBlackTree1 {
     /// Returns `true` if and only if `tree` contains the key `k`.
     ///
     @Time(Int32.log2(size(tree))) @Space(1)
-    pub def memberOf(k: k, tree: RedBlackTree[k, v]): Bool with Order[k] = match tree {
-        case Node(_, a, k1, _, b) =>
-            match k <=> k1 {
-                case LessThan => memberOf(k, a)
-                case EqualTo => true
-                case GreaterThan => memberOf(k, b)
+    pub def memberOf(k: k, tree: RedBlackTree[k, v]): Bool with Order[k] =
+        def loop(t) = match t {
+            case Node(_, a, k1, _, b) => match k <=> k1 {
+                case LessThan    => loop(a)
+                case EqualTo     => true
+                case GreaterThan => loop(b)
             }
-        case _ => false
-    }
+            case _ => false
+        };
+        loop(tree)
 
     ///
     /// Optionally returns the first key-value pair in `tree` that satisfies the predicate `f` when searching from left to right.
