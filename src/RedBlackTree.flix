@@ -603,15 +603,17 @@ namespace RedBlackTree1 {
     ///
     /// Sequentially maps `f` over the tree `t`.
     ///
-    def seqMapWithKey(f: (k, v1) -> v2 & ef, t: RedBlackTree[k, v1]): RedBlackTree[k, v2] & ef = match t {
-        case Leaf                   => Leaf
-        case DoubleBlackLeaf        => DoubleBlackLeaf
-        case Node(c, a, k, v, b)    =>
-            let a1 = seqMapWithKey(f, a);
-            let v1 = f(k, v);
-            let b1 = seqMapWithKey(f, b);
-            Node(c, a1, k, v1, b1)
-    }
+    def seqMapWithKey(f: (k, v1) -> v2 & ef, t: RedBlackTree[k, v1]): RedBlackTree[k, v2] & ef =
+        def loop(tt) = match tt {
+            case Leaf                   => Leaf
+            case DoubleBlackLeaf        => DoubleBlackLeaf
+            case Node(c, a, k, v, b)    =>
+                let a1 = loop(a);
+                let v1 = f(k, v);
+                let b1 = loop(b);
+                Node(c, a1, k, v1, b1)
+        };
+        loop(t)
 
     ///
     /// Applies `f` over the tree `t` in parallel and returns the number of elements
@@ -645,15 +647,17 @@ namespace RedBlackTree1 {
     /// Applies `f` over the tree `t` sequentially from left to right and returns the number of elements
     /// that satisfy the predicate `f`.
     ///
-    def seqCount(f: (k, v) -> Bool, t: RedBlackTree[k, v]): Int32 = match t {
-        case Leaf                   => 0
-        case DoubleBlackLeaf        => 0
-        case Node(_, a, k, v, b)    =>
-            let a1 = seqCount(f, a);
-            let v1 = if (f(k, v)) 1 else 0;
-            let b1 = seqCount(f, b);
-            a1 + v1 + b1
-    }
+    def seqCount(f: (k, v) -> Bool, t: RedBlackTree[k, v]): Int32 =
+        def loop(tt) = match tt {
+            case Leaf                   => 0
+            case DoubleBlackLeaf        => 0
+            case Node(_, a, k, v, b)    =>
+                let a1 = loop(a);
+                let v1 = if (f(k, v)) 1 else 0;
+                let b1 = loop(b);
+                a1 + v1 + b1
+        };
+        loop(t)
 
     ///
     /// Returns the sum of all keys in the tree `t`.
@@ -818,7 +822,7 @@ namespace RedBlackTree1 {
     ///
     pub def toList(t: RedBlackTree[k, v]): List[(k, v)] =
         RedBlackTree.foldRight((k, v, xs) -> (k, v) :: xs, Nil, t)
-
+/*
     ///
     /// Build a node applicatively.
     ///
@@ -831,23 +835,12 @@ namespace RedBlackTree1 {
     /// Returns a RedBlackTree with mappings `k => f(v)` for every `k => v` in `t`.
     ///
     pub def mapAWithKey(f: (k, v1) -> m[v2] & ef, t: RedBlackTree[k, v1]): m[RedBlackTree[k, v2]] & ef with Applicative[m] =
-        mapAWithKeyHelper(f, t, s -> s as & ef)
-
-    ///
-    /// Helper function for `mapAWithKey`.
-    ///
-    def mapAWithKeyHelper(f: (k, v1) -> m[v2] & ef,
-                        tree: RedBlackTree[k, v1],
-                        k: m[RedBlackTree[k, v2]] -> m[RedBlackTree[k, v2]] & ef): m[RedBlackTree[k, v2]] & ef with Applicative[m] =
-        match tree {
-            case Node(color, left, key, v, right) =>
-                mapAWithKeyHelper(f, left, kl ->
-                    mapAWithKeyHelper(f, right, kr ->
-                        let mv = f(key, v);
-                        k(nodeA(color, kl, key, mv, kr))))
-            case _                              => k(Applicative.point(Leaf))
-        }
-
+        def loop(tt, k) = match tt {
+            case Node(color, left, key, v, right) => loop(left, kl -> loop(right, kr -> k(nodeA(color, kl, key, f(key, v), kr))))
+            case _                                => k(Applicative.point(Leaf))
+        };
+        loop(t, identity)
+*/
     ///
     /// Applies `cmp` over the tree `t` in parallel and optionally returns the lowest
     /// element according to `cmp`.
@@ -885,7 +878,7 @@ namespace RedBlackTree1 {
     @Parallel
     def parLimitBy(n: Int32, selector: (k, v, k, v) -> (k, v), t: RedBlackTree[k, v]): Option[(k, v)] & Impure =
         if (n <= 0)
-            parSeqLimitBy(selector, t)
+            seqLimitBy(selector, t)
         else
             match t {
                 case Leaf                => None
@@ -913,21 +906,23 @@ namespace RedBlackTree1 {
     /// Applies `cmp` over the tree `t` sequentially and optionally returns the lowest
     /// element according to `cmp`.
     ///
-    def parSeqLimitBy(selector: (k, v, k, v) -> (k, v) & ef, t: RedBlackTree[k, v]): Option[(k, v)] & ef = match t {
-        case Leaf                   => None
-        case DoubleBlackLeaf        => None
-        case Node(_, a, k, v, b)    =>
-            let res = match parSeqLimitBy(selector, a) {
-                case None         => (k, v)
-                case Some(kl, vl) => selector(kl, vl, k, v)
-            };
-            match parSeqLimitBy(selector, b) {
-                case None         => Some(res)
-                case Some(kr, vr) =>
-                    let (ks, vs) = res;
-                    Some(selector(ks, vs, kr, vr))
-            }
-    }
+    def seqLimitBy(selector: (k, v, k, v) -> (k, v) & ef, t: RedBlackTree[k, v]): Option[(k, v)] & ef =
+        def loop(tt) = match tt {
+            case Leaf                   => None
+            case DoubleBlackLeaf        => None
+            case Node(_, a, k, v, b)    =>
+                let res = match loop(a) {
+                    case None         => (k, v)
+                    case Some(kl, vl) => selector(kl, vl, k, v)
+                };
+                match loop(b) {
+                    case None         => Some(res)
+                    case Some(kr, vr) =>
+                        let (ks, vs) = res;
+                        Some(selector(ks, vs, kr, vr))
+                }
+        };
+        loop(t)
 
     ///
     /// Returns the concatenation of the string representation of each key `k`
