@@ -27,61 +27,66 @@ namespace TestMutMap {
     }
 
     @test
-    def sameElements02(): Bool & Impure =
-        let m = MutMap.empty();
-        MutMap.put!(1, "a", m);
+    def sameElements02(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m);
 
-        let m2 = MutMap.empty();
-        MutMap.put!(1, "a", m2);
+        let m2 = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m2);
 
-        MutMap.sameElements(m, m2)
-
-    @test
-    def sameElements03(): Bool & Impure =
-        let m = MutMap.empty();
-        MutMap.put!(1, "a", m);
-        MutMap.put!(1, "b", m);
-
-        let m2 = MutMap.empty();
-        MutMap.put!(1, "a", m2);
-
-        not MutMap.sameElements(m, m2)
+        MutMap1.sameElements(m, m2)
+    }
 
     @test
-    def sameElements04(): Bool & Impure =
-        let m = MutMap.empty();
-        MutMap.put!(1, "a", m);
-        MutMap.put!(2, "b", m);
+    def sameElements03(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m);
+        MutMap1.put!(1, "b", m);
 
-        let m2 = MutMap.empty();
-        MutMap.put!(1, "a", m2);
+        let m2 = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m2);
 
-        not MutMap.sameElements(m, m2)
-
-    @test
-    def sameElements05(): Bool & Impure =
-        let m = MutMap.empty();
-        MutMap.put!(1, "a", m);
-
-        let m2 = MutMap.empty();
-        MutMap.put!(1, "a", m2);
-        MutMap.put!(2, "b", m2);
-
-        not MutMap.sameElements(m, m2)
+        not MutMap1.sameElements(m, m2)
+    }
 
     @test
-    def sameElements06(): Bool & Impure =
-        let m = MutMap.empty();
-        MutMap.put!(2, "b", m);
-        MutMap.put!(3, "c", m);
-        MutMap.put!(1, "a", m);
+    def sameElements04(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m);
+        MutMap1.put!(2, "b", m);
 
-        let m2 = MutMap.empty();
-        MutMap.put!(1, "a", m2);
-        MutMap.put!(2, "b", m2);
-        MutMap.put!(3, "c", m2);
+        let m2 = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m2);
 
-        MutMap.sameElements(m, m2)
+        not MutMap1.sameElements(m, m2)
+    }
+
+    @test
+    def sameElements05(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m);
+
+        let m2 = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m2);
+        MutMap1.put!(2, "b", m2);
+
+        not MutMap1.sameElements(m, m2)
+    }
+
+    @test
+    def sameElements06(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(2, "b", m);
+        MutMap1.put!(3, "c", m);
+        MutMap1.put!(1, "a", m);
+
+        let m2 = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, "a", m2);
+        MutMap1.put!(2, "b", m2);
+        MutMap1.put!(3, "c", m2);
+
+        MutMap1.sameElements(m, m2)
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -89,38 +94,45 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sumValues01(): Bool & Impure =
-        MutMap.empty() |> MutMap.sumValues == 0
+    def sumValues01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.sumValues == 0
+    }
 
     @test
-    def sumValues02(): Bool & Impure =
+    def sumValues02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.sumValues == 1
+            MutMap1.sumValues == 1
+    }
 
     @test
-    def sumValues03(): Bool & Impure =
+    def sumValues03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.sumValues == 6
+            MutMap1.sumValues == 6
+    }
 
     @test
-    def sumValues04(): Bool & Impure =
+    def sumValues04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.sumValues == 3
+            MutMap1.sumValues == 3
+    }
 
     @test
-    def sumValues05(): Bool & Impure =
+    def sumValues05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -3 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.sumValues == -10
+            MutMap1.sumValues == -10
+    }
 
     @test
-    def sumValues06(): Bool & Impure =
+    def sumValues06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.sumValues == 0
+            MutMap1.sumValues == 0
+    }
 
     @test
-    def sumValues07(): Bool & Impure =
+    def sumValues07(): Bool = region r {
         List.range(1, 101) |> List.zip(List.range(1, 101)) |> List.toMap |> Map.toMutMap |>
-            MutMap.sumValues == 5050
+            MutMap1.sumValues == 5050
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -128,38 +140,45 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sumKeys01(): Bool & Impure =
-        MutMap.empty() |> MutMap.sumKeys == 0
+    def sumKeys01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.sumKeys == 0
+    }
 
     @test
-    def sumKeys02(): Bool & Impure =
+    def sumKeys02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.sumKeys == 1
+            MutMap1.sumKeys == 1
+    }
 
     @test
-    def sumKeys03(): Bool & Impure =
+    def sumKeys03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.sumKeys == 6
+            MutMap1.sumKeys == 6
+    }
 
     @test
-    def sumKeys04(): Bool & Impure =
+    def sumKeys04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.sumKeys == 3
+            MutMap1.sumKeys == 3
+    }
 
     @test
-    def sumKeys05(): Bool & Impure =
+    def sumKeys05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -5 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.sumKeys == -12
+            MutMap1.sumKeys == -12
+    }
 
     @test
-    def sumKeys06(): Bool & Impure =
+    def sumKeys06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.sumKeys == 0
+            MutMap1.sumKeys == 0
+    }
 
     @test
-    def sumKeys07(): Bool & Impure =
+    def sumKeys07(): Bool = region r {
         List.range(1, 101) |> List.zip(List.range(1, 101)) |> List.toMap |> Map.toMutMap |>
-            MutMap.sumKeys == 5050
+            MutMap1.sumKeys == 5050
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -167,33 +186,39 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def sumWith01(): Bool & Impure =
-        MutMap.empty() |> MutMap.sumWith((k, v) -> k + v) == 0
+    def sumWith01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.sumWith((k, v) -> k + v) == 0
+    }
 
     @test
-    def sumWith02(): Bool & Impure =
+    def sumWith02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.sumWith((k, v) -> k + v) == 2
+            MutMap1.sumWith((k, v) -> k + v) == 2
+    }
 
     @test
-    def sumWith03(): Bool & Impure =
+    def sumWith03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.sumWith((k, v) -> k + v) == 12
+            MutMap1.sumWith((k, v) -> k + v) == 12
+    }
 
     @test
-    def sumWith04(): Bool & Impure =
+    def sumWith04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.sumWith((k, v) -> k + v) == 6
+            MutMap1.sumWith((k, v) -> k + v) == 6
+    }
 
     @test
-    def sumWith05(): Bool & Impure =
+    def sumWith05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -3 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.sumWith((k, v) -> k + v) == -20
+            MutMap1.sumWith((k, v) -> k + v) == -20
+    }
 
     @test
-    def sumWith06(): Bool & Impure =
+    def sumWith06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.sumWith((k, v) -> k + v) == 0
+            MutMap1.sumWith((k, v) -> k + v) == 0
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -201,33 +226,39 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def productValues01(): Bool & Impure =
-        MutMap.empty() |> MutMap.productValues == 0
+    def productValues01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.productValues == 0
+    }
 
     @test
-    def productValues02(): Bool & Impure =
+    def productValues02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.productValues == 1
+            MutMap1.productValues == 1
+    }
 
     @test
-    def productValues03(): Bool & Impure =
+    def productValues03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.productValues == 6
+            MutMap1.productValues == 6
+    }
 
     @test
-    def productValues04(): Bool & Impure =
+    def productValues04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.productValues == -18
+            MutMap1.productValues == -18
+    }
 
     @test
-    def productValues05(): Bool & Impure =
+    def productValues05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -5 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.productValues == 24
+            MutMap1.productValues == 24
+    }
 
     @test
-    def productValues06(): Bool & Impure =
+    def productValues06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.productValues == -100
+            MutMap1.productValues == -100
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -235,33 +266,39 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def productKeys01(): Bool & Impure =
-        MutMap.empty() |> MutMap.productValues == 0
+    def productKeys01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.productValues == 0
+    }
 
     @test
-    def productKeys02(): Bool & Impure =
+    def productKeys02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.productKeys == 1
+            MutMap1.productKeys == 1
+    }
 
     @test
-    def productKeys03(): Bool & Impure =
+    def productKeys03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.productKeys == 6
+            MutMap1.productKeys == 6
+    }
 
     @test
-    def productKeys04(): Bool & Impure =
+    def productKeys04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.productKeys == -18
+            MutMap1.productKeys == -18
+    }
 
     @test
-    def productKeys05(): Bool & Impure =
+    def productKeys05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -5 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.productKeys == 40
+            MutMap1.productKeys == 40
+    }
 
     @test
-    def productKeys06(): Bool & Impure =
+    def productKeys06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.productKeys == -100
+            MutMap1.productKeys == -100
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -269,33 +306,39 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def productWith01(): Bool & Impure =
-        MutMap.empty() |> MutMap.productWith((k, v) -> k + v) == 0
+    def productWith01(): Bool = region r {
+        MutMap1.emptyWithRegion(r) |> MutMap1.productWith((k, v) -> k + v) == 0
+    }
 
     @test
-    def productWith02(): Bool & Impure =
+    def productWith02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.productWith((k, v) -> k + v) == 2
+            MutMap1.productWith((k, v) -> k + v) == 2
+    }
 
     @test
-    def productWith03(): Bool & Impure =
+    def productWith03(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3} |> Map.toMutMap |>
-            MutMap.productWith((k, v) -> k + v) == 48
+            MutMap1.productWith((k, v) -> k + v) == 48
+    }
 
     @test
-    def productWith04(): Bool & Impure =
+    def productWith04(): Bool = region r {
         Map#{1 => 1, 2 => 2, 3 => 3, -3 => -3} |> Map.toMutMap |>
-            MutMap.productWith((k, v) -> k + v) == -288
+            MutMap1.productWith((k, v) -> k + v) == -288
+    }
 
     @test
-    def productWith05(): Bool & Impure =
+    def productWith05(): Bool = region r {
         Map#{-1 => -1, -2 => -2, -3 => -3, -4 => -4} |> Map.toMutMap |>
-            MutMap.productWith((k, v) -> k + v) == 384
+            MutMap1.productWith((k, v) -> k + v) == 384
+    }
 
     @test
-    def productWith06(): Bool & Impure =
+    def productWith06(): Bool = region r {
         Map#{10 => 10, -10 => -10} |> Map.toMutMap |>
-            MutMap.productWith((k, v) -> k + v) == -400
+            MutMap1.productWith((k, v) -> k + v) == -400
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -303,20 +346,24 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def joinKeys01(): Bool & Impure =
-        MutMap.empty(): MutMap[Int32, Int32] |> MutMap.joinKeys(",") == ""
+    def joinKeys01(): Bool = region r {
+        MutMap1.emptyWithRegion(r): MutMap1[Int32, Int32, _] |> MutMap1.joinKeys(",") == ""
+    }
 
     @test
-    def joinKeys02(): Bool & Impure =
-        Map#{1 => 1} |> Map.toMutMap |> MutMap.joinKeys(",") == "1"
+    def joinKeys02(): Bool = region r {
+        Map#{1 => 1} |> Map.toMutMap |> MutMap1.joinKeys(",") == "1"
+    }
 
     @test
-    def joinKeys03(): Bool & Impure =
-        Map#{0 => 1, 1 => 2, 2 => 2} |> Map.toMutMap |> MutMap.joinKeys(",") == "0,1,2"
+    def joinKeys03(): Bool = region r {
+        Map#{0 => 1, 1 => 2, 2 => 2} |> Map.toMutMap |> MutMap1.joinKeys(",") == "0,1,2"
+    }
 
     @test
-    def joinKeys04(): Bool & Impure =
-        Map#{"0" => 1, "1" => 2, "2" => 2} |> Map.toMutMap |> MutMap.joinKeys(",") == "0,1,2"
+    def joinKeys04(): Bool = region r {
+        Map#{"0" => 1, "1" => 2, "2" => 2} |> Map.toMutMap |> MutMap1.joinKeys(",") == "0,1,2"
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -324,20 +371,24 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def joinValues01(): Bool & Impure =
-        MutMap.empty(): MutMap[Int32, Int32] |> MutMap.joinValues(",") == ""
+    def joinValues01(): Bool = region r {
+        MutMap1.emptyWithRegion(r): MutMap1[Int32, Int32, _] |> MutMap1.joinValues(",") == ""
+    }
 
     @test
-    def joinValues02(): Bool & Impure =
-        Map#{1 => 1} |> Map.toMutMap |> MutMap.joinValues(",") == "1"
+    def joinValues02(): Bool = region r {
+        Map#{1 => 1} |> Map.toMutMap |> MutMap1.joinValues(",") == "1"
+    }
 
     @test
-    def joinValues03(): Bool & Impure =
-        Map#{0 => 1, 1 => 2, 2 => 2} |> Map.toMutMap |> MutMap.joinValues(",") == "1,2,2"
+    def joinValues03(): Bool = region r {
+        Map#{0 => 1, 1 => 2, 2 => 2} |> Map.toMutMap |> MutMap1.joinValues(",") == "1,2,2"
+    }
 
     @test
-    def joinValues04(): Bool & Impure =
-        Map#{0 => "1", 1 => "2", 2 => "2"} |> Map.toMutMap |> MutMap.joinValues(",") == "1,2,2"
+    def joinValues04(): Bool = region r {
+        Map#{0 => "1", 1 => "2", 2 => "2"} |> Map.toMutMap |> MutMap1.joinValues(",") == "1,2,2"
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -345,24 +396,28 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def joinWith01(): Bool & Impure =
+    def joinWith01(): Bool = region r {
         Map.empty(): Map[Int32, Int32] |> Map.toMutMap |>
-            MutMap.joinWith((k, v) -> "${k} => ${v}", ",") == ""
+            MutMap1.joinWith((k, v) -> "${k} => ${v}", ",") == ""
+    }
 
     @test
-    def joinWith02(): Bool & Impure =
+    def joinWith02(): Bool = region r {
         Map#{1 => 1} |> Map.toMutMap |>
-            MutMap.joinWith((k, v) -> "${k} => ${v}", ", ") == "1 => 1"
+            MutMap1.joinWith((k, v) -> "${k} => ${v}", ", ") == "1 => 1"
+    }
 
     @test
-    def joinWith03(): Bool & Impure =
+    def joinWith03(): Bool = region r {
         Map#{0 => 1, 1 => 2, 2 => 2} |> Map.toMutMap |>
-            MutMap.joinWith((k, v) -> "${k} => ${v}", ", ") == "0 => 1, 1 => 2, 2 => 2"
+            MutMap1.joinWith((k, v) -> "${k} => ${v}", ", ") == "0 => 1, 1 => 2, 2 => 2"
+    }
 
     @test
-    def joinWith04(): Bool & Impure =
+    def joinWith04(): Bool = region r {
         Map#{0 => "1", 1 => "2", 2 => "2"} |> Map.toMutMap |>
-            MutMap.joinWith((k, v) -> "${k} => ${v}", ", ") == "0 => 1, 1 => 2, 2 => 2"
+            MutMap1.joinWith((k, v) -> "${k} => ${v}", ", ") == "0 => 1, 1 => 2, 2 => 2"
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -370,19 +425,26 @@ namespace TestMutMap {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def foldRightLazy01(): Bool & Impure = MutMap.foldRightLazy((v, s) -> force s + v, 0, MutMap.empty()) == 0
+    def foldRightLazy01(): Bool = region r {
+        MutMap1.foldRightLazy((v, s) -> force s + v, 0, MutMap1.emptyWithRegion(r)) == 0
+    }
 
     @test
-    def foldRightLazy02(): Bool & Impure = MutMap.foldRightLazy((v, s) -> force s + v, 0, MutMap.singleton(1, 2)) == 2
+    def foldRightLazy02(): Bool = region r {
+        let m = MutMap1.emptyWithRegion(r);
+        MutMap1.put!(1, 2, m);
+        MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 2
+    }
 
     @test
-    def foldRightLazy03(): Bool & Impure =
+    def foldRightLazy03(): Bool = region r {
         let m = MutMap(ref Map#{1 => 2, 3 => 4});
-        MutMap.foldRightLazy((v, s) -> force s + v, 0, m) == 6
+        MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 6
+    }
 
     @test
-    def foldRightLazy04(): Bool & Impure =
+    def foldRightLazy04(): Bool = region r {
         let m = MutMap(ref Map#{1 => 2, 3 => 4, 5 => 6});
-        MutMap.foldRightLazy((v, s) -> force s + v, 0, m) == 12
-
+        MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 12
+    }
 }
