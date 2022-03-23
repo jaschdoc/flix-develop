@@ -31,6 +31,15 @@ pub enum MMutDeque[a: Type, r: Region] {
     case MMutDeque(ScopedArray[a, r], ScopedRef[Int32, r], ScopedRef[Int32, r])
 }
 
+
+instance Newable[MMutDeque[t]] {
+    pub def new(r: Region[r]): MMutDeque[t, r] \ { Write(r) } = MMutDeque.new(r)
+}
+
+instance Scoped[MMutDeque[t]] {
+    pub def regionOf(_: MMutDeque[t, r]): Region[r] = () as Region[r]
+}
+
 instance Iterable[MMutDeque] {
     pub def iterator(t: MMutDeque[a, r]): Iterator[a] \ { Read(r) } =
         let MMutDeque(a, f, b) = t;
@@ -85,7 +94,7 @@ namespace MMutDeque {
     ///
     /// Returns an empty MMutDeque.
     ///
-    pub def emptyWithRegion(r: Region[r]): MMutDeque[a, r] \ { Write(r) } =
+    pub def new(r: Region[r]): MMutDeque[a, r] \ { Write(r) } =
         MMutDeque(ref [$DEFAULT$; minCapacity()] @ r, ref 0 @ r, ref 0 @ r)
 
     ///
