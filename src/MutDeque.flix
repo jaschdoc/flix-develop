@@ -27,11 +27,37 @@
 /// Otherwise, the front index always points to an element (going counter-clockwise)
 /// and the back index always points to the first empty index (going clockwise).
 ///
-// pub enum MutDeque[a] {
-//     case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
-// }
+/*
+pub enum MutDeque[a] {
+    case MutDeque(Ref[Array[a]], Ref[Int32], Ref[Int32])
+}
 
-namespace MutDeque1 {
+instance Iterable[MutDeque] {
+    pub def iterator(t: MutDeque[a]): Iterator[a] & Impure =
+        let MutDeque(a, f, b) = t;
+        let len = Array.length(deref a);
+        let copy = deref a;
+        let i = f;
+
+        let done = () -> (deref i) == deref b;
+        let next = () -> {
+            if (deref i != deref b) {
+                let j = {
+                    if (deref i == len) 0
+                    else deref i
+                };
+                let x = copy[j];
+                i := j + 1;
+                x
+            } else {
+                bug!("Empty Iterator!")
+            }
+        };
+        Iterator(done, next)
+}
+*/
+
+namespace MMutDeque {
 
     ///
     /// Constant denoting the minimum allowed capacity of the backing array.
@@ -91,7 +117,7 @@ namespace MutDeque1 {
     /// Returns the sum of all elements in the deque `d`.
     ///
     pub def sum(d: MutDeque[Int32]): Int32 & Impure =
-        sumWith(x -> x, d)
+        sumWith(identity, d)
 
     ///
     /// Returns the sum of all elements in the deque `d` according to the function `f`.
@@ -151,7 +177,6 @@ namespace MutDeque1 {
                 loop(j, e, f(ar[j], acc))
             };
         loop(back, front, s)
-
 
     ///
     /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
@@ -316,5 +341,44 @@ namespace MutDeque1 {
     pub def toList(d: MutDeque[a]): List[a] & Impure =
         foldRight((x, acc) -> x :: acc, Nil, d)
 
-}
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `d` with `sep` inserted between each element.
+    ///
+    pub def join(sep: String, d: MutDeque[a]): String & Impure with ToString[a] =
+        joinWith(x -> ToString.toString(x), sep, d)
 
+    ///
+    /// Returns the concatenation of the string representation
+    /// of each element in `d` according to `f` with `sep` inserted between each element.
+    ///
+    pub def joinWith(f: a -> String & ef, sep: String, d: MutDeque[a]): String & Impure =
+        use StringBuilder.append!;
+        let lastSep = String.length(sep);
+        let sb = StringBuilder.new();
+        foreach(x -> { append!(f(x), sb); append!(sep, sb) }, d);
+        StringBuilder.toString(sb) |> String.dropRight(lastSep)
+
+    ///
+    /// Apply the effectful function `f` to all the elements in the MutDeque `d`.
+    ///
+    pub def foreach(f: a -> Unit & ef, d: MutDeque[a]): Unit & Impure =
+        let MutDeque(a, front, back) = d;
+        let len = Array.length(deref a);
+
+        def loop(i) = {
+            if (i == deref back) {
+                ()
+            } else {
+                f(Array.get(i, deref a));
+                loop((i + 1) &&& (len - 1))
+            }
+        };
+
+        if(MutDeque.isEmpty(d)) {
+            ()
+        } else {
+            loop(deref front)
+        }
+
+}
