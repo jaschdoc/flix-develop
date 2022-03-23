@@ -349,8 +349,8 @@ namespace TestMMutDeque {
 
     @test
     def sameElements01(): Bool = region r {
-        let d = new MMutDeque(r): MMutDeque[Int32];
-        let d2 = new MMutDeque(r): MMutDeque[Int32];
+        let d = new MMutDeque(r): MMutDeque[Int32, _];
+        let d2 = new MMutDeque(r): MMutDeque[Int32, _];
         MMutDeque.sameElements(d, d2)
     }
 
@@ -757,7 +757,7 @@ namespace TestMMutDeque {
 
     @test
     def toList01(): Bool = region r {
-        MMutDeque.toList(new MMutDeque(r): MMutDeque[Int32]) == Nil: List[Int32]
+        MMutDeque.toList(new MMutDeque(r): MMutDeque[Int32, _]) == Nil: List[Int32]
     }
 
     @test
@@ -791,22 +791,32 @@ namespace TestMMutDeque {
 
     @test
     def join01(): Bool = region r {
-        (Nil: List[Int32]) |> List.toMMutDeque |> MMutDeque.join(",") == ""
+        new MMutDeque(r) |> MMutDeque.join(",") == ""
     }
 
     @test
     def join02(): Bool = region r {
-        (1 :: Nil) |> List.toMMutDeque |> MMutDeque.join(",") == "1"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack(1, d);
+        MMutDeque.join(",", d) == "1"
     }
 
     @test
     def join03(): Bool = region r {
-        (1 :: 2 :: 3 :: Nil) |> List.toMMutDeque |> MMutDeque.join(",") == "1,2,3"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack(1, d);
+        MMutDeque.pushBack(2, d);
+        MMutDeque.pushBack(3, d);
+        MMutDeque.join(",", d) == "1,2,3"
     }
 
     @test
     def join04(): Bool = region r {
-        ("1" :: "2" :: "3" :: Nil) |> List.toMMutDeque |> MMutDeque.join(",") == "1,2,3"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack("1", d);
+        MMutDeque.pushBack("2", d);
+        MMutDeque.pushBack("3", d);
+        MMutDeque.join(",", d) == "1,2,3"
     }
 
 
@@ -816,27 +826,35 @@ namespace TestMMutDeque {
 
     @test
     def joinWith01(): Bool = region r {
-        (Nil: List[Int32]) |> List.toMMutDeque |>
-            MMutDeque.joinWith(x -> "${x + 1}", ",") == ""
+        let d = new MMutDeque(r);
+        MMutDeque.joinWith(x -> "${x + 1}", ",", d) == ""
     }
 
     @test
     def joinWith02(): Bool = region r {
-        (1 :: Nil) |> List.toMMutDeque |>
-            MMutDeque.joinWith(x -> "${x + 1}", ",") == "2"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack(1, d);
+        MMutDeque.joinWith(x -> "${x + 1}", ",", d) == "2"
     }
 
     @test
     def joinWith03(): Bool = region r {
-        (1 :: 2 :: 3 :: Nil) |> List.toMMutDeque |>
-            MMutDeque.joinWith(x -> "${x + 1}", ",") == "2,3,4"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack(1, d);
+        MMutDeque.pushBack(2, d);
+        MMutDeque.pushBack(3, d);
+        MMutDeque.joinWith(x -> "${x + 1}", ",", d) == "2,3,4"
     }
 
     @test
     def joinWith04(): Bool = region r {
-        ("1" :: "2" :: "3" :: Nil) |> List.toMMutDeque |>
-            MMutDeque.joinWith(x -> x + x, ",") == "11,22,33"
+        let d = new MMutDeque(r);
+        MMutDeque.pushBack("1", d);
+        MMutDeque.pushBack("2", d);
+        MMutDeque.pushBack("3", d);
+        MMutDeque.joinWith(x -> x + x, ",", d) == "11,22,33"
     }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // iterator                                                                //

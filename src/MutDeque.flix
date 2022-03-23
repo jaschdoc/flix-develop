@@ -32,14 +32,15 @@ pub enum MMutDeque[a: Type, r: Region] {
 }
 
 
-instance Newable[MMutDeque[t]] {
-    pub def new(r: Region[r]): MMutDeque[t, r] \ { Write(r) } = MMutDeque.new(r)
+instance Newable[MMutDeque[a]] {
+    pub def new(r: Region[r]): MMutDeque[a, r] \ { Write(r) } = MMutDeque.new(r)
 }
 
-instance Scoped[MMutDeque[t]] {
-    pub def regionOf(_: MMutDeque[t, r]): Region[r] = () as Region[r]
+instance Scoped[MMutDeque[a]] {
+    pub def regionOf(_: MMutDeque[a, r]): Region[r] = () as Region[r]
 }
 
+// Find fix for this
 instance Iterable[MMutDeque] {
     pub def iterator(t: MMutDeque[a, r]): Iterator[a] \ { Read(r) } =
         let MMutDeque(a, f, b) = t;
@@ -100,7 +101,7 @@ namespace MMutDeque {
     ///
     /// Returns the number of elements in `d`.
     ///
-    pub def size(d: MMutDeque[a, r]): Int32 & Reg(r) =
+    pub def size(d: MMutDeque[a, r]): Int32 \ { Read(r) } =
         let MMutDeque(_, f, b) = d;
         computeSize(capacity(d), deref f, deref b)
 
@@ -116,32 +117,32 @@ namespace MMutDeque {
     ///
     /// Returns `true` if `d` is empty.
     ///
-    pub def isEmpty(d: MMutDeque[a, r]): Bool & Reg(r) =
+    pub def isEmpty(d: MMutDeque[a, r]): Bool \ { Read(r) } =
         let MMutDeque(_, f, b) = d;
         deref f == deref b
 
     ///
     /// Returns the sum of all elements in the deque `d`.
     ///
-    pub def sum(d: MMutDeque[Int32]): Int32 & Reg(r) =
+    pub def sum(d: MMutDeque[Int32, r]): Int32 \ { Read(r) } =
         sumWith(identity, d)
 
     ///
     /// Returns the sum of all elements in the deque `d` according to the function `f`.
     ///
-    pub def sumWith(f: a -> Int32 & ef, d: MMutDeque[a, r]): Int32 & Reg(r) =
+    pub def sumWith(f: a -> Int32 & ef, d: MMutDeque[a, r]): Int32 \ { ef, Read(r) } =
         foldLeft((acc, x) -> f(x) + acc, 0, d)
 
     ///
     /// Returns the product of all elements in the deque `d`.
     ///
-    pub def product(d: MMutDeque[Int32]): Int32 & Reg(r) =
+    pub def product(d: MMutDeque[Int32, r]): Int32 \ { Read(r) } =
         productWith(identity, d)
 
     ///
     /// Returns the product of all elements in the deque `d` according to the function `f`.
     ///
-    pub def productWith(f: a -> Int32 & ef, d: MMutDeque[a, r]): Int32 & Reg(r) =
+    pub def productWith(f: a -> Int32 & ef, d: MMutDeque[a, r]): Int32 \ { ef, Read(r) } =
         if (isEmpty(d))
             0
         else
@@ -152,7 +153,7 @@ namespace MMutDeque {
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
-    pub def foldLeft(f: (b, a) -> b & ef, s: b, d: MMutDeque[a, r]): b & Reg(r) =
+    pub def foldLeft(f: (b, a) -> b & ef, s: b, d: MMutDeque[a, r]): b \ { ef, Read(r) } =
         let MMutDeque(ar_, front_, back_) = d;
         let ar = deref ar_;
         let front = deref front_;
@@ -170,7 +171,7 @@ namespace MMutDeque {
     ///
     /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
     ///
-    pub def foldRight(f: (a, b) -> b & ef, s: b, d: MMutDeque[a, r]): b & Reg(r) =
+    pub def foldRight(f: (a, b) -> b & ef, s: b, d: MMutDeque[a, r]): b \ { ef, Read(r) } =
         let MMutDeque(ar_, front_, back_) = d;
         let ar = deref ar_;
         let front = deref front_;
@@ -188,7 +189,7 @@ namespace MMutDeque {
     ///
     /// Returns `Some(x)` where `x` is the element at the front. Returns `None` if `d` is empty.
     ///
-    pub def popFront(d: MMutDeque[a, r]): Option[a] & Reg(r) =
+    pub def popFront(d: MMutDeque[a, r]): Option[a] \ { Read(r), Write(r) } =
         if (isEmpty(d)) {
             None
         }
@@ -205,7 +206,7 @@ namespace MMutDeque {
     ///
     /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
     ///
-    pub def popBack(d: MMutDeque[a, r]): Option[a] & Reg(r) =
+    pub def popBack(d: MMutDeque[a, r]): Option[a] \ { Read(r), Write(r) } =
         if (isEmpty(d)) {
             None
         }
@@ -222,10 +223,10 @@ namespace MMutDeque {
     ///
     /// Pushes `x` to the front of `d`.
     ///
-    pub def pushFront(x: a, d: MMutDeque[a, r]): Unit & Reg(r) =
+    pub def pushFront(x: a, d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, f, _) = d;
         let a1 = deref a;
-        let f1 = (deref f - 1) mod capacity(d); // Update index such that it points to an empty index. This will never overlap with the back index.
+        let f1 = (deref f - 1) mod capacity(d);   // Update index such that it points to an empty index. This will never overlap with the back index.
         a1[f1] = x;                               // Store `x` in the array.
         f := f1;                                  // Update the front index reference.
         expand!(d)                                // Optionally expand `d`.
@@ -233,30 +234,30 @@ namespace MMutDeque {
     ///
     /// Pushes `x` to the back of `d`.
     ///
-    pub def pushBack(x: a, d: MMutDeque[a, r]): Unit & Reg(r) =
+    pub def pushBack(x: a, d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, _, b) = d;
         let a1 = deref a;
         let b1 = deref b;
-        a1[b1] = x;                      // Store `x` in the array.
+        a1[b1] = x;                    // Store `x` in the array.
         b := (b1 + 1) mod capacity(d); // Update back index reference to point to next empty index.
-        expand!(d)                       // Optionally expand `d`.
+        expand!(d)                     // Optionally expand `d`.
 
     ///
     /// Doubles the capacity of `d` if the load factor is greater than or equal to `maxLoadFactor`.
     ///
-    def expand!(d: MMutDeque[a, r]): Unit & Reg(r) =
+    def expand!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         if (shouldExpand(d)) grow!(d) else ()
 
     ///
     /// Returns `true` if the load factor is greater than or equal to `maxLoadFactor`.
     ///
-    def shouldExpand(d: MMutDeque[a, r]): Bool & Reg(r) =
+    def shouldExpand(d: MMutDeque[a, r]): Bool \ { Read(r), Write(r) } =
         loadFactorOf(size(d), capacity(d)) >= maxLoadFactor()
 
     ///
     /// Doubles the capacity of `d`.
     ///
-    def grow!(d: MMutDeque[a, r]): Unit & Reg(r) = {
+    def grow!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } = {
         let MMutDeque(a, f, b) = d;
         let c = capacity(d);
         let arr = [$DEFAULT$; 2 * c];                  // Allocate new array `arr` with double the capacity of `a`.
@@ -269,19 +270,19 @@ namespace MMutDeque {
     ///
     /// Compresses MMutDeque `d` if the load factor is less than or equal to `minLoadFactor`.
     ///
-    def compress!(d: MMutDeque[a, r]): Unit & Reg(r) =
+    def compress!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         if (shouldCompress(d)) shrink!(d) else ()
 
     ///
     /// Returns `true` if the load factor is less than or equal to 1 / 4.
     ///
-    def shouldCompress(d: MMutDeque[a, r]): Bool & Reg(r) =
+    def shouldCompress(d: MMutDeque[a, r]): Bool \ { Read(r), Write(r) } =
         loadFactorOf(size(d), capacity(d)) <= minLoadFactor()
 
     ///
     /// Shrinks MMutDeque `d` to half its size but never below `minCapacity`.
     ///
-    def shrink!(d: MMutDeque[a, r]): Unit & Reg(r) =
+    def shrink!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, f, b) = d;
         let mc = minCapacity();
         let c = capacity(d);
@@ -298,7 +299,7 @@ namespace MMutDeque {
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
-    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit & Reg(r) =
+    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit \ { Read(r), Write(r) } =
         let c = Array.length(a);
         if (f < b) { // If this predicate is true the elements do not "wrap around" in the array, i.e. the elements are laid out sequentially from [0 .. b].
             Array.updateSequence!(0,     a[f .. b], a1)
@@ -316,14 +317,14 @@ namespace MMutDeque {
     ///
     /// Returns the capacity of `d`.
     ///
-    def capacity(d: MMutDeque[a, r]): Int32 & Reg(r) =
+    def capacity(d: MMutDeque[a, r]): Int32 \ { Read(r) } =
         let MMutDeque(a, _, _) = d;
         Array.length(deref a)
 
     ///
     /// Returns `true` if MMutDeques `a` and `b` have the same elements, i.e. are structurally equal.
     ///
-    pub def sameElements(a: MMutDeque[t], b: MMutDeque[t]): Bool & Reg(r) with Eq[t] =
+    pub def sameElements(a: MMutDeque[t, r1], b: MMutDeque[t, r2]): Bool \ { Read(r1, r2), Write(r1, r2) } with Eq[t] =
         let aSize = size(a);
         let bSize = size(b);
         if (aSize == bSize)
@@ -345,21 +346,21 @@ namespace MMutDeque {
     ///
     /// Returns `d` as a `List`.
     ///
-    pub def toList(d: MMutDeque[a, r]): List[a] & Reg(r) =
+    pub def toList(d: MMutDeque[a, r]): List[a] \ { Read(r) } =
         foldRight((x, acc) -> x :: acc, Nil, d)
 
     ///
     /// Returns the concatenation of the string representation
     /// of each element in `d` with `sep` inserted between each element.
     ///
-    pub def join(sep: String, d: MMutDeque[a, r]): String & Reg(r) with ToString[a] =
+    pub def join(sep: String, d: MMutDeque[a, r]): String \ { Read(r) } with ToString[a] =
         joinWith(x -> ToString.toString(x), sep, d)
 
     ///
     /// Returns the concatenation of the string representation
     /// of each element in `d` according to `f` with `sep` inserted between each element.
     ///
-    pub def joinWith(f: a -> String & ef, sep: String, d: MMutDeque[a, r]): String & Reg(r) =
+    pub def joinWith(f: a -> String & ef, sep: String, d: MMutDeque[a, r]): String \ { ef, Read(r) } =
         use StringBuilder.append!;
         let lastSep = String.length(sep);
         let sb = StringBuilder.new();
@@ -369,7 +370,7 @@ namespace MMutDeque {
     ///
     /// Apply the effectful function `f` to all the elements in the MMutDeque `d`.
     ///
-    pub def foreach(f: a -> Unit & ef, d: MMutDeque[a, r]): Unit & Reg(r) =
+    pub def foreach(f: a -> Unit & ef, d: MMutDeque[a, r]): Unit \ { ef, Read(r) } =
         let MMutDeque(a, front, back) = d;
         let len = Array.length(deref a);
 
