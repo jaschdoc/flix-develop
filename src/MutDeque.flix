@@ -28,7 +28,7 @@
 /// and the back index always points to the first empty index (going clockwise).
 ///
 pub enum MMutDeque[a: Type, r: Region] {
-    case MMutDeque(ScopedArray[a, r], ScopedRef[Int32, r], ScopedRef[Int32, r])
+    case MMutDeque(ScopedRef[ScopedArray[a, r], r], ScopedRef[Int32, r], ScopedRef[Int32, r])
 }
 
 
@@ -98,7 +98,7 @@ namespace MMutDeque {
     /// Returns an empty MMutDeque.
     ///
     pub def new(r: Region[r]): MMutDeque[a, r] \ { Write(r) } =
-        MMutDeque([$DEFAULT$; minCapacity()] @ r, ref 0 @ r, ref 0 @ r)
+        MMutDeque(ref [$DEFAULT$; minCapacity()] @ r @ r, ref 0 @ r, ref 0 @ r)
 
     ///
     /// Returns the number of elements in `d`.
@@ -156,7 +156,8 @@ namespace MMutDeque {
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
     ///
     pub def foldLeft(f: (b, a) -> b & ef, s: b, d: MMutDeque[a, r]): b \ { ef, Read(r) } =
-        let MMutDeque(ar, front_, back_) = d;
+        let MMutDeque(ar_, front_, back_) = d;
+        let ar = deref ar_;
         let front = deref front_;
         let back = deref back_;
         let c = capacity(d) - 1;
@@ -173,7 +174,8 @@ namespace MMutDeque {
     /// That is, the result is of the form: `f(x1, ...f(xn-1, f(xn, s))...)`.
     ///
     pub def foldRight(f: (a, b) -> b & ef, s: b, d: MMutDeque[a, r]): b \ { ef, Read(r) } =
-        let MMutDeque(ar, front_, back_) = d;
+        let MMutDeque(ar_, front_, back_) = d;
+        let ar = deref ar_;
         let front = deref front_;
         let back = deref back_;
         let c = capacity(d) - 1;
@@ -195,8 +197,9 @@ namespace MMutDeque {
         }
         else { // Get the element `x` at the front, update index, optionally compress array, return `Some(x)`.
             let MMutDeque(a, f, _) = d;
+            let a1 = deref a;
             let f1 = deref f;
-            let x = a[f1];
+            let x = a1[f1];
             f := (f1 + 1) mod capacity(d);
             compress!(d);
             Some(x)
@@ -211,8 +214,9 @@ namespace MMutDeque {
         }
         else { // Update index such that back points to a valid element `x`, get element, optionally compress array, return `Some(x)`.
             let MMutDeque(a, _, b) = d;
+            let a1 = deref a;
             let b1 = (deref b - 1) mod capacity(d);
-            let x = a[b1];
+            let x = a1[b1];
             b := b1;
             compress!(d);
             Some(x)
@@ -223,8 +227,9 @@ namespace MMutDeque {
     ///
     pub def pushFront(x: a, d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, f, _) = d;
+        let a1 = deref a;
         let f1 = (deref f - 1) mod capacity(d);   // Update index such that it points to an empty index. This will never overlap with the back index.
-        a[f1] = x;                               // Store `x` in the array.
+        a1[f1] = x;                               // Store `x` in the array.
         f := f1;                                  // Update the front index reference.
         expand!(d)                                // Optionally expand `d`.
 
@@ -233,8 +238,9 @@ namespace MMutDeque {
     ///
     pub def pushBack(x: a, d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, _, b) = d;
+        let a1 = deref a;
         let b1 = deref b;
-        a[b1] = x;                    // Store `x` in the array.
+        a1[b1] = x;                    // Store `x` in the array.
         b := (b1 + 1) mod capacity(d); // Update back index reference to point to next empty index.
         expand!(d)                     // Optionally expand `d`.
 
@@ -253,15 +259,14 @@ namespace MMutDeque {
     ///
     /// Doubles the capacity of `d`.
     ///
-    def grow!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } = {
+    def grow!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, f, b) = d;
         let c = capacity(d);
-        let arr = [$DEFAULT$; 2 * c];            // Allocate new array `arr` with double the capacity of `a`.
-        copyElements!(deref f, deref b, a, arr); // Copy elements from old array `a` to new array `arr`.
-        a := arr;                                // Update references.
+        let arr = [$DEFAULT$; c <<< 1];                // Allocate new array `arr` with double the capacity of `a`.
+        copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
+        a := arr;                                      // Update references.
         b := computeSize(c, deref f, deref b);
         f := 0
-    }
 
     ///
     /// Compresses MMutDeque `d` if the load factor is less than or equal to `minLoadFactor`.
@@ -283,7 +288,7 @@ namespace MMutDeque {
         let mc = minCapacity();
         let c = capacity(d);
         if (c > mc) {                                      // Prevent the backing array from shrinking below `minCapacity`.
-            let arr = [$DEFAULT$; c / 2];                  // Allocate new array `arr` with half the capacity of `a`.
+            let arr = [$DEFAULT$; c >>> 1];                // Allocate new array `arr` with half the capacity of `a`.
             copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
             a := arr;                                      // Update references.
             b := computeSize(c, deref f, deref b);
