@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 namespace TestMutMap {
+    /*
 
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
@@ -435,4 +436,5 @@ namespace TestMutMap {
         let m = MutMap(ref Map#{1 => 2, 3 => 4, 5 => 6});
         MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 12
     }
+    */
 }

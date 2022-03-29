@@ -24,7 +24,7 @@ instance Scoped[MutMap1[k, v]] {
 }
 
 instance Newable[MutMap1[k, v]] {
-    pub def new(r: Region[r]): MutMap1[k, v, r] & reg(r) = MutMap1.emptyWithRegion(r)
+    pub def new(r: Region[r]): MutMap1[k, v, r] \ Write(r) = MutMap1.emptyWithRegion(r)
 }
 
 namespace MutMap1 {
@@ -32,13 +32,13 @@ namespace MutMap1 {
     ///
     /// Returns a fresh empty mutable map.
     ///
-    pub def emptyWithRegion(r: Region[r]): MutMap1[k, v, r] & reg(r) =
+    pub def emptyWithRegion(r: Region[r]): MutMap1[k, v, r] \ Write(r) =
         MutMap1(ref Map.empty() @ r)
 
     ///
     /// Returns `true` if and only if the mutable map `m` contains the key `k`.
     ///
-    pub def memberOf(k: k, m: MutMap1[k, v, r]): Bool & reg(r) with Order[k] =
+    pub def memberOf(k: k, m: MutMap1[k, v, r]): Bool \ Read(r) with Order[k] =
         let MutMap1(mm) = m;
         Map.memberOf(k, deref mm)
 
@@ -47,7 +47,7 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is empty.
     ///
-    pub def minimumKey(m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) =
+    pub def minimumKey(m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.minimumKey(deref mm)
 
@@ -59,7 +59,7 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def minimumKeyBy(cmp: (k, k) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def minimumKeyBy(cmp: (k, k) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.minimumKeyBy(cmp, deref mm)
 
@@ -69,7 +69,7 @@ namespace MutMap1 {
     /// Returns `None` if `m` is empty.
     ///
     @Parallel
-    pub def minimumValue(m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) with Order[v] =
+    pub def minimumValue(m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) with Order[v] =
         let MutMap1(mm) = m;
         Map.minimumValue(deref mm)
 
@@ -81,7 +81,7 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def minimumValueBy(cmp: (v, v) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def minimumValueBy(cmp: (v, v) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.minimumValueBy(cmp, deref mm)
 
@@ -90,9 +90,11 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is empty.
     ///
-    pub def maximumKey(m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) =
+    pub def maximumKey(m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.maximumKey(deref mm)
+
+/*
 
     ///
     /// Optionally finds `k => v` where `k` is the largest key according to the given comparator `cmp`.
@@ -600,5 +602,7 @@ namespace MutMap1 {
     pub def joinWith(f: (k, v) -> String & ef, sep: String, m: MutMap1[k, v, r]): String & ef and reg(r) =
         let MutMap1(mm) = m;
         Map.joinWith(f, sep, deref mm)
+
+*/
 
 }
