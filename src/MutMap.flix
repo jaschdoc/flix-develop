@@ -135,19 +135,17 @@ namespace MutMap1 {
         let MutMap1(mm) = m;
         Map.keysOf(deref mm)
 
-/*
-
     ///
     /// Returns the values of the mutable map `m`.
     ///
-    pub def valuesOf(m: MutMap1[k, v, r]): List[v] & reg(r) =
+    pub def valuesOf(m: MutMap1[k, v, r]): List[v] \ Read(r) =
         let MutMap1(mm) = m;
         Map.valuesOf(deref mm)
 
     ///
     /// Returns the size of the mutable map `m`.
     ///
-    pub def size(m: MutMap1[k, v, r]): Int32 & reg(r) =
+    pub def size(m: MutMap1[k, v, r]): Int32 \ Read(r) =
         let MutMap1(mm) = m;
         Map.size(deref mm)
 
@@ -156,7 +154,7 @@ namespace MutMap1 {
     ///
     /// Otherwise returns `None`.
     ///
-    pub def get(k: k, m: MutMap1[k, v, r]): Option[v] & reg(r) with Order[k] =
+    pub def get(k: k, m: MutMap1[k, v, r]): Option[v] \ Read(r) with Order[k] =
         let MutMap1(mm) = m;
         Map.get(k, deref mm)
 
@@ -165,14 +163,14 @@ namespace MutMap1 {
     ///
     /// Otherwise returns `d`.
     ///
-    pub def getWithDefault(k: k, d: v, m: MutMap1[k, v, r]): v & reg(r) with Order[k] =
+    pub def getWithDefault(k: k, d: v, m: MutMap1[k, v, r]): v \ Read(r) with Order[k] =
         let MutMap1(mm) = m;
         Map.getWithDefault(k, d, deref mm)
 
     ///
     /// Updates the mutable map `m` with the binding `k -> v`. Replaces any existing binding.
     ///
-    pub def put!(k: k, v: v, m: MutMap1[k, v, r]): Unit & reg(r) with Order[k] =
+    pub def put!(k: k, v: v, m: MutMap1[k, v, r]): Unit \ { Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.insert(k, v, deref mm)
 
@@ -181,7 +179,7 @@ namespace MutMap1 {
     ///
     /// Otherwise updates the mutable map `m` with the binding `k -> v`.
     ///
-    pub def putWith!(f: (v, v) -> v & ef, k: k, v: v, m: MutMap1[k, v, r]): Unit & ef and reg(r) with Order[k] =
+    pub def putWith!(f: (v, v) -> v & ef, k: k, v: v, m: MutMap1[k, v, r]): Unit \ { ef, Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.insertWith(f, k, v, deref mm)
 
@@ -190,7 +188,7 @@ namespace MutMap1 {
     ///
     /// Otherwise leaves the map is unchanged.
     ///
-    pub def adjust!(f: v -> v & ef, k: k, m: MutMap1[k, v, r]): Unit & ef and reg(r) with Order[k] =
+    pub def adjust!(f: v -> v & ef, k: k, m: MutMap1[k, v, r]): Unit \ { ef, Read(r), Write(r) } with Order[k] =
         adjustWithKey!((_, v1) -> f(v1), k, m)
 
     ///
@@ -198,10 +196,11 @@ namespace MutMap1 {
     ///
     /// Otherwise leaves the map is unchanged.
     ///
-    pub def adjustWithKey!(f: (k, v) -> v & ef, k: k, m: MutMap1[k, v, r]): Unit & ef and reg(r) with Order[k] =
+    pub def adjustWithKey!(f: (k, v) -> v & ef, k: k, m: MutMap1[k, v, r]): Unit \ { ef, Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.adjustWithKey(f, k, deref mm)
 
+/*
     ///
     /// Removes all mappings from the mutable map `m`.
     ///
