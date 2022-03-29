@@ -94,8 +94,6 @@ namespace MutMap1 {
         let MutMap1(mm) = m;
         Map.maximumKey(deref mm)
 
-/*
-
     ///
     /// Optionally finds `k => v` where `k` is the largest key according to the given comparator `cmp`.
     ///
@@ -104,7 +102,7 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def maximumKeyBy(cmp: (k, k) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def maximumKeyBy(cmp: (k, k) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.maximumKeyBy(cmp, deref mm)
 
@@ -114,7 +112,7 @@ namespace MutMap1 {
     /// Returns `None` if `m` is empty.
     ///
     @Parallel
-    pub def maximumValue(m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) with Order[v] =
+    pub def maximumValue(m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) with Order[v] =
         let MutMap1(mm) = m;
         Map.maximumValue(deref mm)
 
@@ -126,16 +124,18 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `cmp`.
     ///
     @ParallelWhenPure
-    pub def maximumValueBy(cmp: (v, v) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def maximumValueBy(cmp: (v, v) -> Comparison & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.maximumValueBy(cmp, deref mm)
 
     ///
     /// Returns the keys of the mutable map `m`.
     ///
-    pub def keysOf(m: MutMap1[k, v, r]): Set[k] & reg(r) with Order[k] =
+    pub def keysOf(m: MutMap1[k, v, r]): Set[k] \ Read(r) with Order[k] =
         let MutMap1(mm) = m;
         Map.keysOf(deref mm)
+
+/*
 
     ///
     /// Returns the values of the mutable map `m`.
