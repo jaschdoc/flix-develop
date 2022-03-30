@@ -219,8 +219,6 @@ namespace MutMap1 {
             case Some(v) => v
         }
 
-/*
-
     ///
     /// Merges the mutable map `m1` into the mutable map `m2` in a left-biased manner.
     ///
@@ -242,6 +240,8 @@ namespace MutMap1 {
         let MutMap1(mm1) = m1;
         let MutMap1(mm2) = m2;
         mm2 := Map.unionWithKey(f, deref mm1, deref mm2)
+
+/*
 
     ///
     /// Removes all mappings `k -> v` from the mutable map `m` where `v` does not satisfy the predicate function `f`.
