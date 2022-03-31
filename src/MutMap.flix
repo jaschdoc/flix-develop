@@ -516,40 +516,39 @@ namespace MutMap1 {
     pub def forall(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Bool \ Read(r) =
         let MutMap1(mm) = m;
         Map.forall(f, deref mm)
-/*
 
     ///
     /// Returns a shallow copy of the mutable map `m`.
     ///
-    pub def copy(m: MutMap1[k, v, r]): MutMap1[k, v, r] & reg(r) =
+    pub def copy(m: MutMap1[k, v, r]): MutMap1[k, v, r] \ { Read(r), Write(r) } =
         let MutMap1(mm) = m;
         MutMap1(ref (deref mm) @ Scoped.regionOf(m))
 
     ///
     /// Returns the mutable map `m` as an immutable map.
     ///
-    pub def toMap(m: MutMap1[k, v, r]): Map[k, v] & reg(r) =
+    pub def toMap(m: MutMap1[k, v, r]): Map[k, v] \ Read(r) =
         let MutMap1(mm) = m;
         deref mm
 
     ///
     /// Returns the mutable map `m` as a list of key-value pairs.
     ///
-    pub def toList(m: MutMap1[k, v, r]): List[(k, v)] & reg(r) =
+    pub def toList(m: MutMap1[k, v, r]): List[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.toList(deref mm)
 
     ///
     /// Returns the mutable map `m` as a set of key-value pairs.
     ///
-    pub def toSet(m: MutMap1[k, v, r]): Set[(k, v)] & reg(r) with Order[k], Order[v] =
+    pub def toSet(m: MutMap1[k, v, r]): Set[(k, v)] \ Read(r) with Order[k], Order[v] =
         let MutMap1(mm) = m;
         Map.toSet(deref mm)
 
     ///
     /// Applies `f` to every element in the mutable map `m`.
     ///
-    pub def foreach(f: (k, v) -> Unit & ef, m: MutMap1[k, v, r]): Unit & ef and reg(r) =
+    pub def foreach(f: (k, v) -> Unit & ef, m: MutMap1[k, v, r]): Unit \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.foreach(f, deref mm)
 
@@ -558,7 +557,7 @@ namespace MutMap1 {
     ///
     /// That is, the result is a list of all pairs `(k, v)` where `p(k)` returns `Equal`.
     ///
-    pub def query(p: k -> Comparison, m: MutMap1[k, v, r]): List[(k, v)] & reg(r) =
+    pub def query(p: k -> Comparison, m: MutMap1[k, v, r]): List[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.query(p, deref mm)
 
@@ -567,21 +566,23 @@ namespace MutMap1 {
     ///
     /// The function `f` must be impure.
     ///
-    pub def queryWith(p: k -> Comparison, f: (k, v) -> Unit & ef, m: MutMap1[k, v, r]): Unit & reg(r) =
+    pub def queryWith(p: k -> Comparison, f: (k, v) -> Unit & ef, m: MutMap1[k, v, r]): Unit \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.queryWith(p, f, deref mm)
 
+/*
     ///
     /// Returns `true` if MutMaps `a` and `b` have the same elements, i.e. are structurally equal.
     ///
-    pub def sameElements(a: MutMap1[k, v, r], b: MutMap1[k, v, r]): Bool & reg(r) with Order[k], Eq[v] =
+    pub def sameElements(a: MutMap1[k, v, r1], b: MutMap1[k, v, r2]): Bool \ { Read(r1, r2) } with Order[k], Eq[v] =
         (MutMap1.isSubmapOf(a, b) and MutMap1.isSubmapOf(b, a))
+*/
 
     ///
     /// Returns the concatenation of the string representation of each key `k`
     /// in `m` with `sep` inserted between each element.
     ///
-    pub def joinKeys(sep: String, m: MutMap1[k, v, r]): String & reg(r) with ToString[k] =
+    pub def joinKeys(sep: String, m: MutMap1[k, v, r]): String \ Read(r) with ToString[k] =
         let MutMap1(mm) = m;
         Map.joinKeys(sep, deref mm)
 
@@ -589,7 +590,7 @@ namespace MutMap1 {
     /// Returns the concatenation of the string representation of each value `v`
     /// in `m` with `sep` inserted between each element.
     ///
-    pub def joinValues(sep: String, m: MutMap1[k, v, r]): String & reg(r) with ToString[v] =
+    pub def joinValues(sep: String, m: MutMap1[k, v, r]): String \ Read(r) with ToString[v] =
         let MutMap1(mm) = m;
         Map.joinValues(sep, deref mm)
 
@@ -597,10 +598,8 @@ namespace MutMap1 {
     /// Returns the concatenation of the string representation of each key-value pair
     /// `k => v` in `m` according to `f` with `sep` inserted between each element.
     ///
-    pub def joinWith(f: (k, v) -> String & ef, sep: String, m: MutMap1[k, v, r]): String & ef and reg(r) =
+    pub def joinWith(f: (k, v) -> String & ef, sep: String, m: MutMap1[k, v, r]): String \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.joinWith(f, sep, deref mm)
-
-*/
 
 }
