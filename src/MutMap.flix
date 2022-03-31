@@ -312,24 +312,24 @@ namespace MutMap1 {
     pub def findLeft(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.findLeft(f, deref mm)
-/*
 
     ///
     /// Optionally returns the first mapping of the mutable map `m` that satisfies the predicate function `f` when searching from right to left.
     ///
     /// The function `f` must be pure.
     ///
-    pub def findRight(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) =
+    pub def findRight(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.findRight(f, deref mm)
 
+/*
     ///
     /// Returns a map with mappings `k => f(v)` for every `k => v` in `m`.
     ///
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def map(f: v1 -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] & ef and reg(r) =
+    pub def map(f: v1 -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] \ { ef, Read(r), Write(r) } =
         mapWithKey((_, v) -> f(v), m)
 
     ///
@@ -338,11 +338,13 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def mapWithKey(f: (k, v1) -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] & ef and reg(r) =
+    pub def mapWithKey(f: (k, v1) -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] \ { ef, Read(r), Write(r) } =
         let MutMap1(mm) = m;
         mm := Map.mapWithKey(f, deref mm);
         m
+*/
 
+/*
     ///
     /// Alias for `foldLeftWithKey`.
     ///
