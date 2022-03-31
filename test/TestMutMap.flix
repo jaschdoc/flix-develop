@@ -93,10 +93,10 @@ namespace TestMutMap {
     def merge02(): Bool = region r {
         let m1 = new MutMap1(r);
         let m2 = new MutMap1(r);
-        let _ = MutMap1.put!(1, m1);
-        let _ = MutMap1.put!(2, m2);
+        let _ = MutMap1.put!(1, 0, m1);
+        let _ = MutMap1.put!(2, 0, m2);
         MutMap1.merge!(m1, m2);
-        MutMap1.memberOf(2, m2) // and MutMap1.memberOf(2, m2)
+        MutMap1.memberOf(1, m2) and MutMap1.memberOf(2, m2)
     }
 
     /*
