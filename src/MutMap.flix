@@ -471,18 +471,17 @@ namespace MutMap1 {
         let MutMap1(mm) = m;
         Map.sumWith(f, deref mm)
 
-/*
     ///
     /// Returns the product of all keys in the mutable map `m`.
     ///
-    pub def productKeys(m: MutMap1[Int32, v, r]): Int32 & reg(r) =
+    pub def productKeys(m: MutMap1[Int32, v, r]): Int32 \ Read(r) =
         let MutMap1(mm) = m;
         Map.productKeys(deref mm)
 
     ///
     /// Returns the product of all values in the mutable map `m`.
     ///
-    pub def productValues(m: MutMap1[k, Int32, r]): Int32 & reg(r) =
+    pub def productValues(m: MutMap1[k, Int32, r]): Int32 \ Read(r) =
         let MutMap1(mm) = m;
         Map.productValues(deref mm)
 
@@ -492,7 +491,7 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def productWith(f: (k, v) -> Int32 & ef, m: MutMap1[k, v, r]): Int32 & ef and reg(r) =
+    pub def productWith(f: (k, v) -> Int32 & ef, m: MutMap1[k, v, r]): Int32 \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.productWith(f, deref mm)
 
@@ -503,7 +502,7 @@ namespace MutMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def exists(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Bool & reg(r) =
+    pub def exists(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Bool \ Read(r) =
         let MutMap1(mm) = m;
         Map.exists(f, deref mm)
 
@@ -514,9 +513,10 @@ namespace MutMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def forall(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Bool & reg(r) =
+    pub def forall(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Bool \ Read(r) =
         let MutMap1(mm) = m;
         Map.forall(f, deref mm)
+/*
 
     ///
     /// Returns a shallow copy of the mutable map `m`.
