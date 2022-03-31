@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace TestMutMap {
+namespace TestMutMap1 {
 /*
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
@@ -88,18 +88,28 @@ namespace TestMutMap {
         MutMap1.sameElements(m, m2)
     }
 
-*/
+
+    /////////////////////////////////////////////////////////////////////////////
+    // mergeWithKey                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def merge01(): Bool = region r {
+        let m1 = new MutMap1(r): MutMap1[Int32, Int32, _];
+        let m2 = new MutMap1(r): MutMap1[Int32, Int32, _];
+        MutMap1.mergeWithKey!((_, v, _) -> v, m1, m2);
+        MutMap1.isEmpty(m2)
+    }
+
     @test
     def merge02(): Bool = region r {
         let m1 = new MutMap1(r);
         let m2 = new MutMap1(r);
         let _ = MutMap1.put!(1, 0, m1);
         let _ = MutMap1.put!(2, 0, m2);
-        MutMap1.merge!(m1, m2);
+        MutMap1.mergeWithKey!((_, v, _) -> v, m1, m2);
         MutMap1.memberOf(1, m2) and MutMap1.memberOf(2, m2)
     }
-
-    /*
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -439,14 +449,14 @@ namespace TestMutMap {
 
     @test
     def foldRightLazy03(): Bool = region r {
-        let m = MutMap(ref Map#{1 => 2, 3 => 4});
+        let m = MutMap1(ref Map#{1 => 2, 3 => 4});
         MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 6
     }
 
     @test
     def foldRightLazy04(): Bool = region r {
-        let m = MutMap(ref Map#{1 => 2, 3 => 4, 5 => 6});
+        let m = MutMap1(ref Map#{1 => 2, 3 => 4, 5 => 6});
         MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 12
     }
-    */
+*/
 }
