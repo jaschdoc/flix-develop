@@ -240,16 +240,13 @@ namespace MutMap1 {
         let MutMap1(mm1) = m1;
         let MutMap1(mm2) = m2;
         mm2 := Map.unionWithKey(f, deref mm1, deref mm2)
-/*
-
-
-/*
+*/
     ///
     /// Removes all mappings `k -> v` from the mutable map `m` where `v` does not satisfy the predicate function `f`.
     ///
     /// The function `f` must be pure.
     ///
-    pub def refine!(f: v -> Bool, m: MutMap1[k, v, r]): Unit & reg(r) with Order[k] =
+    pub def refine!(f: v -> Bool, m: MutMap1[k, v, r]): Unit \ { Read(r), Write(r) } with Order[k] =
         refineWithKey!((_, v) -> f(v), m)
 
     ///
@@ -257,7 +254,7 @@ namespace MutMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def refineWithKey!(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Unit & reg(r) with Order[k] =
+    pub def refineWithKey!(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Unit \ { Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.filterWithKey(f, deref mm)
 
@@ -266,28 +263,28 @@ namespace MutMap1 {
     ///
     /// Leaves the map unchanged if the mutable map `m` does not contain any mapping for `k`.
     ///
-    pub def remove!(k: k, m: MutMap1[k, v, r]): Unit & reg(r) with Order[k] =
+    pub def remove!(k: k, m: MutMap1[k, v, r]): Unit \ { Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.remove(k, deref mm)
 
     ///
     /// Applies the function `f` to every value in the mutable map `m`.
     ///
-    pub def transform!(f: v -> v & ef, m: MutMap1[k, v, r]): Unit & ef and reg(r) with Order[k] =
+    pub def transform!(f: v -> v & ef, m: MutMap1[k, v, r]): Unit \ { ef, Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.map(f, deref mm)
 
     ///
     /// Applies the function `f` to every value in the mutable map `m`.
     ///
-    pub def transformWithKey!(f: (k, v) -> v & ef, m: MutMap1[k, v, r]): Unit & ef and reg(r) with Order[k] =
+    pub def transformWithKey!(f: (k, v) -> v & ef, m: MutMap1[k, v, r]): Unit \ { ef, Read(r), Write(r) } with Order[k] =
         let MutMap1(mm) = m;
         mm := Map.mapWithKey(f, deref mm)
 
     ///
     /// Returns `true` if and only if all mappings in the mutable map `m1` occur in the mutable map `m2`.
     ///
-    pub def isSubmapOf(m1: MutMap1[k, v, r], m2: MutMap1[k, v, r]): Bool & reg(r) with Order[k], Eq[v] =
+    pub def isSubmapOf(m1: MutMap1[k, v, r1], m2: MutMap1[k, v, r2]): Bool \ { Read(r1, r2) } with Order[k], Eq[v] =
         let MutMap1(mm1) = m1;
         let MutMap1(mm2) = m2;
         Map.isSubmapOf(deref mm1, deref mm2)
@@ -295,7 +292,7 @@ namespace MutMap1 {
     ///
     /// Returns `true` if and only if all mappings in the mutable map `m1` occur in the mutable map `m2` and `m1 != m2`.
     ///
-    pub def isProperSubmapOf(m1: MutMap1[k, v, r], m2: MutMap1[k, v, r]): Bool & reg(r) with Order[k], Eq[v] =
+    pub def isProperSubmapOf(m1: MutMap1[k, v, r1], m2: MutMap1[k, v, r2]): Bool \ { Read(r1, r2) } with Order[k], Eq[v] =
         let MutMap1(mm1) = m1;
         let MutMap1(mm2) = m2;
         Map.isProperSubmapOf(deref mm1, deref mm2)
@@ -305,17 +302,17 @@ namespace MutMap1 {
     ///
     /// The function `f` must be pure.
     ///
-    pub def find(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) =
+    pub def find(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         findLeft(f, m)
-
     ///
     /// Optionally returns the first mapping of the mutable map `m` that satisfies the predicate function `f` when searching from left to right.
     ///
     /// The function `f` must be pure.
     ///
-    pub def findLeft(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] & reg(r) =
+    pub def findLeft(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.findLeft(f, deref mm)
+/*
 
     ///
     /// Optionally returns the first mapping of the mutable map `m` that satisfies the predicate function `f` when searching from right to left.
