@@ -365,14 +365,13 @@ namespace MutMap1 {
     pub def foldLeftWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.foldLeftWithKey(f, i, deref mm)
-/*
 
     ///
     /// Applies `f` to a start value `i` and all values in the mutable map `m` going from right to left.
     ///
     /// That is, the result is of the form: `f(v1, ...f(vn-1, f(vn, i)))`.
     ///
-    pub def foldRight(f: (v, b) -> b & ef, i: b, m: MutMap1[k, v, r]): b & ef and reg(r) =
+    pub def foldRight(f: (v, b) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) } =
         foldRightWithKey((_, v, b) -> f(v, b), i, m)
 
     ///
@@ -380,7 +379,7 @@ namespace MutMap1 {
     ///
     /// That is, the result is of the form: `f(k1, v1, ...f(kn-1, vn-1, f(kn, vn, i)))`.
     ///
-    pub def foldRightWithKey(f: (k, v, b) -> b & ef, i: b, m: MutMap1[k, v, r]): b & ef and reg(r) =
+    pub def foldRightWithKey(f: (k, v, b) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.foldRightWithKey(f, i, deref mm)
 
@@ -390,7 +389,7 @@ namespace MutMap1 {
     /// That is, the result is of the form: `f(x1, ...lazy f(xn-1, lazy f(xn, s))...)`.
     /// The foldRightLazy function exists to allow early termination of a fold.
     ///
-    pub def foldRightLazy(f: (v, Lazy[b]) -> b, i: b, m: MutMap1[k, v, r]): b & reg(r) =
+    pub def foldRightLazy(f: (v, Lazy[b]) -> b, i: b, m: MutMap1[k, v, r]): b \ Read(r) =
         let MutMap1(mm) = m;
         Map.foldRightLazy(f, i, deref mm)
 
@@ -401,7 +400,7 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is the empty map.
     ///
-    pub def reduceLeft(f: (v, v) -> v & ef, m: MutMap1[k, v, r]): Option[v] & ef and reg(r) =
+    pub def reduceLeft(f: (v, v) -> v & ef, m: MutMap1[k, v, r]): Option[v] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.reduceLeft(f, deref mm)
 
@@ -412,7 +411,7 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is the empty map.
     ///
-    pub def reduceLeftWithKey(f: (k, v, k, v) -> (k, v) & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def reduceLeftWithKey(f: (k, v, k, v) -> (k, v) & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.reduceLeftWithKey(f, deref mm)
 
@@ -423,7 +422,7 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is the empty map.
     ///
-    pub def reduceRight(f: (v, v) -> v & ef, m: MutMap1[k, v, r]): Option[v] & ef and reg(r) =
+    pub def reduceRight(f: (v, v) -> v & ef, m: MutMap1[k, v, r]): Option[v] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.reduceRight(f, deref mm)
 
@@ -434,7 +433,7 @@ namespace MutMap1 {
     ///
     /// Returns `None` if `m` is the empty map.
     ///
-    pub def reduceRightWithKey(f: (k, v, k, v) -> (k, v) & ef, m: MutMap1[k, v, r]): Option[(k, v)] & ef and reg(r) =
+    pub def reduceRightWithKey(f: (k, v, k, v) -> (k, v) & ef, m: MutMap1[k, v, r]): Option[(k, v)] \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.reduceRightWithKey(f, deref mm)
 
@@ -444,21 +443,21 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def count(f: (k, v) -> Bool & ef, m: MutMap1[k, v, r]): Int32 & ef and reg(r) =
+    pub def count(f: (k, v) -> Bool & ef, m: MutMap1[k, v, r]): Int32 \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.count(f, deref mm)
 
     ///
     /// Returns the sum of all keys in the map `m`.
     ///
-    pub def sumKeys(m: MutMap1[Int32, v, r]): Int32 & reg(r) =
+    pub def sumKeys(m: MutMap1[Int32, v, r]): Int32 \ Read(r) =
         let MutMap1(mm) = m;
         Map.sumKeys(deref mm)
 
     ///
     /// Returns the sum of all values in the map `m`.
     ///
-    pub def sumValues(m: MutMap1[k, Int32, r]): Int32 & reg(r) =
+    pub def sumValues(m: MutMap1[k, Int32, r]): Int32 \ Read(r) =
         let MutMap1(mm) = m;
         Map.sumValues(deref mm)
 
@@ -468,10 +467,11 @@ namespace MutMap1 {
     /// Purity reflective: Runs in parallel when given a pure function `f`.
     ///
     @ParallelWhenPure
-    pub def sumWith(f: (k, v) -> Int32 & ef, m: MutMap1[k, v, r]): Int32 & ef and reg(r) =
+    pub def sumWith(f: (k, v) -> Int32 & ef, m: MutMap1[k, v, r]): Int32 \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.sumWith(f, deref mm)
 
+/*
     ///
     /// Returns the product of all keys in the mutable map `m`.
     ///
