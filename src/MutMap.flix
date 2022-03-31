@@ -343,20 +343,17 @@ namespace MutMap1 {
         mm := Map.mapWithKey(f, deref mm);
         m
 */
-
-/*
     ///
     /// Alias for `foldLeftWithKey`.
     ///
-    pub def foldWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b & ef and reg(r)  =
+    pub def foldWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) }  =
         foldLeftWithKey(f, i, m)
-
     ///
     /// Applies `f` to a start value `i` and all values in the mutable map `m` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(i, v1), v2)..., vn)`.
     ///
-    pub def foldLeft(f: (b, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b & ef and reg(r) =
+    pub def foldLeft(f: (b, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.foldLeft(f, i, deref mm)
 
@@ -365,9 +362,10 @@ namespace MutMap1 {
     ///
     /// That is, the result is of the form: `f(...f(k2, f(k1, i, v1), v2)..., vn)`.
     ///
-    pub def foldLeftWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b & ef and reg(r) =
+    pub def foldLeftWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) } =
         let MutMap1(mm) = m;
         Map.foldLeftWithKey(f, i, deref mm)
+/*
 
     ///
     /// Applies `f` to a start value `i` and all values in the mutable map `m` going from right to left.
