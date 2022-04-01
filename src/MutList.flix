@@ -58,6 +58,7 @@ instance Scoped[MList[a]] {
 // - new
 // - put
 // - copyOfRange
+// - sortWithin
 
 namespace MList {
 
@@ -573,7 +574,7 @@ namespace MList {
     ///
     /// Inserts the given element `x` at the end of the given mutable list `v`.
     ///
-    pub def push!(x: a, v: MList[a, r]): Unit & Impure =
+    pub def push!(x: a, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(a, l) = v;
         let len = deref l;
         if (capacity(v) - len == 0)
@@ -589,7 +590,7 @@ namespace MList {
     ///
     /// If the given index `i` exceeds the length of the mutable list, the element is inserted at the last position.
     ///
-    pub def insert!(x: a, i: Int32, v: MList[a, r]): Unit & Impure =
+    pub def insert!(x: a, i: Int32, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(a, l) = v;
         let len = deref l;
         if (capacity(v) - len == 0)
@@ -607,7 +608,7 @@ namespace MList {
     ///
     /// If the given index `i` exceeds the length of the mutable list, no element is removed.
     ///
-    pub def remove!(i: Int32, v: MList[a, r]): Unit & Impure =
+    pub def remove!(i: Int32, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(ra, rl) = v;
         let a = deref ra;
         let l = deref rl;
@@ -630,20 +631,20 @@ namespace MList {
         }
         else
             ()
-
+/*
     ///
     /// Inserts all the elements in the collection `t` into the mutable list `v`.
     ///
-    pub def append!(t: t[a], v: MList[a, r]): Unit & Impure with Iterable[t] =
+    pub def append!(t: t[a], v: MList[a, r]): Unit \ { Read(r), Write(r) } with Iterable[t] =
         let iter = Iterable.iterator(t);
         Iterator.foreach(x -> MList.push!(x, v), iter)
-
+*/
     ///
     /// Removes all elements from the given mutable list `v` that do not satisfy the given predicate `f`.
     ///
-    pub def retain!(f: a -> Bool, v: MList[a, r]): Unit & Impure =
+    pub def retain!(f: a -> Bool, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(a1, l1) = v;
-        let l = new();
+        let l = new(Scoped.regionOf(v));
         foreach(e -> if (f(e)) push!(e, l) else (), v);
         let MList(a2, l2) = l;
         a1 := deref a2;
@@ -652,13 +653,13 @@ namespace MList {
     ///
     /// Replaces all occurrences of the `from` with `to` in the given mutable list `v`.
     ///
-    pub def replace!(from: {from :: a}, to: {to :: a}, v: MList[a, r]): Unit & Impure with Eq[a] =
+    pub def replace!(from: {from :: a}, to: {to :: a}, v: MList[a, r]): Unit \ { Read(r), Write(r) } with Eq[a] =
         transform!(e -> if (e == from.from) to.to else e, v)
 
     ///
     /// Reverses the order of the elements in the given mutable list `v`.
     ///
-    pub def reverse!(v: MList[a, r]): Unit & Impure =
+    pub def reverse!(v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(ra, rl) = v;
         let a = deref ra;
         let l = deref rl;
@@ -681,7 +682,7 @@ namespace MList {
     ///
     /// Truncates the mutable list as needed.
     ///
-    def shrinkTo!(n: Int32, v: MList[a, r]): Unit & Impure =
+    def shrinkTo!(n: Int32, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let minCap = minCapacity();
         let capv = capacity(v);
         let MList(a, l) = v;
@@ -696,7 +697,8 @@ namespace MList {
     ///
     /// Shrinks the given mutable list `v` to its actual size.
     ///
-    pub def shrink!(v: MList[a, r]): Unit & Impure = shrinkTo!(length(v), v)
+    pub def shrink!(v: MList[a, r]): Unit \ { Read(r), Write(r) } =
+        shrinkTo!(length(v), v)
 
     ///
     /// Truncates the given mutable list `v` to the given length `l`.
@@ -705,7 +707,7 @@ namespace MList {
     ///
     /// If the given length `l` is negative, all elements are removed.
     ///
-    pub def truncate!(l: Int32, v: MList[a, r]): Unit & Impure =
+    pub def truncate!(l: Int32, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         if (l < 0)
             clear!(v)
         else if (l < length(v)) {
@@ -725,33 +727,33 @@ namespace MList {
     ///
     /// The content of the mutable list is unchanged.
     ///
-    pub def reserve!(n: Int32, v: MList[a, r]): Unit & Impure =
+    pub def reserve!(n: Int32, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(a, l) = v;
         a := Array.copyOfRange(0, (deref l) + n, deref a)
 
     ///
     /// Returns `v` as an immutable list.
     ///
-    pub def toList(v: MList[a, r]): List[a] & Impure =
+    pub def toList(v: MList[a, r]): List[a] \ Read(r) =
         foldRight((x, acc) -> x :: acc, Nil, v)
 
     ///
     /// Returns `v` as an array.
     ///
-    pub def toArray(v: MList[a, r]): Array[a] & Impure =
+    pub def toArray(v: MList[a, r]): ScopedArray[a, r] \ { Read(r), Write(r) } =
         let MList(a, l) = v;
-        Array.copyOfRange(0, deref l, deref a)
+        Array.copyOfRange(0, deref l, deref a) @ Scoped.regionOf(v) // TODO: Remove this region declaration when copyOfRange has been refactored
 
     ///
     /// Returns the mutable list `xs` as a chain.
     ///
-    pub def toChain(xs: MList[a, r]): Chain[a] & Impure =
+    pub def toChain(xs: MList[a, r]): Chain[a] \ Read(r) =
         foldLeft((ac, x) -> Chain.snoc(ac, x), Chain.empty(), xs)
 
     ///
     /// Returns `true` if the mutable lists `v1` and `v2` have the same elements, i.e. are structurally equal.
     ///
-    pub def sameElements(v1: MList[a, r], v2: MList[a, r]): Bool & Impure with Eq[a] =
+    pub def sameElements(v1: MList[a, r1], v2: MList[a, r2]): Bool \ Read(r1, r2) with Eq[a] =
         let MList(ra1, rl1) = v1;
         let MList(ra2, rl2) = v2;
         let a1 = deref ra1;
@@ -805,7 +807,7 @@ namespace MList {
     ///
     /// Applies `f` to all the elements in `v`.
     ///
-    pub def foreach(f: a -> Unit & ef, v: MList[a, r]): Unit & Impure =
+    pub def foreach(f: a -> Unit & ef, v: MList[a, r]): Unit \ { ef, Read(r) } =
         let MList(ra, rl) = v;
         let a = deref ra;
         let l = deref rl;
@@ -822,7 +824,7 @@ namespace MList {
     ///
     /// Applies `f` to all the elements in `v`.
     ///
-    pub def foreachWithIndex(f: (a, Int32) -> Unit & ef, v: MList[a, r]): Unit & Impure =
+    pub def foreachWithIndex(f: (a, Int32) -> Unit & ef, v: MList[a, r]): Unit \ { ef, Read(r) } =
         let MList(ra, rl) = v;
         let a = deref ra;
         let l = deref rl;
@@ -841,7 +843,7 @@ namespace MList {
     ///
     /// The mutable list will be shrunk to 1/2 of its size if the load factor is less than 1/4.
     ///
-    pub def compress!(v: MList[a, r]): Unit & Impure =
+    pub def compress!(v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let c = capacity(v);
         let len = length(v);
         let loadFactor = Int32.toFloat32(len) / Int32.toFloat32(c);
@@ -856,7 +858,7 @@ namespace MList {
     ///
     /// Returns the capacity of `v`.
     ///
-    def capacity(v: MList[a, r]): Int32 & Impure =
+    def capacity(v: MList[a, r]): Int32 \ Read(r) =
         let MList(a, _) = v;
         Array.length(deref a)
 
@@ -868,7 +870,8 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sort(v: MList[a, r]): MList[a, r] & Impure with Order[a] = sortWith(Order.compare, v)
+    pub def sort(v: MList[a, r]): MList[a, r] \ { Read(r), Write(r) } with Order[a] =
+        sortWith(Order.compare, v)
 
     ///
     /// Returns a sorted copy of MList `v`, where the elements are ordered from low to high according to
@@ -878,7 +881,8 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sortBy(f: a -> b, v: MList[a, r]): MList[a, r] & Impure with Order[b] = sortWith(Order.compare `on` f, v)
+    pub def sortBy(f: a -> b, v: MList[a, r]): MList[a, r] \ { Read(r), Write(r) } with Order[b] =
+        sortWith(Order.compare `on` f, v)
 
     ///
     /// Returns a sorted copy of MList `v`, where the elements are ordered from low to high according to
@@ -888,8 +892,8 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sortWith(cmp: (a,a) -> Comparison, v: MList[a, r]): MList[a, r] & Impure =
-        let vCopy = copy(v);
+    pub def sortWith(cmp: (a,a) -> Comparison, v: MList[a, r]): MList[a, r] \ { Read(r), Write(r) } =
+        let vCopy = copy(v) @ Scoped.regionOf(v);
         sortWith!(cmp, vCopy);
         vCopy
 
@@ -901,7 +905,8 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sort!(v: MList[a, r]): Unit & Impure with Order[a] = sortWith!(Order.compare, v)
+    pub def sort!(v: MList[a, r]): Unit \ { Read(r), Write(r) } with Order[a] =
+        sortWith!(Order.compare, v)
 
     ///
     /// Sort MList `v` so that elements are ordered from low to high according to the `Order` instance for
@@ -911,7 +916,8 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sortBy!(f: a -> b, v: MList[a, r]): Unit & Impure with Order[b] = sortWith!(Order.compare `on` f, v)
+    pub def sortBy!(f: a -> b, v: MList[a, r]): Unit\ { Read(r), Write(r) } with Order[b] =
+        sortWith!(Order.compare `on` f, v)
 
     ///
     /// Sort MList `v` so that elements are ordered from low to high according to the comparison function `cmp`.
@@ -921,7 +927,7 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sortWith!(cmp: (a,a) -> Comparison, v: MList[a, r]): Unit & Impure =
+    pub def sortWith!(cmp: (a,a) -> Comparison, v: MList[a, r]): Unit \ { Read(r), Write(r) } =
         let MList(a, l) = v;
         Array.sortWithin!(cmp, 0, (deref l) - 1, deref a)
 
