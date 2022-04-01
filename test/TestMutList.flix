@@ -1975,7 +1975,7 @@ namespace TestMList {
 
     def testSortByVsSort(a: MList[Int32, r]): Bool \ { Read(r), Write(r) } =
         (MList.sortBy(identity, a) `sameElements` MList.sort(a)) and
-        (MList.sortBy(x -> 4*x+7, a) `sameElements` MList.sort(a)) and
+        (MList.sortBy(x -> 4 * x + 7, a) `sameElements` MList.sort(a)) and
         (MList.sortBy(x -> -x, a) `sameElements` MList.sortWith(flip(cmp),a))
 
     @test
@@ -1985,42 +1985,42 @@ namespace TestMList {
 
     @test
     def sortBy02(): Bool = region r {
-        testSortByVsSort(Array.toMList([0]))
+        testSortByVsSort(Array.toMList([0] @ r))
     }
 
     @test
     def sortBy03(): Bool = region r {
-        testSortByVsSort(Array.toMList([0,1]))
+        testSortByVsSort(Array.toMList([0,1] @ r))
     }
 
     @test
     def sortBy04(): Bool = region r {
-        testSortByVsSort(Array.toMList([1,0]))
+        testSortByVsSort(Array.toMList([1,0] @ r))
     }
 
     @test
     def sortBy05(): Bool = region r {
-        testSortByVsSort(Array.toMList([1,1]))
+        testSortByVsSort(Array.toMList([1,1] @ r))
     }
 
     @test
     def sortBy06(): Bool = region r {
-        testSortByVsSort(Array.toMList([0,1,2,3,4,5]))
+        testSortByVsSort(Array.toMList([0,1,2,3,4,5] @ r))
     }
 
     @test
     def sortBy07(): Bool = region r {
-        testSortByVsSort(Array.toMList([5,4,3,2,1,0]))
+        testSortByVsSort(Array.toMList([5,4,3,2,1,0] @ r))
     }
 
     @test
     def sortBy08(): Bool = region r {
-        testSortByVsSort(Array.toMList([5,3,0,4,1,2]))
+        testSortByVsSort(Array.toMList([5,3,0,4,1,2] @ r))
     }
 
     @test
     def sortBy09(): Bool = region r {
-        testSortByVsSort(Array.toMList([2,3,0,4,1,2]))
+        testSortByVsSort(Array.toMList([2,3,0,4,1,2] @ r))
     }
 
     enum R {
@@ -2036,8 +2036,8 @@ namespace TestMList {
 
     @test
     def sortBy10(): Bool = region r {
-        MList.sortBy(r -> let R(x) = r; x.i, Array.toMList([R({i = 2, s = "A"}), R({i = 1, s = "B"}), R({i = 3, s = "C"})]))
-        `sameElements` Array.toMList([R({i = 1, s = "B"}), R({i = 2, s = "A"}), R({i = 3, s = "C"})])
+        MList.sortBy(r -> let R(x) = r; x.i, Array.toMList([R({i = 2, s = "A"}), R({i = 1, s = "B"}), R({i = 3, s = "C"})] @ r))
+        `sameElements` Array.toMList([R({i = 1, s = "B"}), R({i = 2, s = "A"}), R({i = 3, s = "C"})] @ r)
     }
 
 
@@ -2050,7 +2050,7 @@ namespace TestMList {
         let c = MList.copy(a);
         MList.sortBy!(identity, b);
         MList.sortBy!(x -> 4*x+7, c);
-        (b `sameElements` MList.sortBy(x -> 4*x+7, a)) and
+        (b `sameElements` MList.sortBy(x -> 4 * x + 7, a)) and
         (c `sameElements` MList.sortBy(identity, a))
 
     @test
