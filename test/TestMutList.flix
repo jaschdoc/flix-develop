@@ -1660,35 +1660,53 @@ namespace TestMList {
     // sort                                                                    //
     /////////////////////////////////////////////////////////////////////////////
 
-    def testSortVsSortWith(a: MList[Int32]) : Bool = region r {
+    def testSortVsSortWith(a: MList[Int32, r]): Bool \ Read(r) =
         MList.sort(a) `sameElements` MList.sortWith(cmp, a)
 
     @test
-    def sort01(): Bool = region r { testSortVsSortWith(Array.toMList([]: Array[Int32]))
+    def sort01(): Bool = region r {
+        testSortVsSortWith(Array.toMList([]: Array[Int32]))
+    }
 
     @test
-    def sort02(): Bool = region r { testSortVsSortWith(Array.toMList([0]))
+    def sort02(): Bool = region r {
+        testSortVsSortWith(Array.toMList([0]))
+    }
 
     @test
-    def sort03(): Bool = region r { testSortVsSortWith(Array.toMList([0,1]))
+    def sort03(): Bool = region r {
+        testSortVsSortWith(Array.toMList([0,1]))
+    }
 
     @test
-    def sort04(): Bool = region r { testSortVsSortWith(Array.toMList([1,0]))
+    def sort04(): Bool = region r {
+        testSortVsSortWith(Array.toMList([1,0]))
+    }
 
     @test
-    def sort05(): Bool = region r { testSortVsSortWith(Array.toMList([1,1]))
+    def sort05(): Bool = region r {
+        testSortVsSortWith(Array.toMList([1,1]))
+    }
 
     @test
-    def sort06(): Bool = region r { testSortVsSortWith(Array.toMList([0,1,2,3,4,5]))
+    def sort06(): Bool = region r {
+        testSortVsSortWith(Array.toMList([0,1,2,3,4,5]))
+    }
 
     @test
-    def sort07(): Bool = region r { testSortVsSortWith(Array.toMList([5,4,3,2,1,0]))
+    def sort07(): Bool = region r {
+        testSortVsSortWith(Array.toMList([5,4,3,2,1,0]))
+    }
 
     @test
-    def sort08(): Bool = region r { testSortVsSortWith(Array.toMList([5,3,0,4,1,2]))
+    def sort08(): Bool = region r {
+        testSortVsSortWith(Array.toMList([5,3,0,4,1,2]))
+    }
 
     @test
-    def sort09(): Bool = region r { testSortVsSortWith(Array.toMList([2,3,0,4,1,2]))
+    def sort09(): Bool = region r {
+        testSortVsSortWith(Array.toMList([2,3,0,4,1,2]))
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sortWith!                                                               //
@@ -1699,84 +1717,96 @@ namespace TestMList {
         let a = Array.toMList([]: Array[Int32]);
         MList.sortWith(cmp, a);
         a `sameElements` Array.toMList([]: Array[Int32])
+    }
 
     @test
     def sortWith02!(): Bool = region r {
         let a = Array.toMList([0]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0])
+    }
 
     @test
     def sortWith03!(): Bool = region r {
         let a = Array.toMList([0,1]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1])
+    }
 
     @test
     def sortWith04!(): Bool = region r {
         let a = Array.toMList([1,0]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1])
-
+    }
     @test
     def sortWith05!(): Bool = region r {
         let a = Array.toMList([1,1]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([1,1])
+    }
 
     @test
     def sortWith06!(): Bool = region r {
         let a = Array.toMList([0,1,2,3,4,5]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith07!(): Bool = region r {
         let a = Array.toMList([5,4,3,2,1,0]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith08!(): Bool = region r {
         let a = Array.toMList([5,3,0,4,1,2]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith09!(): Bool = region r {
         let a = Array.toMList([2,3,0,4,1,2]);
         MList.sortWith!(cmp, a);
         a `sameElements` Array.toMList([0,1,2,2,3,4])
+    }
 
     @test
     def sortWith10!(): Bool = region r {
         let a = Array.toMList([0,1,2,3,4,5]);
         MList.sortWith!(flip(cmp), a);
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
 
     @test
     def sortWith11!(): Bool = region r {
         let a = Array.toMList([5,4,3,2,1,0]);
         MList.sortWith!(flip(cmp), a);
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
 
     @test
     def sortWith12!(): Bool = region r {
         let a = Array.toMList([5,3,0,4,1,2]);
         MList.sortWith!(flip(cmp), a);
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
 
     @test
     def sortWith13!(): Bool = region r {
         let a = Array.toMList([2,3,0,4,1,2]);
         MList.sortWith!(flip(cmp), a);
         a `sameElements` Array.toMList([4,3,2,2,1,0])
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sort!                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
-    def testSort!VsSortWith!(a: MList[Int32]) : Bool = region r {
+    def testSort!VsSortWith!(a: MList[Int32, r]): Bool \ { Read(r), Write(r) } =
         let b = MList.copy(a);
         let c = MList.copy(a);
         MList.sort!(b);
@@ -1784,67 +1814,104 @@ namespace TestMList {
         b `sameElements` c
 
     @test
-    def sort!01(): Bool = region r { testSort!VsSortWith!(Array.toMList([]: Array[Int32]))
+    def sort!01(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([]: Array[Int32]))
+    }
 
     @test
-    def sort!02(): Bool = region r { testSort!VsSortWith!(Array.toMList([0]))
+    def sort!02(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([0]))
+    }
 
     @test
-    def sort!03(): Bool = region r { testSort!VsSortWith!(Array.toMList([0,1]))
+    def sort!03(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([0,1]))
+    }
 
     @test
-    def sort!04(): Bool = region r { testSort!VsSortWith!(Array.toMList([1,0]))
+    def sort!04(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([1,0]))
+    }
 
     @test
-    def sort!05(): Bool = region r { testSort!VsSortWith!(Array.toMList([1,1]))
+    def sort!05(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([1,1]))
+    }
 
     @test
-    def sort!06(): Bool = region r { testSort!VsSortWith!(Array.toMList([0,1,2,3,4,5]))
+    def sort!06(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([0,1,2,3,4,5]))
+    }
 
     @test
-    def sort!07(): Bool = region r { testSort!VsSortWith!(Array.toMList([5,4,3,2,1,0]))
+    def sort!07(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([5,4,3,2,1,0]))
+    }
 
     @test
-    def sort!08(): Bool = region r { testSort!VsSortWith!(Array.toMList([5,3,0,4,1,2]))
+    def sort!08(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([5,3,0,4,1,2]))
+    }
 
     @test
-    def sort!09(): Bool = region r { testSort!VsSortWith!(Array.toMList([2,3,0,4,1,2]))
+    def sort!09(): Bool = region r {
+        testSort!VsSortWith!(Array.toMList([2,3,0,4,1,2]))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // sortBy                                                                  //
     /////////////////////////////////////////////////////////////////////////////
 
-    def testSortByVsSort(a: MList[Int32]) : Bool = region r {
+    def testSortByVsSort(a: MList[Int32, r]): Bool \ { Read(r), Write(r) } =
         (MList.sortBy(identity, a) `sameElements` MList.sort(a)) and
         (MList.sortBy(x -> 4*x+7, a) `sameElements` MList.sort(a)) and
         (MList.sortBy(x -> -x, a) `sameElements` MList.sortWith(flip(cmp),a))
 
     @test
-    def sortBy01(): Bool = region r { testSortByVsSort(Array.toMList([]: Array[Int32]))
+    def sortBy01(): Bool = region r {
+        testSortByVsSort(Array.toMList([]: Array[Int32]))
+    }
 
     @test
-    def sortBy02(): Bool = region r { testSortByVsSort(Array.toMList([0]))
+    def sortBy02(): Bool = region r {
+        testSortByVsSort(Array.toMList([0]))
+    }
 
     @test
-    def sortBy03(): Bool = region r { testSortByVsSort(Array.toMList([0,1]))
+    def sortBy03(): Bool = region r {
+        testSortByVsSort(Array.toMList([0,1]))
+    }
 
     @test
-    def sortBy04(): Bool = region r { testSortByVsSort(Array.toMList([1,0]))
+    def sortBy04(): Bool = region r {
+        testSortByVsSort(Array.toMList([1,0]))
+    }
 
     @test
-    def sortBy05(): Bool = region r { testSortByVsSort(Array.toMList([1,1]))
+    def sortBy05(): Bool = region r {
+        testSortByVsSort(Array.toMList([1,1]))
+    }
 
     @test
-    def sortBy06(): Bool = region r { testSortByVsSort(Array.toMList([0,1,2,3,4,5]))
+    def sortBy06(): Bool = region r {
+        testSortByVsSort(Array.toMList([0,1,2,3,4,5]))
+    }
 
     @test
-    def sortBy07(): Bool = region r { testSortByVsSort(Array.toMList([5,4,3,2,1,0]))
+    def sortBy07(): Bool = region r {
+        testSortByVsSort(Array.toMList([5,4,3,2,1,0]))
+    }
 
     @test
-    def sortBy08(): Bool = region r { testSortByVsSort(Array.toMList([5,3,0,4,1,2]))
+    def sortBy08(): Bool = region r {
+        testSortByVsSort(Array.toMList([5,3,0,4,1,2]))
+    }
 
     @test
-    def sortBy09(): Bool = region r { testSortByVsSort(Array.toMList([2,3,0,4,1,2]))
+    def sortBy09(): Bool = region r {
+        testSortByVsSort(Array.toMList([2,3,0,4,1,2]))
+    }
 
     enum R {
         case R({i :: Int32, s :: String})
@@ -1861,12 +1928,14 @@ namespace TestMList {
     def sortBy10(): Bool = region r {
         MList.sortBy(r -> let R(x) = r; x.i, Array.toMList([R({i = 2, s = "A"}), R({i = 1, s = "B"}), R({i = 3, s = "C"})]))
         `sameElements` Array.toMList([R({i = 1, s = "B"}), R({i = 2, s = "A"}), R({i = 3, s = "C"})])
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // sortBy!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
-    def testSortBy!VsSortBy(a: MList[Int32]) : Bool = region r {
+    def testSortBy!VsSortBy(a: MList[Int32, r]): Bool \ { Read(r), Write(r) } =
         let b = MList.copy(a);
         let c = MList.copy(a);
         MList.sortBy!(identity, b);
@@ -1875,31 +1944,48 @@ namespace TestMList {
         (c `sameElements` MList.sortBy(identity, a))
 
     @test
-    def sortBy!01(): Bool = region r { testSortBy!VsSortBy(Array.toMList([]: Array[Int32]))
+    def sortBy!01(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([]: Array[Int32]))
+    }
 
     @test
-    def sortBy!02(): Bool = region r { testSortBy!VsSortBy(Array.toMList([0]))
+    def sortBy!02(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([0]))
+    }
 
     @test
-    def sortBy!03(): Bool = region r { testSortBy!VsSortBy(Array.toMList([0,1]))
+    def sortBy!03(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([0,1]))
+    }
 
     @test
-    def sortBy!04(): Bool = region r { testSortBy!VsSortBy(Array.toMList([1,0]))
+    def sortBy!04(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([1,0]))
+    }
 
     @test
-    def sortBy!05(): Bool = region r { testSortBy!VsSortBy(Array.toMList([1,1]))
+    def sortBy!05(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([1,1]))
+    }
 
     @test
-    def sortBy!06(): Bool = region r { testSortBy!VsSortBy(Array.toMList([0,1,2,3,4,5]))
+    def sortBy!06(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([0,1,2,3,4,5]))
+    }
 
     @test
-    def sortBy!07(): Bool = region r { testSortBy!VsSortBy(Array.toMList([5,4,3,2,1,0]))
+    def sortBy!07(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([5,4,3,2,1,0]))
+    }
 
     @test
-    def sortBy!08(): Bool = region r { testSortBy!VsSortBy(Array.toMList([5,3,0,4,1,2]))
+    def sortBy!08(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([5,3,0,4,1,2]))
+    }
 
     @test
-    def sortBy!09(): Bool = region r { testSortBy!VsSortBy(Array.toMList([2,3,0,4,1,2]))
+    def sortBy!09(): Bool = region r {
+        testSortBy!VsSortBy(Array.toMList([2,3,0,4,1,2]))
     }
 
     /////////////////////////////////////////////////////////////////////////////
