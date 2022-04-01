@@ -97,6 +97,12 @@ namespace MMutDeque {
     ///
     /// Returns an empty MMutDeque.
     ///
+    pub def empty(): MMutDeque[a, Impure] & Impure =
+        MMutDeque(ref [$DEFAULT$; minCapacity()], ref 0, ref 0)
+
+    ///
+    /// Returns an empty MMutDeque.
+    ///
     pub def new(r: Region[r]): MMutDeque[a, r] \ { Write(r) } =
         MMutDeque(ref [$DEFAULT$; minCapacity()] @ r @ r, ref 0 @ r, ref 0 @ r)
 
@@ -262,9 +268,9 @@ namespace MMutDeque {
     def grow!(d: MMutDeque[a, r]): Unit \ { Read(r), Write(r) } =
         let MMutDeque(a, f, b) = d;
         let c = capacity(d);
-        let arr = [$DEFAULT$; c <<< 1];                // Allocate new array `arr` with double the capacity of `a`.
-        copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
-        a := arr;                                      // Update references.
+        let arr = [$DEFAULT$; c <<< 1] @ Scoped.regionOf(d); // Allocate new array `arr` with double the capacity of `a`.
+        copyElements!(deref f, deref b, deref a, arr);       // Copy elements from old array `a` to new array `arr`.
+        a := arr;                                            // Update references.
         b := computeSize(c, deref f, deref b);
         f := 0
 
@@ -287,10 +293,10 @@ namespace MMutDeque {
         let MMutDeque(a, f, b) = d;
         let mc = minCapacity();
         let c = capacity(d);
-        if (c > mc) {                                      // Prevent the backing array from shrinking below `minCapacity`.
-            let arr = [$DEFAULT$; c >>> 1];                // Allocate new array `arr` with half the capacity of `a`.
-            copyElements!(deref f, deref b, deref a, arr); // Copy elements from old array `a` to new array `arr`.
-            a := arr;                                      // Update references.
+        if (c > mc) {                                            // Prevent the backing array from shrinking below `minCapacity`.
+            let arr = [$DEFAULT$; c >>> 1] @ Scoped.regionOf(d); // Allocate new array `arr` with half the capacity of `a`.
+            copyElements!(deref f, deref b, deref a, arr);       // Copy elements from old array `a` to new array `arr`.
+            a := arr;                                            // Update references.
             b := computeSize(c, deref f, deref b);
             f := 0
         } else {
@@ -300,7 +306,7 @@ namespace MMutDeque {
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
-    def copyElements!(f: Int32, b: Int32, a: Array[a], a1: Array[a]): Unit \ { Read(r), Write(r) } =
+    def copyElements!(f: Int32, b: Int32, a: ScopedArray[a, r], a1: ScopedArray[a, r]): Unit \ { Read(r), Write(r) } =
         let c = Array.length(a);
         if (f < b) { // If this predicate is true the elements do not "wrap around" in the array, i.e. the elements are laid out sequentially from [0 .. b].
             Array.updateSequence!(0,     a[f .. b], a1)
@@ -323,24 +329,13 @@ namespace MMutDeque {
         Array.length(deref a)
 
     ///
-    /// Returns `true` if MMutDeques `a` and `b` have the same elements, i.e. are structurally equal.
+    /// Returns `true` if MMutDeques `d1` and `d2` have the same elements, i.e. are structurally equal.
     ///
-    pub def sameElements(a: MMutDeque[t, r1], b: MMutDeque[t, r2]): Bool \ { Read(r1, r2), Write(r1, r2) } with Eq[t] =
-        let aSize = size(a);
-        let bSize = size(b);
-        if (aSize == bSize)
-            let MMutDeque(aArray, aFront, aBack) = a;
-            let aCap = capacity(a);
-            let a1 = [$DEFAULT$; aCap];
-            copyElements!(deref aFront, deref aBack, deref aArray, a1);
-
-
-            let MMutDeque(bArray, bFront, bBack) = b;
-            let bCap = capacity(b);
-            let b1 = [$DEFAULT$; bCap];
-            copyElements!(deref bFront, deref bBack, deref bArray, b1);
-
-            Array.sameElements(a1, b1)
+    pub def sameElements(d1: MMutDeque[t, r1], d2: MMutDeque[t, r2]): Bool \ Read(r1, r2) with Eq[t] =
+        let MMutDeque(a1, f1, b1) = d1;
+        let MMutDeque(a2, f2, b2) = d2;
+        if (Array.sameElements(deref a1, deref a2))
+            (deref f1) == (deref f2) and (deref b1) == (deref b2)
         else
             false
 
@@ -354,14 +349,14 @@ namespace MMutDeque {
     /// Returns the concatenation of the string representation
     /// of each element in `d` with `sep` inserted between each element.
     ///
-    pub def join(sep: String, d: MMutDeque[a, r]): String \ { Read(r) } with ToString[a] =
+    pub def join(sep: String, d: MMutDeque[a, r]): String & Impure with ToString[a] =
         joinWith(x -> ToString.toString(x), sep, d)
 
     ///
     /// Returns the concatenation of the string representation
     /// of each element in `d` according to `f` with `sep` inserted between each element.
     ///
-    pub def joinWith(f: a -> String & ef, sep: String, d: MMutDeque[a, r]): String \ { ef, Read(r) } =
+    pub def joinWith(f: a -> String & ef, sep: String, d: MMutDeque[a, r]): String & Impure =
         use StringBuilder.append!;
         let lastSep = String.length(sep);
         let sb = StringBuilder.new();
