@@ -21,24 +21,24 @@ namespace TestMList {
     ///
     /// Helper function to test capacity of internal array.
     ///
-    def capacity(v: MList[a]): Int32 = region r {
+    def capacity(v: MList[a, r]): Int32 \ Read(r) =
         let MList(a, _) = v;
         Array.length(deref a)
 
 
     /////////////////////////////////////////////////////////////////////////////
-    // eq                                                                   //
+    // sameElements                                                            //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def eq01(): Bool = region r {
+    def sameElements01(): Bool = region r {
         let u: MList[Int32] = new MList(r);
         let v: MList[Int32] = new MList(r);
         u `sameElements` v
     }
 
     @test
-    def eq02(): Bool = region r {
+    def sameElements02(): Bool = region r {
         let u = new MList(r);
         MList.push!(0, u);
         let v = new MList(r);
@@ -46,7 +46,7 @@ namespace TestMList {
     }
 
     @test
-    def eq03(): Bool = region r {
+    def sameElements03(): Bool = region r {
         let u = new MList(r);
         MList.push!(2, u);
         MList.push!(3, u);
@@ -57,7 +57,7 @@ namespace TestMList {
     }
 
     @test
-    def eq04(): Bool = region r {
+    def sameElements04(): Bool = region r {
         let u = new MList(r);
         MList.push!(2, u);
         MList.push!(3, u);
@@ -68,11 +68,13 @@ namespace TestMList {
     }
 
     @test
-    def eq05(): Bool = region r {
+    def sameElements05(): Bool = region r {
         let u = new MList(r);
         MList.push!(1, u);
         let v = new MList(r);
         (u `sameElements` v) == false
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // Order.compare                                                           //
@@ -83,7 +85,6 @@ namespace TestMList {
     /////////////////////////////////////////////////////////////////////////////
     // length                                                                  //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def length01(): Bool = region r {
@@ -111,6 +112,7 @@ namespace TestMList {
     def length05(): Bool = region r {
         MList.length(MList.range(0, 42)) == 42
     }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // isEmpty                                                                 //
@@ -141,6 +143,7 @@ namespace TestMList {
         MList.isEmpty(MList.range(3, 4)) == false
     }
 
+
     /////////////////////////////////////////////////////////////////////////////
     // memberOf                                                                //
     /////////////////////////////////////////////////////////////////////////////
@@ -165,41 +168,49 @@ namespace TestMList {
     }
 
     @test
-    def memberOf04(): Bool = region r { MList.memberOf(4, MList.range(0, 4)) == false
+    def memberOf04(): Bool = region r {
+        MList.memberOf(4, MList.range(0, 4)) == false
     }
 
     @test
-    def memberOf05(): Bool = region r { MList.memberOf(0, MList.range(0, 3))
+    def memberOf05(): Bool = region r {
+        MList.memberOf(0, MList.range(0, 3))
     }
 
     @test
-    def memberOf06(): Bool = region r { MList.memberOf(2, MList.range(0, 3))
+    def memberOf06(): Bool = region r {
+        MList.memberOf(2, MList.range(0, 3))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // count                                                                   //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def count01(): Bool = region r {
+        MList.count(x -> x > 2, MList.range(0, 4)) == 1
     }
 
     @test
-    def count01(): Bool = region r { MList.count(x -> x > 2, MList.range(0, 4)) == 1
+    def count02(): Bool = region r {
+        MList.count(x -> x >= 2, MList.range(0, 4)) == 2
     }
 
     @test
-    def count02(): Bool = region r { MList.count(x -> x >= 2, MList.range(0, 4)) == 2
+    def count03(): Bool = region r {
+        MList.count(x -> x rem 2 == 0, MList.range(0, 10)) == 5
     }
 
     @test
-    def count03(): Bool = region r { MList.count(x -> x rem 2 == 0, MList.range(0, 10)) == 5
+    def count04(): Bool = region r {
+        MList.count(x -> x == 11, MList.range(0, 21)) == 1
     }
-
-    @test
-    def count04(): Bool = region r { MList.count(x -> x == 11, MList.range(0, 21)) == 1
 
 
     /////////////////////////////////////////////////////////////////////////////
     // product                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def product01(): Bool = region r {
@@ -229,12 +240,12 @@ namespace TestMList {
     @test
     def product06(): Bool = region r {
         List.toMList(10 :: -10 :: Nil) |> MList.product == -100
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
     // productWith                                                             //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def productWith01(): Bool = region r {
@@ -264,56 +275,67 @@ namespace TestMList {
     @test
     def productWith06(): Bool = region r {
         List.toMList(10 :: -10 :: Nil) |> MList.productWith(x -> x + 1) == -99
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
     // exists                                                                  //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def exists01(): Bool = region r {
+        MList.exists(x -> x > 9, MList.range(0, 9)) == false
     }
 
     @test
-    def exists01(): Bool = region r { MList.exists(x -> x > 9, MList.range(0, 9)) == false
+    def exists02(): Bool = region r {
+        MList.exists(x -> x < 0, MList.range(0, 9)) == false
     }
 
     @test
-    def exists02(): Bool = region r { MList.exists(x -> x < 0, MList.range(0, 9)) == false
+    def exists03(): Bool = region r {
+        MList.exists(x -> x == 8, MList.range(0, 9))
     }
 
     @test
-    def exists03(): Bool = region r { MList.exists(x -> x == 8, MList.range(0, 9))
+    def exists04(): Bool = region r {
+        MList.exists(x -> x > 0, MList.range(0, 9))
     }
 
     @test
-    def exists04(): Bool = region r { MList.exists(x -> x > 0, MList.range(0, 9))
+    def exists05(): Bool = region r {
+        MList.exists(x -> x == 0, new MList(r)) == false
     }
 
-    @test
-    def exists05(): Bool = region r { MList.exists(x -> x == 0, new MList(r)) == false
 
     /////////////////////////////////////////////////////////////////////////////
     // forall                                                                  //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def forall01(): Bool = region r {
+        MList.forall(x -> x > 0, MList.range(0, 9)) == false
     }
 
     @test
-    def forall01(): Bool = region r { MList.forall(x -> x > 0, MList.range(0, 9)) == false
+    def forall02(): Bool = region r {
+        MList.forall(x -> x >= 0, MList.range(0, 9))
     }
 
     @test
-    def forall02(): Bool = region r { MList.forall(x -> x >= 0, MList.range(0, 9))
+    def forall03(): Bool = region r {
+        MList.forall(x -> x >= 0 and x < 9, MList.range(0, 9))
     }
 
     @test
-    def forall03(): Bool = region r { MList.forall(x -> x >= 0 and x < 9, MList.range(0, 9))
+    def forall05(): Bool = region r {
+        MList.forall(x -> x > 0, new MList(r))
     }
 
-    @test
-    def forall05(): Bool = region r { MList.forall(x -> x > 0, new MList(r))
 
     /////////////////////////////////////////////////////////////////////////////
     // head                                                                    //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def head01(): Bool = region r {
@@ -323,7 +345,8 @@ namespace TestMList {
     }
 
     @test
-    def head02(): Bool = region r { MList.head(new MList(r): MList[Unit]) == None
+    def head02(): Bool = region r {
+        MList.head(new MList(r): MList[Unit]) == None
     }
 
     @test
@@ -332,18 +355,21 @@ namespace TestMList {
         MList.push!(101, v);
         MList.push!(102, v);
         MList.head(v) == Some(101)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // last                                                                    //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def last01(): Bool = region r {
+        MList.last(new MList(r): MList[Unit]) == None
     }
 
     @test
-    def last01(): Bool = region r { MList.last(new MList(r): MList[Unit]) == None
-    }
-
-    @test
-    def last02(): Bool = region r { MList.last(MList.range(0, 8)) == Some(7)
+    def last02(): Bool = region r {
+        MList.last(MList.range(0, 8)) == Some(7)
     }
 
     @test
@@ -352,18 +378,21 @@ namespace TestMList {
         MList.push!('A', v);
         MList.push!('B', v);
         MList.last(v) == Some('B')
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // indexOfLeft                                                             //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def indexOfLeft01(): Bool = region r {
+        MList.indexOfLeft(2, MList.range(2, 3)) == Some(0)
     }
 
     @test
-    def indexOfLeft01(): Bool = region r { MList.indexOfLeft(2, MList.range(2, 3)) == Some(0)
-    }
-
-    @test
-    def indexOfLeft02(): Bool = region r { MList.indexOfLeft(10, MList.range(0, 10)) == None
+    def indexOfLeft02(): Bool = region r {
+        MList.indexOfLeft(10, MList.range(0, 10)) == None
     }
 
     @test
@@ -376,19 +405,22 @@ namespace TestMList {
     }
 
     @test
-    def indexOfLeft04(): Bool = region r { MList.indexOfLeft(99, MList.range(0, 100)) == Some(99)
+    def indexOfLeft04(): Bool = region r {
+        MList.indexOfLeft(99, MList.range(0, 100)) == Some(99)
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // indexOfRight                                                            //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def indexOfRight01(): Bool = region r {
+        MList.indexOfRight(2, MList.range(2, 3)) == Some(0)
     }
 
     @test
-    def indexOfRight01(): Bool = region r { MList.indexOfRight(2, MList.range(2, 3)) == Some(0)
-    }
-
-    @test
-    def indexOfRight02(): Bool = region r { MList.indexOfRight(10, MList.range(0, 10)) == None
+    def indexOfRight02(): Bool = region r {
+        MList.indexOfRight(10, MList.range(0, 10)) == None
     }
 
     @test
@@ -406,51 +438,60 @@ namespace TestMList {
         let v2 = MList.range(0, 4);
         MList.append!(v2, v1);
         MList.indexOfRight(2, v1) == Some(6)
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // findLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def findLeft01(): Bool = region r {
+        MList.findLeft(x -> x > 3, MList.range(3, 11)) == Some(4)
     }
 
     @test
-    def findLeft01(): Bool = region r { MList.findLeft(x -> x > 3, MList.range(3, 11)) == Some(4)
+    def findLeft02(): Bool = region r {
+        MList.findLeft(x -> x > 10, MList.range(3, 11)) == None
     }
 
     @test
-    def findLeft02(): Bool = region r { MList.findLeft(x -> x > 10, MList.range(3, 11)) == None
+    def findLeft03(): Bool = region r {
+        MList.findLeft(x -> x < 3, MList.range(3, 11)) == None
     }
 
     @test
-    def findLeft03(): Bool = region r { MList.findLeft(x -> x < 3, MList.range(3, 11)) == None
+    def findLeft04(): Bool = region r {
+        MList.findLeft(x -> x rem 2 == 1, MList.range(3, 11)) == Some(3)
     }
-
-    @test
-    def findLeft04(): Bool = region r { MList.findLeft(x -> x rem 2 == 1, MList.range(3, 11)) == Some(3)
 
     /////////////////////////////////////////////////////////////////////////////
     // findRight                                                               //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def findRight01(): Bool = region r {
+        MList.findRight(x -> x > 0, MList.range(2, 5)) == Some(4)
     }
 
     @test
-    def findRight01(): Bool = region r { MList.findRight(x -> x > 0, MList.range(2, 5)) == Some(4)
+    def findRight02(): Bool = region r {
+        MList.findRight(x -> x == 10, MList.range(9, 10)) == None
     }
 
     @test
-    def findRight02(): Bool = region r { MList.findRight(x -> x == 10, MList.range(9, 10)) == None
+    def findRight03(): Bool = region r {
+        MList.findRight(x -> x rem 2 == 0, MList.range(3, 4)) == None
     }
 
     @test
-    def findRight03(): Bool = region r { MList.findRight(x -> x rem 2 == 0, MList.range(3, 4)) == None
+    def findRight04(): Bool = region r {
+        MList.findRight(x -> x < 5, MList.range(3, 11)) == Some(4)
     }
 
-    @test
-    def findRight04(): Bool = region r { MList.findRight(x -> x < 5, MList.range(3, 11)) == Some(4)
 
     /////////////////////////////////////////////////////////////////////////////
     // scanLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def scanLeft01(): Bool = region r {
@@ -476,11 +517,12 @@ namespace TestMList {
     def scanLeft03(): Bool = region r {
         let v = MList.scanLeft((x, y) -> x + y, 7, MList.range(5, 13));
         MList.last(v) == Some(75)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // scanRight                                                               //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def scanRight01(): Bool = region r {
@@ -506,11 +548,12 @@ namespace TestMList {
     def scanRight03(): Bool = region r {
         let v = MList.scanRight((x, y) -> x + y, 7, MList.range(5, 13));
         MList.last(v) == Some(7)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // map                                                                     //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def map01(): Bool = region r {
@@ -534,11 +577,12 @@ namespace TestMList {
     def map04(): Bool = region r {
         let v = MList.map(x -> x + 1, MList.range(0, 100));
         MList.sameElements(v, MList.range(1, 101))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // transform!                                                              //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def transform!01(): Bool = region r {
@@ -566,11 +610,12 @@ namespace TestMList {
         let v = MList.range(0, 100);
         MList.transform!(x -> x + 1, v);
         MList.sameElements(v, MList.range(1, 101))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // mapWithIndex                                                            //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def mapWithIndex01(): Bool = region r {
@@ -588,11 +633,12 @@ namespace TestMList {
     def mapWithIndex03(): Bool = region r {
         let v = MList.mapWithIndex((_, i) -> if (i == 0) 42 else 0, new MList(r));
         MList.sameElements(v, new MList(r))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // transformWithIndex!                                                     //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def transformWithIndex!01(): Bool = region r {
@@ -613,14 +659,16 @@ namespace TestMList {
         let v = new MList(r);
         MList.transformWithIndex!((_, i) -> if (i == 0) 42 else 0, v);
         MList.sameElements(v, new MList(r))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
-    def foldLeft01(): Bool = region r { MList.foldLeft((acc, x) -> acc + x, 0, MList.range(1, 5)) == 10
+    def foldLeft01(): Bool = region r {
+        MList.foldLeft((acc, x) -> acc + x, 0, MList.range(1, 5)) == 10
     }
 
     @test
@@ -632,108 +680,134 @@ namespace TestMList {
     }
 
     @test
-    def foldLeft03(): Bool = region r { MList.foldLeft((acc, x) -> x :: acc, Nil, MList.range(0, 6)) == 5 :: 4 :: 3 :: 2 :: 1 :: 0 :: Nil
+    def foldLeft03(): Bool = region r {
+        MList.foldLeft((acc, x) -> x :: acc, Nil, MList.range(0, 6)) == 5 :: 4 :: 3 :: 2 :: 1 :: 0 :: Nil
     }
 
     @test
-    def foldLeft04(): Bool = region r { MList.foldLeft((acc, x) -> acc - x, 0, MList.range(0, 100)) == -4950
+    def foldLeft04(): Bool = region r {
+        MList.foldLeft((acc, x) -> acc - x, 0, MList.range(0, 100)) == -4950
     }
 
     @test
-    def foldLeft05(): Bool = region r { MList.foldRight((acc, x) -> acc + x, 42, new MList(r)) == 42
+    def foldLeft05(): Bool = region r {
+        MList.foldRight((acc, x) -> acc + x, 42, new MList(r)) == 42
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foldRight                                                               //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldRight01(): Bool = region r {
+        MList.foldRight((x, acc) -> acc + x, 0, MList.range(1, 5)) == 10
     }
 
     @test
-    def foldRight01(): Bool = region r { MList.foldRight((x, acc) -> acc + x, 0, MList.range(1, 5)) == 10
+    def foldRight02(): Bool = region r {
+        MList.foldRight((x, acc) -> Int32.toString(x) + acc, "", MList.range(3, 8)) == "34567"
     }
 
     @test
-    def foldRight02(): Bool = region r { MList.foldRight((x, acc) -> Int32.toString(x) + acc, "", MList.range(3, 8)) == "34567"
+    def foldRight03(): Bool = region r {
+        MList.foldRight((x, acc) -> x :: acc, Nil, MList.range(0, 6)) == 0 :: 1 :: 2 :: 3 :: 4 :: 5 :: Nil
     }
 
     @test
-    def foldRight03(): Bool = region r { MList.foldRight((x, acc) -> x :: acc, Nil, MList.range(0, 6)) == 0 :: 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+    def foldRight04(): Bool = region r {
+        MList.foldRight((x, acc) -> x - acc, 0, MList.range(0, 100)) == -50
     }
 
     @test
-    def foldRight04(): Bool = region r { MList.foldRight((x, acc) -> x - acc, 0, MList.range(0, 100)) == -50
+    def foldRight05(): Bool = region r {
+        MList.foldRight((x, acc) -> x + acc, 42, new MList(r)) == 42
     }
 
-    @test
-    def foldRight05(): Bool = region r { MList.foldRight((x, acc) -> x + acc, 42, new MList(r)) == 42
 
     /////////////////////////////////////////////////////////////////////////////
     // foldRightLazy                                                           //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldRightLazy01(): Bool = region r {
+        MList.foldRightLazy((x, acc) -> force acc + x, 0, MList.range(1, 5)) == 10
     }
 
     @test
-    def foldRightLazy01(): Bool = region r { MList.foldRightLazy((x, acc) -> force acc + x, 0, MList.range(1, 5)) == 10
+    def foldRightLazy02(): Bool = region r {
+        MList.foldRightLazy((x, acc) -> Int32.toString(x) + force acc, "", MList.range(3, 8)) == "34567"
     }
 
     @test
-    def foldRightLazy02(): Bool = region r { MList.foldRightLazy((x, acc) -> Int32.toString(x) + force acc, "", MList.range(3, 8)) == "34567"
+    def foldRightLazy03(): Bool = region r {
+        MList.foldRightLazy((x, acc) -> x :: force acc, Nil, MList.range(0, 6)) == 0 :: 1 :: 2 :: 3 :: 4 :: 5 :: Nil
     }
 
     @test
-    def foldRightLazy03(): Bool = region r { MList.foldRightLazy((x, acc) -> x :: force acc, Nil, MList.range(0, 6)) == 0 :: 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+    def foldRightLazy04(): Bool = region r {
+        MList.foldRightLazy((x, acc) -> x - force acc, 0, MList.range(0, 100)) == -50
     }
 
     @test
-    def foldRightLazy04(): Bool = region r { MList.foldRightLazy((x, acc) -> x - force acc, 0, MList.range(0, 100)) == -50
+    def foldRightLazy05(): Bool = region r {
+        MList.foldRightLazy((x, acc) -> x + force acc, 42, new MList(r)) == 42
     }
 
-    @test
-    def foldRightLazy05(): Bool = region r { MList.foldRightLazy((x, acc) -> x + force acc, 42, new MList(r)) == 42
 
     /////////////////////////////////////////////////////////////////////////////
     // reduceLeft                                                              //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceLeft01(): Bool = region r {
+        MList.reduceLeft((x, y) -> x + y, new MList(r): MList[Int32]) == None
     }
 
     @test
-    def reduceLeft01(): Bool = region r { MList.reduceLeft((x, y) -> x + y, new MList(r): MList[Int32]) == None
+    def reduceLeft02(): Bool = region r {
+        MList.reduceLeft((x, y) -> x + y, MList.range(0, 5)) == Some(10)
     }
 
     @test
-    def reduceLeft02(): Bool = region r { MList.reduceLeft((x, y) -> x + y, MList.range(0, 5)) == Some(10)
+    def reduceLeft03(): Bool = region r {
+        MList.reduceLeft((x, y) -> x - y, MList.range(0, 101)) == Some(-5050)
     }
 
     @test
-    def reduceLeft03(): Bool = region r { MList.reduceLeft((x, y) -> x - y, MList.range(0, 101)) == Some(-5050)
+    def reduceLeft04(): Bool = region r {
+        MList.reduceLeft((_, y) -> if (y > 4) 1 else 0, MList.range(0, 6)) == Some(1)
     }
 
-    @test
-    def reduceLeft04(): Bool = region r { MList.reduceLeft((_, y) -> if (y > 4) 1 else 0, MList.range(0, 6)) == Some(1)
 
     /////////////////////////////////////////////////////////////////////////////
     // reduceRight                                                             //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceRight01(): Bool = region r {
+        MList.reduceRight((x, y) -> x + y, new MList(r): MList[Int32]) == None
     }
 
     @test
-    def reduceRight01(): Bool = region r { MList.reduceRight((x, y) -> x + y, new MList(r): MList[Int32]) == None
+    def reduceRight02(): Bool = region r {
+        MList.reduceRight((x, y) -> x + y, MList.range(0, 5)) == Some(10)
     }
 
     @test
-    def reduceRight02(): Bool = region r { MList.reduceRight((x, y) -> x + y, MList.range(0, 5)) == Some(10)
+    def reduceRight03(): Bool = region r {
+        MList.reduceRight((x, y) -> x - y, MList.range(0, 6)) == Some(-3)
     }
 
     @test
-    def reduceRight03(): Bool = region r { MList.reduceRight((x, y) -> x - y, MList.range(0, 6)) == Some(-3)
+    def reduceRight04(): Bool = region r {
+        MList.reduceRight((x, _) -> if (x < 2) 1 else 0, MList.range(0, 6)) == Some(1)
     }
 
-    @test
-    def reduceRight04(): Bool = region r { MList.reduceRight((x, _) -> if (x < 2) 1 else 0, MList.range(0, 6)) == Some(1)
 
     /////////////////////////////////////////////////////////////////////////////
     // clear!                                                                  //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def clear!01(): Bool = region r {
@@ -756,11 +830,12 @@ namespace TestMList {
         let v = MList.range(0, 100);
         MList.clear!(v);
         MList.isEmpty(v)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // copy                                                                    //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def copy01(): Bool = region r {
@@ -800,12 +875,12 @@ namespace TestMList {
         let MList(l2, n2) = MList.copy(v1);
         (deref n1 == deref n2) and (deref l1 `Array.sameElements` deref l2) and
             (Array.length(deref l2) == 8)
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
     // pop                                                                     //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def pop01(): Bool = region r {
@@ -829,11 +904,12 @@ namespace TestMList {
         let one = MList.pop!(v);
         let none = MList.pop!(v);
         three == Some(3) and two == Some(2) and one == Some(1) and none == None
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // push                                                                    //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def push01(): Bool = region r {
@@ -868,11 +944,12 @@ namespace TestMList {
         MList.push!(0, v);
         MList.push!(0, v);
         MList.length(v) == 4 and MList.get(0, v) == 0 and MList.get(1, v) == 0 and MList.get(2, v) == 0 and MList.get(3, v) == 0
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // insert!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def insert!01(): Bool = region r {
@@ -946,11 +1023,12 @@ namespace TestMList {
         MList.insert!(55, 0, v);
         MList.insert!(33, 1, v);
         MList.sameElements(v, List.toMList(55 :: 33 :: 0 :: 40 :: 1 :: 41 :: 2 :: 42 :: 3 :: Nil))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // remove!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def remove!01(): Bool = region r {
@@ -1010,11 +1088,12 @@ namespace TestMList {
         MList.remove!(7, v);
         MList.remove!(99, v);
         MList.sameElements(v, MList.range(0, 3))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // append!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def append!01(): Bool = region r {
@@ -1056,11 +1135,12 @@ namespace TestMList {
         MList.append!(v2, v1);
         MList.append!(v3, v1);
         MList.sameElements(v1, MList.range(1, 99))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // retain!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def retain!01(): Bool = region r {
@@ -1088,11 +1168,12 @@ namespace TestMList {
         let v = MList.range(0, 10);
         MList.retain!(x -> x > 10, v);
         MList.sameElements(v, new MList(r))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // replace!                                                                //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def replace!01(): Bool = region r {
@@ -1132,11 +1213,12 @@ namespace TestMList {
         let v = List.toMList(List.repeat(97, 'a'));
         MList.replace!(from = 'a', to = 'z', v);
         MList.sameElements(List.toMList(List.repeat(97, 'z')), v)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // reverse!                                                                //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def reverse01!(): Bool = region r {
@@ -1171,12 +1253,12 @@ namespace TestMList {
         let v = List.toMList(7 :: 6 :: 5 :: 4 :: 3 :: 2 :: Nil);
         MList.reverse!(v);
         MList.sameElements(v, MList.range(2, 8))
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
     // shrink!                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def shrink!01(): Bool = region r {
@@ -1211,11 +1293,12 @@ namespace TestMList {
         MList.push!(5, v);
         MList.shrink!(v);
         MList.length(v) == 6
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // truncate!                                                               //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def truncate!01(): Bool = region r {
@@ -1250,11 +1333,12 @@ namespace TestMList {
         let v = MList.range(99, 102);
         MList.truncate!(1, v);
         MList.sameElements(v, MList.range(99, 100))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // reserve!                                                                //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def reserve!01(): Bool = region r {
@@ -1301,11 +1385,12 @@ namespace TestMList {
         MList.reserve!(1, v);
         MList.reserve!(1, v);
         capacity(v) - MList.length(v) >= 1
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // formatWith                                                              //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def formatWith01(): Bool = region r {
@@ -1329,11 +1414,12 @@ namespace TestMList {
     def formatWith04(): Bool = region r {
         let v = MList.range(6, 9);
         MList.formatWith(Int32.toString, "/", v) == "6/7/8"
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def foreach01(): Bool = region r {
@@ -1369,11 +1455,12 @@ namespace TestMList {
         let f = x -> if (x < 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MList.foreach(f, v);
         StringBuilder.toString(sb) == "FF"
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foreachWithIndex                                                        //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def foreachWithIndex01(): Bool = region r {
@@ -1399,11 +1486,12 @@ namespace TestMList {
         let f = (x, _) -> if (x rem 2 == 0) StringBuilder.append!('T', sb) else StringBuilder.append!('F', sb);
         MList.foreachWithIndex(f, v);
         StringBuilder.toString(sb) == "TFTFT"
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // compress!                                                               //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def compress!01(): Bool = region r {
@@ -1445,22 +1533,26 @@ namespace TestMList {
         let v = MList.range(0, 5);
         MList.compress!(v);
         capacity(v) <= capacity(MList.range(0, 5))
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // minimumBy                                                               //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def minimumBy01(): Bool = region r {
+        MList.minimumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
     }
 
     @test
-    def minimumBy01(): Bool = region r { MList.minimumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
+    def minimumBy02(): Bool = region r {
+        MList.minimumBy((x, y) -> x <=> y, MList.range(0, 5)) == Some(0)
     }
 
     @test
-    def minimumBy02(): Bool = region r { MList.minimumBy((x, y) -> x <=> y, MList.range(0, 5)) == Some(0)
-    }
-
-    @test
-    def minimumBy03(): Bool = region r { MList.minimumBy((x, y) -> x <=> y, MList.range(5, 10)) == Some(5)
+    def minimumBy03(): Bool = region r {
+        MList.minimumBy((x, y) -> x <=> y, MList.range(5, 10)) == Some(5)
     }
 
     @test
@@ -1475,22 +1567,26 @@ namespace TestMList {
         let v = MList.range(9, 19);
         let cmp = (x, y) -> if (x < y and x rem 2 == 0) LessThan else GreaterThan;
         MList.minimumBy(cmp, v) == Some(10)
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // maximumBy                                                               //
     /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def maximumBy01(): Bool = region r {
+        MList.maximumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
     }
 
     @test
-    def maximumBy01(): Bool = region r { MList.maximumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
+    def maximumBy02(): Bool = region r {
+        MList.maximumBy((x, y) -> x <=> y, MList.range(0, 5)) == Some(4)
     }
 
     @test
-    def maximumBy02(): Bool = region r { MList.maximumBy((x, y) -> x <=> y, MList.range(0, 5)) == Some(4)
-    }
-
-    @test
-    def maximumBy03(): Bool = region r { MList.maximumBy((x, y) -> x <=> y, MList.range(5, 10)) == Some(9)
+    def maximumBy03(): Bool = region r {
+        MList.maximumBy((x, y) -> x <=> y, MList.range(5, 10)) == Some(9)
     }
 
     @test
@@ -1505,11 +1601,11 @@ namespace TestMList {
         let v = MList.range(9, 19);
         let cmp = (x, y) -> if (x > y and x rem 2 == 0) GreaterThan else LessThan;
         MList.maximumBy(cmp, v) == Some(18)
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // toArray                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def toArray01(): Bool = region r {
@@ -1530,11 +1626,11 @@ namespace TestMList {
         MList.pop!(v);
         MList.pop!(v);
         Array.length(MList.toArray(v)) == 1
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // toList                                                                   //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def toList01(): Bool = region r {
@@ -1553,11 +1649,11 @@ namespace TestMList {
         let ml = MList.range(0, 1000);
         ml |> MList.toList == List.range(0, 1000) and
            ml `sameElements` MList.range(0, 1000)
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // toChain                                                                 //
     /////////////////////////////////////////////////////////////////////////////
-    }
 
     @test
     def toChain01(): Bool = region r {
@@ -1577,7 +1673,7 @@ namespace TestMList {
     @test
     def toChain04(): Bool = region r {
         MList.toChain(List.toMList(1 :: 2 :: 3 :: Nil)) == List.toChain(1 :: 2 :: 3 :: Nil)
-
+    }
 
 
     /////////////////////////////////////////////////////////////////////////////
@@ -1593,79 +1689,93 @@ namespace TestMList {
 
     @test
     def sortWith01(): Bool = region r {
-        let a = MList.sortWith(cmp, Array.toMList([]: Array[Int32]));
-        a `sameElements` Array.toMList([]: Array[Int32])
+        let a = MList.sortWith(cmp, Array.toMList([]: ScopedArray[Int32, _] @ r));
+        a `sameElements` Array.toMList([]: ScopedArray[Int32, _] @ r)
+    }
 
     @test
     def sortWith02(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([0]));
         a `sameElements` Array.toMList([0])
+    }
 
     @test
     def sortWith03(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([0,1]));
         a `sameElements` Array.toMList([0,1])
+    }
 
     @test
     def sortWith04(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([1,0]));
         a `sameElements` Array.toMList([0,1])
+    }
 
     @test
     def sortWith05(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([1,1]));
         a `sameElements` Array.toMList([1,1])
+    }
 
     @test
     def sortWith06(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([0,1,2,3,4,5]));
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith07(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([5,4,3,2,1,0]));
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith08(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([5,3,0,4,1,2]));
         a `sameElements` Array.toMList([0,1,2,3,4,5])
+    }
 
     @test
     def sortWith09(): Bool = region r {
         let a = MList.sortWith(cmp, Array.toMList([2,3,0,4,1,2]));
         a `sameElements` Array.toMList([0,1,2,2,3,4])
+    }
 
     @test
     def sortWith10(): Bool = region r {
         let a = MList.sortWith(flip(cmp), Array.toMList([0,1,2,3,4,5]));
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
 
     @test
     def sortWith11(): Bool = region r {
         let a = MList.sortWith(flip(cmp), Array.toMList([5,4,3,2,1,0]));
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
 
     @test
     def sortWith12(): Bool = region r {
         let a = MList.sortWith(flip(cmp), Array.toMList([5,3,0,4,1,2]));
         a `sameElements` Array.toMList([5,4,3,2,1,0])
+    }
+
 
     @test
     def sortWith13(): Bool = region r {
         let a = MList.sortWith(flip(cmp), Array.toMList([2,3,0,4,1,2]));
         a `sameElements` Array.toMList([4,3,2,2,1,0])
+    }
 
     /////////////////////////////////////////////////////////////////////////////
     // sort                                                                    //
     /////////////////////////////////////////////////////////////////////////////
 
-    def testSortVsSortWith(a: MList[Int32, r]): Bool \ Read(r) =
+    def testSortVsSortWith(a: MList[Int32, r]): Bool \ { Read(r), Write(r) } =
         MList.sort(a) `sameElements` MList.sortWith(cmp, a)
 
     @test
     def sort01(): Bool = region r {
-        testSortVsSortWith(Array.toMList([]: Array[Int32]))
+        testSortVsSortWith(Array.toMList([]: ScopedArray[Int32, _] @ r))
     }
 
     @test
@@ -1714,9 +1824,9 @@ namespace TestMList {
 
     @test
     def sortWith01!(): Bool = region r {
-        let a = Array.toMList([]: Array[Int32]);
+        let a = Array.toMList([]: ScopedArray[Int32, _] @ r);
         MList.sortWith(cmp, a);
-        a `sameElements` Array.toMList([]: Array[Int32])
+        a `sameElements` Array.toMList([]: ScopedArray[Int32, _] @ r)
     }
 
     @test
@@ -1815,7 +1925,7 @@ namespace TestMList {
 
     @test
     def sort!01(): Bool = region r {
-        testSort!VsSortWith!(Array.toMList([]: Array[Int32]))
+        testSort!VsSortWith!(Array.toMList([]: ScopedArray[Int32, _] @ r))
     }
 
     @test
@@ -1870,7 +1980,7 @@ namespace TestMList {
 
     @test
     def sortBy01(): Bool = region r {
-        testSortByVsSort(Array.toMList([]: Array[Int32]))
+        testSortByVsSort(Array.toMList([]: ScopedArray[Int32, _] @ r))
     }
 
     @test
@@ -1945,7 +2055,7 @@ namespace TestMList {
 
     @test
     def sortBy!01(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([]: Array[Int32]))
+        testSortBy!VsSortBy(Array.toMList([]: ScopedArray[Int32, _] @ r))
     }
 
     @test
