@@ -2060,42 +2060,42 @@ namespace TestMList {
 
     @test
     def sortBy!02(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([0]))
+        testSortBy!VsSortBy(Array.toMList([0] @ r))
     }
 
     @test
     def sortBy!03(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([0,1]))
+        testSortBy!VsSortBy(Array.toMList([0,1] @ r))
     }
 
     @test
     def sortBy!04(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([1,0]))
+        testSortBy!VsSortBy(Array.toMList([1,0] @ r))
     }
 
     @test
     def sortBy!05(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([1,1]))
+        testSortBy!VsSortBy(Array.toMList([1,1] @ r))
     }
 
     @test
     def sortBy!06(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([0,1,2,3,4,5]))
+        testSortBy!VsSortBy(Array.toMList([0,1,2,3,4,5] @ r))
     }
 
     @test
     def sortBy!07(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([5,4,3,2,1,0]))
+        testSortBy!VsSortBy(Array.toMList([5,4,3,2,1,0] @ r))
     }
 
     @test
     def sortBy!08(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([5,3,0,4,1,2]))
+        testSortBy!VsSortBy(Array.toMList([5,3,0,4,1,2] @ r))
     }
 
     @test
     def sortBy!09(): Bool = region r {
-        testSortBy!VsSortBy(Array.toMList([2,3,0,4,1,2]))
+        testSortBy!VsSortBy(Array.toMList([2,3,0,4,1,2] @ r))
     }
 
     /////////////////////////////////////////////////////////////////////////////
@@ -2106,15 +2106,15 @@ namespace TestMList {
     def range01(): Bool = region r {
         let v1 = MList.range(1, 4) |> MList.toArray;
         let v2 = MList.range(0, 5) |> MList.toArray;
-        let arr1 = [1, 2, 3];
-        let arr2 = [0, 1, 2, 3, 4];
+        let arr1 = [1, 2, 3] @ r;
+        let arr2 = [0, 1, 2, 3, 4] @ r;
         (v1 `Array.sameElements` arr1) and (v2 `Array.sameElements` arr2)
     }
 
     @test
     def range02(): Bool = region r {
         let v = MList.range(-1, 3) |> MList.toArray;
-        let arr = [-1, 0, 1, 2];
+        let arr = [-1, 0, 1, 2] @ r;
         (v `Array.sameElements` arr)
     }
 
@@ -2244,7 +2244,7 @@ namespace TestMList {
     def joinWith04(): Bool & Impure =
         List.toMList("1" :: "2" :: "3" :: Nil) |> MList.joinWith(x -> x + x, ",") == "11,22,33"
 
-
+/*
     /////////////////////////////////////////////////////////////////////////////
     // iterator                                                                //
     /////////////////////////////////////////////////////////////////////////////
@@ -2301,4 +2301,5 @@ namespace TestMList {
             }
         }
     }
+*/
 }
