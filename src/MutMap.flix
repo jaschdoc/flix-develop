@@ -43,6 +43,13 @@ namespace MutMap1 {
         Map.memberOf(k, deref mm)
 
     ///
+    /// Returns `true` if and only if `m` is the empty map.
+    ///
+    pub def isEmpty(m: MutMap1[k, v, r]): Bool \ Read(r) =
+        let MutMap1(mm) = m;
+        Map.isEmpty(deref mm)
+
+    ///
     /// Optionally finds `k -> v` where `k` is the smallest key according to the `Order` instance of `k`.
     ///
     /// Returns `None` if `m` is empty.
