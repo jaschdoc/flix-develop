@@ -66,8 +66,7 @@ namespace MList {
     ///
     /// Constant which stores the minimum capacity of a MList.
     ///
-    @Internal
-    pub def minCapacity(): Int32 = 8
+    def minCapacity(): Int32 = 8
 
     ///
     /// Returns a new empty mutable list with a default capacity.
