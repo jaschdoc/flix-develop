@@ -32,8 +32,8 @@ namespace TestMList {
 
     @test
     def sameElements01(): Bool = region r {
-        let u: MList[Int32] = new MList(r);
-        let v: MList[Int32] = new MList(r);
+        let u: MList[Int32, _] = new MList(r);
+        let v: MList[Int32, _] = new MList(r);
         u `sameElements` v
     }
 
@@ -346,7 +346,7 @@ namespace TestMList {
 
     @test
     def head02(): Bool = region r {
-        MList.head(new MList(r): MList[Unit]) == None
+        MList.head(new MList(r): MList[Unit, _]) == None
     }
 
     @test
@@ -364,7 +364,7 @@ namespace TestMList {
 
     @test
     def last01(): Bool = region r {
-        MList.last(new MList(r): MList[Unit]) == None
+        MList.last(new MList(r): MList[Unit, _]) == None
     }
 
     @test
@@ -436,7 +436,7 @@ namespace TestMList {
     def indexOfRight04(): Bool = region r {
         let v1 = MList.range(r, 0, 4);
         let v2 = MList.range(r, 0, 4);
-        MList.append!(v2, v1);
+        MList.foldLeft((_, x) -> MList.push!(x, v1), (), v2);
         MList.indexOfRight(2, v1) == Some(6)
     }
 
@@ -569,7 +569,7 @@ namespace TestMList {
 
     @test
     def map03(): Bool = region r {
-        let v = MList.map(identity, new MList(r): MList[Unit]);
+        let v = MList.map(identity, new MList(r): MList[Unit, _]);
         MList.sameElements(v, new MList(r))
     }
 
@@ -600,7 +600,7 @@ namespace TestMList {
 
     @test
     def transform!03(): Bool = region r {
-        let v: MList[Unit] = new MList(r);
+        let v: MList[Unit, _] = new MList(r);
         MList.transform!(identity, v);
         MList.sameElements(v, new MList(r))
     }
@@ -761,7 +761,7 @@ namespace TestMList {
 
     @test
     def reduceLeft01(): Bool = region r {
-        MList.reduceLeft((x, y) -> x + y, new MList(r): MList[Int32]) == None
+        MList.reduceLeft((x, y) -> x + y, new MList(r): MList[Int32, _]) == None
     }
 
     @test
@@ -786,7 +786,7 @@ namespace TestMList {
 
     @test
     def reduceRight01(): Bool = region r {
-        MList.reduceRight((x, y) -> x + y, new MList(r): MList[Int32]) == None
+        MList.reduceRight((x, y) -> x + y, new MList(r): MList[Int32, _]) == None
     }
 
     @test
@@ -892,7 +892,7 @@ namespace TestMList {
 
     @test
     def pop02(): Bool = region r {
-        let v: MList[Unit] = new MList(r);
+        let v: MList[Unit, _] = new MList(r);
         MList.pop!(v) == None
     }
 
@@ -1032,7 +1032,7 @@ namespace TestMList {
 
     @test
     def remove!01(): Bool = region r {
-        let v: MList[Unit] = new MList(r);
+        let v: MList[Unit, _] = new MList(r);
         MList.remove!(0, v);
         MList.sameElements(v, new MList(r))
     }
@@ -1121,8 +1121,8 @@ namespace TestMList {
 
     @test
     def append!04(): Bool = region r {
-        let v1: MList[Unit] = new MList(r);
-        let v2: MList[Unit] = new MList(r);
+        let v1: MList[Unit, _] = new MList(r);
+        let v2: MList[Unit, _] = new MList(r);
         MList.append!(v2, v1);
         MList.sameElements(v1, new MList(r))
     }
@@ -1222,7 +1222,7 @@ namespace TestMList {
 
     @test
     def reverse01!(): Bool = region r {
-        let v: MList[Unit] = new MList(r);
+        let v: MList[Unit, _] = new MList(r);
         MList.reverse!(v);
         MList.sameElements(v, new MList(r))
     }
@@ -1303,7 +1303,7 @@ namespace TestMList {
 
     @test
     def truncate!01(): Bool = region r {
-        let v: MList[Unit] = new MList(r);
+        let v: MList[Unit, _] = new MList(r);
         MList.truncate!(0, v);
         MList.sameElements(v, new MList(r))
     }
@@ -1547,7 +1547,7 @@ namespace TestMList {
 
     @test
     def minimumBy01(): Bool = region r {
-        MList.minimumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
+        MList.minimumBy((x, y) -> x <=> y, new MList(r): MList[Int32, _]) == None
     }
 
     @test
@@ -1581,7 +1581,7 @@ namespace TestMList {
 
     @test
     def maximumBy01(): Bool = region r {
-        MList.maximumBy((x, y) -> x <=> y, new MList(r): MList[Int32]) == None
+        MList.maximumBy((x, y) -> x <=> y, new MList(r): MList[Int32, _]) == None
     }
 
     @test
@@ -1641,7 +1641,7 @@ namespace TestMList {
 
     @test
     def toList01(): Bool = region r {
-        new MList(r): MList[Int32] |> MList.toList == Nil: List[Int32]
+        new MList(r): MList[Int32, _] |> MList.toList == Nil: List[Int32]
     }
 
     @test
@@ -1665,7 +1665,7 @@ namespace TestMList {
 
     @test
     def toChain01(): Bool = region r {
-        MList.toChain(List.toMList(Nil): MList[Int32]) == Chain.empty(): Chain[Int32]
+        MList.toChain(List.toMList(Nil): MList[Int32, _]) == Chain.empty(): Chain[Int32]
     }
 
     @test
