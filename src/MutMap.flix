@@ -311,6 +311,7 @@ namespace MutMap1 {
     ///
     pub def find(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         findLeft(f, m)
+
     ///
     /// Optionally returns the first mapping of the mutable map `m` that satisfies the predicate function `f` when searching from left to right.
     ///
