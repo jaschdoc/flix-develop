@@ -1408,3 +1408,11 @@ namespace List1 {
         };
         loop(l, ks -> ks as & ef)
 }
+
+
+namespace List {
+    pub def toMList(r: Region[r], l: List[a]): MList[a, r] \ { Write(r) } =
+        let m = new MList(r);
+        List.foldLeft((_, x) -> MList.push!(x, m), (), l);
+        m
+}

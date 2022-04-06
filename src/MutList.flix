@@ -58,6 +58,7 @@ instance Scoped[MList[a]] {
 // - new
 // - put
 // - copyOfRange
+// - foldLeft
 // - sortWithin
 
 namespace MList {
@@ -79,15 +80,14 @@ namespace MList {
     ///
     /// Returns an empty mutable list if `b >= e`.
     ///
-    /*
-    pub def range(b: Int32, e: Int32): MList[Int32, r] & Impure =
+    pub def range(r: Region[r], b: Int32, e: Int32): MList[Int32, r] \ Write(r) =
         let minCap = minCapacity();
         if (e - b < minCap)
             let f = i -> if (b + i < e) b + i else $DEFAULT$;
-            MList(ref Array.init(f, minCap), ref (e - b))
+            MList(ref Array.init(f, minCap) @ r, ref (e - b) @ r)
         else
-            MList(ref Array.range(b, e), ref (e - b))
-    */
+            MList(ref Array.range(b, e) @ r, ref (e - b) @ r)
+
     ///
     /// Returns the element at position `i` in the mutable list `v`.
     ///
@@ -742,7 +742,7 @@ namespace MList {
     ///
     pub def toArray(v: MList[a, r]): ScopedArray[a, r] \ { Read(r), Write(r) } =
         let MList(a, l) = v;
-        Array.copyOfRange(0, deref l, deref a) @ Scoped.regionOf(v) // TODO: Remove this region declaration when copyOfRange has been refactored
+        Array.copyOfRange(0, deref l, deref a)
 
     ///
     /// Returns the mutable list `xs` as a chain.
@@ -893,7 +893,7 @@ namespace MList {
     /// The sort implementation is a Quicksort.
     ///
     pub def sortWith(cmp: (a,a) -> Comparison, v: MList[a, r]): MList[a, r] \ { Read(r), Write(r) } =
-        let vCopy = copy(v) @ Scoped.regionOf(v);
+        let vCopy = copy(v);
         sortWith!(cmp, vCopy);
         vCopy
 
@@ -916,7 +916,7 @@ namespace MList {
     ///
     /// The sort implementation is a Quicksort.
     ///
-    pub def sortBy!(f: a -> b, v: MList[a, r]): Unit\ { Read(r), Write(r) } with Order[b] =
+    pub def sortBy!(f: a -> b, v: MList[a, r]): Unit \ { Read(r), Write(r) } with Order[b] =
         sortWith!(Order.compare `on` f, v)
 
     ///
