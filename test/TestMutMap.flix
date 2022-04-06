@@ -87,8 +87,8 @@ namespace TestMutMap1 {
 
         MutMap1.sameElements(m, m2)
     }
-
-
+*/
+/*
     /////////////////////////////////////////////////////////////////////////////
     // mergeWithKey                                                            //
     /////////////////////////////////////////////////////////////////////////////
@@ -110,7 +110,7 @@ namespace TestMutMap1 {
         MutMap1.mergeWithKey!((_, v, _) -> v, m1, m2);
         MutMap1.memberOf(1, m2) and MutMap1.memberOf(2, m2)
     }
-
+*/
 
     /////////////////////////////////////////////////////////////////////////////
     // sumValues                                                               //
@@ -458,5 +458,5 @@ namespace TestMutMap1 {
         let m = MutMap1(ref Map#{1 => 2, 3 => 4, 5 => 6});
         MutMap1.foldRightLazy((v, s) -> force s + v, 0, m) == 12
     }
-*/
+
 }

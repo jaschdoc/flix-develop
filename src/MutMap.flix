@@ -328,7 +328,6 @@ namespace MutMap1 {
     pub def findRight(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.findRight(f, deref mm)
-
 /*
     ///
     /// Returns a map with mappings `k => f(v)` for every `k => v` in `m`.
@@ -577,13 +576,11 @@ namespace MutMap1 {
         let MutMap1(mm) = m;
         Map.queryWith(p, f, deref mm)
 
-/*
     ///
     /// Returns `true` if MutMaps `a` and `b` have the same elements, i.e. are structurally equal.
     ///
-    pub def sameElements(a: MutMap1[k, v, r1], b: MutMap1[k, v, r2]): Bool \ { Read(r1, r2) } with Order[k], Eq[v] =
+    pub def sameElements(a: MutMap1[k, v, r], b: MutMap1[k, v, r]): Bool \ Read(r) with Order[k], Eq[v] =
         (MutMap1.isSubmapOf(a, b) and MutMap1.isSubmapOf(b, a))
-*/
 
     ///
     /// Returns the concatenation of the string representation of each key `k`
