@@ -354,6 +354,7 @@ namespace MutMap1 {
     ///
     pub def foldWithKey(f: (b, k, v) -> b & ef, i: b, m: MutMap1[k, v, r]): b \ { ef, Read(r) }  =
         foldLeftWithKey(f, i, m)
+
     ///
     /// Applies `f` to a start value `i` and all values in the mutable map `m` going from left to right.
     ///
