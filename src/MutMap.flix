@@ -30,6 +30,12 @@ instance Newable[MutMap1[k, v]] {
 namespace MutMap1 {
 
     ///
+    /// Placeholder function until `new MutMap(static)` is implemented
+    ///
+    pub def empty(): MutMap1[k, v, Impure] & Impure =
+        MutMap1(ref Map.empty())
+
+    ///
     /// Returns a fresh empty mutable map.
     ///
     pub def emptyWithRegion(r: Region[r]): MutMap1[k, v, r] \ Write(r) =

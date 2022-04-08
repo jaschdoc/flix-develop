@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 namespace TestMutMap1 {
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // sameElements                                                            //
     /////////////////////////////////////////////////////////////////////////////
@@ -87,30 +87,27 @@ namespace TestMutMap1 {
 
         MutMap1.sameElements(m, m2)
     }
-*/
-/*
+
     /////////////////////////////////////////////////////////////////////////////
     // mergeWithKey                                                            //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def merge01(): Bool = region r {
-        let m1 = new MutMap1(r): MutMap1[Int32, Int32, _];
-        let m2 = new MutMap1(r): MutMap1[Int32, Int32, _];
+    def merge01(): Bool & Impure =
+        let m1 = MutMap1.empty(): MutMap1[Int32, Int32, _];
+        let m2 = MutMap1.empty(): MutMap1[Int32, Int32, _];
         MutMap1.mergeWithKey!((_, v, _) -> v, m1, m2);
         MutMap1.isEmpty(m2)
-    }
 
     @test
-    def merge02(): Bool = region r {
-        let m1 = new MutMap1(r);
-        let m2 = new MutMap1(r);
+    def merge02(): Bool & Impure =
+        let m1 = MutMap1.empty();
+        let m2 = MutMap1.empty();
         let _ = MutMap1.put!(1, 0, m1);
         let _ = MutMap1.put!(2, 0, m2);
         MutMap1.mergeWithKey!((_, v, _) -> v, m1, m2);
         MutMap1.memberOf(1, m2) and MutMap1.memberOf(2, m2)
-    }
-*/
+
 
     /////////////////////////////////////////////////////////////////////////////
     // sumValues                                                               //
