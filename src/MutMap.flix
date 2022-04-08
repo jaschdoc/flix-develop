@@ -238,7 +238,7 @@ namespace MutMap1 {
     /// Merges the mutable map `m1` into the mutable map `m2` where key collisions are resolved with the merge function `f`.
     ///
     pub def mergeWith!(f: (v, v) -> v & ef, m1: MutMap1[k, v, Impure], m2: MutMap1[k, v, Impure]): Unit & Impure with Order[k] =
-        mergeWithKey!((_, v1, v2) -> f(v1, v2), m1, m2)
+        mergeWithKey!(_ -> f, m1, m2)
 
     ///
     /// Merges the mutable map `m1` into the mutable map `m2` where key collisions are resolved with the merge function `f`, taking both the key and values.
@@ -254,7 +254,7 @@ namespace MutMap1 {
     /// The function `f` must be pure.
     ///
     pub def refine!(f: v -> Bool, m: MutMap1[k, v, r]): Unit \ { Read(r), Write(r) } with Order[k] =
-        refineWithKey!((_, v) -> f(v), m)
+        refineWithKey!(_ -> f, m)
 
     ///
     /// Removes all mappings `k -> v` from the mutable map `m` where `(k, v)` does not satisfy the predicate function `f`.
