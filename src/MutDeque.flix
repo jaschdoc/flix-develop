@@ -69,6 +69,8 @@ instance Iterable[MMutDeque] {
 
 namespace MMutDeque {
 
+    // TODO: Go function by function and check if it compiles. Comment out everything to begin with.
+
     ///
     /// Constant denoting the minimum allowed capacity of the backing array.
     ///
