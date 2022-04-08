@@ -225,29 +225,29 @@ namespace MutMap1 {
             case None    => mm := Map.insert(k, d, deref mm); d
             case Some(v) => v
         }
-/*
+
     ///
     /// Merges the mutable map `m1` into the mutable map `m2` in a left-biased manner.
     ///
     /// That is, key collisions are resolved by taking the mapping from `m1`.
     ///
-    pub def merge!(m1: MutMap1[k, v, r1], m2: MutMap1[k, v, r2]): Unit  \ { Read(r1, r2), Write(r2) } with Order[k] =
+    pub def merge!(m1: MutMap1[k, v, Impure], m2: MutMap1[k, v, Impure]): Unit & Impure with Order[k] =
         mergeWithKey!((_, v1, _) -> v1, m1, m2)
 
     ///
     /// Merges the mutable map `m1` into the mutable map `m2` where key collisions are resolved with the merge function `f`.
     ///
-    pub def mergeWith!(f: (v, v) -> v & ef, m1: MutMap1[k, v, r1], m2: MutMap1[k, v, r2]): Unit  \ { ef, Read(r1, r2), Write(r2) } with Order[k] =
+    pub def mergeWith!(f: (v, v) -> v & ef, m1: MutMap1[k, v, Impure], m2: MutMap1[k, v, Impure]): Unit & Impure with Order[k] =
         mergeWithKey!((_, v1, v2) -> f(v1, v2), m1, m2)
 
     ///
     /// Merges the mutable map `m1` into the mutable map `m2` where key collisions are resolved with the merge function `f`, taking both the key and values.
     ///
-    pub def mergeWithKey!(f: (k, v, v) -> v & ef, m1: MutMap1[k, v, r1], m2: MutMap1[k, v, r2]): Unit \ { ef, Read(r1, r2), Write(r2) } with Order[k] =
+    pub def mergeWithKey!(f: (k, v, v) -> v & ef, m1: MutMap1[k, v, Impure], m2: MutMap1[k, v, Impure]): Unit & Impure with Order[k] =
         let MutMap1(mm1) = m1;
         let MutMap1(mm2) = m2;
         mm2 := Map.unionWithKey(f, deref mm1, deref mm2)
-*/
+
     ///
     /// Removes all mappings `k -> v` from the mutable map `m` where `v` does not satisfy the predicate function `f`.
     ///
@@ -329,7 +329,7 @@ namespace MutMap1 {
     pub def findRight(f: (k, v) -> Bool, m: MutMap1[k, v, r]): Option[(k, v)] \ Read(r) =
         let MutMap1(mm) = m;
         Map.findRight(f, deref mm)
-/*
+
     ///
     /// Returns a map with mappings `k => f(v)` for every `k => v` in `m`.
     ///
@@ -337,7 +337,7 @@ namespace MutMap1 {
     ///
     @ParallelWhenPure
     pub def map(f: v1 -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] \ { ef, Read(r), Write(r) } =
-        mapWithKey((_, v) -> f(v), m)
+        mapWithKey(_ -> f, m)
 
     ///
     /// Returns a map with mappings `k => f(k, v)` for every `k => v` in `m`.
@@ -347,9 +347,8 @@ namespace MutMap1 {
     @ParallelWhenPure
     pub def mapWithKey(f: (k, v1) -> v2 & ef, m: MutMap1[k, v1, r]): MutMap1[k, v2, r] \ { ef, Read(r), Write(r) } =
         let MutMap1(mm) = m;
-        mm := Map.mapWithKey(f, deref mm);
-        m
-*/
+        MutMap1(ref Map.mapWithKey(f, deref mm) @ Scoped.regionOf(m))
+
     ///
     /// Alias for `foldLeftWithKey`.
     ///
