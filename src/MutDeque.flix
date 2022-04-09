@@ -327,7 +327,6 @@ namespace MMutDeque {
     def capacity(d: MMutDeque[a, r]): Int32 \ { Read(r) } =
         let MMutDeque(a, _, _) = d;
         Array.length(deref a)
-/*
     ///
     /// Returns `true` if MMutDeques `d1` and `d2` have the same elements, i.e. are structurally equal.
     ///
@@ -344,6 +343,7 @@ namespace MMutDeque {
     ///
     pub def toList(d: MMutDeque[a, r]): List[a] \ { Read(r) } =
         foldRight((x, acc) -> x :: acc, Nil, d)
+/*
 
     ///
     /// Returns the concatenation of the string representation
