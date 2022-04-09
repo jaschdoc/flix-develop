@@ -210,7 +210,6 @@ namespace MMutDeque {
             compress!(d);
             Some(x)
         }
-/*
 
     ///
     /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
@@ -229,6 +228,7 @@ namespace MMutDeque {
             Some(x)
         }
 
+/*
     ///
     /// Pushes `x` to the front of `d`.
     ///
