@@ -69,8 +69,6 @@ instance Iterable[MMutDeque] {
 
 namespace MMutDeque {
 
-    // TODO: Go function by function and check if it compiles. Comment out everything to begin with.
-
     ///
     /// Constant denoting the minimum allowed capacity of the backing array.
     ///
@@ -94,7 +92,7 @@ namespace MMutDeque {
     ///
     /// If the load factor exceeds or is equal to `maxLoadFactor` the array should be expanded.
     ///
-    def maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
+    def _maxLoadFactor(): Float32 = 3.0f32 / 4.0f32
 
     ///
     /// Returns an empty MMutDeque.
@@ -212,6 +210,7 @@ namespace MMutDeque {
             compress!(d);
             Some(x)
         }
+/*
 
     ///
     /// Returns `Some(x)` where `x` is the element at the back. Returns `None` if `d` is empty.
@@ -275,7 +274,7 @@ namespace MMutDeque {
         a := arr;                                            // Update references.
         b := computeSize(c, deref f, deref b);
         f := 0
-
+*/
     ///
     /// Compresses MMutDeque `d` if the load factor is less than or equal to `minLoadFactor`.
     ///
@@ -304,7 +303,6 @@ namespace MMutDeque {
         } else {
             ()
         }
-
     ///
     /// Copies the elements from `a` to `a1`. Mutates the array `a1`.
     ///
@@ -329,7 +327,7 @@ namespace MMutDeque {
     def capacity(d: MMutDeque[a, r]): Int32 \ { Read(r) } =
         let MMutDeque(a, _, _) = d;
         Array.length(deref a)
-
+/*
     ///
     /// Returns `true` if MMutDeques `d1` and `d2` have the same elements, i.e. are structurally equal.
     ///
@@ -387,4 +385,5 @@ namespace MMutDeque {
             loop(deref front)
         }
 
+*/
 }
