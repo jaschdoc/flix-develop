@@ -10,20 +10,20 @@ namespace TestRegionIterator {
     }
 */
     @test
-    def next02(): Bool = region r {
+    def next01(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
         RegionIterator.regNext(iter) == Some(1)
     }
 
     @test
-    def next03(): Bool = region r {
+    def next02(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
         RegionIterator.regNext(iter);
         RegionIterator.regNext(iter) == None
     }
 
     @test
-    def next04(): Bool = region r {
+    def next03(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
         RegionIterator.regNext(iter);
         RegionIterator.regNext(iter) == Some(2)
