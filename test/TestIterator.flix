@@ -32,14 +32,14 @@ namespace TestRegionIterator {
     @test
     def isEmpty01(): Bool = region r { // singleton
         let iter = RegionIterator.regSingleton(r, 1);
-        invokeIsEmpty(100, iter);
+        invokeIsEmptyRegion(100, iter);
         RegionIterator.regToList(iter) == 1 :: Nil
     }
 
     ///
     /// Helper function that invokes `RegionIterator.isEmpty` `n` times.
     ///
-    def invokeIsEmpty(n: Int32, iter: RegionIterator[a, r]): Unit \ Read(r) =
+    def invokeIsEmptyRegion(n: Int32, iter: RegionIterator[a, r]): Unit \ Read(r) =
         def loop(m) =
             if (m <= 0)
                 ()
