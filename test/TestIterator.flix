@@ -12,21 +12,21 @@ namespace TestRegionIterator {
     @test
     def next02(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
-        RegionIterator.next(iter) == Some(1)
+        RegionIterator.regNext(iter) == Some(1)
     }
 
     @test
     def next03(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
-        RegionIterator.next(iter);
-        RegionIterator.next(iter) == None
+        RegionIterator.regNext(iter);
+        RegionIterator.regNext(iter) == None
     }
 
     @test
     def next04(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
-        RegionIterator.next(iter);
-        RegionIterator.next(iter) == Some(2)
+        RegionIterator.regNext(iter);
+        RegionIterator.regNext(iter) == Some(2)
     }
 
 

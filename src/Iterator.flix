@@ -21,7 +21,7 @@ namespace RegionIterator {
     ///
     /// Consumes the head element of `iter`.
     ///
-    pub def next(iter: RegionIterator[a, r]): Option[a] \ Read(r) =
+    pub def regNext(iter: RegionIterator[a, r]): Option[a] \ Read(r) =
         let RegionIterator(done, next) = iter;
         if (done())
             None
