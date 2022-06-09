@@ -1,10 +1,10 @@
 namespace Sorting {
-
+/*
     ///
     /// Returns the rank of `x` in the **sorted** array `a`.
     /// The array `a` may contain duplicates
     ///
-    pub def rank(x: a, a: Array[a]): Option[Int32] & Impure with Order[a] =
+    pub def rank(x: a, a: Array[a, r]): Option[Int32] & Impure with Order[a] =
         def loop(lo, hi) =
             if (lo < hi) {
                 let m = (lo + hi) / 2; // Automatically floored due to truncation
@@ -29,7 +29,7 @@ namespace Sorting {
     ///
     /// The implementation uses binary search.
     ///
-    pub def indexOfLeft(x: a, a: Array[a]): Option[Int32] & Impure with Order[a] = match Array.sort(a) |> rank(x) {
+    pub def indexOfLeft(x: a, a: Array[a, r]): Option[Int32] & Impure with Order[a] = match Array.sort(a) |> rank(x) {
         case Some(i) if a[i] == x => Some(i)
         case _                    => None
     }
@@ -39,16 +39,16 @@ namespace Sorting {
     ///
     /// The implementation uses binary search.
     ///
-    pub def indexOfRight(x: Int32, a: Array[Int32]): Option[Int32] & Impure =
+    pub def indexOfRight(x: Int32, a: Array[Int32, r]): Option[Int32] & Impure =
         let a1 = Array.sort(a);
         ???
 
     @Parallel
-    def _sort(a: Array[a]): Array[a] & Impure with Order[a] =
+    def _sort(a: Array[a, r]): Array[a, r] & Impure with Order[a] =
         sortHelper(a, 0, Array.length(a))
 
     @Parallel
-    def sortHelper(a: Array[a], lo: Int32, hi: Int32): Array[a] & Impure with Order[a] =
+    def sortHelper(a: Array[a, r], lo: Int32, hi: Int32): Array[a, r] & Impure with Order[a] =
         let l = hi - lo;
         if (l == 0)
             ???
@@ -67,7 +67,7 @@ namespace Sorting {
     }
 
     @Parallel
-    def _merge(a: Array[a], b: Array[a]): Array[a] & Impure with Order[a] =
+    def _merge(a: Array[a, r], b: Array[a, r]): Array[a, r] & Impure with Order[a] =
         let al = Array.length(a);
         let bl = Array.length(b);
         let cl = al + bl;
@@ -77,7 +77,7 @@ namespace Sorting {
         c
 
     @Parallel
-    def mergeHelper(idx: Indices, a: Ref[Array[a]], b: Ref[Array[a]], c: Ref[Array[a]]): Unit & Impure with Order[a] =
+    def mergeHelper(idx: Indices, a: Ref[Array[a, r], r], b: Ref[Array[a, r], r], c: Ref[Array[a, r], r]): Unit & Impure with Order[a] =
         let m = idx.j - idx.i;
         let n = idx.l - idx.k;
         if (m < n)
@@ -86,7 +86,7 @@ namespace Sorting {
             mergeHelper2(idx, m, a, b, c)
 
     @Parallel
-    def mergeHelper2(idx: Indices, m: Int32, a: Ref[Array[a]], b: Ref[Array[a]], c: Ref[Array[a]]): Unit & Impure with Order[a] =
+    def mergeHelper2(idx: Indices, m: Int32, a: Ref[Array[a, r], r], b: Ref[Array[a, r], r], c: Ref[Array[a, r], r]): Unit & Impure with Order[a] =
         if (m <= 0)
             ()
         else
@@ -109,5 +109,5 @@ namespace Sorting {
     // https://en.wikipedia.org/wiki/Binary_search_algorithm
     // https://en.wikipedia.org/wiki/Merge_algorithm#Parallel_merge
     // https://en.wikipedia.org/wiki/Merge_sort
-
+*/
 }
