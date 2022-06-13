@@ -67,6 +67,27 @@ namespace RegionIterator {
         done()
 
     ///
+    /// Returns an iterator of all integers between `b` (inclusive) and `e` (exclusive).
+    ///
+    /// Returns an empty iterator if `b >= e`.
+    ///
+    @Lazy
+    pub def regRange(r: Region[r], b: Int32, e: Int32): RegionIterator[Int32, r] \ Write(r) =
+        let i = ref b @ r;
+        let done = () -> deref i >= e;
+        let next = () -> {
+                let res = deref i;
+                if (res < e) {
+                    i := res + 1;
+                    res
+                }
+                else {
+                    bug!("Empty Iterator!")
+                }
+            };
+        RegionIterator(done, next)
+
+    ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
