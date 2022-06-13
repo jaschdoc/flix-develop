@@ -250,6 +250,9 @@ namespace List {
 
 namespace Map {
 
+    ///
+    /// Returns an iterator over all key-value pairs in `m`.
+    ///
     pub def toRegionIterator(r: Region[r], m: Map[k, v]): RegionIterator[(k, v), r] \ Write(r) =
         List.toRegionIterator(r, Map.query(_ -> EqualTo, m))
 
