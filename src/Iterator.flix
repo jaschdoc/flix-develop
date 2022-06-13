@@ -158,6 +158,22 @@ namespace RegionIterator {
     }
 
     ///
+    /// Returns the contents of `iter` as a list.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regToList(iter: RegionIterator[a, r]): List[a] \ Read(r) =
+        regFoldRight((a, acc) -> a :: acc, Nil, iter)
+
+    ///
+    /// Returns the contents of `iter` as a map.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regToMap(iter: RegionIterator[(a, b), r]): Map[a, b] \ Read(r) with Order[a] =
+        regFoldLeft((acc, ab) -> Map.insert(fst(ab), snd(ab), acc), Map.empty(), iter)
+
+    ///
     /// Applies `f` to every element of `iter`.
     ///
     /// Consumes the entire iterator.
@@ -210,14 +226,6 @@ namespace RegionIterator {
         };
         loop(ks -> ks as & ef) // NB: Cast required because the identity continuation is pure,
                                // but the intermediate continuations are effect polymorphic
-    ///
-    /// Returns the contents of `iter` as a list.
-    ///
-    /// Consumes the entire iterator.
-    ///
-    pub def regToList(iter: RegionIterator[a, r]): List[a] \ Read(r) =
-        regFoldRight((a, acc) -> a :: acc, Nil, iter)
-
 
 }
 
@@ -236,5 +244,13 @@ namespace List {
                 x
         };
         RegionIterator(done, next)
+
+}
+
+
+namespace Map {
+
+    pub def toRegionIterator(r: Region[r], m: Map[k, v]): RegionIterator[(k, v), r] \ Write(r) =
+        List.toRegionIterator(r, Map.query(_ -> EqualTo, m))
 
 }

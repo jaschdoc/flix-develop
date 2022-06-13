@@ -211,6 +211,27 @@ namespace TestRegionIterator {
         RegionIterator.regRange(r, -100, 200) |> RegionIterator.regToArray(r) `Array.sameElements` Array.range(-100, 200, r)
     }
 
+    /////////////////////////////////////////////////////////////////////////////
+    // toMap                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toMap01(): Bool = region r {
+        Map.empty() |> Map.toRegionIterator(r) |> RegionIterator.regToMap == Map.empty(): Map[Int32, Int32]
+    }
+
+    @test
+    def toMap02(): Bool = region r {
+        Map#{"A" => 1, "B" => 2, "C" => 3, "D" => 4} |>
+            Map.toRegionIterator(r) |>
+            RegionIterator.regToMap == Map#{"A" => 1, "B" => 2, "C" => 3, "D" => 4}
+    }
+
+    @test
+    def toMap03(): Bool = region r {
+        Map#{1 => 2, 2 => 3, 3 => 4} |> Map.toRegionIterator(r) |> RegionIterator.regToMap == Map#{1 => 2, 2 => 3, 3 => 4}
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
