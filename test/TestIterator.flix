@@ -5,25 +5,25 @@ namespace TestRegionIterator {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def next00(): Bool = region r {
+    def next01(): Bool = region r {
         RegionIterator.new(r) |> RegionIterator.regNext == None: Option[Int32]
     }
 
     @test
-    def next01(): Bool = region r {
+    def next02(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
         RegionIterator.regNext(iter) == Some(1)
     }
 
     @test
-    def next02(): Bool = region r {
+    def next03(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
         RegionIterator.regNext(iter);
         RegionIterator.regNext(iter) == None
     }
 
     @test
-    def next03(): Bool = region r {
+    def next04(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
         RegionIterator.regNext(iter);
         RegionIterator.regNext(iter) == Some(2)
@@ -35,14 +35,14 @@ namespace TestRegionIterator {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
-    def isEmpty00(): Bool = region r { // empty
+    def isEmpty01(): Bool = region r { // empty
         let iter = RegionIterator.new(r);
         invokeIsEmptyRegion(100, iter);
         RegionIterator.regToList(iter) == Nil: List[Int32]
     }
 
     @test
-    def isEmpty01(): Bool = region r { // singleton
+    def isEmpty02(): Bool = region r { // singleton
         let iter = RegionIterator.regSingleton(r, 1);
         invokeIsEmptyRegion(100, iter);
         RegionIterator.regToList(iter) == 1 :: Nil
