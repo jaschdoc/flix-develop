@@ -151,7 +151,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def toArray(r1: Region[r1], iter: RegionIterator[a, r2]): Array[a, r1] \ { Read(r2), Write(r1) } = region r0 {
+    pub def regToArray(r1: Region[r1], iter: RegionIterator[a, r2]): Array[a, r1] \ { Read(r2), Write(r1) } = region r0 {
         let m = new MutList(r0);
         regForeach(a -> MutList.push!(a, m), iter);
         MutList.toArray(m, r1)

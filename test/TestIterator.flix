@@ -193,22 +193,22 @@ namespace TestRegionIterator {
 
     @test
     def toArray01(): Bool = region r {
-        Nil: List[Int32] |> List.toRegionIterator(r) |> RegionIterator.toArray(r) `Array.sameElements` [] @ r
+        Nil: List[Int32] |> List.toRegionIterator(r) |> RegionIterator.regToArray(r) `Array.sameElements` [] @ r
     }
 
     @test
     def toArray02(): Bool = region r {
-        RegionIterator.regRange(r, -10, -5) |> RegionIterator.toArray(r) `Array.sameElements` [-10, -9, -8, -7, -6] @ r
+        RegionIterator.regRange(r, -10, -5) |> RegionIterator.regToArray(r) `Array.sameElements` [-10, -9, -8, -7, -6] @ r
     }
 
     @test
     def toArray03(): Bool = region r {
-        RegionIterator.regRepeat(r, 3, 1) |> RegionIterator.toArray(r) `Array.sameElements` [1, 1, 1] @ r
+        RegionIterator.regRepeat(r, 3, 1) |> RegionIterator.regToArray(r) `Array.sameElements` [1, 1, 1] @ r
     }
 
     @test
     def toArray04(): Bool = region r {
-        RegionIterator.regRange(r, -100, 200) |> RegionIterator.toArray(r) `Array.sameElements` Array.range(-100, 200, r)
+        RegionIterator.regRange(r, -100, 200) |> RegionIterator.regToArray(r) `Array.sameElements` Array.range(-100, 200, r)
     }
 
 
