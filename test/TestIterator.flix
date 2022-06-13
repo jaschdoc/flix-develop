@@ -228,7 +228,7 @@ namespace TestRegionIterator {
     def foreach02(): Bool = region r {
         let res = ref 21 @ r;
         (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
-            RegionIterator.regForeach(x -> res:= x);
+            RegionIterator.regForeach(x -> res := x);
         3 == deref res
     }
 
