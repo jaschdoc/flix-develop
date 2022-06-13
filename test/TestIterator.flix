@@ -213,6 +213,27 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // foreach                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foreach01(): Bool = region r {
+        let res = ref 21 @ r;
+        Nil |> List.toRegionIterator(r) |>
+            RegionIterator.regForeach(x -> res := x);
+        21 == deref res
+    }
+
+    @test
+    def foreach02(): Bool = region r {
+        let res = ref 21 @ r;
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regForeach(x -> res:= x);
+        3 == deref res
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
