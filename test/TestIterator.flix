@@ -6,7 +6,7 @@ namespace TestRegionIterator {
 
     @test
     def next01(): Bool = region r {
-        RegionIterator.new(r) |> RegionIterator.regNext == None: Option[Int32]
+        new RegionIterator(r) |> RegionIterator.regNext == None: Option[Int32]
     }
 
     @test
@@ -36,7 +36,7 @@ namespace TestRegionIterator {
 
     @test
     def isEmpty01(): Bool = region r { // empty
-        let iter = RegionIterator.new(r);
+        let iter = new RegionIterator(r);
         invokeIsEmptyRegion(100, iter);
         RegionIterator.regToList(iter) == Nil: List[Int32]
     }
