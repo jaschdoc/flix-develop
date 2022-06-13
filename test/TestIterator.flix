@@ -93,6 +93,31 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // repeat                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def repeat01(): Bool = region r {
+        RegionIterator.regRepeat(r, 0, 10) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def repeat02(): Bool = region r {
+        RegionIterator.regRepeat(r, -100, 2) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def repeat03(): Bool = region r {
+        RegionIterator.regRepeat(r, 100, 2) |> RegionIterator.regToList == List.repeat(100, 2)
+    }
+
+    @test
+    def repeat04(): Bool = region r {
+        RegionIterator.regRepeat(r, 3, 1) |> RegionIterator.regToList == 1 :: 1 :: 1 :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
