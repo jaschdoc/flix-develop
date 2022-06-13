@@ -17,6 +17,15 @@ pub enum RegionIterator[a: Type, r: Region] {
 namespace RegionIterator {
 
     ///
+    /// Returns an empty iterator.
+    ///
+    pub def new(_: Region[r]): RegionIterator[a, r] =
+        let done = () -> true as \ Read(r);
+        let next = () -> bug!("Empty Iterator!") as \ Read(r);
+        RegionIterator(done, next)
+
+
+    ///
     /// Returns an iterator containing only a single element, `x`.
     ///
     pub def regSingleton(r: Region[r], x: a): RegionIterator[a, r] \ Write(r) =

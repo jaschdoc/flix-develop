@@ -5,6 +5,11 @@ namespace TestRegionIterator {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
+    def next00(): Bool = region r {
+        RegionIterator.new(r) |> RegionIterator.regNext == None: Option[Int32]
+    }
+
+    @test
     def next01(): Bool = region r {
         let iter = List.toRegionIterator(r, 1 :: Nil);
         RegionIterator.regNext(iter) == Some(1)
