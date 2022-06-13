@@ -109,6 +109,44 @@ namespace RegionIterator {
         RegionIterator(done, next)
 
     ///
+    /// Returns the sum of all elements in the iterator `iter`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def sum(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
+        regFoldLeft((acc, x) -> acc + x, 0, iter)
+
+    ///
+    /// Returns the sum of all elements in the iterator `iter` according to the function `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def sumWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
+        regFoldLeft((acc, x) -> acc + f(x), 0, iter)
+
+    ///
+    /// Returns the product of all elements in the iterator `iter`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def product(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
+        if (regIsEmpty(iter))
+            0
+        else
+            regFoldLeft((acc, x) -> acc * x, 1, iter)
+
+    ///
+    /// Returns the product of all elements in the iterator `iter` according to the function `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def productWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
+        if (regIsEmpty(iter))
+            0
+        else
+            regFoldLeft((acc, x) -> acc * f(x), 1, iter)
+
+    ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
