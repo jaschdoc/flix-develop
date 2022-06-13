@@ -35,6 +35,13 @@ namespace TestRegionIterator {
     /////////////////////////////////////////////////////////////////////////////
 
     @test
+    def isEmpty00(): Bool = region r { // empty
+        let iter = RegionIterator.new(r);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == Nil: List[Int32]
+    }
+
+    @test
     def isEmpty01(): Bool = region r { // singleton
         let iter = RegionIterator.regSingleton(r, 1);
         invokeIsEmptyRegion(100, iter);
