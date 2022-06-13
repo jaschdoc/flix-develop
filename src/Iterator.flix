@@ -147,6 +147,34 @@ namespace RegionIterator {
             regFoldLeft((acc, x) -> acc * f(x), 1, iter)
 
     ///
+    /// Returns the contents of `iter` as an array.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def toArray(r1: Region[r1], iter: RegionIterator[a, r2]): Array[a, r1] \ { Read(r2), Write(r1) } = region r0 {
+        let m = new MutList(r0);
+        foreach(a -> MutList.push!(a, m), iter);
+        MutList.toArray(m, r1)
+    }
+
+    ///
+    /// Applies `f` to every element of `iter`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def foreach(f: a -> Unit & ef, iter: RegionIterator[a, r]): Unit \ { ef, Read(r) } =
+        let RegionIterator(done, next) = iter;
+        def loop() = {
+            if (done())
+                ()
+            else {
+                f(next());
+                loop()
+            }
+        };
+        loop()
+
+    ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.
