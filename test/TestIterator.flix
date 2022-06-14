@@ -354,6 +354,53 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // map                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def map01(): Bool = region r {
+        Nil |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == Nil
+        }
+
+    @test
+    def map02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == false :: Nil
+        }
+
+    @test
+    def map03(): Bool = region r {
+        (3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == true :: Nil
+        }
+
+    @test
+    def map04(): Bool = region r {
+        (1 :: 2 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == false :: false :: Nil
+        }
+
+    @test
+    def map05(): Bool = region r {
+        (1 :: 8 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == false :: true :: Nil
+        }
+
+    @test
+    def map06(): Bool = region r {
+        (8 :: 1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == true :: false :: Nil
+        }
+
+    @test
+    def map07(): Bool = region r {
+        (7 :: 8 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regMap(i -> i > 2) == true :: true :: Nil
+        }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
