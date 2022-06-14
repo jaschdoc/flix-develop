@@ -237,3 +237,10 @@ namespace RegionIterator {
                                // but the intermediate continuations are effect polymorphic
 
 }
+
+namespace Set {
+
+    pub def toRegionIterator(r: Region[r], s: Set[a]): RegionIterator[a, r] \ Write(r) =
+        toList(s) |> List.toRegionIterator(r)
+
+}

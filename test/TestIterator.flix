@@ -292,26 +292,19 @@ namespace TestRegionIterator {
     // toSet                                                                   //
     /////////////////////////////////////////////////////////////////////////////
 
-    // refactor these to use Set.toRegionIterator
-
     @test
     def toSet01(): Bool = region r {
-        List.toRegionIterator(r, Nil: List[Int32]) |> RegionIterator.regToSet == Set.empty()
+        Set.empty() |> Set.toRegionIterator(r) |> RegionIterator.regToSet == Set.empty(): Set[Int32]
     }
 
     @test
     def toSet02(): Bool = region r {
-        Set#{} |> Set.toList |> List.toRegionIterator(r) |> RegionIterator.regToSet == Set.empty(): Set[String]
+        Set#{"a", "b", "c", "d"} |> Set.toRegionIterator(r) |> RegionIterator.regToSet == Set#{"a", "b", "c", "d"}
     }
 
     @test
     def toSet03(): Bool = region r {
-        Set#{"a", "b", "c", "d"} |> Set.toList |> List.toRegionIterator(r) |> RegionIterator.regToSet == Set#{"a", "b", "c", "d"}
-    }
-
-    @test
-    def toSet04(): Bool = region r {
-        Set.range(0, 10000) |> Set.toList |> List.toRegionIterator(r) |> RegionIterator.regToSet == Set.range(0, 10000)
+        Set.range(0, 10000) |> Set.toRegionIterator(r) |> RegionIterator.regToSet == Set.range(0, 10000)
     }
 
 
