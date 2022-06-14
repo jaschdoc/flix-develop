@@ -183,6 +183,22 @@ namespace RegionIterator {
         regFoldLeft((acc, a) -> Set.insert(a, acc), Set.empty(), iter)
 
     ///
+    /// Returns a list of every element in `iter` that satisfies the predicate `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regFilter(f: a -> Bool & ef, iter: RegionIterator[a, r]): List[a] \ { ef, Read(r) } =
+        let RegionIterator(done, next) = iter;
+        def loop(k) = {
+            if (done())
+                k(Nil)
+            else
+                let x = next();
+                if (f(x)) loop(ks -> k(x :: ks)) else loop(k)
+        };
+        loop(identity)
+
+    ///
     /// Applies `f` to every element of `iter`.
     ///
     /// Consumes the entire iterator.

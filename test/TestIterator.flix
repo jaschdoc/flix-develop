@@ -309,6 +309,51 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // filter                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filter01(): Bool = region r {
+        Nil |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == Nil
+    }
+
+    @test
+    def filter02(): Bool = region r {
+        (2 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == Nil
+    }
+
+    @test
+    def filter03(): Bool = region r {
+        (4 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == 4 :: Nil
+    }
+
+    @test
+    def filter04(): Bool = region r {
+        (1 :: 3 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == Nil
+    }
+
+    @test
+    def filter05(): Bool = region r {
+        (1 :: 8 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == 8 :: Nil
+    }
+
+    @test
+    def filter06(): Bool = region r {
+        (8 :: 1 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == 8 :: Nil
+    }
+
+    @test
+    def filter07(): Bool = region r {
+        (8 :: 9 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == 8 :: 9 :: Nil
+    }
+
+    @test
+    def filter08(): Bool = region r {
+        (1 :: 4 :: 11 :: 2 :: -22 :: 17 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilter(i -> i > 3) == 4 :: 11 :: 17 :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
