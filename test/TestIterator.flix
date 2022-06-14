@@ -254,6 +254,41 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // toNec                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toNec01(): Bool = region r {
+        let iter = List.toRegionIterator(r, Nil: List[Unit]);
+        RegionIterator.regToNec(iter) == None
+    }
+
+    @test
+    def toNec02(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: Nil);
+        RegionIterator.regToNec(iter) == Some(Nec.singleton(1))
+    }
+
+    @test
+    def toNec03(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        RegionIterator.regToNec(iter) == Some(Nec.cons(1, Nec.singleton(2)))
+    }
+
+    @test
+    def toNec04(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 1 :: Nil);
+        RegionIterator.regToNec(iter) == Some(Nec.cons(1, Nec.singleton(1)))
+    }
+
+    @test
+    def toNec05(): Bool = region r {
+        let iter = List.toRegionIterator(r, 2 :: 1 :: Nil);
+        RegionIterator.regToNec(iter) == Some(Nec.cons(2, Nec.singleton(1)))
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 

@@ -165,6 +165,18 @@ namespace RegionIterator {
     }
 
     ///
+    /// Returns the contents of `iter` as a nec.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regToNec(iter: RegionIterator[a, r]): Option[Nec[a]] \ Read(r) =
+        let f = (x, acc) -> match acc {
+            case None      => Some(Nec.singleton(x))
+            case Some(nec) => Some(Nec.cons(x, nec))
+        };
+        regFoldRight(f, None, iter)
+
+    ///
     /// Applies `f` to every element of `iter`.
     ///
     /// Consumes the entire iterator.
