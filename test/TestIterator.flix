@@ -234,6 +234,26 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // toNel                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toNel01(): Bool = region r {
+        Nil |> List.toRegionIterator(r) |> RegionIterator.regToNel == None: Option[Nel[Int32]]
+    }
+
+    @test
+    def toNel02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regToNel == Some(Nel(1, Nil))
+    }
+
+    @test
+    def toNel03(): Bool = region r {
+        RegionIterator.regRange(r, 0, 1000) |> RegionIterator.regToNel == Some(Nel(0, List.range(1, 1000)))
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foreach                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 

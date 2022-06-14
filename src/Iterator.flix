@@ -1,22 +1,3 @@
-///
-/// The type of the done function.
-///
-type alias RegionDone[ef: Region] = Unit -> Bool & ef
-
-///
-/// The type of the next function.
-///
-type alias RegionNext[a: Type, ef: Region] = Unit -> a & ef
-
-
-pub enum RegionIterator[a: Type, r: Region] {
-    case RegionIterator(RegionDone[r], RegionNext[a, r])
-}
-
-instance Newable[RegionIterator[a]] {
-    pub def new(r: Region[r]): RegionIterator[a, r] \ { Read(r), Write(r) } = RegionIterator.new(r)
-}
-
 namespace RegionIterator {
 
     ///
@@ -174,6 +155,16 @@ namespace RegionIterator {
         regFoldLeft((acc, ab) -> Map.insert(fst(ab), snd(ab), acc), Map.empty(), iter)
 
     ///
+    /// Returns the contents of `iter` as a `Some(Nel)` if `iter` is not empty. Returns None otherwise.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regToNel(iter: RegionIterator[a, r]): Option[Nel[a]] \ Read(r) = match regToList(iter) {
+        case Nil     => None
+        case x :: xs => Some(Nel(x, xs))
+    }
+
+    ///
     /// Applies `f` to every element of `iter`.
     ///
     /// Consumes the entire iterator.
@@ -226,34 +217,5 @@ namespace RegionIterator {
         };
         loop(ks -> ks as & ef) // NB: Cast required because the identity continuation is pure,
                                // but the intermediate continuations are effect polymorphic
-
-}
-
-namespace List {
-
-    pub def toRegionIterator(r: Region[r], l: List[a]): RegionIterator[a, r] \ Write(r) =
-        let cursor = ref l @ r;
-        let done = () -> match (deref cursor) {
-            case Nil => true
-            case _   => false
-        };
-        let next = () -> match (deref cursor) {
-            case Nil     => bug!("Empty Iterator!")
-            case x :: xs =>
-                cursor := xs;
-                x
-        };
-        RegionIterator(done, next)
-
-}
-
-
-namespace Map {
-
-    ///
-    /// Returns an iterator over all key-value pairs in `m`.
-    ///
-    pub def toRegionIterator(r: Region[r], m: Map[k, v]): RegionIterator[(k, v), r] \ Write(r) =
-        List.toRegionIterator(r, Map.query(_ -> EqualTo, m))
 
 }
