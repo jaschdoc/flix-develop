@@ -422,6 +422,51 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // lazyFilter                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def lazyFilter01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyFilter02(): Bool = region r {
+        List.toRegionIterator(r, 2 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyFilter03(): Bool = region r {
+        List.toRegionIterator(r, 4 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == 4 :: Nil
+    }
+
+    @test
+    def lazyFilter04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 3 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyFilter05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 8 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == 8 :: Nil
+    }
+
+    @test
+    def lazyFilter06(): Bool = region r {
+        List.toRegionIterator(r, 8 :: 1 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == 8 :: Nil
+    }
+
+    @test
+    def lazyFilter07(): Bool = region r {
+        List.toRegionIterator(r, 8 :: 9 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == 8 :: 9 :: Nil
+    }
+
+    @test
+    def lazyFilter08(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 4 :: 11 :: 2 :: -22 :: 17 :: Nil) |> RegionIterator.regFilterL(i -> i > 3) |> RegionIterator.regToList == 4 :: 11 :: 17 :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 

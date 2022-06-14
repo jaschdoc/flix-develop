@@ -1,3 +1,7 @@
+instance Scoped[RegionIterator[a]] {
+    pub def regionOf(_: RegionIterator[a, r]): Region[r] = () as Region[r]
+}
+
 namespace RegionIterator {
 
     ///
@@ -230,6 +234,55 @@ namespace RegionIterator {
                 f(next());
                 loop()
             }
+        };
+        loop()
+
+    ///
+    /// Returns an iterator with every element of the iterator `iter` that
+    /// satisfies the predicate `f`.
+    ///
+    /// Does *not* consume any elements from the iterator.
+    ///
+    /// The original iterator `iter` should not be reused.
+    ///
+    @Lazy
+    pub def regFilterL(f: a -> Bool, iter: RegionIterator[a, r]): RegionIterator[a, r] \ { Read(r), Write(r) } =
+        let RegionIterator(done, next) = iter;
+
+        // Allocate a reference to hold the next element.
+        let cursor = ref None @ Scoped.regionOf(iter);
+
+        let done1 = () -> match deref cursor {
+            case None => match regForward(f, done, next) {
+                case None    => true
+                case Some(x) =>
+                    // An element was found. Store it in the reference.
+                    cursor := Some(x);
+                    false
+            }
+            case Some(_) => false
+        };
+
+        let next1 = () -> match deref cursor {
+            case None    => bug!("Empty iterator")
+            case Some(x) =>
+                // An element is in the reference. Use it.
+                cursor := None;
+                x
+        };
+        RegionIterator(done1, next1)
+
+    ///
+    /// Fast forwards the given iterator until the next element that satisfies
+    /// the given predicate `f`. Returns it (if it exists).
+    ///
+    def regForward(f: a -> Bool, done: RegionDone[r], next: RegionNext[a, r]): Option[a] \ Read(r) =
+        def loop() = {
+            if (done())
+                None
+            else
+                let e = next();
+                if (f(e)) Some(e) else loop()
         };
         loop()
 
