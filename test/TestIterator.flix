@@ -686,6 +686,120 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // lazyZipWith                                                             //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def lazyZipWith01(): Bool = region r {
+        let iterA = List.toRegionIterator(r, Nil);
+        let iterB = List.toRegionIterator(r, Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyZipWith02(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyZipWith03(): Bool = region r {
+        let iterA = List.toRegionIterator(r, Nil);
+        let iterB = List.toRegionIterator(r, true :: Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyZipWith04(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, true :: Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |> RegionIterator.regToList == 2 :: Nil
+    }
+
+    @test
+    def lazyZipWith05(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, false :: Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |> RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def lazyZipWith06(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
+        let iterB = List.toRegionIterator(r, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
+        RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |>
+            RegionIterator.regToList == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+    }
+
+    @test
+    def lazyZipWith07(): Bool = region r1 {
+        let iterA = List.toRegionIterator(r1, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
+        region r2 {
+            let iterB = List.toRegionIterator(r2, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
+            RegionIterator.regZipWithL((a, b) -> if (b) a + 1 else a, iterA, iterB) |>
+                RegionIterator.regToList == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // zipWith                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def zipWith01(): Bool = region r {
+        let iterA = List.toRegionIterator(r, Nil);
+        let iterB = List.toRegionIterator(r, Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == Nil
+    }
+
+    @test
+    def zipWith02(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == Nil
+    }
+
+    @test
+    def zipWith03(): Bool = region r {
+        let iterA = List.toRegionIterator(r, Nil);
+        let iterB = List.toRegionIterator(r, true :: Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == Nil
+    }
+
+    @test
+    def zipWith04(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, true :: Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == 2 :: Nil
+    }
+
+    @test
+    def zipWith05(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: Nil);
+        let iterB = List.toRegionIterator(r, false :: Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == 1 :: Nil
+    }
+
+    @test
+    def zipWith06(): Bool = region r {
+        let iterA = List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
+        let iterB = List.toRegionIterator(r, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
+        RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+    }
+
+    @test
+    def zipWith07(): Bool = region r1 {
+        let iterA = List.toRegionIterator(r1, 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: 7 :: 8 :: Nil);
+        region r2 {
+            let iterB = List.toRegionIterator(r2, false :: true :: true :: false :: false :: true :: true :: true :: Nil);
+            RegionIterator.regZipWith((a, b) -> if (b) a + 1 else a, iterA, iterB) == 1 :: 3 :: 4 :: 4 :: 5 :: 7 :: 8 :: 9 :: Nil
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
