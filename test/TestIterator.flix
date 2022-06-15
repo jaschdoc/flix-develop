@@ -630,6 +630,62 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // zip                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def zip01(): Bool = region r {
+        let iterA = Nil: List[Int32] |> List.toRegionIterator(r);
+        let iterB = RegionIterator.regRepeat(r, 1000, "b");
+        RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def zip02(): Bool = region r {
+        let iterA = Nil: List[Int32] |> List.toRegionIterator(r);
+        let iterB = RegionIterator.regRepeat(r, 1000, "b");
+        RegionIterator.regZip(iterB, iterA) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def zip03(): Bool = region r {
+        let iterA = RegionIterator.regRepeat(r, 500,  "a");
+        let iterB = RegionIterator.regRepeat(r, 1000, "b");
+        RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == List.repeat(500, ("a", "b"))
+    }
+
+    @test
+    def zip04(): Bool = region r {
+        let iterA = RegionIterator.regRepeat(r, 1000, "a");
+        let iterB = RegionIterator.regRepeat(r, 500,  "b");
+        RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == List.repeat(500, ("a", "b"))
+    }
+
+    @test
+    def zip05(): Bool = region r {
+        let iterA = RegionIterator.regRepeat(r, 1000, "a");
+        let iterB = RegionIterator.regRepeat(r, 1000, "b");
+        RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == List.repeat(1000, ("a", "b"))
+    }
+
+    @test
+    def zip06(): Bool = region r {
+        let iterA = RegionIterator.regRange(r, 0, 500);
+        let iterB = RegionIterator.regRepeat(r, 1000, "b");
+        RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == List.zip(List.range(0, 500), List.repeat(500, "b"))
+    }
+
+    @test
+    def zip07(): Bool = region r1 {
+        let iterA = RegionIterator.regRange(r1, 0, 500);
+        region r2 {
+            let iterB = RegionIterator.regRepeat(r2, 1000, "b");
+            RegionIterator.regZip(iterA, iterB) |> RegionIterator.regToList == List.zip(List.range(0, 500), List.repeat(500, "b"))
+        }
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
