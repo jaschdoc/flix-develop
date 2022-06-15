@@ -856,4 +856,33 @@ namespace TestRegionIterator {
         RegionIterator.regFoldRight((e, acc) -> (acc - e) * (e rem 2 + 1), 100, iter) == 382
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldRightWithCont                                                       //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldRightWithCont01(): Bool = region r {
+        let iter = List.toRegionIterator(r, Nil);
+        RegionIterator.regFoldRightWithCont((e, k) -> (k() - e) * (e rem 2 + 1), 100, iter) == 100
+    }
+
+    @test
+    def foldRightWithCont02(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: Nil);
+        RegionIterator.regFoldRightWithCont((e, k) -> (k() - e) * (e rem 2 + 1), 100, iter) == 198
+    }
+
+    @test
+    def foldRightWithCont03(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        RegionIterator.regFoldRightWithCont((e, k) -> (k() - e) * (e rem 2 + 1), 100, iter) == 194
+    }
+
+    @test
+    def foldRightWithCont04(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil);
+        RegionIterator.regFoldRightWithCont((e, k) -> (k() - e) * (e rem 2 + 1), 100, iter) == 382
+    }
+
 }
