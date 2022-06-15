@@ -438,6 +438,12 @@ namespace RegionIterator {
         };
         loop()
 
+    ///
+    /// Returns the result of mapping each element and combining the results.
+    ///
+    pub def regFoldMap(f: a -> b & ef, iter: RegionIterator[a, r]): b \ { ef, Read(r) } with Monoid[b] =
+        regFoldLeft((acc, x) -> Monoid.combine(acc, f(x)), Monoid.empty(), iter)
+
 }
 
 namespace Set {

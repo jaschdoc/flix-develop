@@ -885,4 +885,35 @@ namespace TestRegionIterator {
         RegionIterator.regFoldRightWithCont((e, k) -> (k() - e) * (e rem 2 + 1), 100, iter) == 382
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // foldMap                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def foldMap01(): Bool = region r {
+        RegionIterator.regFoldMap(x -> 2 * x, List.toRegionIterator(r, Nil)) == 0
+    }
+
+    @test
+    def foldMap02(): Bool = region r {
+        RegionIterator.regFoldMap(x -> 2 * x, List.toRegionIterator(r, 1 :: 2 :: Nil)) == 6
+    }
+
+    @test
+    def foldMap03(): Bool = region r {
+        RegionIterator.regFoldMap(x -> if (x == "a") "b" else x, List.toRegionIterator(r, "a" :: Nil)) == "b"
+    }
+
+    @test
+    def foldMap04(): Bool = region r {
+        RegionIterator.regFoldMap(x -> if (x == "c") "b" else x, List.toRegionIterator(r, "a" :: "b" :: "c" :: Nil)) == "abb"
+    }
+
+    @test
+    def foldMap05(): Bool = region r {
+        RegionIterator.regFoldMap(Int32.toString, List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil)) == "123"
+    }
+
+
 }
