@@ -460,6 +460,22 @@ namespace RegionIterator {
         else
             Some(regFoldLeft(f, next(), iter))
 
+    ///
+    /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regTakeWhile(f: a -> Bool & ef, iter: RegionIterator[a, r]): List[a] \ { ef, Read(r) } =
+        let RegionIterator(done, next) = iter;
+        def loop(k) = {
+            if (done())
+                k(Nil)
+            else
+                let x = next();
+                if (f(x)) loop(ks -> k(x :: ks)) else k(Nil)
+        };
+        loop(identity)
+
 }
 
 namespace Set {
