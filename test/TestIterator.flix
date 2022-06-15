@@ -507,6 +507,59 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // replace                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def replace01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def replace02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def replace03(): Bool = region r {
+        List.toRegionIterator(r, 3 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 4 :: Nil
+    }
+
+    @test
+    def replace04(): Bool = region r {
+        List.toRegionIterator(r, 4 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 4 :: Nil
+    }
+
+    @test
+    def replace05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 1 :: 2 :: Nil
+    }
+
+    @test
+    def replace06(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 3 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 1 :: 4 :: Nil
+    }
+
+    @test
+    def replace07(): Bool = region r {
+        List.toRegionIterator(r, 3 :: 4 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 4 :: 4 :: Nil
+    }
+
+    @test
+    def replace08(): Bool = region r {
+        List.toRegionIterator(r, 3 :: 3 :: Nil) |>
+            RegionIterator.regReplace(from = 3, to = 4) |> RegionIterator.regToList == 4 :: 4 :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
