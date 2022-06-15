@@ -287,6 +287,17 @@ namespace RegionIterator {
         loop()
 
     ///
+    /// Returns an iterator with every `f` lazily applied to each element in `iter`.
+    ///
+    /// Does *not* consume any elements from the iterator.
+    ///
+    @Lazy
+    pub def regMapL(f: a -> b, iter: RegionIterator[a, r]): RegionIterator[b, r] =
+        let RegionIterator(done, next) = iter;
+        let next1 = () -> f(next());
+        RegionIterator(done, next1)
+
+    ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.

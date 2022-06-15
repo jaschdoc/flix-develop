@@ -467,6 +467,46 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // lazyMap                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def lazyMap01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def lazyMap02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == false :: Nil
+    }
+
+    @test
+    def lazyMap03(): Bool = region r {
+        List.toRegionIterator(r, 3 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == true :: Nil
+    }
+
+    @test
+    def lazyMap04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == false :: false :: Nil
+    }
+
+    @test
+    def lazyMap05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 8 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == false :: true :: Nil
+    }
+
+    @test
+    def lazyMap06(): Bool = region r {
+        List.toRegionIterator(r, 8 :: 1 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == true :: false :: Nil
+    }
+
+    @test
+    def lazyMap07(): Bool = region r {
+        List.toRegionIterator(r, 7 :: 8 :: Nil) |> RegionIterator.regMapL(i -> i > 2) |> RegionIterator.regToList == true :: true :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
