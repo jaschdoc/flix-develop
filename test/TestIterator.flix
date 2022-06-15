@@ -916,4 +916,39 @@ namespace TestRegionIterator {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // reduceLeft                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def reduceLeft01(): Bool = region r {
+        let iter = List.toRegionIterator(r, Nil: List[Int32]);
+        RegionIterator.regReduceLeft((a, b) -> a - b, iter) == None
+    }
+
+    @test
+    def reduceLeft02(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: Nil);
+        RegionIterator.regReduceLeft((a, b) -> a - b, iter) == Some(1)
+    }
+
+    @test
+    def reduceLeft03(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        RegionIterator.regReduceLeft((a, b) -> a - b, iter) == Some(-1)
+    }
+
+    @test
+    def reduceLeft04(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil);
+        RegionIterator.regReduceLeft((a, b) -> a - b, iter) == Some(-4)
+    }
+
+    @test
+    def reduceLeft05(): Bool = region r {
+        let iter = List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: Nil);
+        RegionIterator.regReduceLeft((a, b) -> a - b, iter) == Some(-8)
+    }
+
+
 }
