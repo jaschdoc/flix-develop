@@ -312,6 +312,21 @@ namespace RegionIterator {
         RegionIterator(done, next1)
 
     ///
+    /// Returns `iterA` appended to `iterB`.
+    ///
+    /// Does *not* consume any elements from either iterator.
+    ///
+    /// The original iterators `iterA` and `iterB` should not be reused.
+    ///
+    @Lazy
+    pub def regAppend(iterA: RegionIterator[a, r1], iterB: RegionIterator[a, r2]): RegionIterator[a, r1 and r2] =
+        let RegionIterator(doneA, nextA) = iterA;
+        let RegionIterator(doneB, nextB) = iterB;
+        let doneAB = () -> doneA() and doneB();
+        let nextAB = () -> if (doneA()) nextB() else nextA();
+        RegionIterator(doneAB, nextAB)
+
+    ///
     /// Applies `f` to a start value `s` and all elements in `iter` going from left to right.
     ///
     /// That is, the result is of the form: `f(...f(f(s, x1), x2)..., xn)`.

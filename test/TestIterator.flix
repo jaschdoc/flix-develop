@@ -560,6 +560,67 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // append                                                                  //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def append01(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, Nil: List[Unit]);
+        let iter2 = List.toRegionIterator(r, Nil: List[Unit]);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def append02(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, Nil);
+        let iter2 = List.toRegionIterator(r, 1 :: Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def append03(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, Nil);
+        let iter2 = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: Nil
+    }
+
+    @test
+    def append04(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, 1 :: Nil);
+        let iter2 = List.toRegionIterator(r, Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def append05(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        let iter2 = List.toRegionIterator(r, Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: Nil
+    }
+
+    @test
+    def append06(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, 1 :: Nil);
+        let iter2 = List.toRegionIterator(r, 2 :: Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: Nil
+    }
+
+    @test
+    def append07(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, 1 :: 2 :: Nil);
+        let iter2 = List.toRegionIterator(r, 3 :: Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
+    }
+
+    @test
+    def append08(): Bool = region r {
+        let iter1 = List.toRegionIterator(r, 1 :: Nil);
+        let iter2 = List.toRegionIterator(r, 2 :: 3 :: Nil);
+        RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
     /////////////////////////////////////////////////////////////////////////////
 
