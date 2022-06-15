@@ -619,6 +619,15 @@ namespace TestRegionIterator {
         RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
     }
 
+    @test
+    def append09(): Bool = region r1 {
+        let iter1 = List.toRegionIterator(r1, 1 :: Nil);
+        region r2 {
+            let iter2 = List.toRegionIterator(r2, 2 :: 3 :: Nil);
+            RegionIterator.regAppend(iter1, iter2) |> RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
+        }
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////
     // foldLeft                                                                //
