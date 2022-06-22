@@ -1467,6 +1467,33 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // unfoldWithOk                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def unfoldWithOk01(): Bool = region r {
+        let iter = RegionIterator.regUnfoldWithOk(r, () -> Err(0));
+        RegionIterator.regToList(iter) == Nil: List[Int32]
+    }
+
+    @test
+    def unfoldWithOk02(): Bool = region r {
+        let RegionIterator(d, n) = List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: 5 :: Nil);
+        RegionIterator.regUnfoldWithOk(r, () -> if (d()) Err("Done") else Ok(n())) |>
+            RegionIterator.regToList == 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+        }
+
+    @test
+    def unfoldWithOk03(): Bool = region r {
+        let RegionIterator(d, n) = (1 :: 2 :: 3 :: 4 :: 5 :: Nil) |>
+            List.map(x -> if (x == 4) Err("Done") else Ok(x)) |>
+            List.toRegionIterator(r);
+        RegionIterator.regUnfoldWithOk(r, () -> { d(); n() }) |>
+            RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
+        }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // join                                                                    //
     /////////////////////////////////////////////////////////////////////////////
 
