@@ -1146,4 +1146,13 @@ namespace TestRegionIterator {
             RegionIterator.regToList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
     }
 
+    @test
+    def flatMap08(): Bool = region r1 {
+        region r2 {
+            List.toRegionIterator(r1, 1 :: 2 :: 3 :: 4 :: Nil) |>
+                RegionIterator.regFlatMap(i -> if (i mod 2 == 0) RegionIterator.regRepeat(r2, i, i) else new RegionIterator(r2)) |>
+                RegionIterator.regToList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
+        }
+    }
+
 }
