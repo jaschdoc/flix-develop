@@ -540,4 +540,25 @@ namespace RegionIterator {
             let RegionIterator(d, n) = f(next());
             if (d()) regFlatMapForward(f, done, next) else Some(RegionIterator(d, n))
 
+    ///
+    /// Returns an iterator with `a` inserted between every of `iter`.
+    ///
+    /// Does *not* consume any elements from the iterator.
+    ///
+    @Lazy
+    pub def regIntersperse(x: a, iter: RegionIterator[a, r]): RegionIterator[a, r] \ Write(r) =
+        let RegionIterator(done, next) = iter;
+        let returnX = ref false @ Scoped.regionOf(iter);
+        let next1 = () -> {
+            if (deref returnX) {
+                returnX := false;
+                x
+            }
+            else {
+                returnX := true;
+                next()
+            }
+        };
+        RegionIterator(done, next1)
+
 }

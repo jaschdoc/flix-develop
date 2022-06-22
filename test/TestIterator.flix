@@ -1155,4 +1155,44 @@ namespace TestRegionIterator {
         }
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // intersperse                                                             //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def intersperse01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |>
+            RegionIterator.regIntersperse(11) |>
+            RegionIterator.regToList == Nil
+    }
+
+    @test
+    def intersperse02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |>
+            RegionIterator.regIntersperse(11) |>
+            RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def intersperse03(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: Nil) |>
+            RegionIterator.regIntersperse(11) |>
+            RegionIterator.regToList == 1 :: 11 :: 2 :: Nil
+    }
+
+    @test
+    def intersperse04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |>
+            RegionIterator.regIntersperse(11) |>
+            RegionIterator.regToList == 1 :: 11 :: 2 :: 11 :: 3 :: Nil
+    }
+
+    @test
+    def intersperse05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: Nil) |>
+            RegionIterator.regIntersperse(11) |>
+            RegionIterator.regToList == 1 :: 11 :: 2 :: 11 :: 3 :: 11 :: 4 :: Nil
+    }
+
 }
