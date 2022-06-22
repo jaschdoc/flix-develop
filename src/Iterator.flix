@@ -560,5 +560,91 @@ namespace RegionIterator {
             }
         };
         RegionIterator(done, next1)
+/*
+    ///
+    /// Returns the concatenation of the elements in `iterB` with the elements of `iterA` inserted between every two adjacent elements.
+    ///
+    /// That is, returns `b1 :: a1 ... an :: b2 :: ... bn-1 :: a1 :: ... :: an :: bn :: Nil`.
+    ///
+    /// Does *not* consume any elements from either iterator.
+    ///
+    /// The original iterators `iterA` and `iterB` should not be reused.
+    ///
+    @Lazy
+    pub def intercalate(iterA: RegionIterator[a, r1], iterB: RegionIterator[RegionIterator[a, r2], r3]): RegionIterator[a, r1 and r2 and r3] \ Write(r3) =
+        let RegionIterator(doneA, nextA) = iterA;
+        let RegionIterator(doneB, nextB) = iterB;
+        let r3 = Scoped.regionOf(iterB);
+        let allRegions = () as Region[r1 or r2 or r3];
+        let xs = ref Nil @ r3;
+        let isReversed = ref false @ r3;
+        let nextAA = () -> {
+            let x = nextA();
+            xs := x :: deref xs;
+            x
+        };
+        let doneAA = () -> {
+            if (doneA()) {
+                if (deref isReversed)
+                    ()
+                else {
+                    xs := List.reverse(deref xs);
+                    isReversed := true
+                };
+                true
+            }
+            else
+                false
+        };
+        let cursor = ref None @ allRegions;
+        let mkCursor = i -> { // Appends an iterator with the contents of `iterA`. The boolean formula is inferred to be `b60995378 and (r3 or (not r1)) and r1`
+            if (deref isReversed)
+                // `iterA` has been consumed, so construct a new one from `xs`
+                cursor := Some(regAppend(i, List.toRegionIterator(Scoped.regionOf(iterA), deref xs)))
+            else
+                cursor := Some(regAppend(i, RegionIterator(doneAA, nextAA)))
+        };
+        let done1 = () -> match deref cursor {
+            case None    => match regIntercalateForward(doneB, nextB) {
+                case None    => true
+                case Some(i) =>
+                    if (doneB())
+                        cursor := Some(i) // Has Boolean formula r2 as it is the last iterator of `iterB`. Clashes with formula of mkCursor...
+                    else
+                        mkCursor(i);
+                    false
+            }
+            case Some(i) =>
+                let RegionIterator(d, _) = i;
+                if (d()) match regIntercalateForward(doneB, nextB) {
+                    case None     => true
+                    case Some(i1) =>
+                        if (doneB())
+                            cursor := Some(i1)
+                        else
+                            mkCursor(i1);
+                        false
+                }
+                else
+                    false
+        };
+        let next1 = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(i) =>
+                let RegionIterator(_, n) = i;
+                n()
+        };
+        RegionIterator(done1, next1)
+
+    ///
+    /// Forwards the iterator the first non-empty iterator produced by `next`.
+    ///
+    def regIntercalateForward(done: RegionDone[r1], next: RegionNext[RegionIterator[a, r2], r1]): Option[RegionIterator[a, r2]] \ Read(r1, r2) =
+        if(done())
+            None
+        else
+            let RegionIterator(d, n) = next();
+            if (d()) regIntercalateForward(done, next) else Some(RegionIterator(d, n))
+*/
 
 }
