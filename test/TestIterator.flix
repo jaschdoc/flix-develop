@@ -1004,4 +1004,58 @@ namespace TestRegionIterator {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // dropWhile                                                               //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def dropWhile01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == Nil
+    }
+
+    @test
+    def dropWhile02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == 1 :: Nil
+    }
+
+    @test
+    def dropWhile03(): Bool = region r {
+        List.toRegionIterator(r, 4 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == Nil
+    }
+
+    @test
+    def dropWhile04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == 1 :: 2 :: Nil
+    }
+
+    @test
+    def dropWhile05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 5 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == 1 :: 5 :: Nil
+    }
+
+    @test
+    def dropWhile06(): Bool = region r {
+        List.toRegionIterator(r, 5 :: 1 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == 1 :: Nil
+    }
+
+    @test
+    def dropWhile07(): Bool = region r {
+        List.toRegionIterator(r, 5 :: 8 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == Nil
+    }
+
+    @test
+    def dropWhile08(): Bool = region r {
+        List.toRegionIterator(r, 4 :: 6 :: -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil) |>
+            RegionIterator.regDropWhile(i -> i > 3) == -3 :: 11 :: -5 :: 1 :: 2 :: 16 :: 7 :: 1 :: 7 :: Nil
+    }
+
+
+
 }
