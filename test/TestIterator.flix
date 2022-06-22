@@ -1462,4 +1462,44 @@ namespace TestRegionIterator {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // dropL                                                                   //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def dropL01(): Bool = region r {
+        (Nil: List[Int32]) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(1) |> RegionIterator.regToList == Nil
+    }
+    @test
+    def dropL02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(1) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def dropL03(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(2) |> RegionIterator.regToList == 3 :: Nil
+    }
+
+    @test
+    def dropL04(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(3) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def dropL05(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(4) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def dropL06(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regDropL(0) |> RegionIterator.regToList == 1 :: 2 :: 3 :: Nil
+    }
+
+
 }
