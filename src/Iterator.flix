@@ -1,7 +1,3 @@
-instance Scoped[RegionIterator[a]] {
-    pub def regionOf(_: RegionIterator[a, r]): Region[r] = () as Region[r]
-}
-
 namespace RegionIterator {
 
     ///
@@ -276,7 +272,7 @@ namespace RegionIterator {
     /// Fast forwards the given iterator until the next element that satisfies
     /// the given predicate `f`. Returns it (if it exists).
     ///
-    def regForward(f: a -> Bool, done: RegionDone[r], next: RegionNext[a, r]): Option[a] \ Read(r) =
+    def regForward(f: a -> Bool & ef, done: RegionDone[r], next: RegionNext[a, r]): Option[a] \ { ef, Read(r) } =
         def loop() = {
             if (done())
                 None
@@ -476,11 +472,16 @@ namespace RegionIterator {
         };
         loop(identity)
 
-}
-
-namespace Set {
-
-    pub def toRegionIterator(r: Region[r], s: Set[a]): RegionIterator[a, r] \ Write(r) =
-        toList(s) |> List.toRegionIterator(r)
+    ///
+    /// Returns `iter` without the longest prefix that satisfies the predicate `f`.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def dropWhile(f: a -> Bool & ef, iter: RegionIterator[a, r]): List[a] \ { ef, Read(r) }=
+        let RegionIterator(done, next) = iter;
+        match regForward(x -> not f(x), done, next) {
+            case None    => Nil
+            case Some(i) => i :: regToList(iter)
+        }
 
 }
