@@ -560,7 +560,7 @@ namespace RegionIterator {
             }
         };
         RegionIterator(done, next1)
-/*
+
     ///
     /// Returns the concatenation of the elements in `iterB` with the elements of `iterA` inserted between every two adjacent elements.
     ///
@@ -571,13 +571,12 @@ namespace RegionIterator {
     /// The original iterators `iterA` and `iterB` should not be reused.
     ///
     @Lazy
-    pub def intercalate(iterA: RegionIterator[a, r1], iterB: RegionIterator[RegionIterator[a, r2], r3]): RegionIterator[a, r1 and r2 and r3] \ Write(r3) =
+    pub def regIntercalate(iterA: RegionIterator[a, r1], iterB: RegionIterator[RegionIterator[a, r2], r3]): RegionIterator[a, r1 and r2 and r3] \ Write(r1, r3) =
         let RegionIterator(doneA, nextA) = iterA;
         let RegionIterator(doneB, nextB) = iterB;
-        let r3 = Scoped.regionOf(iterB);
-        let allRegions = () as Region[r1 or r2 or r3];
-        let xs = ref Nil @ r3;
-        let isReversed = ref false @ r3;
+        let r1 = Scoped.regionOf(iterA);
+        let xs = ref Nil @ r1;
+        let isReversed = ref false @ r1;
         let nextAA = () -> {
             let x = nextA();
             xs := x :: deref xs;
@@ -596,11 +595,11 @@ namespace RegionIterator {
             else
                 false
         };
-        let cursor = ref None @ allRegions;
-        let mkCursor = i -> { // Appends an iterator with the contents of `iterA`. The boolean formula is inferred to be `b60995378 and (r3 or (not r1)) and r1`
+        let cursor = ref None @ Scoped.regionOf(iterB);
+        let mkCursor = i -> { // Appends an iterator with the contents of `iterA`. Boolean formula: r1 and formula of i
             if (deref isReversed)
                 // `iterA` has been consumed, so construct a new one from `xs`
-                cursor := Some(regAppend(i, List.toRegionIterator(Scoped.regionOf(iterA), deref xs)))
+                cursor := Some(regAppend(i, List.toRegionIterator(r1, deref xs)))
             else
                 cursor := Some(regAppend(i, RegionIterator(doneAA, nextAA)))
         };
@@ -609,9 +608,9 @@ namespace RegionIterator {
                 case None    => true
                 case Some(i) =>
                     if (doneB())
-                        cursor := Some(i) // Has Boolean formula r2 as it is the last iterator of `iterB`. Clashes with formula of mkCursor...
-                    else
-                        mkCursor(i);
+                        cursor := Some(regAppend(i, new RegionIterator(r1))) // Has Boolean formula r2 since it is the last iterator of `iterB`.
+                    else                                                     // Has to be appended with an empty iterator to satisfy formula `r1 and formula of i` in `mkCursor`
+                        mkCursor(i);                                         // Same reason for appending with empty iterator below
                     false
             }
             case Some(i) =>
@@ -620,7 +619,7 @@ namespace RegionIterator {
                     case None     => true
                     case Some(i1) =>
                         if (doneB())
-                            cursor := Some(i1)
+                            cursor := Some(regAppend(i1, new RegionIterator(r1)))
                         else
                             mkCursor(i1);
                         false
@@ -645,7 +644,6 @@ namespace RegionIterator {
         else
             let RegionIterator(d, n) = next();
             if (d()) regIntercalateForward(done, next) else Some(RegionIterator(d, n))
-*/
 
     ///
     /// Returns the concatenation of the string representation
