@@ -1433,4 +1433,33 @@ namespace TestRegionIterator {
             RegionIterator.regJoinWith(x -> x + x, ",") == "11,22,33"
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // filterMapL                                                              //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def filterMapL01(): Bool = region r {
+        (Nil: List[Int32]) |> List.toRegionIterator(r) |>
+            RegionIterator.regFilterMapL(x -> if (x mod 2 == 0) Some(x) else None) |> RegionIterator.regToList == Nil
+    }
+    @test
+    def filterMapL02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regFilterMapL(x -> if (x mod 2 == 0) Some(x) else None) |> RegionIterator.regToList == Nil
+    }
+
+    @test
+    def filterMapL03(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regFilterMapL(x -> if (x mod 2 == 0) Some(x) else None) |> RegionIterator.regToList == 2 :: Nil
+    }
+
+    @test
+    def filterMapL04(): Bool = region r {
+        (1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regFilterMapL(x -> if (x mod 2 == 0) Some(x) else None) |> RegionIterator.regToList == 2 :: 4 :: 6 :: Nil
+    }
+
+
 }
