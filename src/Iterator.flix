@@ -464,6 +464,33 @@ namespace RegionIterator {
             Some(regFoldLeft(f, next(), iter))
 
     ///
+    /// Returns an iterator over the results of `f`.
+    ///
+    /// If `f` returns `Ok(x)`, then the next element is `x`.
+    ///
+    /// If `f` returns `Err(e)`, then the iterator is depleted.
+    ///
+    @Lazy
+    pub def regUnfoldWithOk(r: Region[r], f: Unit -> Result[a, b] & ef): RegionIterator[a, r and ef] \ Write(r) =
+        let cursor = ref None @ r;
+        let done = () -> match deref cursor {
+            case None    => match f() {
+                case Err(_) => true
+                case Ok(x)  =>
+                    cursor := Some(x);
+                    false
+            }
+            case Some(_) => false
+        };
+        let next = () -> match deref cursor {
+            case None    => bug!("Empty Iterator!")
+            case Some(x) =>
+                cursor := None;
+                x
+        } as & r and ef;
+        RegionIterator(done, next)
+
+    ///
     /// Returns the longest prefix of `iter` that satisfies the predicate `f`.
     ///
     /// Consumes the entire iterator.

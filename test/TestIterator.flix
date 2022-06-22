@@ -48,6 +48,96 @@ namespace TestRegionIterator {
         RegionIterator.regToList(iter) == 1 :: Nil
     }
 
+    @test
+    def isEmpty03(): Bool = region r { // range
+        let iter = RegionIterator.regRange(r, 0, 100);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == List.range(0, 100)
+    }
+
+    @test
+    def isEmpty04(): Bool = region r { // repeat
+        let iter = RegionIterator.regRepeat(r, 2, 10);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 10 :: 10 :: Nil
+    }
+
+    @test
+    def isEmpty05(): Bool = region r { // lazyFilter
+        let iter = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regFilterL(i -> i < 3);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 1 :: 2 :: Nil
+    }
+
+    @test
+    def isEmpty06(): Bool = region r { // lazyMap
+        let iter = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |> RegionIterator.regMapL(i -> i + 1);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 2 :: 3 :: 4 :: Nil
+    }
+
+    @test
+    def isEmpty07(): Bool = region r { // append
+        let i1 = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let i2 = (4 :: 5 :: 6 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regAppend(i1, i2);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 1 :: 2 :: 3 :: 4 :: 5 :: 6 :: Nil
+    }
+
+    @test
+    def isEmpty08(): Bool = region r { // zip
+        let i1 = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let i2 = (4 :: 5 :: 6 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regZip(i1, i2);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == (1, 4) :: (2, 5) :: (3, 6) :: Nil
+    }
+
+    @test
+    def isEmpty09(): Bool = region r { // lazyZipWith
+        let i1 = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let i2 = (4 :: 5 :: 6 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regZipWithL((x, y) -> x + y, i1, i2);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 5 :: 7 :: 9 :: Nil
+    }
+
+    @test
+    def isEmpty10(): Bool = region r { // flatMap
+        let i = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regFlatMap(x -> RegionIterator.regSingleton(r, x + 1), i);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 2 :: 3 :: 4 :: Nil
+    }
+
+    @test
+    def isEmpty11(): Bool = region r { // intersperse
+        let i = (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regIntersperse(5, i);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 1 :: 5 :: 2 :: 5 :: 3 :: Nil
+    }
+
+    @test
+    def isEmpty12(): Bool = region r { // intercalate
+        let iterA  = (11 :: 12 :: 13 :: Nil) |> List.toRegionIterator(r);
+        let iterB0 = (1 :: Nil) |> List.toRegionIterator(r);
+        let iterB1 = (2 :: 3 :: Nil) |> List.toRegionIterator(r);
+        let iterB  = (iterB0 :: iterB1 :: Nil) |> List.toRegionIterator(r);
+        let iter = RegionIterator.regIntercalate(iterA, iterB);
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 1 :: 11 :: 12 :: 13 :: 2 :: 3 :: Nil
+    }
+
+    @test
+    def isEmpty13(): Bool = region r { // unfoldWithOk
+        let RegionIterator(d, n) = List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: 5 :: Nil);
+        let iter = RegionIterator.regUnfoldWithOk(r, () -> if (d()) Err("Done") else Ok(n()));
+        invokeIsEmptyRegion(100, iter);
+        RegionIterator.regToList(iter) == 1 :: 2 :: 3 :: 4 :: 5 :: Nil
+    }
+
     ///
     /// Helper function that invokes `RegionIterator.isEmpty` `n` times.
     ///
