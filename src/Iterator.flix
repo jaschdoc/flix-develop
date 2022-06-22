@@ -494,4 +494,50 @@ namespace RegionIterator {
             case Some(i) => i :: regToList(iter)
         }
 
+    ///
+    /// Returns the result of applying `f` to every element in `iter` and concatenating the results.
+    ///
+    /// Does *not* consume any elements from the iterator.
+    ///
+    @Lazy
+    pub def regFlatMap(f: a -> RegionIterator[b, r1] \ Write(r1), iter: RegionIterator[a, r2]): RegionIterator[b, r1 and r2] \ Write(r2) =
+        let RegionIterator(done, next) = iter;
+        let cursor = ref None @ Scoped.regionOf(iter);
+        let done1 = () -> match deref cursor {
+            case None     => match regFlatMapForward(f, done, next) {
+                case None     => true
+                case Some(it) =>
+                    cursor := Some(it);
+                    false
+            }
+            case Some(it) =>
+                let RegionIterator(d, _) = it;
+                if (d())
+                    match regFlatMapForward(f, done, next) {
+                        case None      => true
+                        case Some(it1) =>
+                            cursor := Some(it1);
+                            false
+                    }
+                else
+                    false
+        };
+        let next1 = () -> match deref cursor {
+            case None     => bug!("Empty Iterator!")
+            case Some(it) =>
+                let RegionIterator(_, n) = it;
+                n()
+        };
+        RegionIterator(done1, next1)
+
+    ///
+    /// Forwards the given iterator to the first non-empty iterator produced by `f`.
+    ///
+    def regFlatMapForward(f: a -> RegionIterator[b, r1] & ef, done: RegionDone[r2], next: RegionNext[a, r2]): Option[RegionIterator[b, r1]] \ { ef, Read(r1, r2) } =
+        if (done())
+            None
+        else
+            let RegionIterator(d, n) = f(next());
+            if (d()) regFlatMapForward(f, done, next) else Some(RegionIterator(d, n))
+
 }

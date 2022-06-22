@@ -1093,5 +1093,57 @@ namespace TestRegionIterator {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // flatMap                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def flatMap01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == Nil
+    }
+
+    @test
+    def flatMap02(): Bool = region r {
+        List.toRegionIterator(r, 0 :: Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == Nil
+    }
+
+    @test
+    def flatMap03(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == 1 :: Nil
+    }
+
+    @test
+    def flatMap04(): Bool = region r {
+        List.toRegionIterator(r, 2 :: Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == 2 :: 2 :: Nil
+    }
+
+    @test
+    def flatMap05(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == 1 :: 2 :: 2 :: Nil
+    }
+
+    @test
+    def flatMap06(): Bool = region r {
+        List.toRegionIterator(r, 2 :: 3 :: Nil) |>
+            RegionIterator.regFlatMap(i -> RegionIterator.regRepeat(r, i, i)) |>
+            RegionIterator.regToList == 2 :: 2 :: 3 :: 3 :: 3 :: Nil
+    }
+
+    @test
+    def flatMap07(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: 4 :: Nil) |>
+            RegionIterator.regFlatMap(i -> if (i mod 2 == 0) RegionIterator.regRepeat(r, i, i) else new RegionIterator(r)) |>
+            RegionIterator.regToList == 2 :: 2 :: 4 :: 4 :: 4 :: 4 :: Nil
+    }
 
 }
