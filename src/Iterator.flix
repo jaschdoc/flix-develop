@@ -487,7 +487,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def regDropWhile(f: a -> Bool & ef, iter: RegionIterator[a, r]): List[a] \ { ef, Read(r) }=
+    pub def regDropWhile(f: a -> Bool & ef, iter: RegionIterator[a, r]): List[a] \ { ef, Read(r) } =
         let RegionIterator(done, next) = iter;
         match regForward(x -> not f(x), done, next) {
             case None    => Nil
