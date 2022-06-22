@@ -118,37 +118,112 @@ namespace TestRegionIterator {
 
 
     /////////////////////////////////////////////////////////////////////////////
+    // sum                                                                     //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sum01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |> RegionIterator.regSum == 0
+    }
+
+    @test
+    def sum02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.regSum == 1
+    }
+
+    @test
+    def sum03(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.regSum == 6
+    }
+
+    @test
+    def sum04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.regSum == 3
+    }
+
+    @test
+    def sum05(): Bool = region r {
+        List.toRegionIterator(r, -1 :: -2 :: -3 :: -4 :: Nil) |> RegionIterator.regSum == -10
+    }
+
+    @test
+    def sum06(): Bool = region r {
+        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.regSum == 0
+    }
+
+    @test
+    def sum07(): Bool = region r {
+        RegionIterator.regRange(r, 1, 101) |> RegionIterator.regSum == 5050
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // sumWith                                                                 //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def sumWith01(): Bool = region r {
+        List.toRegionIterator(r, Nil) |> RegionIterator.regSumWith(x -> x + 1) == 0
+    }
+
+    @test
+    def sumWith02(): Bool = region r {
+        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.regSumWith(x -> x + 1) == 2
+    }
+
+    @test
+    def sumWith03(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.regSumWith(x -> x + 1) == 9
+    }
+
+    @test
+    def sumWith04(): Bool = region r {
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.regSumWith(x -> x + 1) == 7
+    }
+
+    @test
+    def sumWith05(): Bool = region r {
+        List.toRegionIterator(r, -1 :: -2 :: -3 :: -4 :: Nil) |> RegionIterator.regSumWith(x -> x + 1) == -6
+    }
+
+    @test
+    def sumWith06(): Bool = region r {
+        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.regSumWith(x -> x + 1) == 2
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
     // product                                                                 //
     /////////////////////////////////////////////////////////////////////////////
 
     @test
     def product01(): Bool = region r {
-        new RegionIterator(r) |> RegionIterator.product == 0
+        new RegionIterator(r) |> RegionIterator.regProduct == 0
     }
 
     @test
     def product02(): Bool = region r {
-        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.product == 1
+        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.regProduct == 1
     }
 
     @test
     def product03(): Bool = region r {
-        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.product == 6
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.regProduct == 6
     }
 
     @test
     def product04(): Bool = region r {
-        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.product == -18
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.regProduct == -18
     }
 
     @test
     def product05(): Bool = region r {
-        List.toRegionIterator(r, -1 :: -2 :: -3 :: -4 :: Nil) |> RegionIterator.product == 24
+        List.toRegionIterator(r, -1 :: -2 :: -3 :: -4 :: Nil) |> RegionIterator.regProduct == 24
     }
 
     @test
     def product06(): Bool = region r {
-        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.product == -100
+        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.regProduct == -100
     }
 
 
@@ -158,32 +233,32 @@ namespace TestRegionIterator {
 
     @test
     def productWith01(): Bool = region r {
-        new RegionIterator(r) |> RegionIterator.productWith(x -> x + 1) == 0
+        new RegionIterator(r) |> RegionIterator.regProductWith(x -> x + 1) == 0
     }
 
     @test
     def productWith02(): Bool = region r {
-        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.productWith(x -> x + 1) == 2
+        List.toRegionIterator(r, 1 :: Nil) |> RegionIterator.regProductWith(x -> x + 1) == 2
     }
 
     @test
     def productWith03(): Bool = region r {
-        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.productWith(x -> x + 1) == 24
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: Nil) |> RegionIterator.regProductWith(x -> x + 1) == 24
     }
 
     @test
     def productWith04(): Bool = region r {
-        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.productWith(x -> x + 1) == -48
+        List.toRegionIterator(r, 1 :: 2 :: 3 :: -3 :: Nil) |> RegionIterator.regProductWith(x -> x + 1) == -48
     }
 
     @test
     def productWith05(): Bool = region r {
-        List.toRegionIterator(r, -2 :: -3 :: -4 :: -5 :: Nil) |> RegionIterator.productWith(x -> x + 1) == 24
+        List.toRegionIterator(r, -2 :: -3 :: -4 :: -5 :: Nil) |> RegionIterator.regProductWith(x -> x + 1) == 24
     }
 
     @test
     def productWith06(): Bool = region r {
-        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.productWith(x -> x + 1) == -99
+        List.toRegionIterator(r, 10 :: -10 :: Nil) |> RegionIterator.regProductWith(x -> x + 1) == -99
     }
 
 

@@ -94,7 +94,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def sum(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
+    pub def regSum(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
         regFoldLeft((acc, x) -> acc + x, 0, iter)
 
     ///
@@ -102,7 +102,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def sumWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
+    pub def regSumWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
         regFoldLeft((acc, x) -> acc + f(x), 0, iter)
 
     ///
@@ -110,7 +110,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def product(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
+    pub def regProduct(iter: RegionIterator[Int32, r]): Int32 \ Read(r) =
         if (regIsEmpty(iter))
             0
         else
@@ -121,7 +121,7 @@ namespace RegionIterator {
     ///
     /// Consumes the entire iterator.
     ///
-    pub def productWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
+    pub def regProductWith(f: a -> Int32 & ef, iter: RegionIterator[a, r]): Int32 \ { ef, Read(r) } =
         if (regIsEmpty(iter))
             0
         else
