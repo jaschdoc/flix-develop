@@ -177,6 +177,16 @@ namespace RegionIterator {
         regFoldRight(f, None, iter)
 
     ///
+    /// Returns the contents of `iter` as a MutDeque.
+    ///
+    /// Consumes the entire iterator.
+    ///
+    pub def regToMutDeque(r1: Region[r1], iter: RegionIterator[a, r2]): MutDeque[a, r1] \ { Read(r2), Write(r1) }  =
+        let d = new MutDeque(r1);
+        regForeach(x -> MutDeque.pushBack(x, d), iter);
+        d
+
+    ///
     /// Returns the contents of `iter` as a set. Consumes the entire iterator.
     ///
     pub def regToSet(iter: RegionIterator[a, r]): Set[a] \ Read(r) with Order[a] =
