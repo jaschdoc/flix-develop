@@ -1537,4 +1537,37 @@ namespace TestRegionIterator {
     }
 
 
+    /////////////////////////////////////////////////////////////////////////////
+    // toResultList                                                            //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def toResultList01(): Bool = region r {
+        (Nil: List[Result[Int32, String]]) |> List.toRegionIterator(r) |>
+            RegionIterator.regToResultList == Ok(Nil)
+    }
+    @test
+    def toResultList02(): Bool = region r {
+        ((Ok(1) :: Nil): List[Result[Int32, String]]) |> List.toRegionIterator(r) |>
+            RegionIterator.regToResultList == Ok(1 :: Nil)
+    }
+
+    @test
+    def toResultList03(): Bool = region r {
+        ((Ok(1) :: Ok(2) :: Ok(3) :: Nil): List[Result[Int32, String]]) |> List.toRegionIterator(r) |>
+            RegionIterator.regToResultList == Ok(1 :: 2 :: 3 :: Nil)
+    }
+
+    @test
+    def toResultList04(): Bool = region r {
+        (Ok(1) :: Ok(2) :: Ok(3) :: Err("four") :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regToResultList == Err("four")
+    }
+
+    @test
+    def toResultList05(): Bool = region r {
+        (Ok(1) :: Ok(2) :: Ok(3) :: Err("four") :: Err("zero") :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regToResultList == Err("four")
+    }
+
 }
