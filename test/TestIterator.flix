@@ -1195,4 +1195,62 @@ namespace TestRegionIterator {
             RegionIterator.regToList == 1 :: 11 :: 2 :: 11 :: 3 :: 11 :: 4 :: Nil
     }
 
+
+    /////////////////////////////////////////////////////////////////////////////
+    // join                                                                    //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def join01(): Bool = region r {
+        (Nil: List[Int32]) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoin(",") == ""
+    }
+
+    @test
+    def join02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoin(",") == "1"
+    }
+
+    @test
+    def join03(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoin(",") == "1,2,3"
+    }
+
+    @test
+    def join04(): Bool = region r {
+        ("1" :: "2" :: "3" :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoin(",") == "1,2,3"
+    }
+
+
+    /////////////////////////////////////////////////////////////////////////////
+    // joinWith                                                                //
+    /////////////////////////////////////////////////////////////////////////////
+
+    @test
+    def joinWith01(): Bool = region r {
+        (Nil: List[Int32]) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoinWith(x -> "${x + 1}", ",") == ""
+    }
+
+    @test
+    def joinWith02(): Bool = region r {
+        (1 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoinWith(x -> "${x + 1}", ",") == "2"
+    }
+
+    @test
+    def joinWith03(): Bool = region r {
+        (1 :: 2 :: 3 :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoinWith(x -> "${x + 1}", ",") == "2,3,4"
+    }
+
+    @test
+    def joinWith04(): Bool = region r {
+        ("1" :: "2" :: "3" :: Nil) |> List.toRegionIterator(r) |>
+            RegionIterator.regJoinWith(x -> x + x, ",") == "11,22,33"
+    }
+
 }
