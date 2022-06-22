@@ -576,6 +576,7 @@ namespace RegionIterator {
         let RegionIterator(doneB, nextB) = iterB;
         let r1 = Scoped.regionOf(iterA);
         let xs = ref Nil @ r1;
+        let r3 = Scoped.regionOf(iterB);
         let isReversed = ref false @ r1;
         let nextAA = () -> {
             let x = nextA();
@@ -595,7 +596,7 @@ namespace RegionIterator {
             else
                 false
         };
-        let cursor = ref None @ Scoped.regionOf(iterB);
+        let cursor = ref None @ r3;
         let mkCursor = i -> { // Appends an iterator with the contents of `iterA`. Boolean formula: r1 and formula of i
             if (deref isReversed)
                 // `iterA` has been consumed, so construct a new one from `xs`
