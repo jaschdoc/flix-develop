@@ -20,11 +20,20 @@ pub enum MutDisjointSet[t: Type, r: Eff] {
 
 mod MutDisjointSet {
 
+    ///
+    ///
+    ///
     pub def makeSet(rc: Region[r], x: m[t]): MutDisjointSet[t, r] with Iterable[m] = ???
 
+    ///
+    ///
+    ///
     pub def singleton(rc: Region[r], x: t): MutDisjointSet[t, r] \ r =
         Node({ rc = rc, value = x, parent = Ref.new(rc, None), rank = Ref.new(rc, 0) })
 
+    ///
+    /// Returns the representative of the set that contains x.
+    ///
     pub def find(x: MutDisjointSet[t, r]): MutDisjointSet[t, r] \ r =
         let Node({ parent | _ }) = x;
         match Ref.get(parent) {
