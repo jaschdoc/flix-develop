@@ -25,7 +25,16 @@ mod MutDisjointSet {
     pub def singleton(rc: Region[r], x: t): MutDisjointSet[t, r] \ r =
         Node({ rc = rc, value = x, parent = Ref.new(rc, None), rank = Ref.new(rc, 0) })
 
-    pub def find(x: MutDisjointSet[t, r]): MutDisjointSet[t, r] = ???
+    pub def find(x: MutDisjointSet[t, r]): MutDisjointSet[t, r] \ r =
+        let Node({ parent | _ }) = x;
+        match Ref.get(parent) {
+            case Some(p) => {
+                let root = find(p);
+                Ref.put(Some(root), parent);
+                root
+            }
+            case None => x
+        }
 
     pub def union(x: MutDisjointSet[t, r], y: MutDisjointSet[t, r]): MutDisjointSet[t, r] \ {} = ???
 
