@@ -73,7 +73,7 @@ mod MutDisjointSet {
         Node.Node({ rc = rc, value = x, parent = Ref.new(rc, None), rank = Ref.new(rc, 0) })
 
     ///
-    /// Returns the representative of the set that contains x.
+    /// Returns the representative / root of the set that contains `x`.
     ///
     pub def find(x: Node[t, r]): Node[t, r] \ r =
         let Node.Node({ parent | _ }) = x;
