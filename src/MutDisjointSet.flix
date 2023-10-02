@@ -57,16 +57,28 @@ mod MutDisjointSet {
     pub def node(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] with Eq[t] = ???
 
     ///
+    ///
+    ///
+    def contains(x: t, s: MutDisjointSet[t, r]): Bool \ r with Eq[t] = {
+        // Speed up with binary search
+        let MutDisjointSet({ forest | _ }) = s;
+        match MutList.find(match Node.Node({ value | _ }) -> value == x, forest) {
+            case Some(_) => true
+            case None    => false
+        }
+    }
+
+    ///
     /// Returns a new collection of disjoint singletong sets containing
     /// the elements of the iterable `m` in the region `rc`.
     ///
-    pub def makeSet(rc: Region[r], m: m[t]): MutDisjointSet[t, r] \ r with Iterable[m] = region rc1 {
-        // Consider sorting the backing array, so lookup is faster with binary search
-        let forest = MutList.new(rc);
-        Iterable.iterator(rc1, m)
-        |> Iterator.map(singleton(rc))
-        |> Iterator.forEach(flip(MutList.push!)(forest));
-        MutDisjointSet({ rc = rc, forest = forest })
+    pub def makeSet(x: t, s: MutDisjointSet[t, r]): Unit \ r with Eq[t] =   {
+        let MutDisjointSet({ rc, forest }) = s;
+        if (not contains(x, s)) {
+            MutList.push!(singleton(rc, x), forest)
+        } else {
+            ()
+        }
     }
 
     ///
