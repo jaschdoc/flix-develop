@@ -53,7 +53,7 @@ mod MutDisjointSet {
     ///
     /// Returns `true` iff `s` contains `x`.
     ///
-    def contains(x: t, s: MutDisjointSet[t, r]): Bool \ r with Eq[t] = {
+    pub def contains(x: t, s: MutDisjointSet[t, r]): Bool \ r with Eq[t] = {
         // Speed up with binary search
         let MutDisjointSet({ forest | _ }) = s;
         match MutList.find(match Node.Node({ value | _ }) -> value == x, forest) {
@@ -63,16 +63,24 @@ mod MutDisjointSet {
     }
 
     ///
-    /// Returns a new collection of disjoint singletong sets containing
-    /// the elements of the iterable `m` in the region `rc`.
+    /// Updates `s` with a new disjoint set containing `x`
+    /// if `x` is not already in `s`.
     ///
-    pub def makeSet(x: t, s: MutDisjointSet[t, r]): Unit \ r with Eq[t] =   {
+    pub def makeSet(x: t, s: MutDisjointSet[t, r]): Unit \ r with Eq[t] = {
         let MutDisjointSet({ rc, forest }) = s;
         if (not contains(x, s)) {
             MutList.push!(singleton(rc, x), forest)
         } else {
             ()
         }
+    }
+
+    ///
+    /// Updates `s` with collection of disjoint singleton sets containing
+    /// the elements of the iterable `m`.
+    ///
+    pub def makeSets(m: m[t], s: MutDisjointSet[t, r]): Unit \ r with Iterable[m], Eq[t] = region rc {
+        Iterable.iterator(rc, m) |> Iterator.forEach(flip(makeSet)(s))
     }
 
     ///
