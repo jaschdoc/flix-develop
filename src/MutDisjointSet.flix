@@ -16,7 +16,7 @@
 
 pub enum MutDisjointSet[t: Type, r: Eff]({
     rc = Region[r],
-    nodes = Vector[(t, MutDisjointSet.Node[t, r])]
+    forest = MutList[MutDisjointSet.Node[t, r], r]
 })
 
 mod MutDisjointSet {
@@ -45,25 +45,28 @@ mod MutDisjointSet {
     }
 
     ///
+    ///
+    ///
+    pub def new(rc: Region[r]): MutDisjointSet[t, r] \ r =
+        MutDisjointSet({ rc = rc, forest = MutList.new(rc) })
+
+    ///
     /// Returns the node in the set `s` that contains `x`.
     /// Returns `None` if `x` is not in `s`.
     ///
-    pub def node(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] with Eq[t] = {
-        let MutDisjointSet({ nodes | _ }) = s;
-        Vector.find(fst >> Eq.eq(x), nodes)
-        |> Option.map(snd)
-    }
+    pub def node(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] with Eq[t] = ???
 
     ///
     /// Returns a new collection of disjoint singletong sets containing
     /// the elements of the iterable `m` in the region `rc`.
     ///
-    pub def makeSet(rc: Region[r], m: m[t]): MutDisjointSet[t, r] \ r with Iterable[m], Order[t] = {
-        let nodes =
-            foreach (
-                x <- m
-            ) yield (x, singleton(rc, x));
-        MutDisjointSet({ rc = rc, nodes = nodes })
+    pub def makeSet(rc: Region[r], m: m[t]): MutDisjointSet[t, r] \ r with Iterable[m] = region rc1 {
+        // Consider sorting the backing array, so lookup is faster with binary search
+        let forest = MutList.new(rc);
+        Iterable.iterator(rc1, m)
+        |> Iterator.map(singleton(rc))
+        |> Iterator.forEach(flip(MutList.push!)(forest));
+        MutDisjointSet({ rc = rc, forest = forest })
     }
 
     ///
