@@ -91,7 +91,13 @@ mod MutDisjointSet {
     ///
     /// Returns the representative / root of the set that contains `x`.
     ///
-    pub def find(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] \ r with Order[t] = {
+    pub def find(x: t, s: MutDisjointSet[t, r]): Option[t] \ r with Order[t] =
+        findNode(x, s) |> Option.map(match Node.Node({ value | _ }) -> value)
+
+    ///
+    /// Returns the representative / root `Node` of the set that contains `x`.
+    ///
+    def findNode(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] \ r with Order[t] = {
         def findRoot(y) = {
             let Node.Node({ parent | _ }) = y;
             match Ref.get(parent) {
@@ -128,7 +134,7 @@ mod MutDisjointSet {
                 ()
             }
         };
-        match (find(x, s), find(y, s)) {
+        match (findNode(x, s), findNode(y, s)) {
             case (Some(xn), Some(yn)) => link(xn, yn)
             case _ => ()
         }
