@@ -109,7 +109,7 @@ mod MutDisjointSet {
     }
 
     ///
-    /// Merges the sets that contain `x` and `y`.
+    /// Merges the sets that contain `x` and `y` if both `x` and `y` are in `s`.
     ///
     pub def union(x: t, y: t, s: MutDisjointSet[t, r]): Unit \ r with Order[t] =
         def link(x1, y1) = {
