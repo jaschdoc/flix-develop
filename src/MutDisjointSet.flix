@@ -51,17 +51,6 @@ mod MutDisjointSet {
         MutDisjointSet({ rc = rc, forest = MutMap.new(rc) })
 
     ///
-    /// Returns `true` iff `s` contains `x`.
-    ///
-    pub def contains(x: t, s: MutDisjointSet[t, r]): Bool \ r with Order[t] = {
-        let MutDisjointSet({ forest | _ }) = s;
-        match MutMap.get(x, forest) {
-            case Some(_) => true
-            case None    => false
-        }
-    }
-
-    ///
     /// Updates `s` with a new disjoint set containing `x`
     /// if `x` is not already in `s`.
     ///
@@ -75,11 +64,14 @@ mod MutDisjointSet {
     }
 
     ///
-    /// Updates `s` with collection of disjoint singleton sets containing
-    /// the elements of the iterable `m`.
+    /// Returns `true` iff `s` contains `x`.
     ///
-    pub def makeSets(m: m[t], s: MutDisjointSet[t, r]): Unit \ r with Iterable[m], Order[t] = region rc {
-        Iterable.iterator(rc, m) |> Iterator.forEach(flip(makeSet)(s))
+    pub def contains(x: t, s: MutDisjointSet[t, r]): Bool \ r with Order[t] = {
+        let MutDisjointSet({ forest | _ }) = s;
+        match MutMap.get(x, forest) {
+            case Some(_) => true
+            case None    => false
+        }
     }
 
     ///
@@ -89,14 +81,22 @@ mod MutDisjointSet {
         Node.Node({ rc = rc, value = x, parent = Ref.new(rc, None), rank = Ref.new(rc, 0) })
 
     ///
+    /// Updates `s` with collection of disjoint singleton sets containing
+    /// the elements of the iterable `m`.
+    ///
+    pub def makeSets(m: m[t], s: MutDisjointSet[t, r]): Unit \ r with Iterable[m], Order[t] = region rc {
+        Iterable.iterator(rc, m) |> Iterator.forEach(flip(makeSet)(s))
+    }
+
+    ///
     /// Returns the representative / root of the set that contains `x`.
     ///
     pub def find(x: t, s: MutDisjointSet[t, r]): Option[Node[t, r]] \ r with Order[t] = {
-        def findInternal(y) = {
+        def findRoot(y) = {
             let Node.Node({ parent | _ }) = y;
             match Ref.get(parent) {
                 case Some(p) => {
-                    let root = findInternal(p);
+                    let root = findRoot(p);
                     Ref.put(Some(root), parent);
                     root
                 }
@@ -105,7 +105,7 @@ mod MutDisjointSet {
         };
         let MutDisjointSet({ forest | _ }) = s;
         MutMap.get(x, forest)
-        |> Option.map(findInternal)
+        |> Option.map(findRoot)
     }
 
     ///
