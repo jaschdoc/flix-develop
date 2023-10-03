@@ -120,8 +120,8 @@ mod MutDisjointSet {
     ///
     pub def union(x: t, y: t, s: MutDisjointSet[t, r]): Unit \ r with Order[t] =
         def link(x1, y1) = {
-            let Node.Node({ parent = yparent, rank = yr | _ }) = y1;
             let Node.Node({ parent = xparent, rank = xr | _ }) = x1;
+            let Node.Node({ parent = yparent, rank = yr | _ }) = y1;
             let xrank = Ref.get(xr);
             let yrank = Ref.get(yr);
             if (xrank > yrank) {
