@@ -116,6 +116,7 @@ mod MutDisjointSet {
 
     ///
     /// Merges the sets that contain `x` and `y` if both `x` and `y` are in `s`.
+    /// If `x` and `y` have the same rank, then `y` becomes the new parent of `x`.
     ///
     pub def union(x: t, y: t, s: MutDisjointSet[t, r]): Unit \ r with Order[t] =
         def link(x1, y1) = {
