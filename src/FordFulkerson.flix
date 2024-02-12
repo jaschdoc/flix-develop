@@ -56,18 +56,18 @@ mod FordFulkerson {
         case Path(xs) => Path(z :: xs)
     }
 
-    type alias From = Int32
-    type alias To = Int32
+    type alias Source = Int32
+    type alias Sink = Int32
     type alias UpperCapacity = Int32
     type alias Flow = Int32
-    type alias FlowNetwork = (From, To, UpperCapacity, Flow)
+    type alias FlowNetwork = (Source, Sink, UpperCapacity, Flow)
 
     ///
     /// Returns the maximum flow from `src` to `dst` in the flow network `g`.
     /// N.B.: `g` is a directed graph with upper bounds / capacity on the edges.
     /// No pre-assigned flow is allowed.
     ///
-    pub def maxFlow(src: { src = From }, dst: { dst = To }, g: m[(From, To, UpperCapacity)]): Flow with Foldable[m] =
+    pub def maxFlow(src: { src = Source }, dst: { dst = Sink }, g: m[(Source, Sink, UpperCapacity)]): Flow with Foldable[m] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
             case Some(path) =>
@@ -81,20 +81,20 @@ mod FordFulkerson {
     ///
     /// Returns a flow network with zero flow.
     ///
-    def zeroFlow(g: m[(From, To, UpperCapacity)]): Vector[FlowNetwork] with Foldable[m] =
+    def zeroFlow(g: m[(Source, Sink, UpperCapacity)]): Vector[FlowNetwork] with Foldable[m] =
         Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
     ///
     /// Returns the sum of the flows directly connected to `dst`.
     ///
-    def getMaxFlow(dst: To, g: m[FlowNetwork]): Flow with Foldable[m] =
+    def getMaxFlow(dst: Sink, g: m[FlowNetwork]): Flow with Foldable[m] =
         g
         |> Foldable.toVector
         |> Vector.filter(match (_, d, _, _) -> d == dst)
         |> Vector.map(match (_, _, _, f) -> f)
         |> Vector.sum
 
-    def augmentingPath(src: { src = From }, dst: { dst = To }, g: m[FlowNetwork]): Option[Path] with Foldable[m] =
+    def augmentingPath(src: { src = Source }, dst: { dst = Sink }, g: m[FlowNetwork]): Option[Path] with Foldable[m] =
         let edges = inject g into Edge;
         let rules = #{
             Reach(x, y; init(y, x)) :- Edge(x, y, u, f),                 if (u - f) > 0. // Forward edge
@@ -129,13 +129,13 @@ mod FordFulkerson {
                 (s, d, u, f)
         )
 
-    def isForwardEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
+    def isForwardEdge(src: { src = Source }, dst: { dst = Sink }, p: Path): Bool =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if di + 1 == si => true
             case _ => false
         }
 
-    def isBackEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
+    def isBackEdge(src: { src = Source }, dst: { dst = Sink }, p: Path): Bool =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if si + 1 == di => true
             case _ => false
@@ -176,7 +176,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `19`.
     ///
-    pub def exampleGraph01(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph01(): Set[(Source, Sink, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 3, 2), (1, 2, 4), (1, 4, 8), (3, 4, 9), (4, 2, 6), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -204,7 +204,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    pub def exampleGraph02(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph02(): Set[(Source, Sink, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -230,7 +230,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `2000`.
     ///
-    pub def exampleGraph03(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph03(): Set[(Source, Sink, UpperCapacity)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
 
     ///
@@ -270,7 +270,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    pub def exampleGraph04(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph04(): Set[(Source, Sink, UpperCapacity)] =
         Set#{   (0, 1, 5), (0, 4, 10), (0, 7, 5), (4, 1, 15), (1, 2, 10),
                 (4, 5, 20), (5, 7, 5), (7, 8, 10), (2, 5, 25), (2, 3, 10),
                 (6, 2, 15), (5, 6, 30), (8, 6, 5), (8, 9, 10), (3, 10, 5),
