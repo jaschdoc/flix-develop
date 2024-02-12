@@ -552,4 +552,3 @@ mod FordFulkerson {
         Assert.eq(20, maxFlow(src = 0, dst = 10, exampleGraph04()))
 
 }
-
