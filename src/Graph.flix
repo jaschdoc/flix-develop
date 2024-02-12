@@ -118,24 +118,16 @@ mod Graph.FordFulkerson {
         )
 
     def isForwardEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        let member = memberOf(src.src, p) and memberOf(dst.dst, p);
-        let nextOnPath = match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
+        match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if di + 1 == si => true
             case _ => false
-        };
-        member and nextOnPath
+        }
 
     def isBackEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        let member = memberOf(src.src, p) and memberOf(dst.dst, p);
-        let nextOnPath = match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
+        match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if si + 1 == di => true
             case _ => false
-        };
-        member and nextOnPath
-
-    def memberOf(a: Int32, p: Path): Bool =
-        let Path(xs) = p;
-        List.memberOf(a, xs)
+        }
 
     def indexOf(a: Int32, p: Path): Option[Int32] =
         let Path(xs) = p;
