@@ -209,6 +209,14 @@ mod Graph {
     def testPathMinCapacity03(): Bool =
         let s = 0;
         let t = 5;
+        let g = g1() |> Set.map(match (a, b, u) -> (a, b, u, 0));
+        let p = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(9, pathMinCapacity(p, g)) // The path is picked as in testAugmentingPath02
+
+    @Test
+    def testPathMinCapacity04(): Bool =
+        let s = 0;
+        let t = 5;
         let g = g1() |> Set.map(x -> match x {
             case (0, 3, 10) => (0, 3, 10, 9)
             case (3, 4, 9)  => (3, 4, 9 , 9)
