@@ -66,6 +66,18 @@ mod Graph.FordFulkerson {
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
             case Some(path) =>
+                let incr = pathMinCapacity(path, flowNetwork);
+                let updatedNetwork = increaseFlow(path, incr, flowNetwork);
+                fordFulkerson(updatedNetwork)
+        };
+        // Init with 0 flow
+        let flowNetwork = Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0));
+        fordFulkerson(flowNetwork)
+
+    pub def maxFlow2(src: { src = From }, dst: { dst = To }, g: m[(From, To, UpperCapacity)]): Flow with Foldable[m] =
+        def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
+            case None       => getMaxFlow(dst.dst, flowNetwork)
+            case Some(path) =>
                 let updatedNetwork = increaseFlow2(path, flowNetwork);
                 fordFulkerson(updatedNetwork)
         };
