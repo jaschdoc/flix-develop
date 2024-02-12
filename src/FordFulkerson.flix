@@ -73,9 +73,15 @@ mod FordFulkerson {
         // Init with 0 flow
         fordFulkerson(zeroFlow(g))
 
+    ///
+    /// Returns a flow network with zero flow.
+    ///
     def zeroFlow(g: m[(From, To, UpperCapacity)]): Vector[FlowNetwork] with Foldable[m] =
         Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
+    ///
+    /// Returns the sum of the flows directly connected to `dst`.
+    ///
     def getMaxFlow(dst: To, g: m[FlowNetwork]): Flow with Foldable[m] =
         g
         |> Foldable.toVector
