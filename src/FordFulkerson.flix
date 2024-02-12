@@ -62,6 +62,11 @@ mod FordFulkerson {
     type alias Flow = Int32
     type alias FlowNetwork = (From, To, UpperCapacity, Flow)
 
+    ///
+    /// Returns the maximum flow from `src` to `dst` in the flow network `g`.
+    /// N.B.: `g` is a directed graph with upper bounds / capacity on the edges.
+    /// No pre-assigned flow is allowed.
+    ///
     pub def maxFlow(src: { src = From }, dst: { dst = To }, g: m[(From, To, UpperCapacity)]): Flow with Foldable[m] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
