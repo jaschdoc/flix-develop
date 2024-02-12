@@ -96,8 +96,8 @@ mod Graph.FordFulkerson {
         Vector.head(result) |> Option.flatMap(match Path(xs) -> if (List.isEmpty(xs)) None else Some(Path(xs)))
 
     def pathMinCapacity(p: Path, g: m[FlowNetwork]): Int32 with Foldable[m] =
-        let mem = p |> flip(memberOf);
-        let optMin = g |> Foldable.filter(match (s, d, _, _) -> mem(s) and mem(d))
+        let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
+        let optMin = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d))
             |> List.map(match (_, _, u, f) -> u - f)
             |> List.minimum;
         match optMin {
@@ -118,10 +118,20 @@ mod Graph.FordFulkerson {
         )
 
     def isForwardEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(src.src, p) > indexOf(dst.dst, p) // A path is sorted in reverse order
+        let member = memberOf(src.src, p) and memberOf(dst.dst, p);
+        let nextOnPath = match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
+            case (Some(si), Some(di)) if di + 1 == si => true
+            case _ => false
+        };
+        member and nextOnPath
 
     def isBackEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(dst.dst, p) > indexOf(src.src, p) // A path is sorted in reverse order
+        let member = memberOf(src.src, p) and memberOf(dst.dst, p);
+        let nextOnPath = match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
+            case (Some(si), Some(di)) if si + 1 == di => true
+            case _ => false
+        };
+        member and nextOnPath
 
     def memberOf(a: Int32, p: Path): Bool =
         let Path(xs) = p;
@@ -347,7 +357,7 @@ mod Graph.FordFulkerson {
         }) |> Foldable.toVector;
         Assert.eq(g1, increaseFlow(p, incr, g))
 
-    @Test @Skip
+    @Test
     def testMaxFlow01(): Bool =
         Assert.eq(19, maxFlow(src = 0, dst = 5, exampleGraph01()))
 
