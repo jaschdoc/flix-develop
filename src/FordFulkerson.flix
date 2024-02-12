@@ -143,7 +143,10 @@ mod FordFulkerson {
     }
 
     instance MeetLattice[Path] {
-        pub def greatestLowerBound(x: Path, y: Path): Path = ???
+        pub def greatestLowerBound(x: Path, y: Path): Path =
+            let Path(xs) = x;
+            let Path(ys) = y;
+            if (List.length(xs) > List.length(ys)) x else y
     }
 
     ///
