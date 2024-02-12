@@ -423,6 +423,19 @@ mod Graph.FordFulkerson {
         Assert.eq(10, pathMinCapacity(p, g)) // The path is picked as in testAugmentingPath06
 
     @Test
+    def testPathMinCapacity08(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = exampleGraph02() |> zeroFlow |> Functor.map(x -> match x {
+            case (0, 3, 10, 0) => (0, 3, 10, 10)
+            case (3, 4, 15, 0) => (3, 4, 15, 10)
+            case (4, 5, 10, 0) => (4, 5, 10, 10)
+            case _             => x
+        });
+        let p = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(10, pathMinCapacity(p, g)) // The path is picked as in testAugmentingPath07
+
+    @Test
     def testIncreaseFlow01(): Bool =
         let s = 0;
         let t = 5;
