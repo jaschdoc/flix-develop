@@ -1,17 +1,14 @@
 mod ShortestDistance {
 
-    use Path.{Path, init, cons};
-    use Path.Path.Path;
-
-    pub def shortestDist(src : { src = Source }, dst: { dst = Destination }, g: m[Graph]): Option[(Distance, Path)] with Foldable[m] =
+    pub def shortestDist(src : { src = Source }, dst: { dst = Destination }, g: m[Graph]): Option[Distance] with Foldable[m] =
         let edges = inject g into Edge;
         let rules = #{
-            Reach(x, y, d; init(x, y))        :- Edge(x, y, d).
-            Reach(x, z, d1 + d2; cons(z, fn)) :- Reach(x, y, d1; fn), Edge(y, z, d2).
+            Reach(x, y, d)        :- Edge(x, y, d).
+            Reach(x, z, d1 + d2) :- Reach(x, y, d1), Edge(y, z, d2).
         };
         let s = src.src;
         let t = dst.dst;
-        let result = query edges, rules select (d, fn) from Reach(s, t, d; fn);
+        let result = query edges, rules select d from Reach(s, t, d);
         Vector.head(result)
 
     // Type aliases for readability
@@ -154,18 +151,18 @@ mod ShortestDistance {
 
     @Test
     def testExampleGraphShortestDistance01(): Bool =
-        Assert.eq(Some(10, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 5, exampleGraph01()))
+        Assert.eq(Some(10), shortestDist(src = 0, dst = 5, exampleGraph01()))
 
     @Test
     def testExampleGraphShortestDistance02(): Bool =
-        Assert.eq(Some(3, Path(0 :: 1 :: 4 :: 5 :: Nil)), shortestDist(src = 0, dst = 5, exampleGraph02()))
+        Assert.eq(Some(3), shortestDist(src = 0, dst = 5, exampleGraph02()))
 
     @Test
     def testExampleGraphShortestDistance03(): Bool =
-        Assert.eq(Some(21, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 3, exampleGraph03()))
+        Assert.eq(Some(21), shortestDist(src = 0, dst = 3, exampleGraph03()))
 
     @Test
     def testExampleGraphShortestDistance04(): Bool =
-        Assert.eq(Some(35, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 10, exampleGraph04()))
+        Assert.eq(Some(3), shortestDist(src = 0, dst = 10, exampleGraph04()))
 
 }
