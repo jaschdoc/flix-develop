@@ -1,4 +1,4 @@
-mod Graph.FordFulkerson {
+mod FordFulkerson {
 
     use Path.Path;
 
