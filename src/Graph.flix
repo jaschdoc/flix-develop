@@ -217,7 +217,7 @@ mod Graph.FordFulkerson {
     /// 2 -> 3, capacity 1000
     /// ```
     ///
-    /// The maximum flow is `1000`.
+    /// The maximum flow is `2000`.
     ///
     def exampleGraph03(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
@@ -563,9 +563,9 @@ mod Graph.FordFulkerson {
     def testExampleGraph02(): Bool =
         Assert.eq(20, maxFlow(src = 0, dst = 5, exampleGraph02()))
 
-    @Test @Skip
+    @Test
     def testExampleGraph03(): Bool =
-        Assert.eq(1000, maxFlow(src = 0, dst = 3, exampleGraph03()))
+        Assert.eq(2000, maxFlow(src = 0, dst = 3, exampleGraph03()))
 
     @Test
     def testExampleGraph04(): Bool =
