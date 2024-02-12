@@ -156,4 +156,16 @@ mod ShortestDistance {
     def testExampleGraphShortestDistance01(): Bool =
         Assert.eq(Some(10, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 5, exampleGraph01()))
 
+    @Test
+    def testExampleGraphShortestDistance02(): Bool =
+        Assert.eq(Some(3, Path(0 :: 1 :: 4 :: 5 :: Nil)), shortestDist(src = 0, dst = 5, exampleGraph02()))
+
+    @Test
+    def testExampleGraphShortestDistance03(): Bool =
+        Assert.eq(Some(21, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 3, exampleGraph03()))
+
+    @Test
+    def testExampleGraphShortestDistance04(): Bool =
+        Assert.eq(Some(35, Path(0 :: 1 :: 4 :: 2 :: 5 :: Nil)), shortestDist(src = 0, dst = 10, exampleGraph04()))
+
 }
