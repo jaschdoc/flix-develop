@@ -2,7 +2,7 @@ mod Graph.FordFulkerson {
 
     use Path.Path;
 
-    enum Path {
+    enum Path with ToString {
         case Path(List[Int32])
     }
 
@@ -348,6 +348,21 @@ mod Graph.FordFulkerson {
         });
         let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(5 :: 2 :: 1 :: 0 :: Nil, xs)
+
+    @Test
+    def testAugmentingPath08(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = exampleGraph02() |> zeroFlow |> Functor.map(x -> match x {
+            case (0, 1, 10, 0) => (0, 1, 10, 10)
+            case (0, 3, 10, 0) => (0, 3, 10, 10)
+            case (1, 2, 25, 0) => (1, 2, 25, 10)
+            case (3, 4, 15, 0) => (3, 4, 15, 10)
+            case (2, 5, 10, 0) => (2, 5, 10, 10)
+            case (4, 5, 10, 0) => (4, 5, 10, 10)
+            case _             => x
+        });
+        Assert.eq(None, augmentingPath(src = s, dst = t, g))
 
     @Test
     def testPathMinCapacity01(): Bool =
