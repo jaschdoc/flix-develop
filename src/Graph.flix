@@ -204,6 +204,19 @@ mod Graph {
         let g = Set#{(1, 2, 3, 0), (1, 3, 4, 0), (2, 3, 3, 0), (3, 4, 5, 0), (4, 5, 10, 0), (6, 7, 1, 0)};
         Assert.eq(3, pathMinCapacity(p, g))
 
+    @Test
+    def testPathMinCapacity03(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = g1() |> Set.map(x -> match x {
+            case (0, 3, 10) => (0, 3, 10, 9)
+            case (3, 4, 9)  => (3, 4, 9 , 9)
+            case (4, 5, 10) => (4, 5, 10, 9)
+            case (a, b, u)  => (a, b, u , 0)
+        });
+        let p = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(1, pathMinCapacity(p, g)) // The path is picked as in testAugmentingPath03
+
     @Test @Skip
     def testMaxFlow01(): Bool =
         Assert.eq(19, maxFlow(src = 0, dst = 5, g1()))
