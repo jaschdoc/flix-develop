@@ -543,19 +543,33 @@ mod Graph.FordFulkerson {
         Assert.eq(g1, increaseFlow(p, incr, g))
 
     @Test
-    def testMaxFlow01(): Bool =
+    def testGetMaxFlow01(): Bool =
+        let t = 5;
+        let g = exampleGraph02() |> zeroFlow |> Functor.map(x -> match x {
+            case (0, 1, 10, 0) => (0, 1, 10, 10)
+            case (0, 3, 10, 0) => (0, 3, 10, 10)
+            case (1, 2, 25, 0) => (1, 2, 25, 10)
+            case (3, 4, 15, 0) => (3, 4, 15, 10)
+            case (2, 5, 10, 0) => (2, 5, 10, 10)
+            case (4, 5, 10, 0) => (4, 5, 10, 10)
+            case _             => x
+        });
+        Assert.eq(20, getMaxFlow(t, g))
+
+    @Test
+    def testExampleGraph01(): Bool =
         Assert.eq(19, maxFlow(src = 0, dst = 5, exampleGraph01()))
 
     @Test @Skip
-    def testMaxFlow02(): Bool =
+    def testExampleGraph02(): Bool =
         Assert.eq(20, maxFlow(src = 0, dst = 5, exampleGraph02()))
 
     @Test
-    def testMaxFlow03(): Bool =
+    def testExampleGraph03(): Bool =
         Assert.eq(1000, maxFlow(src = 0, dst = 3, exampleGraph03()))
 
     @Test @Skip
-    def testMaxFlow04(): Bool =
+    def testExampleGraph04(): Bool =
         Assert.eq(20, maxFlow(src = 0, dst = 10, exampleGraph04()))
 
 }
