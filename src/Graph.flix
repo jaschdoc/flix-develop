@@ -1,4 +1,4 @@
-mod Graph {
+mod Graph.FordFulkerson {
 
     use Path.Path;
 
@@ -118,10 +118,10 @@ mod Graph {
         )
 
     def isForwardEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(src.src, p) < indexOf(dst.dst, p)
+        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(src.src, p) > indexOf(dst.dst, p) // A path is sorted in reverse order
 
     def isBackEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
-        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(dst.dst, p) < indexOf(src.src, p)
+        memberOf(src.src, p) and memberOf(dst.dst, p) and indexOf(dst.dst, p) > indexOf(src.src, p) // A path is sorted in reverse order
 
     def memberOf(a: Int32, p: Path): Bool =
         let Path(xs) = p;
