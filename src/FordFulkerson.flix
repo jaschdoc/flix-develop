@@ -120,12 +120,7 @@ mod FordFulkerson {
         pub def compare(x: Path, y: Path): Comparison =
             let Path(xs) = x;
             let Path(ys) = y;
-            if (List.length(xs) ==  List.length(ys))
-                Comparison.EqualTo
-            else if (List.length(xs) <= List.length(ys))
-                Comparison.GreaterThan
-            else
-                Comparison.LessThan
+            List.length(xs) <=> List.length(ys)
     }
 
     instance LowerBound[Path] {
