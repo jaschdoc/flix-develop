@@ -229,6 +229,46 @@ mod Graph.FordFulkerson {
     def exampleGraph03(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
 
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///       1--2--3
+    ///      /|  |\  \
+    ///     / |  | \  \
+    ///    0--4--5--6--10
+    ///     \   /  /| /
+    ///      \ /  / |/
+    ///       7--8--9
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1 , capacity 5
+    /// 0 -> 4 , capacity 10
+    /// 0 -> 7 , capacity 5
+    /// 4 -> 1 , capacity 15
+    /// 1 -> 2 , capacity 10
+    /// 4 -> 5 , capacity 20
+    /// 5 -> 7 , capacity 5
+    /// 7 -> 8 , capacity 10
+    /// 2 -> 5 , capacity 25
+    /// 2 -> 3 , capacity 10
+    /// 6 -> 2 , capacity 15
+    /// 5 -> 6 , capacity 30
+    /// 8 -> 6 , capacity 5
+    /// 8 -> 9 , capacity 10
+    /// 3 -> 10, capacity 5
+    /// 6 -> 10, capacity 15
+    /// 9 -> 10, capacity 10
+    /// ```
+    ///
+    /// The maximum flow is `20`.
+    ///
+    def exampleGraph04(): Set[(From, To, UpperCapacity)] =
+        Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
+
     @Test
     def testAugmentingPath01(): Bool =
         let s = 1;
@@ -423,6 +463,10 @@ mod Graph.FordFulkerson {
     @Test
     def testMaxFlow03(): Bool =
         Assert.eq(1000, maxFlow(src = 0, dst = 3, exampleGraph03()))
+
+    @Test
+    def testMaxFlow04(): Bool =
+        Assert.eq(20, maxFlow(src = 0, dst = 10, exampleGraph04()))
 
 }
 
