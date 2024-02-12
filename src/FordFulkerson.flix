@@ -2,71 +2,6 @@ mod FordFulkerson {
 
     use Path.Path;
 
-    enum Path with ToString {
-        case Path(List[Int32])
-    }
-
-    instance Eq[Path] {
-        pub def eq(x: Path, y: Path): Bool =
-            let Path(xs) = x;
-            let Path(ys) = y;
-            List.length(xs) == List.length(ys)
-    }
-
-    instance Order[Path] {
-        pub def compare(x: Path, y: Path): Comparison =
-            let Path(xs) = x;
-            let Path(ys) = y;
-            if (List.length(xs) ==  List.length(ys))
-                Comparison.EqualTo
-            else if (List.length(xs) <= List.length(ys))
-                Comparison.GreaterThan
-            else
-                Comparison.LessThan
-    }
-
-    instance LowerBound[Path] {
-        // The longest list
-        pub def minValue(): Path = Path(List.range(1, 100))
-    }
-
-    instance PartialOrder[Path] {
-        pub def lessEqual(x: Path, y: Path): Bool =
-            let Path(xs) = x;
-            let Path(ys) = y;
-            List.length(xs) >= List.length(ys)
-    }
-
-    instance JoinLattice[Path] {
-        pub def leastUpperBound(x: Path, y: Path): Path =
-            let Path(xs) = x;
-            let Path(ys) = y;
-            if (List.length(xs) <= List.length(ys)) x else y
-    }
-
-    instance MeetLattice[Path] {
-        pub def greatestLowerBound(x: Path, y: Path): Path = ???
-    }
-
-    ///
-    /// Returns a `Path` from `x` to `y`.
-    ///
-    pub def init(y: Int32, x: Int32): Path =
-        Path(y :: x :: Nil)
-
-    ///
-    /// Extends the `Path` `p` with `z`.
-    ///
-    pub def cons(z: Int32, p: Path): Path = match p {
-        case Path(xs) => Path(z :: xs)
-    }
-
-    type alias Source = Int32
-    type alias Sink = Int32
-    type alias UpperCapacity = Int32
-    type alias Flow = Int32
-    type alias FlowNetwork = (Source, Sink, UpperCapacity, Flow)
-
     ///
     /// Returns the maximum flow from `src` to `dst` in the flow network `g`.
     /// N.B.: `g` is a directed graph with upper bounds / capacity on the edges.
@@ -146,9 +81,80 @@ mod FordFulkerson {
             case _ => false
         }
 
+
+    enum Path with ToString {
+        case Path(List[Int32])
+    }
+
+    instance Eq[Path] {
+        pub def eq(x: Path, y: Path): Bool =
+            let Path(xs) = x;
+            let Path(ys) = y;
+            List.length(xs) == List.length(ys)
+    }
+
+    instance Order[Path] {
+        pub def compare(x: Path, y: Path): Comparison =
+            let Path(xs) = x;
+            let Path(ys) = y;
+            if (List.length(xs) ==  List.length(ys))
+                Comparison.EqualTo
+            else if (List.length(xs) <= List.length(ys))
+                Comparison.GreaterThan
+            else
+                Comparison.LessThan
+    }
+
+    instance LowerBound[Path] {
+        // The longest list
+        pub def minValue(): Path = Path(List.range(1, 100))
+    }
+
+    instance PartialOrder[Path] {
+        pub def lessEqual(x: Path, y: Path): Bool =
+            let Path(xs) = x;
+            let Path(ys) = y;
+            List.length(xs) >= List.length(ys)
+    }
+
+    instance JoinLattice[Path] {
+        pub def leastUpperBound(x: Path, y: Path): Path =
+            let Path(xs) = x;
+            let Path(ys) = y;
+            if (List.length(xs) <= List.length(ys)) x else y
+    }
+
+    instance MeetLattice[Path] {
+        pub def greatestLowerBound(x: Path, y: Path): Path = ???
+    }
+
+    ///
+    /// Returns a `Path` from `x` to `y`.
+    ///
+    pub def init(y: Int32, x: Int32): Path =
+        Path(y :: x :: Nil)
+
+    ///
+    /// Extends the `Path` `p` with `z`.
+    ///
+    pub def cons(z: Int32, p: Path): Path = match p {
+        case Path(xs) => Path(z :: xs)
+    }
+
+    ///
+    /// Returns the index of `a` in the `Path` `p`.
+    /// Note that a `Path` is sorted in descending order.
+    ///
     def indexOf(a: Int32, p: Path): Option[Int32] =
         let Path(xs) = p;
         List.indexOf(a, xs)
+
+    // Type aliases for readability
+    type alias Source = Int32
+    type alias Sink = Int32
+    type alias UpperCapacity = Int32
+    type alias Flow = Int32
+    type alias FlowNetwork = (Source, Sink, UpperCapacity, Flow)
 
     //////////////////////////////////////////
     // Tests                                //
