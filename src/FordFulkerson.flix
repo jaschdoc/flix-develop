@@ -58,7 +58,7 @@ mod FordFulkerson {
         let s = src.src;
         let t = dst.dst;
         let result = query edges, rules select fn from Reach(s, t; fn);
-        Vector.head(result) |> Option.flatMap(match Path(xs) -> if (List.isEmpty(xs)) None else Some(Path(xs)))
+        Vector.head(result) |> Option.flatMap(toOption)
 
     ///
     /// Returns the most constraining capacity of `g` on the `Path` `p`.
@@ -163,6 +163,14 @@ mod FordFulkerson {
     ///
     pub def cons(z: Int32, p: Path): Path = match p {
         case Path(xs) => Path(z :: xs)
+    }
+
+    ///
+    /// Returns `Some(p)` if `p` is a non-empty `Path`.
+    ///
+    def toOption(p: Path): Option[Path] = match p {
+        case Path(xs) if List.isEmpty(xs) => None
+        case Path(xs)                     => Some(Path(xs))
     }
 
     ///
