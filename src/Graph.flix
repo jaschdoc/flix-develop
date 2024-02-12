@@ -74,17 +74,6 @@ mod Graph.FordFulkerson {
         let flowNetwork = Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0));
         fordFulkerson(flowNetwork)
 
-    pub def maxFlow2(src: { src = From }, dst: { dst = To }, g: m[(From, To, UpperCapacity)]): Flow with Foldable[m] =
-        def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
-            case None       => getMaxFlow(dst.dst, flowNetwork)
-            case Some(path) =>
-                let updatedNetwork = increaseFlow2(path, flowNetwork);
-                fordFulkerson(updatedNetwork)
-        };
-        // Init with 0 flow
-        let flowNetwork = Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0));
-        fordFulkerson(flowNetwork)
-
     def getMaxFlow(dst: To, g: m[FlowNetwork]): Flow with Foldable[m] =
         let edges = inject g into Edge;
         let rules = #{
@@ -127,26 +116,6 @@ mod Graph.FordFulkerson {
             else
                 (s, d, u, f)
         )
-
-    def increaseFlow2(p: Path, g: m[FlowNetwork]): Vector[FlowNetwork] with Foldable[m] =
-        let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
-        let lim = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d)) |> List.map(match (_, _, u, f) -> u - f) |> List.filter(c -> c > 0) |> List.minimum;
-        match lim {
-            case Some(l) =>
-               g |> Foldable.toVector |> Vector.map(match (s, d, u, f) -> {
-                    if (onPath(s, d)) {
-                        if (f + l > u)
-                            (s, d, u, f - l)
-                        else
-                            (s, d, u, f + l)
-                    }
-                    else {
-                        (s, d, u, f)
-                    }
-            })
-
-            case None => unreachable!()
-        }
 
     def isForwardEdge(src: { src = From }, dst: { dst = To }, p: Path): Bool =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
