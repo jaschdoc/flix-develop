@@ -165,7 +165,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `19`.
     ///
-    def exampleGraph01(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph01(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 3, 2), (1, 2, 4), (1, 4, 8), (3, 4, 9), (4, 2, 6), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -193,7 +193,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    def exampleGraph02(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph02(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -219,7 +219,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `2000`.
     ///
-    def exampleGraph03(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph03(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
 
     ///
@@ -259,7 +259,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    def exampleGraph04(): Set[(From, To, UpperCapacity)] =
+    pub def exampleGraph04(): Set[(From, To, UpperCapacity)] =
         Set#{   (0, 1, 5), (0, 4, 10), (0, 7, 5), (4, 1, 15), (1, 2, 10),
                 (4, 5, 20), (5, 7, 5), (7, 8, 10), (2, 5, 25), (2, 3, 10),
                 (6, 2, 15), (5, 6, 30), (8, 6, 5), (8, 9, 10), (3, 10, 5),
