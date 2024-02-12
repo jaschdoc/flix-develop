@@ -16,7 +16,7 @@ mod FordFulkerson {
     /// - The label of `src` has the lowest value in the graph
     /// - The label of `dst` has the highest value in the graph
     ///
-    pub def maxFlow(src: { src = Source }, dst: { dst = Destination }, g: m[(Source, Destination, UpperCapacity)]): Flow with Foldable[m] =
+    pub def maxFlow(src: { src = a }, dst: { dst = a }, g: m[(a, a, UpperCapacity)]): Flow with Foldable[m], Order[a] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
             case Some(path) =>
@@ -30,13 +30,13 @@ mod FordFulkerson {
     ///
     /// Returns a flow network with zero flow.
     ///
-    def zeroFlow(g: m[(Source, Destination, UpperCapacity)]): Vector[FlowNetwork] with Foldable[m] =
+    def zeroFlow(g: m[(a, a, UpperCapacity)]): Vector[FlowNetwork[a]] with Foldable[m], Order[a] =
         Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
     ///
     /// Returns the sum of the flows directly connected to `dst`.
     ///
-    def getMaxFlow(dst: Destination, g: m[FlowNetwork]): Flow with Foldable[m] =
+    def getMaxFlow(dst: a, g: m[FlowNetwork[a]]): Flow with Foldable[m], Order[a] =
         g
         |> Foldable.toVector
         |> Vector.filterMap(match (_, d, _, f) -> if (d == dst) Some(f) else None)
@@ -48,7 +48,7 @@ mod FordFulkerson {
     /// An edge is in an augmenting path if its flow can be increased, i.e., the flow is strictly less than the capacity,
     /// or if it has non-zero flow.
     ///
-    def augmentingPath(src: { src = Source }, dst: { dst = Destination }, g: m[FlowNetwork]): Option[Path] with Foldable[m] =
+    def augmentingPath(src: { src = a }, dst: { dst = a }, g: m[FlowNetwork[a]]): Option[Path[a]] with Foldable[m], Order[a] =
         let edges = inject g into Edge;
         let rules = #{
             Reach(x, y; init(y, x)) :- Edge(x, y, u, f),                 if (u - f) > 0. // Forward edge
@@ -64,7 +64,7 @@ mod FordFulkerson {
     ///
     /// Returns the most constraining capacity of `g` on the `Path` `p`.
     ///
-    def minCapacity(p: Path, g: m[FlowNetwork]): Int32 with Foldable[m] =
+    def minCapacity(p: Path[a], g: m[FlowNetwork[a]]): Int32 with Foldable[m], Order[a] =
         let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
         let optMin = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d))
             |> List.map(match (_, _, u, f) -> u - f)
@@ -77,7 +77,7 @@ mod FordFulkerson {
     ///
     /// Returns a new flow network where the edges in `g` on the `Path` `p` has been adjusted by `incr`.
     ///
-    def increaseFlow(p: Path, incr: Flow, g: m[FlowNetwork]): Vector[FlowNetwork] with Foldable[m] =
+    def increaseFlow(p: Path[a], incr: Flow, g: m[FlowNetwork[a]]): Vector[FlowNetwork[a]] with Foldable[m], Order[a] =
         g
         |> Foldable.toVector
         |> Vector.map(match (s, d, u, f) ->
@@ -92,7 +92,7 @@ mod FordFulkerson {
     ///
     /// Returns true if `src` is an edge pointing to `dst` on the `Path` `p`.
     ///
-    def isForwardEdge(src: { src = Source }, dst: { dst = Destination }, p: Path): Bool =
+    def isForwardEdge(src: { src = a }, dst: { dst = a }, p: Path[a]): Bool with Eq[a] =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if di + 1 == si => true
             case _ => false
@@ -101,7 +101,7 @@ mod FordFulkerson {
     ///
     /// Returns true if `dst` is an edge pointing to `src` on the `Path` `p`.
     ///
-    def isBackEdge(src: { src = Source }, dst: { dst = Destination }, p: Path): Bool =
+    def isBackEdge(src: { src = a }, dst: { dst = a }, p: Path[a]): Bool with Eq[a] =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if si + 1 == di => true
             case _ => false
@@ -112,7 +112,7 @@ mod FordFulkerson {
     type alias Destination = Int32
     type alias UpperCapacity = Int32
     type alias Flow = Int32
-    type alias FlowNetwork = (Source, Destination, UpperCapacity, Flow)
+    type alias FlowNetwork[a] = (a, a, UpperCapacity, Flow)
 
     //////////////////////////////////////////
     // Tests                                //
