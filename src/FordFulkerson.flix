@@ -37,8 +37,7 @@ mod FordFulkerson {
     def getMaxFlow(dst: Destination, g: m[FlowNetwork]): Flow with Foldable[m] =
         g
         |> Foldable.toVector
-        |> Vector.filter(match (_, d, _, _) -> d == dst)
-        |> Vector.map(match (_, _, _, f) -> f)
+        |> Vector.filterMap(match (_, d, _, f) -> if (d == dst) Some(f) else None)
         |> Vector.sum
 
     ///
