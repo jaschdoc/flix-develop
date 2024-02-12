@@ -48,10 +48,15 @@ mod FordFulkerson {
         pub def greatestLowerBound(x: Path, y: Path): Path = ???
     }
 
-
+    ///
+    /// Returns a `Path` from `x` to `y`.
+    ///
     pub def init(y: Int32, x: Int32): Path =
         Path(y :: x :: Nil)
 
+    ///
+    /// Extends the `Path` `p` with `z`.
+    ///
     pub def cons(z: Int32, p: Path): Path = match p {
         case Path(xs) => Path(z :: xs)
     }
