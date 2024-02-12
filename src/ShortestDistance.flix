@@ -3,22 +3,27 @@ mod ShortestDistance {
     use Down.Down;
 
     ///
-    /// Computes the shortest distance from `src` to any other vertex in `g`.
+    /// Returns the shortest distance from `src` to every other node in the
+    /// weighted directed graph `g`.
     ///
-    pub def shortestDistances(src : Source, g: m[Graph]): Vector[(Destination, Distance)] with Foldable[m] =
+    pub def distancesFrom(src: t, g: m[(t, t, Int32)]): Map[t, Int32] with Foldable[m], Order[t] = {
         let edges = inject g into Edge;
-        let rules = #{
-            Reach(x, y, Down(d))     :- Edge(x, y, d).
-            Reach(x, y, d1 `add` d2) :- Reach(x, y, d1), Edge(y, z, d2).
+        let dists = #{
+            Dist(src; Down.Down(0)).
+            Dist(y; d + Down.Down(w)) :- Dist(x; d), Edge(x, y, w).
         };
-        query edges, rules select (dst, d) from Reachable(src, dst, d)
+        let mapping = #{
+            Mapping(x, destructDown(d)) :- fix Dist(x; d).
+        };
+        let res = query edges, dists, mapping
+                  select (x, d)
+                  from Mapping(x, d);
+        res |> Vector.toMap
+    }
 
-    ///
-    /// Returns a `Down` with the value of `d1` added to `d2`.
-    ///
-    def add(d1: Down[Int32], d2: Int32): Down[Int32] =
-        let Down(a) = d1;
-        Down(a + d2)
+    def destructDown(d: Down[a]): a =
+        let Down(a) = d;
+        a
 
     type alias Source = Int32
     type alias Destination = Int32
@@ -159,18 +164,18 @@ mod ShortestDistance {
 
     @Test
     def testExampleGraphShortestDistances01(): Bool =
-        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph01()))
+        Assert.eq(Map#{0 => 0, 1 => 2, 2 => 9, 3 => 3, 4 => 6, 5 => 10}, distancesFrom(0, exampleGraph01()))
 
     @Test
     def testExampleGraphShortestDistances02(): Bool =
-        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph02()))
+        Assert.eq(Map#{0 => 0, 1 => 1, 2 => 2, 3 => 1, 4 => 2, 5 => 3}, distancesFrom(0, exampleGraph02()))
 
     @Test
     def testExampleGraphShortestDistances03(): Bool =
-        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph03()))
+        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 11, 3 => 21}, distancesFrom(0, exampleGraph03()))
 
     @Test
     def testExampleGraphShortestDistances04(): Bool =
-        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph04()))
+        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 25, 3 => 30, 4 => 10, 5 => 30, 6 => 20, 7 => 10, 8 => 15, 9 => 25, 10 => 35}, distancesFrom(0, exampleGraph04()))
 
 }
