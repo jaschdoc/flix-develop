@@ -177,7 +177,20 @@ mod Graph {
         let t = 5;
         let g = g1() |> Set.map(match (a, b, u) -> (a, b, u, 0));
         let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
-        Assert.eq(5 :: 4 :: 3 :: 0 :: Nil, xs)
+        Assert.eq(5 :: 4 :: 3 :: 0 :: Nil, xs) // Shortest path in reverse order
+
+    @Test
+    def testAugmentingPath03(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = g1() |> Set.map(x -> match x {
+            case (0, 3, 10) => (0, 3, 10, 9)
+            case (3, 4, 9)  => (3, 4, 9 , 9)
+            case (4, 5, 10) => (4, 5, 10, 9)
+            case (a, b, u)  => (a, b, u , 0)
+        });
+        let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(5 :: 4 :: 1 :: 0 :: Nil, xs)
 
     @Test
     def testPathMinCapacity01(): Bool =
