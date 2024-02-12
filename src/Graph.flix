@@ -559,7 +559,7 @@ mod Graph.FordFulkerson {
     def testExampleGraph01(): Bool =
         Assert.eq(19, maxFlow(src = 0, dst = 5, exampleGraph01()))
 
-    @Test @Skip
+    @Test
     def testExampleGraph02(): Bool =
         Assert.eq(20, maxFlow(src = 0, dst = 5, exampleGraph02()))
 
