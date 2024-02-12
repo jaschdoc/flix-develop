@@ -117,7 +117,7 @@ mod Graph.FordFulkerson {
         )
 
     def increaseFlow2(p: Path, g: m[FlowNetwork]): Vector[FlowNetwork] with Foldable[m] =
-        let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p);
+        let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
         let lim = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d)) |> List.map(match (_, _, u, f) -> u - f) |> List.filter(c -> c > 0) |> List.minimum;
         match lim {
             case Some(l) =>
