@@ -180,6 +180,12 @@ mod Graph.FordFulkerson {
     def exampleGraph02(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
 
+    ///
+    ///
+    ///
+    def exampleGraph03(): Set[(From, To, UpperCapacity)] =
+        Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
+
     @Test
     def testAugmentingPath01(): Bool =
         let s = 1;
@@ -370,6 +376,10 @@ mod Graph.FordFulkerson {
     @Test
     def testMaxFlow02(): Bool =
         Assert.eq(20, maxFlow(src = 0, dst = 5, exampleGraph02()))
+
+    @Test
+    def testMaxFlow03(): Bool =
+        Assert.eq(1000, maxFlow(src = 0, dst = 3, exampleGraph03()))
 
 }
 
