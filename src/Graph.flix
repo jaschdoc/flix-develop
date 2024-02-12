@@ -96,8 +96,9 @@ mod Graph {
         Vector.head(result) |> Option.flatMap(match Path(xs) -> if (List.isEmpty(xs)) None else Some(Path(xs)))
 
     def pathMinCapacity(p: Path, g: m[FlowNetwork]): Int32 with Foldable[m] =
-        let optMin = g |> Foldable.filter(match (s, d, _, _) -> memberOf(s, p) and memberOf(d, p))
-            |> List.map(match (_, _, u, _) -> u)
+        let mem = p |> flip(memberOf);
+        let optMin = g |> Foldable.filter(match (s, d, _, _) -> mem(s) and mem(d))
+            |> List.map(match (_, _, u, f) -> u - f)
             |> List.minimum;
         match optMin {
             case Some(u) => u
