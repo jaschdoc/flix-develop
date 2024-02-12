@@ -7,6 +7,12 @@ mod FordFulkerson {
     /// N.B.: `g` is a directed graph with upper bounds / capacity on the edges.
     /// No pre-assigned flow is allowed.
     ///
+    /// The following assumptions also apply:
+    /// - `g` contains no negative cycles
+    /// - `g` is labeled in ascending order from `src` to `sink`
+    /// - The label of `src` has the lowest value in the graph
+    /// - The label of `dst` has the highest value in the graph
+    ///
     pub def maxFlow(src: { src = Source }, dst: { dst = Sink }, g: m[(Source, Sink, UpperCapacity)]): Flow with Foldable[m] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
