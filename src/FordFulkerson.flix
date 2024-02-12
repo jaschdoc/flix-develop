@@ -40,6 +40,12 @@ mod FordFulkerson {
         |> Vector.map(match (_, _, _, f) -> f)
         |> Vector.sum
 
+    ///
+    /// Returns an augmenting path if one exists.
+    ///
+    /// An edge is in an augmenting path if its flow can be increased, i.e., the flow is strictly less than the capacity,
+    /// or if it has non-zero flow.
+    ///
     def augmentingPath(src: { src = Source }, dst: { dst = Sink }, g: m[FlowNetwork]): Option[Path] with Foldable[m] =
         let edges = inject g into Edge;
         let rules = #{
@@ -53,6 +59,9 @@ mod FordFulkerson {
         let result = query edges, rules select fn from Reach(s, t; fn);
         Vector.head(result) |> Option.flatMap(match Path(xs) -> if (List.isEmpty(xs)) None else Some(Path(xs)))
 
+    ///
+    ///
+    ///
     def pathMinCapacity(p: Path, g: m[FlowNetwork]): Int32 with Foldable[m] =
         let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
         let optMin = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d))
