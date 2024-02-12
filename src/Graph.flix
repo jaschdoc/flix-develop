@@ -218,7 +218,7 @@ mod Graph {
         let p = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(1, pathMinCapacity(p, g)) // The path is picked as in testAugmentingPath03
 
-    @Test @Skip
+    @Test
     def testMaxFlow01(): Bool =
         Assert.eq(19, maxFlow(src = 0, dst = 5, g1()))
 
