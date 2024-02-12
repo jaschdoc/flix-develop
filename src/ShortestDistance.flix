@@ -67,4 +67,30 @@ mod ShortestDistance {
     pub def exampleGraph02(): Set[(Source, Destination, Distance)] =
         Set#{ (0, 1, 1), (0, 3, 1), (1, 2, 1), (1, 4, 1), (3, 4, 2), (2, 5, 2), (4, 5, 1) }
 
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///      1
+    ///     /|\
+    ///    0 | 3
+    ///     \|/
+    ///      2
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1, distance 10
+    /// 0 -> 2, distance 15
+    /// 1 -> 2, distance 1
+    /// 1 -> 3, distance 15
+    /// 2 -> 3, distance 10
+    /// ```
+    ///
+    /// The shortest route is `0 -> 1 -> 2 -> 3` with a total distance of `10 + 1 + 10 = 21`.
+    ///
+    pub def exampleGraph03(): Set[(Source, Destination, Distance)] =
+        Set#{ (0, 1, 10), (0, 2, 15), (1, 2, 1), (1, 3, 15), (2, 3, 10) }
+
 }
