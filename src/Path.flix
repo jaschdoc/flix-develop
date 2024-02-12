@@ -84,12 +84,4 @@ mod Path {
         case Bot      => None
     }
 
-    ///
-    /// Reverses the `Path` `p`.
-    ///
-    pub def reverse(p: Path): Path = match p {
-        case Path(xs) => Path(List.reverse(xs))
-        case Bot      => Bot
-    }
-
 }

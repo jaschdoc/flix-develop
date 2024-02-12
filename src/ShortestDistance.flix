@@ -1,6 +1,6 @@
 mod ShortestDistance {
 
-    use Path.{Path, init, cons, reverse};
+    use Path.{Path, init, cons};
     use Path.Path.Path;
 
     pub def shortestDist(src : { src = Source }, dst: { dst = Destination }, g: m[Graph]): Option[(Distance, Path)] with Foldable[m] =
@@ -12,7 +12,7 @@ mod ShortestDistance {
         let s = src.src;
         let t = dst.dst;
         let result = query edges, rules select (d, fn) from Reach(s, t, d; fn);
-        Vector.head(result) // |> Option.map(match (d, p) -> (d, reverse(p)))
+        Vector.head(result)
 
     // Type aliases for readability
     type alias Source = Int32
