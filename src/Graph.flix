@@ -136,7 +136,7 @@ mod Graph.FordFulkerson {
     //////////////////////////////////////////
 
     ///
-    /// Returns the follwing graph:
+    /// Returns the following graph:
     ///
     /// ```
     ///      1---2
