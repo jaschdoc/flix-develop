@@ -194,6 +194,21 @@ mod Graph.FordFulkerson {
         Assert.eq(5 :: 4 :: 1 :: 0 :: Nil, xs)
 
     @Test
+    def testAugmentingPath04(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = exampleGraph01() |> Set.map(x -> match x {
+            case (0, 1, 10) => (0, 1, 10, 1)
+            case (0, 3, 10) => (0, 3, 10, 9)
+            case (1, 4, 8)  => (1, 4, 8 , 1)
+            case (3, 4, 9)  => (3, 4, 9 , 9)
+            case (4, 5, 10) => (4, 5, 10, 10)
+            case (a, b, u)  => (a, b, u , 0)
+        });
+        let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(5 :: 2 :: 1 :: 0 :: Nil, xs)
+
+    @Test
     def testPathMinCapacity01(): Bool =
         let p = Path(5 :: 4 :: 3 :: 2 :: 1 :: Nil);
         let g = Set#{(1, 2, 3, 0), (1, 3, 4, 0), (2, 3, 1, 0), (3, 4, 5, 0), (4, 5, 10, 0)};
