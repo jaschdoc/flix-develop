@@ -1,17 +1,25 @@
 mod ShortestDistance {
 
-    pub def shortestDist(src : { src = Source }, dst: { dst = Destination }, g: m[Graph]): Option[Distance] with Foldable[m] =
+    use Down.Down;
+
+    ///
+    /// Computes the shortest distance from `src` to any other vertex in `g`.
+    ///
+    pub def shortestDistances(src : Source, g: m[Graph]): Vector[(Destination, Distance)] with Foldable[m] =
         let edges = inject g into Edge;
         let rules = #{
-            Reach(x, y, d)        :- Edge(x, y, d).
-            Reach(x, z, d1 + d2) :- Reach(x, y, d1), Edge(y, z, d2).
+            Reach(x, y, Down(d))     :- Edge(x, y, d).
+            Reach(x, y, d1 `add` d2) :- Reach(x, y, d1), Edge(y, z, d2).
         };
-        let s = src.src;
-        let t = dst.dst;
-        let result = query edges, rules select d from Reach(s, t, d);
-        Vector.head(result)
+        query edges, rules select (dst, d) from Reachable(src, dst, d)
 
-    // Type aliases for readability
+    ///
+    /// Returns a `Down` with the value of `d1` added to `d2`.
+    ///
+    def add(d1: Down[Int32], d2: Int32): Down[Int32] =
+        let Down(a) = d1;
+        Down(a + d2)
+
     type alias Source = Int32
     type alias Destination = Int32
     type alias Distance = Int32
@@ -150,19 +158,19 @@ mod ShortestDistance {
             }
 
     @Test
-    def testExampleGraphShortestDistance01(): Bool =
-        Assert.eq(Some(10), shortestDist(src = 0, dst = 5, exampleGraph01()))
+    def testExampleGraphShortestDistances01(): Bool =
+        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph01()))
 
     @Test
-    def testExampleGraphShortestDistance02(): Bool =
-        Assert.eq(Some(3), shortestDist(src = 0, dst = 5, exampleGraph02()))
+    def testExampleGraphShortestDistances02(): Bool =
+        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph02()))
 
     @Test
-    def testExampleGraphShortestDistance03(): Bool =
-        Assert.eq(Some(21), shortestDist(src = 0, dst = 3, exampleGraph03()))
+    def testExampleGraphShortestDistances03(): Bool =
+        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph03()))
 
     @Test
-    def testExampleGraphShortestDistance04(): Bool =
-        Assert.eq(Some(3), shortestDist(src = 0, dst = 10, exampleGraph04()))
+    def testExampleGraphShortestDistances04(): Bool =
+        Assert.eq(Vector.empty(), shortestDistances(0, exampleGraph04()))
 
 }
