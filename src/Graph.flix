@@ -157,6 +157,7 @@ mod Graph.FordFulkerson {
     /// ```
     ///
     /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
     /// ```
     /// 0 -> 1, capacity 10
     /// 0 -> 3, capacity 10
@@ -175,13 +176,55 @@ mod Graph.FordFulkerson {
         Set#{ (0, 1, 10), (0, 3, 10), (1, 3, 2), (1, 2, 4), (1, 4, 8), (3, 4, 9), (4, 2, 6), (2, 5, 10), (4, 5, 10) }
 
     ///
+    /// Returns the following graph:
     ///
+    /// ```
+    ///      1---2
+    ///     / \   \
+    ///    0   \   5
+    ///     \   \ /
+    ///      3---4
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1, capacity 10
+    /// 0 -> 3, capacity 10
+    /// 1 -> 2, capacity 25
+    /// 4 -> 1, capacity 6
+    /// 3 -> 4, capacity 15
+    /// 2 -> 5, capacity 10
+    /// 4 -> 5, capacity 10
+    /// ```
+    ///
+    /// The maximum flow is `20`.
     ///
     def exampleGraph02(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
 
     ///
+    /// Returns the following graph:
     ///
+    /// ```
+    ///      1
+    ///     /|\
+    ///    0 | 3
+    ///     \|/
+    ///      2
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1, capacity 1000
+    /// 0 -> 2, capacity 1000
+    /// 1 -> 2, capacity 1
+    /// 1 -> 3, capacity 1000
+    /// 2 -> 3, capacity 1000
+    /// ```
+    ///
+    /// The maximum flow is `1000`.
     ///
     def exampleGraph03(): Set[(From, To, UpperCapacity)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
