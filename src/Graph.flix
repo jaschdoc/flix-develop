@@ -71,8 +71,10 @@ mod Graph.FordFulkerson {
                 fordFulkerson(updatedNetwork)
         };
         // Init with 0 flow
-        let flowNetwork = Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0));
-        fordFulkerson(flowNetwork)
+        fordFulkerson(zeroFlow(g))
+
+    def zeroFlow(g: m[(From, To, UpperCapacity)]): Vector[FlowNetwork] with Foldable[m] =
+        Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
     def getMaxFlow(dst: To, g: m[FlowNetwork]): Flow with Foldable[m] =
         let edges = inject g into Edge;
@@ -325,6 +327,14 @@ mod Graph.FordFulkerson {
         });
         let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(5 :: 2 :: 4 :: 1 :: 0 :: Nil, xs)
+
+    @Test
+    def testAugmentingPath06(): Bool =
+        let s = 0;
+        let t = 5;
+        let g = zeroFlow(exampleGraph02());
+        let Path(xs) = augmentingPath(src = s, dst = t, g) |> Option.getWithDefault(Path(Nil));
+        Assert.eq(5 :: 4 :: 3 :: 0 :: Nil, xs)
 
     @Test
     def testPathMinCapacity01(): Bool =
