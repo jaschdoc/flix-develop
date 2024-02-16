@@ -12,18 +12,9 @@ mod ShortestDistance {
             Dist(src; Down.Down(0)).
             Dist(y; d + Down.Down(w)) :- Dist(x; d), Edge(x, y, w).
         };
-        let mapping = #{
-            Mapping(x, destructDown(d)) :- fix Dist(x; d).
-        };
-        let res = query edges, dists, mapping
-                  select (x, d)
-                  from Mapping(x, d);
+        let res = query edges, dists select (x, coerce(d)) from Dist(x; d);
         res |> Vector.toMap
     }
-
-    def destructDown(d: Down[a]): a =
-        let Down(a) = d;
-        a
 
     //////////////////////////////////////////
     // Tests                                //
