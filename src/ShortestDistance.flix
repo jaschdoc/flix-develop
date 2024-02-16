@@ -3,7 +3,7 @@ mod ShortestDistance {
     use Down.Down;
 
     ///
-    /// Returns the shortest distance from `src` to every other vertex in the
+    /// Returns the shortest distance from `src` to every other reachable vertex in the
     /// weighted directed graph `g`.
     ///
     pub def distancesFrom(src: t, g: m[(t, t, Int32)]): Map[t, Int32] with Foldable[m], Order[t] = {
