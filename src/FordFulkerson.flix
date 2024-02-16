@@ -34,7 +34,7 @@ mod FordFulkerson {
         Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
     ///
-    /// Returns the sum of the flows directly connected to `dst`.
+    /// Returns the sum of the flows on all directly ingoing edges to `dst`.
     ///
     def getMaxFlow(dst: t, g: m[(t, t, Int32, Int32)]): Int32 with Foldable[m], Order[t] =
         g
