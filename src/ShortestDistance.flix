@@ -6,11 +6,11 @@ mod ShortestDistance {
     /// Returns the shortest distance from `src` to every other reachable vertex in the
     /// weighted directed graph `g`.
     ///
-    pub def distancesFrom(src: t, g: m[(t, t, Int32)]): Map[t, Int32] with Foldable[m], Order[t] = {
+    pub def sssd(src: t, g: m[(t, t, Int32)]): Map[t, Int32] with Foldable[m], Order[t] = {
         let edges = inject g into Edge;
         let dists = #{
-            Dist(src; Down.Down(0)).
-            Dist(y; d + Down.Down(w)) :- Dist(x; d), Edge(x, y, w).
+            Dist(src; Down(0)).
+            Dist(y; d + Down(w)) :- Dist(x; d), Edge(x, y, w).
         };
         let res = query edges, dists select (x, coerce(d)) from Dist(x; d);
         res |> Vector.toMap
@@ -150,18 +150,18 @@ mod ShortestDistance {
 
     @Test
     def testExampleGraphShortestDistances01(): Bool =
-        Assert.eq(Map#{0 => 0, 1 => 2, 2 => 9, 3 => 3, 4 => 6, 5 => 10}, distancesFrom(0, exampleGraph01()))
+        Assert.eq(Map#{0 => 0, 1 => 2, 2 => 9, 3 => 3, 4 => 6, 5 => 10}, sssd(0, exampleGraph01()))
 
     @Test
     def testExampleGraphShortestDistances02(): Bool =
-        Assert.eq(Map#{0 => 0, 1 => 1, 2 => 2, 3 => 1, 4 => 2, 5 => 3}, distancesFrom(0, exampleGraph02()))
+        Assert.eq(Map#{0 => 0, 1 => 1, 2 => 2, 3 => 1, 4 => 2, 5 => 3}, sssd(0, exampleGraph02()))
 
     @Test
     def testExampleGraphShortestDistances03(): Bool =
-        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 11, 3 => 21}, distancesFrom(0, exampleGraph03()))
+        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 11, 3 => 21}, sssd(0, exampleGraph03()))
 
     @Test
     def testExampleGraphShortestDistances04(): Bool =
-        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 25, 3 => 30, 4 => 10, 5 => 30, 6 => 20, 7 => 10, 8 => 15, 9 => 25, 10 => 35}, distancesFrom(0, exampleGraph04()))
+        Assert.eq(Map#{0 => 0, 1 => 10, 2 => 25, 3 => 30, 4 => 10, 5 => 30, 6 => 20, 7 => 10, 8 => 15, 9 => 25, 10 => 35}, sssd(0, exampleGraph04()))
 
 }
