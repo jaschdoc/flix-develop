@@ -16,7 +16,7 @@ mod FordFulkerson {
     /// - The label of `src` has the lowest value in the graph
     /// - The label of `dst` has the highest value in the graph
     ///
-    pub def maxFlow(src: { src = a }, dst: { dst = a }, g: m[(a, a, UpperCapacity)]): Flow with Foldable[m], Order[a] =
+    pub def maxFlow(src: { src = t }, dst: { dst = t }, g: m[(t, t, Int32)]): Int32 with Foldable[m], Order[t] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
             case Some(path) =>
@@ -30,13 +30,13 @@ mod FordFulkerson {
     ///
     /// Returns a flow network with zero flow.
     ///
-    def zeroFlow(g: m[(a, a, UpperCapacity)]): Vector[FlowNetwork[a]] with Foldable[m], Order[a] =
+    def zeroFlow(g: m[(t, t, Int32)]): Vector[(t, t, Int32, Int32)] with Foldable[m], Order[t] =
         Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
 
     ///
     /// Returns the sum of the flows directly connected to `dst`.
     ///
-    def getMaxFlow(dst: a, g: m[FlowNetwork[a]]): Flow with Foldable[m], Order[a] =
+    def getMaxFlow(dst: t, g: m[(t, t, Int32, Int32)]): Int32 with Foldable[m], Order[t] =
         g
         |> Foldable.toVector
         |> Vector.filterMap(match (_, d, _, f) -> if (d == dst) Some(f) else None)
@@ -48,7 +48,7 @@ mod FordFulkerson {
     /// An edge is in an augmenting path if its flow can be increased, i.e., the flow is strictly less than the capacity,
     /// or if it has non-zero flow.
     ///
-    def augmentingPath(src: { src = a }, dst: { dst = a }, g: m[FlowNetwork[a]]): Option[Path[a]] with Foldable[m], Order[a] =
+    def augmentingPath(src: { src = t }, dst: { dst = t }, g: m[(t, t, Int32, Int32)]): Option[Path[t]] with Foldable[m], Order[t] =
         let edges = inject g into Edge;
         let rules = #{
             Reach(x, y; init(y, x)) :- Edge(x, y, u, f),                 if (u - f) > 0. // Forward edge
@@ -64,7 +64,7 @@ mod FordFulkerson {
     ///
     /// Returns the most constraining capacity of `g` on the `Path` `p`.
     ///
-    def minCapacity(p: Path[a], g: m[FlowNetwork[a]]): Int32 with Foldable[m], Order[a] =
+    def minCapacity(p: Path[t], g: m[(t, t, Int32, Int32)]): Int32 with Foldable[m], Order[t] =
         let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
         let optMin = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d))
             |> List.map(match (_, _, u, f) -> u - f)
@@ -77,7 +77,7 @@ mod FordFulkerson {
     ///
     /// Returns a new flow network where the edges in `g` on the `Path` `p` has been adjusted by `incr`.
     ///
-    def increaseFlow(p: Path[a], incr: Flow, g: m[FlowNetwork[a]]): Vector[FlowNetwork[a]] with Foldable[m], Order[a] =
+    def increaseFlow(p: Path[t], incr: Int32, g: m[(t, t, Int32, Int32)]): Vector[(t, t, Int32, Int32)] with Foldable[m], Order[t] =
         g
         |> Foldable.toVector
         |> Vector.map(match (s, d, u, f) ->
@@ -92,7 +92,7 @@ mod FordFulkerson {
     ///
     /// Returns true if `src` is an edge pointing to `dst` on the `Path` `p`.
     ///
-    def isForwardEdge(src: { src = a }, dst: { dst = a }, p: Path[a]): Bool with Eq[a] =
+    def isForwardEdge(src: { src = t }, dst: { dst = t }, p: Path[t]): Bool with Eq[t] =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if di + 1 == si => true
             case _ => false
@@ -101,18 +101,11 @@ mod FordFulkerson {
     ///
     /// Returns true if `dst` is an edge pointing to `src` on the `Path` `p`.
     ///
-    def isBackEdge(src: { src = a }, dst: { dst = a }, p: Path[a]): Bool with Eq[a] =
+    def isBackEdge(src: { src = t }, dst: { dst = t }, p: Path[t]): Bool with Eq[t] =
         match (indexOf(src.src, p), indexOf(dst.dst, p)) { // A path is sorted in reverse order
             case (Some(si), Some(di)) if si + 1 == di => true
             case _ => false
         }
-
-    // Type aliases for readability
-    type alias Source = Int32
-    type alias Destination = Int32
-    type alias UpperCapacity = Int32
-    type alias Flow = Int32
-    type alias FlowNetwork[a] = (a, a, UpperCapacity, Flow)
 
     //////////////////////////////////////////
     // Tests                                //
@@ -145,7 +138,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `19`.
     ///
-    pub def exampleGraph01(): Set[(Source, Destination, UpperCapacity)] =
+    pub def exampleGraph01(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 3, 2), (1, 2, 4), (1, 4, 8), (3, 4, 9), (4, 2, 6), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -173,7 +166,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    pub def exampleGraph02(): Set[(Source, Destination, UpperCapacity)] =
+    pub def exampleGraph02(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
 
     ///
@@ -199,7 +192,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `2000`.
     ///
-    pub def exampleGraph03(): Set[(Source, Destination, UpperCapacity)] =
+    pub def exampleGraph03(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
 
     ///
@@ -239,7 +232,7 @@ mod FordFulkerson {
     ///
     /// The maximum flow is `20`.
     ///
-    pub def exampleGraph04(): Set[(Source, Destination, UpperCapacity)] =
+    pub def exampleGraph04(): Set[(Int32, Int32, Int32)] =
         Set#{   (0, 1, 5), (0, 4, 10), (0, 7, 5), (4, 1, 15), (1, 2, 10),
                 (4, 5, 20), (5, 7, 5), (7, 8, 10), (2, 5, 25), (2, 3, 10),
                 (6, 2, 15), (5, 6, 30), (8, 6, 5), (8, 9, 10), (3, 10, 5),
