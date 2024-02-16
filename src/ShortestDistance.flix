@@ -3,7 +3,7 @@ mod ShortestDistance {
     use Down.Down;
 
     ///
-    /// Returns the shortest distance from `src` to every other node in the
+    /// Returns the shortest distance from `src` to every other vertex in the
     /// weighted directed graph `g`.
     ///
     pub def distancesFrom(src: t, g: m[(t, t, Int32)]): Map[t, Int32] with Foldable[m], Order[t] = {
@@ -24,11 +24,6 @@ mod ShortestDistance {
     def destructDown(d: Down[a]): a =
         let Down(a) = d;
         a
-
-    type alias Source = Int32
-    type alias Destination = Int32
-    type alias Distance = Int32
-    type alias Graph = (Source, Destination, Distance)
 
     //////////////////////////////////////////
     // Tests                                //
@@ -61,7 +56,7 @@ mod ShortestDistance {
     ///
     /// The shortest route is `0 -> 1 -> 4 -> 2 -> 5` with a total distance of `2 + 4 + 3 + 1 = 10`.
     ///
-    pub def exampleGraph01(): Set[(Source, Destination, Distance)] =
+    pub def exampleGraph01(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 2), (0, 3, 3), (1, 3, 10), (1, 2, 8), (1, 4, 4), (3, 4, 5), (4, 2, 3), (2, 5, 1), (4, 5, 10) }
 
     ///
@@ -89,7 +84,7 @@ mod ShortestDistance {
     ///
     /// The shortest route is `0 -> 1 -> 4 -> 5` with a total distance of `1 + 1 + 1 = 3`.
     ///
-    pub def exampleGraph02(): Set[(Source, Destination, Distance)] =
+    pub def exampleGraph02(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 1), (0, 3, 1), (1, 2, 1), (1, 4, 1), (3, 4, 2), (2, 5, 2), (4, 5, 1) }
 
     ///
@@ -115,7 +110,7 @@ mod ShortestDistance {
     ///
     /// The shortest route is `0 -> 1 -> 2 -> 3` with a total distance of `10 + 1 + 10 = 21`.
     ///
-    pub def exampleGraph03(): Set[(Source, Destination, Distance)] =
+    pub def exampleGraph03(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 1, 10), (0, 2, 15), (1, 2, 1), (1, 3, 15), (2, 3, 10) }
 
     ///
@@ -155,7 +150,7 @@ mod ShortestDistance {
     ///
     /// The shortest route is `0 -> 7 -> 8 -> 6 -> 2 -> 3 -> 10 with a total distance of `10 + 5 + 5 + 5 + 5 + 5  = 35`.
     ///
-    pub def exampleGraph04(): Set[(Source, Destination, Distance)] =
+    pub def exampleGraph04(): Set[(Int32, Int32, Int32)] =
         Set#{   (0, 1, 10), (0, 4, 10), (0, 7, 10), (4, 1, 15), (1, 2, 20),
                 (4, 5, 20), (5, 7, 5), (7, 8, 5), (2, 5, 10), (2, 3, 5),
                 (6, 2, 5), (5, 6, 30), (8, 6, 5), (8, 9, 10), (3, 10, 5),
