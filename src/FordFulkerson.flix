@@ -16,7 +16,7 @@ mod FordFulkerson {
     /// - The label of `src` has the lowest value in the graph
     /// - The label of `dst` has the highest value in the graph
     ///
-    pub def maxFlow(src: { src = t }, dst: { dst = t }, g: m[(t, t, Int32)]): Int32 with Foldable[m], Order[t] =
+    pub def maxFlow(src: { src = t }, dst: { dst = t }, g: m[(t, Int32, t)]): Int32 with Foldable[m], Order[t] =
         def fordFulkerson(flowNetwork) = match augmentingPath(src, dst, flowNetwork) {
             case None       => getMaxFlow(dst.dst, flowNetwork)
             case Some(path) =>
@@ -30,16 +30,16 @@ mod FordFulkerson {
     ///
     /// Returns a flow network with zero flow.
     ///
-    def zeroFlow(g: m[(t, t, Int32)]): Vector[(t, t, Int32, Int32)] with Foldable[m], Order[t] =
-        Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, z, 0))
+    def zeroFlow(g: m[(t, Int32, t)]): Vector[(t, Int32, Int32, t)] with Foldable[m], Order[t] =
+        Foldable.toVector(g) |> Vector.map(match (x, y, z) -> (x, y, 0, z))
 
     ///
     /// Returns the sum of the flows on all directly ingoing edges to `dst`.
     ///
-    def getMaxFlow(dst: t, g: m[(t, t, Int32, Int32)]): Int32 with Foldable[m], Order[t] =
+    def getMaxFlow(dst: t, g: m[(t, Int32, Int32, t)]): Int32 with Foldable[m], Order[t] =
         g
         |> Foldable.toVector
-        |> Vector.filterMap(match (_, d, _, f) -> if (d == dst) Some(f) else None)
+        |> Vector.filterMap(match (_, _, f, d) -> if (d == dst) Some(f) else None)
         |> Vector.sum
 
     ///
@@ -48,13 +48,13 @@ mod FordFulkerson {
     /// An edge is in an augmenting path if its flow can be increased, i.e., the flow is strictly less than the capacity,
     /// or if it has non-zero flow.
     ///
-    def augmentingPath(src: { src = t }, dst: { dst = t }, g: m[(t, t, Int32, Int32)]): Option[Path[t]] with Foldable[m], Order[t] =
+    def augmentingPath(src: { src = t }, dst: { dst = t }, g: m[(t, Int32, Int32, t)]): Option[Path[t]] with Foldable[m], Order[t] =
         let edges = inject g into Edge;
         let rules = #{
-            Reach(x, y; init(y, x)) :- Edge(x, y, u, f),                 if (u - f) > 0. // Forward edge
-            Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(y, z, u, f), if (u - f) > 0. // Forward edge
-            Reach(x, y; init(y, x)) :- Edge(y, x, u, f),                 if f > 0.       // Back edge
-            Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(z, y, u, f), if f > 0.       // Back edge
+            Reach(x, y; init(y, x)) :- Edge(x, u, f, y),                 if (u - f) > 0. // Forward edge
+            Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(y, u, f, z), if (u - f) > 0. // Forward edge
+            Reach(x, y; init(y, x)) :- Edge(y, u, f, x),                 if f > 0.       // Back edge
+            Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(z, u, f, y), if f > 0.       // Back edge
         };
         let s = src.src;
         let t = dst.dst;
@@ -64,10 +64,10 @@ mod FordFulkerson {
     ///
     /// Returns the most constraining capacity of `g` on the `Path` `p`.
     ///
-    def minCapacity(p: Path[t], g: m[(t, t, Int32, Int32)]): Int32 with Foldable[m], Order[t] =
+    def minCapacity(p: Path[t], g: m[(t, Int32, Int32, t)]): Int32 with Foldable[m], Order[t] =
         let onPath = (s, d) -> isForwardEdge(src = s, dst = d, p) or isBackEdge(src = s, dst = d, p);
-        let optMin = g |> Foldable.filter(match (s, d, _, _) -> onPath(s, d))
-            |> List.map(match (_, _, u, f) -> u - f)
+        let optMin = g |> Foldable.filter(match (s, _, _, d) -> onPath(s, d))
+            |> List.map(match (_, u, f, _) -> u - f)
             |> List.minimum;
         match optMin {
             case Some(u) => u
@@ -77,16 +77,16 @@ mod FordFulkerson {
     ///
     /// Returns a new flow network where the edges in `g` on the `Path` `p` has been adjusted by `incr`.
     ///
-    def increaseFlow(p: Path[t], incr: Int32, g: m[(t, t, Int32, Int32)]): Vector[(t, t, Int32, Int32)] with Foldable[m], Order[t] =
+    def increaseFlow(p: Path[t], incr: Int32, g: m[(t, Int32, Int32, t)]): Vector[(t, Int32, Int32, t)] with Foldable[m], Order[t] =
         g
         |> Foldable.toVector
-        |> Vector.map(match (s, d, u, f) ->
+        |> Vector.map(match (s, u, f, d) ->
             if (isForwardEdge(src = s, dst = d, p))
-                (s, d, u, f + incr)
+                (s, u, f + incr, d)
             else if (isBackEdge(src = s, dst = d, p))
-                (s, d, u, f - incr)
+                (s, u, f - incr, d)
             else
-                (s, d, u, f)
+                (s, u, f, d)
         )
 
     ///
@@ -139,7 +139,7 @@ mod FordFulkerson {
     /// The maximum flow is `19`.
     ///
     pub def exampleGraph01(): Set[(Int32, Int32, Int32)] =
-        Set#{ (0, 1, 10), (0, 3, 10), (1, 3, 2), (1, 2, 4), (1, 4, 8), (3, 4, 9), (4, 2, 6), (2, 5, 10), (4, 5, 10) }
+        Set#{ (0, 10, 1), (0, 10, 3), (1, 2, 3), (1, 4, 2), (1, 8, 4), (2, 10, 5), (3, 9, 4), (4, 6, 2), (4, 10, 5) }
 
     ///
     /// Returns the following graph:
@@ -167,7 +167,7 @@ mod FordFulkerson {
     /// The maximum flow is `20`.
     ///
     pub def exampleGraph02(): Set[(Int32, Int32, Int32)] =
-        Set#{ (0, 1, 10), (0, 3, 10), (1, 2, 25), (4, 1, 6), (3, 4, 15), (2, 5, 10), (4, 5, 10) }
+        Set#{ (0, 10, 1), (0, 10, 3), (1, 25, 2), (2, 10, 5), (3, 15, 4), (4, 6, 1), (4, 10, 5) }
 
     ///
     /// Returns the following graph:
@@ -193,7 +193,7 @@ mod FordFulkerson {
     /// The maximum flow is `2000`.
     ///
     pub def exampleGraph03(): Set[(Int32, Int32, Int32)] =
-        Set#{ (0, 1, 1000), (0, 2, 1000), (1, 2, 1), (1, 3, 1000), (2, 3, 1000) }
+        Set#{ (0, 1000, 1), (0, 1000, 2), (1, 1, 2), (1, 1000, 3), (2, 1000, 3) }
 
     ///
     /// Returns the following graph:
@@ -233,10 +233,10 @@ mod FordFulkerson {
     /// The maximum flow is `20`.
     ///
     pub def exampleGraph04(): Set[(Int32, Int32, Int32)] =
-        Set#{   (0, 1, 5), (0, 4, 10), (0, 7, 5), (4, 1, 15), (1, 2, 10),
-                (4, 5, 20), (5, 7, 5), (7, 8, 10), (2, 5, 25), (2, 3, 10),
-                (6, 2, 15), (5, 6, 30), (8, 6, 5), (8, 9, 10), (3, 10, 5),
-                (6, 10, 15), (9, 10, 10)
+        Set#{ (0, 5, 1), (0, 5, 7), (0, 10, 4), (1, 10, 2), (2, 10, 3),
+              (2, 25, 5), (3, 5, 10), (4, 15, 1), (4, 20, 5), (5, 5, 7),
+              (5, 30, 6), (6, 15, 2), (6, 15, 10), (7, 10, 8), (8, 5, 6),
+              (8, 10, 9), (9, 10, 10)
             }
 
     @Test
