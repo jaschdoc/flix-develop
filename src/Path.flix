@@ -54,7 +54,6 @@ mod Path {
     }
 
     instance Foldable[Path] {
-
         pub def foldLeft(f: b -> (a -> b \ ef), s: b, t: Path[a]): b \ ef = match t {
             case Bot     => s
             case Path(p) => Foldable.foldLeft(f, s, p)
@@ -69,7 +68,6 @@ mod Path {
             case Bot     => s
             case Path(p) => Foldable.foldRightWithCont(f, s, p)
         }
-
     }
 
     ///
