@@ -9,7 +9,9 @@ mod EffectExamples.Queens {
 
     def safe(queen: Int32, diagonal: Int32, sol: Solution): Bool = match sol {
         case Nil     => true
-        case q :: qs => ???
+        case q :: qs =>
+            let sfe = queen != q and queen != q + diagonal and queen != q - diagonal;
+            sfe and safe(queen, diagonal + 1, qs)
     }
 
     pub def findOneSolution(size: Int32, queen: Int32): Solution \ Searchable =
