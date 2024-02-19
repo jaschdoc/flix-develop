@@ -1,4 +1,4 @@
-mod EffectIterator {
+mod EffectExamples.Range {
 
     eff Emission {
         pub def emit(e: Int32): Unit
