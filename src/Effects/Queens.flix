@@ -1,3 +1,6 @@
+///
+/// From Effekt Lang
+///
 mod EffectExamples.Queens {
 
     type alias Solution = List[Int32]
