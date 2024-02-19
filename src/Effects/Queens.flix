@@ -41,5 +41,4 @@ mod EffectExamples.Queens {
                 loop(1, 0)
             }
         }
-
 }
