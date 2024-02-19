@@ -197,23 +197,23 @@ mod ShortestPath {
         Set#{ (0, 1), (0, 3), (1, 2), (1, 5), (2, 6), (3, 5), (3, 4), (5, 6) }
 
     @Test
-    def testExampleGraphShortestDistances01(): Bool =
-        Assert.eq(Map#{0 => Set#{0}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}}, sssp(0, exampleGraph01()))
+    def testExampleGraphShortestPaths01(): Bool =
+        Assert.eq(Map#{0 => Set#{0}, 1 => Set#{0, 1}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}}, sssp(0, exampleGraph01()))
 
     @Test
-    def testExampleGraphShortestDistances02(): Bool =
+    def testExampleGraphShortestPaths02(): Bool =
         Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}}, sssp(0, exampleGraph02()))
 
     @Test
-    def testExampleGraphShortestDistances03(): Bool =
+    def testExampleGraphShortestPaths03(): Bool =
         Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}}, sssp(0, exampleGraph03()))
 
     @Test
-    def testExampleGraphShortestDistances04(): Bool =
+    def testExampleGraphShortestPaths04(): Bool =
         Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}, 6 => Set#{}, 7 => Set#{}, 8 => Set#{}, 9 => Set#{}, 10 => Set#{}}, sssp(0, exampleGraph04()))
 
     @Test
-    def testExampleGraphShortestDistances05(): Bool =
+    def testExampleGraphShortestPaths05(): Bool =
         Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}, 6 => Set#{}}, sssp(0, exampleGraph05()))
 
 }
