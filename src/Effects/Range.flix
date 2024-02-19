@@ -21,6 +21,7 @@ mod EffectExamples.Range {
     /// Iterates over the range between `lo` and `hi`.
     ///
     pub def range(lo: Int32, hi: Int32): Unit \ Emission =
+        // Note the effect in the type
         if (lo > hi) {
             ()
         }
