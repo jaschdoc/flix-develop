@@ -10,6 +10,8 @@
 /// - Handling the effect at the call site
 /// - Using the continuation to transfer control back to the callee
 ///
+/// Inspired by the Iterator benchmark from Effekt Lang
+///
 mod EffectExamples.Range {
 
     // Effect declaration
