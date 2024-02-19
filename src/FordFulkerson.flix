@@ -242,7 +242,7 @@ mod FordFulkerson {
     def testAugmentingPath01(): Bool =
         let s = 1;
         let t = 5;
-        let g = Set#{ (1, 2, 1, 0), (2, 3, 1, 0), (3, 4, 1, 0), (3, 8, 1, 0), (4, 5, 1, 0), (3, 5, 1, 0) };
+        let g = Set#{ (1, 1, 0, 2), (2, 1, 0, 3), (3, 1, 0, 4), (3, 1, 0, 8), (4, 1, 0, 5), (3, 1, 0, 5) };
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(Path(5 :: 3 :: 2 :: 1 :: Nil), p)
 
@@ -250,7 +250,7 @@ mod FordFulkerson {
     def testAugmentingPath02(): Bool =
         let s = 0;
         let t = 5;
-        let g = exampleGraph01() |> Set.map(match (a, b, u) -> (a, b, u, 0));
+        let g = exampleGraph01() |> zeroFlow;
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(Path(5 :: 4 :: 3 :: 0 :: Nil), p) // Shortest path in reverse order
 
@@ -259,10 +259,10 @@ mod FordFulkerson {
         let s = 0;
         let t = 5;
         let g = exampleGraph01() |> Set.map(x -> match x {
-            case (0, 3, 10) => (0, 3, 10, 9)
-            case (3, 4, 9)  => (3, 4, 9 , 9)
-            case (4, 5, 10) => (4, 5, 10, 9)
-            case (a, b, u)  => (a, b, u , 0)
+            case (0, 10, 3) => (0, 10, 9, 3)
+            case (3, 9 , 4) => (3, 9 , 9, 4)
+            case (4, 10, 5) => (4, 10, 9, 5)
+            case (a, u, b)  => (a, u , 0, b)
         });
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(Path(5 :: 4 :: 1 :: 0 :: Nil), p)
@@ -272,12 +272,12 @@ mod FordFulkerson {
         let s = 0;
         let t = 5;
         let g = exampleGraph01() |> Set.map(x -> match x {
-            case (0, 1, 10) => (0, 1, 10, 1)
-            case (0, 3, 10) => (0, 3, 10, 9)
-            case (1, 4, 8)  => (1, 4, 8 , 1)
-            case (3, 4, 9)  => (3, 4, 9 , 9)
-            case (4, 5, 10) => (4, 5, 10, 10)
-            case (a, b, u)  => (a, b, u , 0)
+            case (0, 10, 1) => (0, 10, 1 , 1)
+            case (0, 10, 3) => (0, 10, 9 , 3)
+            case (1, 8, 4)  => (1, 8 , 1 , 4)
+            case (3, 9, 4)  => (3, 9 , 9 , 4)
+            case (4, 10, 5) => (4, 10, 10, 5)
+            case (a, u, b)  => (a, u , 0 , b)
         });
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(Path(5 :: 2 :: 1 :: 0 :: Nil), p)
@@ -287,14 +287,14 @@ mod FordFulkerson {
         let s = 0;
         let t = 5;
         let g = exampleGraph01() |> Set.map(x -> match x {
-            case (0, 1, 10) => (0, 1, 10, 5)
-            case (0, 3, 10) => (0, 3, 10, 9)
-            case (1, 4, 8)  => (1, 4, 8 , 1)
-            case (1, 2, 4)  => (1, 2, 4 , 4)
-            case (3, 4, 9)  => (3, 4, 9 , 9)
-            case (2, 5, 10) => (2, 5, 10, 4)
-            case (4, 5, 10) => (4, 5, 10, 10)
-            case (a, b, u)  => (a, b, u , 0)
+            case (0, 10, 1) => (0, 10, 5 , 1)
+            case (0, 10, 3) => (0, 10, 9 , 3)
+            case (1, 8 , 4) => (1, 8 , 1 , 4)
+            case (1, 4 , 2) => (1, 4 , 4 , 2)
+            case (3, 9 , 4) => (3, 9 , 9 , 4)
+            case (2, 10, 5) => (2, 10, 4 , 5)
+            case (4, 10, 5) => (4, 10, 10, 5)
+            case (a, u , b) => (a, u , 0 , b)
         });
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
         Assert.eq(Path(5 :: 2 :: 4 :: 1 :: 0 :: Nil), p)
@@ -312,9 +312,9 @@ mod FordFulkerson {
         let s = 0;
         let t = 5;
         let g = exampleGraph02() |> zeroFlow |> Functor.map(x -> match x {
-            case (0, 3, 10, 0) => (0, 3, 10, 10)
-            case (3, 4, 15, 0) => (3, 4, 15, 10)
-            case (4, 5, 10, 0) => (4, 5, 10, 10)
+            case (0, 10, 0, 3) => (0, 10, 10, 3)
+            case (3, 15, 0, 4) => (3, 15, 10, 4)
+            case (4, 10, 0, 5) => (4, 10, 10, 5)
             case _             => x
         });
         let p = augmentingPath(s, t, g) |> Option.getWithDefault(Path(Nil));
@@ -325,12 +325,12 @@ mod FordFulkerson {
         let s = 0;
         let t = 5;
         let g = exampleGraph02() |> zeroFlow |> Functor.map(x -> match x {
-            case (0, 1, 10, 0) => (0, 1, 10, 10)
-            case (0, 3, 10, 0) => (0, 3, 10, 10)
-            case (1, 2, 25, 0) => (1, 2, 25, 10)
-            case (3, 4, 15, 0) => (3, 4, 15, 10)
-            case (2, 5, 10, 0) => (2, 5, 10, 10)
-            case (4, 5, 10, 0) => (4, 5, 10, 10)
+            case (0, 10, 0, 1) => (0, 10, 10, 1)
+            case (0, 10, 0, 3) => (0, 10, 10, 3)
+            case (1, 25, 0, 2) => (1, 25, 10, 2)
+            case (3, 15, 0, 4) => (3, 15, 10, 4)
+            case (2, 10, 0, 5) => (2, 10, 10, 5)
+            case (4, 10, 0, 5) => (4, 10, 10, 5)
             case _             => x
         });
         Assert.eq(None, augmentingPath(s, t, g))
