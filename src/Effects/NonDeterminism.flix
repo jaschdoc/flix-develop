@@ -9,7 +9,7 @@ mod EffectExamples.NonDeterminism {
     }
 
     pub def fail(): Unit \ Failure =
-        match do Failure.fail() { case _ => unreachable!() }
+        do Failure.fail()
 
     pub def decide(): Bool \ Decision =
         do Decision.decide()
