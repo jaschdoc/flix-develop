@@ -62,6 +62,20 @@ mod EffectExamples.NonDeterminism {
         loop(0)
     }
 
+    ///
+    /// Returns a pythagorean triple for `m, n`.
+    ///
+    pub def pythagorean(m: Int32, n: Int32): (Int32, Int32, Int32) \ Decision + Failure =
+        // Choose the bigger integer
+        let a = chooseInt(m, n - 1);
+        // Choose the smaller integer
+        let b = chooseInt(a, n);
+        // Check if they are part of a pythagorean triple
+        match sqrt(a * a + b * b) {
+            case None    => do Failure.fail()
+            case Some(c) => (a, b, c)
+        }
+
     @Test
     pub def testChooseTrue01(): Bool =
         let x = chooseTrue(() -> if (decide()) 10 else 20);
