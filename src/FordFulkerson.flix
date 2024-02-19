@@ -2,7 +2,7 @@ mod FordFulkerson {
 
     use Path.Path.{Path, Bot};
     use Path.Path;
-    use Path.{init, cons, toOption, indexOf};
+    use Path.{init, cons, indexOf};
 
     ///
     /// Returns the maximum flow from `src` to `dst` in the flow network `g`.
@@ -57,7 +57,7 @@ mod FordFulkerson {
             Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(z, u, f, y), if f > 0.       // Back edge
         };
         let result = query edges, rules select fn from Reach(src, dst; fn);
-        Vector.head(result) |> Option.flatMap(toOption)
+        Vector.head(result)
 
     ///
     /// Returns the most constraining capacity of `g` on the `Path` `p`.
