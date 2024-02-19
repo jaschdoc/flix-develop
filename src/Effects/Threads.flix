@@ -2,23 +2,36 @@
 /// From OCaml version 5.1 chapter 12
 ///
 mod EffectExamples.Threads {
+/*
+    use Status.{Complete, Suspended};
 
-    eff Exchangable {
+    pub eff Exchangable {
         pub def exchange(n: Int32): Int32
     }
 
-    def comp1(): Int32 \ Exchangable =
-        do Exchangable.exchange(0) + do Exchangable.exchange(1)
+    pub enum Status[a] {
+        case Complete(a)
+        case Suspended(a, a -> a)
+    }
 
-    def handleComp1(): Int32 =
+    def step(f: Unit -> a \ Exchangable): Status[a] =
         try {
-            comp1()
+            Complete(f())
         } with Exchangable {
-            def exchange(n, k) = k(n + 1)
+            def exchange(n, k) = {
+                def cont(m, c) = match c(m) {
+                    case Complete(v)       => v
+                    case Suspended(m1, c2) => cont(m1, c2)
+                };
+                Suspended(n, m -> cont(m, k))
+            }
         }
 
-    @Test
-    pub def testComp1(): Bool =
-        Assert.eq(3, handleComp1())
-
+    def runBoth(f: Unit -> a \ Exchangable, g: Unit -> a \ Exchangable): (a, a) =
+        match (step(f), step(g)) {
+            case (Complete(vf), Complete(vg)) => (vf, vg)
+            case (Suspended(m1, k1), Suspended(m2, k2)) =>
+                runBoth(() -> k1(m2), () -> k2(m1))
+        }
+*/
 }
