@@ -45,7 +45,7 @@ mod ShortestDistance {
     /// 4 -> 5, distance 10
     /// ```
     ///
-    /// The shortest route from 0 to 5 is `0 -> 1 -> 4 -> 2 -> 5` with a total distance of `2 + 4 + 3 + 1 = 10`.
+    /// The shortest route from 0 to 6 is `0 -> 1 -> 4 -> 2 -> 5` with a total distance of `2 + 4 + 3 + 1 = 10`.
     ///
     pub def exampleGraph01(): Set[(Int32, Int32, Int32)] =
         Set#{ (0, 2, 1), (0, 3, 3), (1, 4, 4), (1, 8, 2), (1, 10, 3), (2, 1, 5), (3, 5, 4), (4, 3, 2), (4, 10, 5) }
