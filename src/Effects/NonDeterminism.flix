@@ -37,4 +37,11 @@ mod EffectExamples.NonDeterminism {
             def decide(k) = k(true) ++ k(false)
         }
 
+
+    @Test
+    pub def testChooseTrue01(): Bool =
+        let x = chooseTrue(() -> if (decide()) 10 else 20);
+        let y = chooseTrue(() -> if (decide()) 0 else 5);
+        Assert.eq(10, x - y)
+
 }
