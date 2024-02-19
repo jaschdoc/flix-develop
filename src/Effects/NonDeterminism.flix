@@ -50,6 +50,7 @@ mod EffectExamples.NonDeterminism {
         let y = chooseMax(() -> if (decide()) 0 else 5);
         Assert.eq(15, x - y)
 
+    @Test
     pub def testChooseAll01(): Bool =
         let l =
             foreach (
