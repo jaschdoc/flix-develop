@@ -8,14 +8,14 @@ mod ShortestPath {
     /// Returns the shortest paths from `src` to all of reachable vertices
     /// in the graph `g`.
     ///
-    pub def sssp(src: t, g: m[(t, t)]): Map[t, Set[t]] with Foldable[m], Order[t] = {
+    pub def sssp(src: t, g: m[(t, t)]): Map[t, Vector[t]] with Foldable[m], Order[t] = {
         let edges = inject g into Edge;
         let rules = #{
             Reach(x, y; init(y, x)) :- Edge(x, y).
             Reach(x, z; cons(z, p)) :- Reach(x, y; p), Edge(y, z).
         };
         let res = query edges, rules select (t, p) from Reach(src, t; p);
-        res |> Functor.map(match (t, p) -> (t, Foldable.toSet(p)))
+        res |> Functor.map(match (t, p) -> (t, Foldable.toVector(p) |> Vector.reverse))
             |> Foldable.toMap
     }
 
@@ -185,22 +185,24 @@ mod ShortestPath {
 
     @Test
     def testExampleGraphShortestPaths01(): Bool =
-        Assert.eq(Map#{1 => Set#{0, 1}, 2 => Set#{0, 1, 2}, 3 => Set#{0, 3}, 4 => Set#{0, 3, 4}, 5 => Set#{0, 3, 4, 5}}, sssp(0, exampleGraph01()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 4, 5}}, sssp(0, exampleGraph01()))
 
     @Test
     def testExampleGraphShortestPaths02(): Bool =
-        Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}}, sssp(0, exampleGraph02()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 4, 5}}, sssp(0, exampleGraph02()))
 
     @Test
     def testExampleGraphShortestPaths03(): Bool =
-        Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}}, sssp(0, exampleGraph03()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 2}, 3 => Vector#{0, 2, 3}}, sssp(0, exampleGraph03()))
 
     @Test
     def testExampleGraphShortestPaths04(): Bool =
-        Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}, 6 => Set#{}, 7 => Set#{}, 8 => Set#{}, 9 => Set#{}, 10 => Set#{}}, sssp(0, exampleGraph04()))
+        Assert.eq(Map#{1 => Vector#{0 ,1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 1, 2, 3}, 4 => Vector#{0, 4},
+            5 => Vector#{0, 4, 5}, 6 => Vector#{0, 7, 8, 6}, 7 => Vector#{0, 7}, 8 => Vector#{0, 7, 8},
+            9 => Vector#{0, 7, 8, 9}, 10 => Vector#{0, 7, 8, 9, 10}}, sssp(0, exampleGraph04()))
 
     @Test
     def testExampleGraphShortestPaths05(): Bool =
-        Assert.eq(Map#{0 => Set#{}, 1 => Set#{}, 2 => Set#{}, 3 => Set#{}, 4 => Set#{}, 5 => Set#{}, 6 => Set#{}}, sssp(0, exampleGraph05()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 5}, 6 => Vector#{0, 3, 5, 6}}, sssp(0, exampleGraph05()))
 
 }
