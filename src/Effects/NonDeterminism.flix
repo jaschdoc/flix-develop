@@ -44,4 +44,10 @@ mod EffectExamples.NonDeterminism {
         let y = chooseTrue(() -> if (decide()) 0 else 5);
         Assert.eq(10, x - y)
 
+    @Test
+    pub def testChooseMax01(): Bool =
+        let x = chooseMax(() -> if (decide()) 10 else 20);
+        let y = chooseMax(() -> if (decide()) 0 else 5);
+        Assert.eq(15, x - y)
+
 }
