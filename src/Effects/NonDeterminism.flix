@@ -8,9 +8,6 @@ mod EffectExamples.NonDeterminism {
         pub def decide(): Bool
     }
 
-    pub def fail(): Unit \ Failure =
-        do Failure.fail()
-
     pub def decide(): Bool \ Decision =
         do Decision.decide()
 
@@ -37,6 +34,13 @@ mod EffectExamples.NonDeterminism {
             def decide(k) = k(true) ++ k(false)
         }
 
+
+    pub def chooseInt(m: Int32, n: Int32): Int32 \ Failure + Decision =
+        if (m > n)
+            do Failure.fail()
+        else if (decide())
+            m
+        else chooseInt(m + 1, n)
 
     @Test
     pub def testChooseTrue01(): Bool =
