@@ -1,3 +1,6 @@
+///
+/// From Eff lang
+///
 mod EffectExamples.NonDeterminism {
 
     eff Failure {
@@ -40,7 +43,24 @@ mod EffectExamples.NonDeterminism {
             do Failure.fail()
         else if (decide())
             m
-        else chooseInt(m + 1, n)
+        else
+            chooseInt(m + 1, n)
+
+    ///
+    /// Finds a square root of `m` if it exists.
+    ///
+    pub def sqrt(m: Int32): Option[Int32] = {
+        def loop(n) = {
+            let n2 = n * n;
+            if (n2 > m)
+                None
+            else if (n2 == m)
+                Some(n)
+            else
+                loop(n + 1)
+        };
+        loop(0)
+    }
 
     @Test
     pub def testChooseTrue01(): Bool =
@@ -62,5 +82,13 @@ mod EffectExamples.NonDeterminism {
                 y <- chooseAll(() -> checked_ecast(if (decide()) 0 else 5))
             ) yield x - y;
         Assert.eq(10 :: 5 :: 20 :: 15 :: Nil, l)
+
+    @Test
+    pub def testSqrt01(): Bool =
+        Assert.eq(Some(2), sqrt(4))
+
+    @Test
+    pub def testSqrt02(): Bool =
+        Assert.eq(Some(3), sqrt(9))
 
 }
