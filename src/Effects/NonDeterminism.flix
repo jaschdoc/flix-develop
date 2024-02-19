@@ -50,4 +50,12 @@ mod EffectExamples.NonDeterminism {
         let y = chooseMax(() -> if (decide()) 0 else 5);
         Assert.eq(15, x - y)
 
+    pub def testChooseAll01(): Bool =
+        let l =
+            foreach (
+                x <- chooseAll(() -> checked_ecast(if (decide()) 10 else 20));
+                y <- chooseAll(() -> checked_ecast(if (decide()) 0 else 5))
+            ) yield x - y;
+        Assert.eq(10 :: 5 :: 20 :: 15 :: Nil, l)
+
 }
