@@ -88,6 +88,11 @@ mod EffectExamples.NonDeterminism {
                 }
         }
 
+    pub def choose(l: List[a]): a \ Decision + Failure = match l {
+        case Nil     => do Failure.fail()
+        case x :: xs => if (decide()) x else choose(xs)
+    }
+
     @Test
     pub def testChooseTrue01(): Bool =
         let x = chooseTrue(() -> if (decide()) 10 else 20);
