@@ -125,6 +125,6 @@ mod EffectExamples.NonDeterminism {
             } with Failure {
                 def fail(_) = (-1, -1, -1)
             };
-       Assert.eq((5, 15, 10), res)
+       Assert.eq((9, 12, 15), res)
 
 }
