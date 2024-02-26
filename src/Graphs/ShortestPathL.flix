@@ -123,33 +123,33 @@ mod ShortestPathL {
     /// The edges are directed as follows (ordered from left to right, top to bottom):
     ///
     /// ```
-    /// 0 -> 1
-    /// 0 -> 4
-    /// 0 -> 7
-    /// 4 -> 1
-    /// 1 -> 2
-    /// 4 -> 5
-    /// 5 -> 7
-    /// 7 -> 8
-    /// 2 -> 5
-    /// 2 -> 3
-    /// 6 -> 2
-    /// 5 -> 6
-    /// 8 -> 6
-    /// 8 -> 9
-    /// 6 -> 9
-    /// 3 -> 10
-    /// 6 -> 10
-    /// 9 -> 10
+    /// 0 -> 1 , length 1
+    /// 0 -> 4 , length 3
+    /// 0 -> 7 , length 10
+    /// 4 -> 1 , length 1
+    /// 1 -> 2 , length 1
+    /// 4 -> 5 , length 3
+    /// 5 -> 7 , length 1
+    /// 7 -> 8 , length 10
+    /// 2 -> 5 , length 1
+    /// 2 -> 3 , length 1
+    /// 6 -> 2 , length 1
+    /// 5 -> 6 , length 3
+    /// 8 -> 6 , length 1
+    /// 8 -> 9 , length 10
+    /// 6 -> 9 , length 1
+    /// 3 -> 10, length 1
+    /// 6 -> 10, length 3
+    /// 9 -> 10, length 10
     /// ```
     ///
-    /// The shortest path from 0 to 10 is `0 -> 7 -> 8 -> 9 -> 10`.
+    /// The shortest path from 0 to 10 is `0 -> 1 -> 2 -> 3 -> 10`.
     ///
     pub def exampleGraph04(): Set[(Int32, Int32, Int32)] =
-        Set#{  (0, 1, 1), (0, 1, 4 ), (0, 1, 7 ), (1, 1, 2 ), (2, 1, 3),
-               (2, 1, 5), (3, 1, 10), (4, 1, 1 ), (4, 1, 5 ), (5, 1, 7),
-               (5, 1, 6), (6, 1, 9 ), (6, 1, 2 ), (6, 1, 10), (7, 1, 8),
-               (8, 1, 6), (8, 1, 9 ), (9, 1, 10)
+        Set#{  (0, 1, 1), (0, 3 , 4 ), (0, 10, 7 ), (1, 1, 2 ), (2, 1 , 3),
+               (2, 1, 5), (3, 1 , 10), (4, 1 , 1 ), (4, 3, 5 ), (5, 1 , 7),
+               (5, 3, 6), (6, 1 , 9 ), (6, 1 , 2 ), (6, 3, 10), (7, 10, 8),
+               (8, 1, 6), (8, 10, 9 ), (9, 10, 10)
             }
 
     ///
@@ -197,9 +197,9 @@ mod ShortestPathL {
 
     @Test
     def testExampleGraphShortestPaths04(): Bool =
-        Assert.eq(Map#{1 => Vector#{0 ,1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 1, 2, 3}, 4 => Vector#{0, 4},
-            5 => Vector#{0, 4, 5}, 6 => Vector#{0, 7, 8, 6}, 7 => Vector#{0, 7}, 8 => Vector#{0, 7, 8},
-            9 => Vector#{0, 7, 8, 9}, 10 => Vector#{0, 7, 8, 9, 10}}, ssspn(0, exampleGraph04()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 1, 2, 3}, 4 => Vector#{0, 4},
+            5 => Vector#{0, 1, 2, 5}, 6 => Vector#{0, 1, 2, 5, 6}, 7 => Vector#{0, 1, 2, 5, 7}, 8 => Vector#{0, 1, 2, 5, 7, 8},
+            9 => Vector#{0, 1, 2, 5, 6, 9}, 10 => Vector#{0, 1, 2, 3, 10}}, ssspn(0, exampleGraph04()))
 
     @Test
     def testExampleGraphShortestPaths05(): Bool =
