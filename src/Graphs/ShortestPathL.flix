@@ -67,19 +67,19 @@ mod ShortestPathL {
     /// The edges are directed as follows (ordered from left to right, top to bottom):
     ///
     /// ```
-    /// 0 -> 1
-    /// 0 -> 3
-    /// 1 -> 2
-    /// 1 -> 4
-    /// 3 -> 4
-    /// 2 -> 5
-    /// 4 -> 5
+    /// 0 -> 1, length 1
+    /// 0 -> 3, length 1
+    /// 1 -> 2, length 5
+    /// 1 -> 4, length 4
+    /// 3 -> 4, length 5
+    /// 2 -> 5, length 1
+    /// 4 -> 5, length 1
     /// ```
     ///
-    /// The shortest path from 0 to 5 is `0 -> 3 -> 4 -> 5`.
+    /// The shortest path from 0 to 5 is `0 -> 1 -> 4 -> 5`.
     ///
     pub def exampleGraph02(): Set[(Int32, Int32, Int32)] =
-        Set#{ (0, 1, 1), (0, 1, 3), (1, 1, 2), (1, 1, 4), (2, 1, 5), (3, 1, 4), (4, 1, 5) }
+        Set#{ (0, 1, 1), (0, 1, 3), (1, 5, 2), (1, 4, 4), (2, 1, 5), (3, 5, 4), (4, 1, 5) }
 
     ///
     /// Returns the following graph:
@@ -189,7 +189,7 @@ mod ShortestPathL {
 
     @Test
     def testExampleGraphShortestPaths02(): Bool =
-        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 4, 5}}, ssspn(0, exampleGraph02()))
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 1, 4}, 5 => Vector#{0, 1, 4, 5}}, ssspn(0, exampleGraph02()))
 
     @Test
     def testExampleGraphShortestPaths03(): Bool =
