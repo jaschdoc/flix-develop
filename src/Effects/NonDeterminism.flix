@@ -88,9 +88,9 @@ mod EffectExamples.NonDeterminism {
                 }
         }
 
-    pub def choose(l: List[a]): a \ Decision + Failure = match l {
+    pub def chooseOne(l: List[a]): a \ Decision + Failure = match l {
         case Nil     => do Failure.fail()
-        case x :: xs => if (decide()) x else choose(xs)
+        case x :: xs => if (decide()) x else chooseOne(xs)
     }
 
     @Test
