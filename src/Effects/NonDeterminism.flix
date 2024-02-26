@@ -127,4 +127,14 @@ mod EffectExamples.NonDeterminism {
             };
        Assert.eq((9, 12, 15), res)
 
+   @Test
+   pub def testPythagorean02(): Bool =
+       let res = chooseAll(() -> pythagorean(3, 4));
+       Assert.eq((3, 4, 5) :: Nil, res)
+
+   @Test
+   pub def testPythagorean03(): Bool =
+       let res = chooseAll(() -> pythagorean(5, 15));
+       Assert.eq((5, 12, 13) :: (6, 8, 10) :: (8, 15, 17) :: (9, 12, 15) :: Nil, res)
+
 }
