@@ -5,24 +5,24 @@ mod PathL {
     use Path.{Path, Bot};
 
     pub enum Path[a] with ToString {
-        case Path(List[a])
+        case Path(List[a], Int32)
         case Bot // Infinitely long path
     }
 
     instance Eq[Path[a]] {
         pub def eq(x: Path[a], y: Path[a]): Bool = match (x, y) {
-            case (Bot, Bot)           => true
-            case (Path(xs), Path(ys)) => List.length(xs) == List.length(ys)
-            case _                    => false
+            case (Bot, Bot)                 => true
+            case (Path(_, l1), Path(_, l2)) => l1 == l2
+            case _                          => false
         }
     }
 
     instance Order[Path[a]] {
         pub def compare(x: Path[a], y: Path[a]): Comparison = match (x, y) {
-            case (Bot, Bot)           => Comparison.EqualTo
-            case (Bot, _)             => Comparison.LessThan
-            case (_, Bot)             => Comparison.GreaterThan
-            case (Path(xs), Path(ys)) => List.length(xs) <=> List.length(ys)
+            case (Bot, Bot)                 => Comparison.EqualTo
+            case (Bot, _)                   => Comparison.LessThan
+            case (_, Bot)                   => Comparison.GreaterThan
+            case (Path(_, l1), Path(_, l2)) => l1 <=> l2
         }
     }
 
@@ -33,57 +33,58 @@ mod PathL {
 
     instance PartialOrder[Path[a]] {
         pub def lessEqual(x: Path[a], y: Path[a]): Bool = match (x, y) {
-            case (Bot, _)             => true
-            case (Path(xs), Path(ys)) => List.length(xs) >= List.length(ys)
-            case _                    => false
+            case (Bot, _)                   => true
+            case (Path(_, l1), Path(_, l2)) => l1 >= l2
+            case _                          => false
         }
     }
 
     instance JoinLattice[Path[a]] {
         pub def leastUpperBound(x: Path[a], y: Path[a]): Path[a] = match (x, y) {
-            case (Bot, p)             => p
-            case (p, Bot)             => p
-            case (Path(xs), Path(ys)) => if (List.length(xs) <= List.length(ys)) x else y
+            case (Bot, p)                   => p
+            case (p, Bot)                   => p
+            case (Path(_, l1), Path(_, l2)) => if (l1 <= l2) x else y
         }
     }
 
     instance MeetLattice[Path[a]] {
         pub def greatestLowerBound(x: Path[a], y: Path[a]): Path[a] = match (x, y) {
-            case (Bot, _)             => Bot
-            case (_, Bot)             => Bot
-            case (Path(xs), Path(ys)) => if (List.length(xs) > List.length(ys)) x else y
+            case (Bot, _)                   => Bot
+            case (_, Bot)                   => Bot
+            case (Path(_, l1), Path(_, l2)) => if (l1 > l2) x else y
         }
     }
 
     instance Foldable[Path] {
         pub def foldLeft(f: b -> (a -> b \ ef), s: b, t: Path[a]): b \ ef = match t {
             case Bot     => s
-            case Path(p) => Foldable.foldLeft(f, s, p)
+            case Path(p, _) => Foldable.foldLeft(f, s, p)
         }
 
         pub def foldRight(f: a -> (b -> b \ ef), s: b, t: Path[a]): b \ ef = match t {
             case Bot     => s
-            case Path(p) => Foldable.foldRight(f, s, p)
+            case Path(p, _) => Foldable.foldRight(f, s, p)
         }
 
         pub def foldRightWithCont(f: a -> ((Unit -> b \ ef) -> b \ ef), s: b, t: Path[a]): b \ ef = match t {
             case Bot     => s
-            case Path(p) => Foldable.foldRightWithCont(f, s, p)
+            case Path(p, _) => Foldable.foldRightWithCont(f, s, p)
         }
     }
 
     ///
     /// Returns a `Path` from `x` to `y`.
     ///
-    pub def init(y: a, x: a): Path[a] =
-        Path(y :: x :: Nil)
+    pub def init(y: (a, Int32), x: (a, Int32)): Path[a] = match (y, x) {
+        case ((y1, l1), (x1, l2)) => Path(y1 :: x1 :: Nil, l1 + l2)
+    }
 
     ///
     /// Extends the `Path` `p` with `z`.
     ///
-    pub def cons(z: a, p: Path[a]): Path[a] = match p {
-        case Bot      => Bot
-        case Path(xs) => Path(z :: xs)
+    pub def cons(z: (a, Int32), p: Path[a]): Path[a] = match (z, p) {
+        case (_, Bot)                 => Bot
+        case ((z1, l1), Path(xs, l2)) => Path(z1 :: xs, l1 + l2)
     }
 
     ///
@@ -91,8 +92,8 @@ mod PathL {
     /// Note that a `Path` is sorted in descending order.
     ///
     pub def indexOf(x: a, p: Path[a]): Option[Int32] with Eq[a] = match p {
-        case Bot      => None
-        case Path(xs) => List.indexOf(x, xs)
+        case Bot         => None
+        case Path(xs, _) => List.indexOf(x, xs)
     }
 
 }
