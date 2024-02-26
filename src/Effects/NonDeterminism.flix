@@ -119,7 +119,12 @@ mod EffectExamples.NonDeterminism {
 
    @Test
    pub def testPythagorean01(): Bool =
-       let res = try { backtrack(() -> pythagorean(5, 15)) } with Failure { def fail(_) = ??? };
+       let res =
+            try {
+                backtrack(() -> pythagorean(5, 15))
+            } with Failure {
+                def fail(_) = (-1, -1, -1)
+            };
        Assert.eq((5, 15, 10), res)
 
 }
