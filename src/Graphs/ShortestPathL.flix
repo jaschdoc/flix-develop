@@ -1,0 +1,208 @@
+mod ShortestPathL {
+
+    use PathL.Path;
+    use PathL.Path.Path;
+    use PathL.{cons, init};
+
+    ///
+    /// Returns the shortest paths from `src` to all of reachable vertices
+    /// in the graph `g`.
+    ///
+    pub def ssspn(src: t, g: m[(t, Int32, t)]): Map[t, Vector[t]] with Foldable[m], Order[t] = {
+        let edges = inject g into Edge;
+        let rules = #{
+            Reach(x, y; init(y, l, x)) :- Edge(x, l, y).
+            Reach(x, z; cons(z, l, p)) :- Reach(x, y; p), Edge(y, l, z).
+        };
+        let res = query edges, rules select (t, p) from Reach(src, t; p);
+        res |> Functor.map(match (t, p) -> (t, Foldable.toVector(p) |> Vector.reverse))
+            |> Foldable.toMap
+    }
+
+    //////////////////////////////////////////
+    // Tests                                //
+    //////////////////////////////////////////
+
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///      1---2
+    ///     /|\  |\
+    ///    0 | \ | 5
+    ///     \|  \|/
+    ///      3---4
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1
+    /// 0 -> 3
+    /// 1 -> 3
+    /// 1 -> 2
+    /// 1 -> 4
+    /// 3 -> 4
+    /// 4 -> 2
+    /// 2 -> 5
+    /// 4 -> 5
+    /// ```
+    ///
+    /// The shortest path from 0 to 5 is `0 -> 3 -> 4 -> 5`.
+    ///
+    pub def exampleGraph01(): Set[(Int32, Int32, Int32)] =
+        Set#{ (0, 1, 1), (0, 1, 3), (1, 1, 4), (1, 1, 2), (1, 1, 3), (2, 1, 5), (3, 1, 4), (4, 1, 2), (4, 1, 5) }
+
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///      1---2
+    ///     / \   \
+    ///    0   \   5
+    ///     \   \ /
+    ///      3---4
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1
+    /// 0 -> 3
+    /// 1 -> 2
+    /// 1 -> 4
+    /// 3 -> 4
+    /// 2 -> 5
+    /// 4 -> 5
+    /// ```
+    ///
+    /// The shortest path from 0 to 5 is `0 -> 3 -> 4 -> 5`.
+    ///
+    pub def exampleGraph02(): Set[(Int32, Int32, Int32)] =
+        Set#{ (0, 1, 1), (0, 1, 3), (1, 1, 2), (1, 1, 4), (2, 1, 5), (3, 1, 4), (4, 1, 5) }
+
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///      1
+    ///     /|\
+    ///    0 | 3
+    ///     \|/
+    ///      2
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1
+    /// 0 -> 2
+    /// 1 -> 2
+    /// 1 -> 3
+    /// 2 -> 3
+    /// ```
+    ///
+    /// The shortest path from 0 to 3 is `0 -> 2 -> 3`.
+    ///
+    pub def exampleGraph03(): Set[(Int32, Int32, Int32)] =
+        Set#{ (0, 1, 1), (0, 1, 2), (1, 1, 2), (1, 1, 3), (2, 1, 3) }
+
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///       1--2--3
+    ///      /|  |\  \
+    ///     / |  | \  \
+    ///    0--4--5--6--10
+    ///     \   /  /| /
+    ///      \ /  / |/
+    ///       7--8--9
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1
+    /// 0 -> 4
+    /// 0 -> 7
+    /// 4 -> 1
+    /// 1 -> 2
+    /// 4 -> 5
+    /// 5 -> 7
+    /// 7 -> 8
+    /// 2 -> 5
+    /// 2 -> 3
+    /// 6 -> 2
+    /// 5 -> 6
+    /// 8 -> 6
+    /// 8 -> 9
+    /// 6 -> 9
+    /// 3 -> 10
+    /// 6 -> 10
+    /// 9 -> 10
+    /// ```
+    ///
+    /// The shortest path from 0 to 10 is `0 -> 7 -> 8 -> 9 -> 10`.
+    ///
+    pub def exampleGraph04(): Set[(Int32, Int32, Int32)] =
+        Set#{  (0, 1, 1), (0, 1, 4 ), (0, 1, 7 ), (1, 1, 2 ), (2, 1, 3),
+               (2, 1, 5), (3, 1, 10), (4, 1, 1 ), (4, 1, 5 ), (5, 1, 7),
+               (5, 1, 6), (6, 1, 9 ), (6, 1, 2 ), (6, 1, 10), (7, 1, 8),
+               (8, 1, 6), (8, 1, 9 ), (9, 1, 10)
+            }
+
+    ///
+    /// Returns the following graph:
+    ///
+    /// ```
+    ///      1---2
+    ///     / \   \
+    ///    0   \   6
+    ///     \   \ /
+    ///      3---5
+    ///      |
+    ///      4
+    /// ```
+    ///
+    /// The edges are directed as follows (ordered from left to right, top to bottom):
+    ///
+    /// ```
+    /// 0 -> 1
+    /// 0 -> 3
+    /// 1 -> 2
+    /// 1 -> 5
+    /// 3 -> 5
+    /// 3 -> 4
+    /// 2 -> 6
+    /// 5 -> 6
+    /// ```
+    ///
+    /// The shortest path from 0 to 6 is `0 -> 3 -> 5 -> 6`.
+    ///
+    pub def exampleGraph05(): Set[(Int32, Int32, Int32)] =
+        Set#{ (0, 1, 1), (0, 1, 3), (1, 1, 2), (1, 1, 5), (2, 1, 6), (3, 1, 5), (3, 1, 4), (5, 1, 6) }
+
+    @Test
+    def testExampleGraphShortestPaths01(): Bool =
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 4, 5}}, ssspn(0, exampleGraph01()))
+
+    @Test
+    def testExampleGraphShortestPaths02(): Bool =
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 4, 5}}, ssspn(0, exampleGraph02()))
+
+    @Test
+    def testExampleGraphShortestPaths03(): Bool =
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 2}, 3 => Vector#{0, 2, 3}}, ssspn(0, exampleGraph03()))
+
+    @Test
+    def testExampleGraphShortestPaths04(): Bool =
+        Assert.eq(Map#{1 => Vector#{0 ,1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 1, 2, 3}, 4 => Vector#{0, 4},
+            5 => Vector#{0, 4, 5}, 6 => Vector#{0, 7, 8, 6}, 7 => Vector#{0, 7}, 8 => Vector#{0, 7, 8},
+            9 => Vector#{0, 7, 8, 9}, 10 => Vector#{0, 7, 8, 9, 10}}, ssspn(0, exampleGraph04()))
+
+    @Test
+    def testExampleGraphShortestPaths05(): Bool =
+        Assert.eq(Map#{1 => Vector#{0, 1}, 2 => Vector#{0, 1, 2}, 3 => Vector#{0, 3}, 4 => Vector#{0, 3, 4}, 5 => Vector#{0, 3, 5}, 6 => Vector#{0, 3, 5, 6}}, ssspn(0, exampleGraph05()))
+
+}

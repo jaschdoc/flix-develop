@@ -73,18 +73,17 @@ mod PathL {
     }
 
     ///
-    /// Returns a `Path` from `x` to `y`.
+    /// Returns a `Path` from `x` to `y` of length `l`.
     ///
-    pub def init(y: (a, Int32), x: (a, Int32)): Path[a] = match (y, x) {
-        case ((y1, l1), (x1, l2)) => Path(y1 :: x1 :: Nil, l1 + l2)
-    }
+    pub def init(y: a,  l: Int32, x: a): Path[a] =
+        Path(y :: x :: Nil, l)
 
     ///
-    /// Extends the `Path` `p` with `z`.
+    /// Extends the `Path` `p` with `z` of length `l`.
     ///
-    pub def cons(z: (a, Int32), p: Path[a]): Path[a] = match (z, p) {
-        case (_, Bot)                 => Bot
-        case ((z1, l1), Path(xs, l2)) => Path(z1 :: xs, l1 + l2)
+    pub def cons(z: a, l: Int32, p: Path[a]): Path[a] = match (p) {
+        case Bot          => Bot
+        case Path(xs, l1) => Path(z :: xs, l1 + l)
     }
 
     ///
