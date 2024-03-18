@@ -26,4 +26,7 @@ mod Subtyping {
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Types[#()]): Bool =
         not (subtypes(types) |> Vector.filter(Eq.eq((subtype, possibleSupertype))) |> Vector.isEmpty)
 
+    pub def hasMethod(tpe: String, method: String, types: Types[#()]): Bool =
+        not (methodsOf(tpe, types) |> Vector.filter(Eq.eq(method)) |> Vector.isEmpty)
+
 }
