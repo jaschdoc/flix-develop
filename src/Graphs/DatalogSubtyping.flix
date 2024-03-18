@@ -23,6 +23,12 @@ mod Subtyping {
         };
         query rules, subs, open(types) select m from AvailableMethod(tpe, m)
 
+    pub def isNonSupertype(tpe: String, types: Types[#()]): Bool = ???
+
+    pub def hasInheritanceCycle(types: Types[#()]): Bool = ???
+
+    pub def extendsOnlyObject(tpe: String, types: Types[#()]): Bool = ???
+
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Types[#()]): Bool =
         not (subtypes(types) |> Vector.filter(Eq.eq((subtype, possibleSupertype))) |> Vector.isEmpty)
 
