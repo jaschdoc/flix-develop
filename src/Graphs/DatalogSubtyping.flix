@@ -13,10 +13,11 @@ mod Subtyping {
         IsSubtype(sub, super) :- IsSubtype(sub, a), IsSubtype(a, super).
     }
 
-    pub def subtypes(types: Types[#()]): Vector[(String, String)] = {
-        let result = query subtypeRules(), open(types) select (sub, super) from IsSubtype(sub, super);
-        result |> Vector.filter(match (x, y) -> x != y)
-    }
+    pub def subtypes(types: Types[#()]): Vector[(String, String)] =
+        query subtypeRules(), open(types) select (sub, super) from IsSubtype(sub, super)
+
+    pub def subtypesDistinct(types: Types[#()]): Vector[(String, String)] =
+        subtypes(types) |> Vector.filter(match (x, y) -> x != y)
 
     pub def methodsOf(tpe: String, types: Types[#()]): Vector[String] =
         let rules = #{
@@ -61,12 +62,12 @@ mod Subtyping {
 
         @Test
         def testSubtypes01(): Bool =
-            let result = Subtyping.subtypes(#{});
+            let result = Subtyping.subtypesDistinct(#{});
             Assert.eq(Vector#{}, result)
 
         @Test
         def testSubtypes02(): Bool =
-            let result = Subtyping.subtypes(facts());
+            let result = Subtyping.subtypesDistinct(facts());
             let expected = Vector#{("au.content.Marker", "java.lang.Object"), ("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
             Assert.eq(expected, result)
 
@@ -98,6 +99,11 @@ mod Subtyping {
         @Test
         def testIsSubtype06(): Bool =
             let result = Subtyping.isSubtype("au.content.SpecialArrayList", "java.util.Collection", facts());
+            Assert.eq(true, result)
+
+        @Test
+        def testIsSubtype07(): Bool =
+            let result = Subtyping.isSubtype("java.util.List", "java.util.List", facts());
             Assert.eq(true, result)
 
         @Test
