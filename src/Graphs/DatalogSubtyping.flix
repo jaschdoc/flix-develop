@@ -84,7 +84,7 @@ mod Subtyping {
         @Test
         def testIsSubtype03(): Bool =
             let result = Subtyping.isSubtype("java.lang.Object", "java.lang.Object", facts());
-            Assert.eq(false, result)
+            Assert.eq(true, result)
 
         @Test
         def testIsSubtype04(): Bool =
