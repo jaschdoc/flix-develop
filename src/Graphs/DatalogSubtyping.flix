@@ -23,7 +23,12 @@ mod Subtyping {
         };
         query rules, subtypeRules(), open(types) select m from AvailableMethod(tpe, m)
 
-    pub def isNonSupertype(tpe: String, types: Types[#()]): Bool = ???
+    pub def isNonSupertype(tpe: String, types: Types[#()]): Bool =
+        let rules = #{
+            NonSupertype(class) :- Class(class), Class(otherClass), not IsSubtype(otherClass, class), if class != otherClass.
+        };
+        let result = query rules, subtypeRules(), open(types) select tpe from NonSupertype(tpe);
+        not Vector.isEmpty(result)
 
     pub def hasInheritanceCycle(types: Types[#()]): Bool = ???
 
