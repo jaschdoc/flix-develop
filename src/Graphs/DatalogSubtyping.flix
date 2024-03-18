@@ -100,6 +100,18 @@ mod Subtyping {
             let result = Subtyping.isSubtype("au.content.SpecialArrayList", "java.util.Collection", facts());
             Assert.eq(true, result)
 
+        @Test
+        def testMethodsOf01(): Bool =
+            let result = Subtyping.methodsOf("java.lang.String", facts());
+            let expected = Vector#{"toString", "contains", "isEmpty"} |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
+        def testMethodsOf02(): Bool =
+            let result = Subtyping.methodsOf("java.util.ArrayList", facts());
+            let expected = Vector#{"toString", "add"} |> Vector.sort;
+            Assert.eq(expected, result)
+
         def facts(): Subtyping.Types[r] = #{
             Class("java.lang.Object").
             Class("java.lang.String").
