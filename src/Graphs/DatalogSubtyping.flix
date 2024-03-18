@@ -67,7 +67,7 @@ mod Subtyping {
         @Test
         def testSubtypes02(): Bool =
             let result = Subtyping.subtypes(facts());
-            let expected = Vector#{("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList")} |> Vector.sort;
+            let expected = Vector#{("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
@@ -104,6 +104,7 @@ mod Subtyping {
             Class("java.lang.Object").
             Class("java.lang.String").
             Class("java.util.ArrayList").
+            Class("au.content.SpecialArrayList").
             Interface("java.io.Serializable").
             Interface("java.util.List").
             Interface("java.util.Collection").
