@@ -23,24 +23,37 @@ mod Subtyping {
         };
         query rules, subtypeRules(), open(types) select m from AvailableMethod(tpe, m)
 
-    pub def isNonSupertype(tpe: String, types: Types[#()]): Bool =
+    pub def nonSupertypes(types: Types[#()]): Vector[String] =
         let rules = #{
             NonSupertype(class) :- Class(class), Class(otherClass), not IsSubtype(otherClass, class), if class != otherClass.
         };
-        let result = query rules, subtypeRules(), open(types) select tpe from NonSupertype(tpe);
-        not Vector.isEmpty(result)
+        query rules, subtypeRules(), open(types) select tpe from NonSupertype(tpe)
 
-    pub def hasInheritanceCycle(types: Types[#()]): Bool =
-        let rules = #{};
-        let result = ???;
-        not Vector.isEmpty(result)
+    pub def inheritanceCycles(types: Types[#()]): Vector[(String, String)] =
+        let rules = #{
+            InheritanceCycle(sub, super) :- IsSubtype(sub, super), IsSubtype(super, sub), if sub != super.
+        };
+        query rules, subtypeRules(), open(types) select (sub, super) from InheritanceCycle(sub, super)
 
-    pub def extendsOnlyObject(tpe: String, types: Types[#()]): Bool = ???
+    pub def objectOnlyExtensions(types: Types[#()]): Vector[String] =
+        let rules = #{
+            ExtendsOnlyObject(class) :- ClassExtends(class, "java.lang.Object"), ClassExtends(class, otherClass), if otherClass == "java.lang.Object".
+        };
+        query rules, subtypeRules(), open(types) select class from ExtendsOnlyObject(class)
 
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Types[#()]): Bool =
         not (subtypes(types) |> Vector.filter(Eq.eq((subtype, possibleSupertype))) |> Vector.isEmpty)
 
     pub def hasMethod(tpe: String, method: String, types: Types[#()]): Bool =
         not (methodsOf(tpe, types) |> Vector.filter(Eq.eq(method)) |> Vector.isEmpty)
+
+    pub def isNonSupertype(tpe: String, types: Types[#()]): Bool =
+        not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
+
+    pub def hasInheritanceCycle(types: Types[#()]): Bool =
+        not (inheritanceCycles(types) |> Vector.isEmpty)
+
+    pub def extendsOnlyObject(tpe: String, types: Types[#()]): Bool =
+        not (objectOnlyExtensions(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
 
 }
