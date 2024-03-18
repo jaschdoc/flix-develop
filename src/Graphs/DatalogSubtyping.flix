@@ -67,7 +67,7 @@ mod Subtyping {
         @Test
         def testSubtypes02(): Bool =
             let result = Subtyping.subtypes(facts());
-            let expected = Vector#{("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
+            let expected = Vector#{("au.content.Marker", "java.lang.Object"), ("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
@@ -104,6 +104,7 @@ mod Subtyping {
             Class("java.lang.Object").
             Class("java.lang.String").
             Class("java.util.ArrayList").
+            Class("au.content.Marker").
             Class("au.content.SpecialArrayList").
             Interface("java.io.Serializable").
             Interface("java.util.List").
@@ -111,6 +112,7 @@ mod Subtyping {
             ClassExtends("java.lang.String", "java.lang.Object").
             ClassExtends("java.util.ArrayList", "java.lang.Object").
             ClassExtends("au.content.SpecialArrayList", "java.util.ArrayList").
+            ClassExtends("au.content.Marker", "java.lang.Object").
             ClassImplements("java.lang.String", "java.io.Serializable").
             ClassImplements("java.util.ArrayList", "java.util.List").
             InterfaceExtends("java.util.List", "java.util.Collection").
@@ -120,5 +122,4 @@ mod Subtyping {
             Method("java.lang.String", "isEmpty").
         }
     }
-
 }
