@@ -30,7 +30,10 @@ mod Subtyping {
         let result = query rules, subtypeRules(), open(types) select tpe from NonSupertype(tpe);
         not Vector.isEmpty(result)
 
-    pub def hasInheritanceCycle(types: Types[#()]): Bool = ???
+    pub def hasInheritanceCycle(types: Types[#()]): Bool =
+        let rules = #{};
+        let result = ???;
+        not Vector.isEmpty(result)
 
     pub def extendsOnlyObject(tpe: String, types: Types[#()]): Bool = ???
 
