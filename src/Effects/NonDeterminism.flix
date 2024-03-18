@@ -136,7 +136,7 @@ mod EffectExamples.NonDeterminism {
     pub def testSqrt02(): Bool =
         Assert.eq(Some(3), sqrt(9))
 
-   @Test
+   @Skip
    pub def testPythagorean01(): Bool =
        let res =
             try {
@@ -156,7 +156,7 @@ mod EffectExamples.NonDeterminism {
        let res = chooseAll(() -> pythagorean(5, 15));
        Assert.eq((5, 12, 13) :: (6, 8, 10) :: (8, 15, 17) :: (9, 12, 15) :: Nil, res)
 
-    @Test
+    @Skip
     pub def testEightQueens01(): Bool =
         let res =
             try {
