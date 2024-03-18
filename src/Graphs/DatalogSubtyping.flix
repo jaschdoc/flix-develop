@@ -95,6 +95,11 @@ mod Subtyping {
             let result = Subtyping.isSubtype("java.util.ArrayList", "java.util.Collection", facts());
             Assert.eq(true, result)
 
+        @Test
+        def testIsSubtype06(): Bool =
+            let result = Subtyping.isSubtype("au.content.SpecialArrayList", "java.util.Collection", facts());
+            Assert.eq(true, result)
+
         def facts(): Subtyping.Types[r] = #{
             Class("java.lang.Object").
             Class("java.lang.String").
