@@ -4,16 +4,17 @@ mod Subtyping {
 
     def open(types: #{ Class(String), Interface(String), ClassExtends(String, String), ClassImplements(String, String), InterfaceExtends(String, String), Method(String, String) }): Types[r] = types
 
+    def subtypeRules(): #{ IsSubtype(String, String), Class(String), Interface(String), ClassExtends(String, String), ClassImplements(String, String), InterfaceExtends(String, String) | r } = #{
+        IsSubtype(sub, super) :- Class(sub), Class(super), if sub == super.
+        IsSubtype(sub, super) :- Interface(sub), Interface(super), if sub == super.
+        IsSubtype(sub, super) :- Class(sub), Class(super), ClassExtends(sub, super).
+        IsSubtype(sub, super) :- Class(sub), Interface(super), ClassImplements(sub, super).
+        IsSubtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
+        IsSubtype(sub, super) :- IsSubtype(sub, a), IsSubtype(a, super).
+    }
+
     pub def subtypes(types: Types[#()]): Vector[(String, String)] = {
-        let rules = #{
-            IsSubtype(sub, super) :- Class(sub), Class(super), if sub == super.
-            IsSubtype(sub, super) :- Interface(sub), Interface(super), if sub == super.
-            IsSubtype(sub, super) :- Class(sub), Class(super), ClassExtends(sub, super).
-            IsSubtype(sub, super) :- Class(sub), Interface(super), ClassImplements(sub, super).
-            IsSubtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
-            IsSubtype(sub, super) :- IsSubtype(sub, a), IsSubtype(a, super).
-        };
-        query rules, open(types) select (sub, super) from IsSubtype(sub, super)
+        query subtypeRules(), open(types) select (sub, super) from IsSubtype(sub, super)
     }
 
     pub def methodsOf(tpe: String, types: Types[#()]): Vector[String] =
