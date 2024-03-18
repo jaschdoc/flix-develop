@@ -18,11 +18,10 @@ mod Subtyping {
     }
 
     pub def methodsOf(tpe: String, types: Types[#()]): Vector[String] =
-        let subs = inject subtypes(types) into IsSubtype;
         let rules = #{
             AvailableMethod(class, method) :- Method(t, method), IsSubtype(class, t).
         };
-        query rules, subs, open(types) select m from AvailableMethod(tpe, m)
+        query rules, subtypeRules(), open(types) select m from AvailableMethod(tpe, m)
 
     pub def isNonSupertype(tpe: String, types: Types[#()]): Bool = ???
 
