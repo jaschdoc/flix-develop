@@ -40,22 +40,10 @@ mod Subtyping {
         Vector.filter(match (x, y) -> x != y, v)
 
     pub def methodsOf(tpe: String, types: Program): Vector[String] =
-        let rules = #{
-            AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
-        };
-        query rules, subtypes(types), toPredicates(types) select m from AvailableMethod(tpe, m)
+        query subtypes(types) select m from AvailableMethod(tpe, m)
 
     pub def nonSupertypes(types: Program): Vector[String] =
-        let rules = #{
-            NonSupertype(class) :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
-        };
-        query rules, subtypes(types), toPredicates(types) select tpe from NonSupertype(tpe)
-
-    pub def inheritanceCycles(types: Program): Vector[(String, String)] =
-        let rules = #{
-            InheritanceCycle(sub, super) :- Subtype(sub, super), Subtype(super, sub), if sub != super.
-        };
-        query rules, subtypes(types), toPredicates(types) select (sub, super) from InheritanceCycle(sub, super)
+        query subtypes(types) select tpe from NonSupertype(tpe)
 
     pub def objectOnlyExtensions(types: Program): Vector[String] =
         let rules = #{
@@ -72,9 +60,6 @@ mod Subtyping {
 
     pub def isNonSupertype(tpe: String, types: Program): Bool =
         not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
-
-    pub def hasInheritanceCycle(types: Program): Bool =
-        not (inheritanceCycles(types) |> Vector.isEmpty)
 
     pub def extendsOnlyObject(tpe: String, types: Program): Bool =
         not (objectOnlyExtensions(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
