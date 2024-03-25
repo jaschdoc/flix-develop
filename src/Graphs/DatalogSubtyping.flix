@@ -1,13 +1,13 @@
 mod Subtyping {
 
     type alias Program = {
-        classes = List[String],
-        finalClasses = List[String],
-        interfaces = List[String],
-        implementations = List[(String, String)],
-        classExtends = List[(String, String)],
-        interfaceExtends = List[(String, String)],
-        methods = List[(String, String)]
+        classes = Vector[String],
+        finalClasses = Vector[String],
+        interfaces = Vector[String],
+        implementations = Vector[(String, String)],
+        classExtends = Vector[(String, String)],
+        interfaceExtends = Vector[(String, String)],
+        methods = Vector[(String, String)]
     }
 
     def subtypes(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
@@ -26,13 +26,13 @@ mod Subtyping {
         #(Subtype, AvailableMethod, NonSupertype, ExtendsFinalClass) -> rules <+> toPredicates(program)
 
     def toPredicates(program: Program): #{ Class(String), FinalClass(String), Interface(String), ClassExtends(String, String),  InterfaceExtends(String, String), Implementation(String, String), Method(String, String) | r } =
-        let cs    = inject program.classes into Class;
-        let fcs   = inject program.finalClasses into FinalClass;
-        let is    = inject program.interfaces into Interface;
-        let impls = inject program.implementations into Implementation;
-        let ce    = inject program.classExtends into ClassExtends;
+        let cs    = inject program.classes          into Class;
+        let fcs   = inject program.finalClasses     into FinalClass;
+        let is    = inject program.interfaces       into Interface;
+        let impls = inject program.implementations  into Implementation;
+        let ce    = inject program.classExtends     into ClassExtends;
         let ies   = inject program.interfaceExtends into InterfaceExtends;
-        let ms    = inject program.methods into Method;
+        let ms    = inject program.methods          into Method;
         cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: Program): Vector[(String, String)] =
@@ -45,11 +45,8 @@ mod Subtyping {
     pub def nonSupertypes(types: Program): Vector[String] =
         query subtypes(types) select tpe from NonSupertype(tpe)
 
-    pub def objectOnlyExtensions(types: Program): Vector[String] =
-        let rules = #{
-            ExtendsOnlyObject(class) :- ClassExtends(class, "java.lang.Object"), ClassExtends(class, otherClass), if otherClass == "java.lang.Object".
-        };
-        query rules, subtypes(types), toPredicates(types) select class from ExtendsOnlyObject(class)
+    pub def finalClassExtensions(types: Program): Vector[(String, String)] =
+        query subtypes(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Program): Bool =
         let v = query subtypes(types) select (x, y) from Subtype(x, y);
@@ -61,9 +58,8 @@ mod Subtyping {
     pub def isNonSupertype(tpe: String, types: Program): Bool =
         not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
 
-    pub def extendsOnlyObject(tpe: String, types: Program): Bool =
-        not (objectOnlyExtensions(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
-
+    pub def extendsFinalClass(tpe: String, types: Program): Bool =
+        not (finalClassExtensions(types) |> Vector.filter(match (sub, _) -> sub == tpe) |> Vector.isEmpty)
 
     /////////////////////////////////////////////////
     // Tests                                       //
@@ -130,45 +126,45 @@ mod Subtyping {
             Assert.eq(expected, result)
 
         def emptyFacts(): Subtyping.Program = {
-            classes = List#{},
-            finalClasses = List#{},
-            interfaces = List#{},
-            implementations = List#{},
-            classExtends = List#{},
-            interfaceExtends = List#{},
-            methods = List#{}
+            classes = Vector#{},
+            finalClasses = Vector#{},
+            interfaces = Vector#{},
+            implementations = Vector#{},
+            classExtends = Vector#{},
+            interfaceExtends = Vector#{},
+            methods = Vector#{}
         }
 
         def facts(): Subtyping.Program = {
-            classes = List#{
+            classes = Vector#{
                 "java.lang.Object",
                 "java.lang.String",
                 "java.util.ArrayList",
                 "au.content.Marker",
                 "au.content.SpecialArrayList"
             },
-            finalClasses = List#{
+            finalClasses = Vector#{
                 "java.lang.String"
             },
-            interfaces = List#{
+            interfaces = Vector#{
                 "java.io.Serializable",
                 "java.util.List",
                 "java.util.Collection"
             },
-            implementations = List#{
+            implementations = Vector#{
                 ("java.lang.String", "java.io.Serializable"),
                 ("java.util.ArrayList", "java.util.List")
             },
-            classExtends = List#{
+            classExtends = Vector#{
                 ("java.lang.String", "java.lang.Object"),
                 ("java.util.ArrayList", "java.lang.Object"),
                 ("au.content.SpecialArrayList", "java.util.ArrayList"),
                 ("au.content.Marker", "java.lang.Object")
             },
-            interfaceExtends = List#{
+            interfaceExtends = Vector#{
                 ("java.util.List", "java.util.Collection")
             },
-            methods = List#{
+            methods = Vector#{
                 ("java.lang.Object", "toString"),
                 ("java.util.List", "add"),
                 ("java.lang.String", "contains"),
