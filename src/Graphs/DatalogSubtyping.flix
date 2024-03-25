@@ -67,10 +67,10 @@ mod Subtyping {
         let ce    = inject program |> Foldable.filter(isClassExtends)     |> Functor.map(extractTwo) into ClassExtends;
         let ies   = inject program |> Foldable.filter(isInterfaceExtends) |> Functor.map(extractTwo) into InterfaceExtends;
         let ms    = inject program |> Foldable.filter(isMethod)           |> Functor.map(extractTwo) into Method;
-        solve cs, is, ce, impls, ies, ms
+        cs <+> is <+> ce <+> impls <+> ies <+> ms
 
-    def subtypes(program : t[JavaType]): #{ Subtype(String, String)| r } with Foldable[t] =
-        let rules = #(Subtype) -> #{
+    def subtypes(program: t[JavaType]): #{ Subtype(String, String)| r } with Foldable[t] =
+        let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
             Subtype(sub, super) :- Class(sub), Interface(super), Implementation(sub, super).
@@ -86,19 +86,19 @@ mod Subtyping {
 
     pub def methodsOf(tpe: String, types: t[JavaType]): Vector[String] with Foldable[t] =
         let rules = #{
-            AvailableMethod(class, method) :- Method(t, method), IsSubtype(class, t).
+            AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
         };
         query rules, subtypes(types), toPredicates(types) select m from AvailableMethod(tpe, m)
 
     pub def nonSupertypes(types: t[JavaType]): Vector[String] with Foldable[t] =
         let rules = #{
-            NonSupertype(class) :- Class(class), Class(otherClass), not IsSubtype(otherClass, class), if class != otherClass.
+            NonSupertype(class) :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
         };
         query rules, subtypes(types), toPredicates(types) select tpe from NonSupertype(tpe)
 
     pub def inheritanceCycles(types: t[JavaType]): Vector[(String, String)] with Foldable[t] =
         let rules = #{
-            InheritanceCycle(sub, super) :- IsSubtype(sub, super), IsSubtype(super, sub), if sub != super.
+            InheritanceCycle(sub, super) :- Subtype(sub, super), Subtype(super, sub), if sub != super.
         };
         query rules, subtypes(types), toPredicates(types) select (sub, super) from InheritanceCycle(sub, super)
 
@@ -140,37 +140,37 @@ mod Subtyping {
             Assert.eq(expected, result)
 
         @Test
-        def testIsSubtype01(): Bool =
+        def testSubtype01(): Bool =
             let result = Subtyping.isSubtype("java.lang.String", "java.lang.Object", Nil);
             Assert.eq(false, result)
 
         @Test
-        def testIsSubtype02(): Bool =
+        def testSubtype02(): Bool =
             let result = Subtyping.isSubtype("java.lang.String", "java.lang.Object", facts());
             Assert.eq(true, result)
 
         @Test
-        def testIsSubtype03(): Bool =
+        def testSubtype03(): Bool =
             let result = Subtyping.isSubtype("java.lang.Object", "java.lang.Object", facts());
             Assert.eq(true, result)
 
         @Test
-        def testIsSubtype04(): Bool =
+        def testSubtype04(): Bool =
             let result = Subtyping.isSubtype("java.lang.Object", "java.lang.String", facts());
             Assert.eq(false, result)
 
         @Test
-        def testIsSubtype05(): Bool =
+        def testSubtype05(): Bool =
             let result = Subtyping.isSubtype("java.util.ArrayList", "java.util.Collection", facts());
             Assert.eq(true, result)
 
         @Test
-        def testIsSubtype06(): Bool =
+        def testSubtype06(): Bool =
             let result = Subtyping.isSubtype("au.content.SpecialArrayList", "java.util.Collection", facts());
             Assert.eq(true, result)
 
         @Test
-        def testIsSubtype07(): Bool =
+        def testSubtype07(): Bool =
             let result = Subtyping.isSubtype("java.util.List", "java.util.List", facts());
             Assert.eq(true, result)
 
