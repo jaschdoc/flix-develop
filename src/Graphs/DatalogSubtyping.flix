@@ -11,54 +11,6 @@ mod Subtyping {
         case Method(String, String)
     }
 
-    def isClass(tpe: JavaType): Bool = match tpe {
-        case Class(_) => true
-        case _        => false
-    }
-
-    def isInterface(tpe: JavaType): Bool = match tpe {
-        case Interface(_) => true
-        case _            => false
-    }
-
-    def isClassExtends(tpe: JavaType): Bool = match tpe {
-        case ClassExtends(_) => true
-        case _               => false
-    }
-
-    def isImplementation(tpe: JavaType): Bool = match tpe {
-        case Implementation(_) => true
-        case _                 => false
-    }
-
-    def isInterfaceExtends(tpe: JavaType): Bool = match tpe {
-        case InterfaceExtends(_) => true
-        case _                   => false
-    }
-
-    def isMethod(tpe: JavaType): Bool = match tpe {
-        case Method(_) => true
-        case _         => false
-    }
-
-    def extractOne(tpe: JavaType): String = match tpe {
-        case Class(s)               => s
-        case Interface(s)           => s
-        case ClassExtends(s, _)     => s
-        case InterfaceExtends(s, _) => s
-        case Implementation(s, _)   => s
-        case Method(s, _)           => s
-    }
-
-    def extractTwo(tpe: JavaType): (String, String) = match tpe {
-        case Class(s)                 => (s, "")
-        case Interface(s)             => (s, "")
-        case ClassExtends(s1, s2)     => (s1, s2)
-        case InterfaceExtends(s1, s2) => (s1, s2)
-        case Implementation(s1, s2)   => (s1, s2)
-        case Method(s1, s2)           => (s1, s2)
-    }
-
     def subtypes(program: t[JavaType]): #{ Subtype(String, String)| r } with Foldable[t] =
         let rules = #{
             Subtype(x, x)       :- Class(x).
@@ -123,6 +75,54 @@ mod Subtyping {
 
     pub def extendsOnlyObject(tpe: String, types: t[JavaType]): Bool with Foldable[t] =
         not (objectOnlyExtensions(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
+
+    def isClass(tpe: JavaType): Bool = match tpe {
+        case Class(_) => true
+        case _        => false
+    }
+
+    def isInterface(tpe: JavaType): Bool = match tpe {
+        case Interface(_) => true
+        case _            => false
+    }
+
+    def isClassExtends(tpe: JavaType): Bool = match tpe {
+        case ClassExtends(_) => true
+        case _               => false
+    }
+
+    def isImplementation(tpe: JavaType): Bool = match tpe {
+        case Implementation(_) => true
+        case _                 => false
+    }
+
+    def isInterfaceExtends(tpe: JavaType): Bool = match tpe {
+        case InterfaceExtends(_) => true
+        case _                   => false
+    }
+
+    def isMethod(tpe: JavaType): Bool = match tpe {
+        case Method(_) => true
+        case _         => false
+    }
+
+    def extractOne(tpe: JavaType): String = match tpe {
+        case Class(s)               => s
+        case Interface(s)           => s
+        case ClassExtends(s, _)     => s
+        case InterfaceExtends(s, _) => s
+        case Implementation(s, _)   => s
+        case Method(s, _)           => s
+    }
+
+    def extractTwo(tpe: JavaType): (String, String) = match tpe {
+        case Class(s)                 => (s, "")
+        case Interface(s)             => (s, "")
+        case ClassExtends(s1, s2)     => (s1, s2)
+        case InterfaceExtends(s1, s2) => (s1, s2)
+        case Implementation(s1, s2)   => (s1, s2)
+        case Method(s1, s2)           => (s1, s2)
+    }
 
     mod Test {
 
