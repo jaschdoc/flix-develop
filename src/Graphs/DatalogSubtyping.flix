@@ -186,15 +186,6 @@ mod Subtyping {
             let expected = Vector#{"toString", "add"} |> Vector.sort;
             Assert.eq(expected, result)
 
-        def _classes(): List[String] =
-            List#{"java.lang.Object", "java.lang.String", "java.util.ArrayList", "au.content.Marker", "au.content.SpecialArrayList"}
-
-        def _interfaces(): List[String] =
-            List#{"java.io.Serializable", "java.util.List", "java.util.Collection"}
-
-        def _classExtensions(): List[(String, String)] =
-            List#{("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.Marker", "java.lang.Object")}
-
         def facts(): List[Subtyping.JavaType] = List#{
             Class("java.lang.Object"),
             Class("java.lang.String"),
