@@ -61,6 +61,7 @@ mod Subtyping {
     pub def extendsFinalClass(tpe: String, types: Program): Bool =
         not (finalClassExtensions(types) |> Vector.filter(match (sub, _) -> sub == tpe) |> Vector.isEmpty)
 
+
     /////////////////////////////////////////////////
     // Tests                                       //
     /////////////////////////////////////////////////
