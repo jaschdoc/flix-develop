@@ -59,16 +59,6 @@ mod Subtyping {
         case Method(s1, s2)           => (s1, s2)
     }
 
-    def toPredicates(program: t[JavaType]): #{ Class(String), Interface(String), ClassExtends(String, String),  InterfaceExtends(String, String), Implementation(String, String), Method(String, String) | r } with Foldable[t] =
-        // TODO: Use mutable state so we only have to traverse `program` once.
-        let cs    = inject program |> Foldable.filter(isClass)            |> Functor.map(extractOne) into Class;
-        let is    = inject program |> Foldable.filter(isInterface)        |> Functor.map(extractOne) into Interface;
-        let impls = inject program |> Foldable.filter(isImplementation)   |> Functor.map(extractTwo) into Implementation;
-        let ce    = inject program |> Foldable.filter(isClassExtends)     |> Functor.map(extractTwo) into ClassExtends;
-        let ies   = inject program |> Foldable.filter(isInterfaceExtends) |> Functor.map(extractTwo) into InterfaceExtends;
-        let ms    = inject program |> Foldable.filter(isMethod)           |> Functor.map(extractTwo) into Method;
-        cs <+> is <+> ce <+> impls <+> ies <+> ms
-
     def subtypes(program: t[JavaType]): #{ Subtype(String, String)| r } with Foldable[t] =
         let rules = #{
             Subtype(x, x)       :- Class(x).
@@ -79,6 +69,16 @@ mod Subtyping {
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
         };
         solve toPredicates(program), rules project Subtype
+
+    def toPredicates(program: t[JavaType]): #{ Class(String), Interface(String), ClassExtends(String, String),  InterfaceExtends(String, String), Implementation(String, String), Method(String, String) | r } with Foldable[t] =
+        // TODO: Use mutable state so we only have to traverse `program` once.
+        let cs    = inject program |> Foldable.filter(isClass)            |> Functor.map(extractOne) into Class;
+        let is    = inject program |> Foldable.filter(isInterface)        |> Functor.map(extractOne) into Interface;
+        let impls = inject program |> Foldable.filter(isImplementation)   |> Functor.map(extractTwo) into Implementation;
+        let ce    = inject program |> Foldable.filter(isClassExtends)     |> Functor.map(extractTwo) into ClassExtends;
+        let ies   = inject program |> Foldable.filter(isInterfaceExtends) |> Functor.map(extractTwo) into InterfaceExtends;
+        let ms    = inject program |> Foldable.filter(isMethod)           |> Functor.map(extractTwo) into Method;
+        cs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: t[JavaType]): Vector[(String, String)] with Foldable[t] =
         let v = query subtypes(types) select (x, y) from Subtype(x, y);
