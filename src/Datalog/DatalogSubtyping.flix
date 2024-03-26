@@ -53,8 +53,8 @@ mod Subtyping {
         query classHierarchyAnalysis(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Program): Bool =
-        let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
-        not (Vector.filter(Eq.eq((subtype, possibleSupertype)), v) |> Vector.isEmpty)
+        let v = query classHierarchyAnalysis(types) select subtype from Subtype(subtype, possibleSupertype);
+        not Vector.isEmpty(v)
 
     pub def hasMethod(tpe: String, method: String, types: Program): Bool =
         not (methodsOf(tpe, types) |> Vector.filter(Eq.eq(method)) |> Vector.isEmpty)
