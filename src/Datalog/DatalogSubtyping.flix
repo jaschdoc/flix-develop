@@ -10,14 +10,14 @@ mod Subtyping {
         methods = Vector[(String, String)]
     }
 
-    def classHierarchyAnalysis(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
-        let cs    = inject program.classes               into Class;
-        let fcs   = inject program.finalClasses          into FinalClass;
-        let is    = inject program.interfaces            into Interface;
-        let impls = inject program.classImplements  into ClassImplements;
-        let ce    = inject program.classExtends          into ClassExtends;
-        let ies   = inject program.interfaceExtends      into InterfaceExtends;
-        let ms    = inject program.methods               into Method;
+    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
+        let cs    = inject p.classes          into Class;
+        let fcs   = inject p.finalClasses     into FinalClass;
+        let is    = inject p.interfaces       into Interface;
+        let impls = inject p.classImplements  into ClassImplements;
+        let ce    = inject p.classExtends     into ClassExtends;
+        let ies   = inject p.interfaceExtends into InterfaceExtends;
+        let ms    = inject p.methods          into Method;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
