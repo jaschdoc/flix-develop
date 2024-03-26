@@ -68,9 +68,6 @@ mod Subtyping {
         let res = query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _);
         not Vector.isEmpty(res)
 
-    pub def nonSupertypes(p: Program): Vector[String] =
-        query classHierarchyAnalysis(p) select tpe from NonSupertype(tpe)
-
     pub def finalClassExtensions(p: Program): Vector[(String, String)] =
         query classHierarchyAnalysis(p) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
@@ -81,8 +78,8 @@ mod Subtyping {
     pub def hasMethod(p: Program, method: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
-    pub def isNonSupertype(tpe: String, p: Program): Bool =
-        not (nonSupertypes(p) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
+    pub def nonSupertypes(p: Program): Vector[String] =
+        query classHierarchyAnalysis(p) select tpe from NonSupertype(tpe)
 
 
     /////////////////////////////////////////////////
