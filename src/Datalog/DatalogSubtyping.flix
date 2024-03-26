@@ -62,32 +62,52 @@ mod Subtyping {
         };
         #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
-    pub def hasField(p: Program, field: String): Vector[String] =
-        query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
+        ///
+        /// Returns a vector of types that have the specified field `field`.
+        ///
+        pub def hasField(p: Program, field: String): Vector[String] =
+            query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
 
-    pub def hasMethod(p: Program, method: String): Vector[String] =
-        query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
+        ///
+        /// Returns a vector of types that have the specified method `method`.
+        ///
+        pub def hasMethod(p: Program, method: String): Vector[String] =
+            query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
-    pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
-        query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
+        ///
+        /// Returns a vector of pairs representing non-implemented methods in the program.
+        /// Each pair contains the class and method name.
+        ///
+        pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
+            query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
 
-    pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
-        let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
-        not Vector.isEmpty(res)
+        ///
+        /// Checks if a type is a subtype of another type in the program.
+        /// Returns `true` if the `subtype` is a subtype of the `possibleSupertype`, `false` otherwise.
+        ///
+        pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
+            let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
+            not Vector.isEmpty(res)
 
-    pub def illegalFinalClasses(p: Program, finalClasses: Vector[String]): Vector[String] =
-        let fcs  = inject finalClasses into FinalClass;
-        let rule = #{
-            ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
-        };
-        query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
+        ///
+        /// Returns a vector of types that extend the final classes in `finalClasses`.
+        ///
+        pub def illegalFinalClasses(p: Program, finalClasses: Vector[String]): Vector[String] =
+            let fcs  = inject finalClasses into FinalClass;
+            let rule = #{
+                ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
+            };
+            query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
 
-    pub def illegalNonThrowable(p: Program, throws: Vector[String]): Vector[String] =
-        let ths = inject throws into Throws;
-        let rule = #{
-            IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
-        };
-        query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
+        ///
+        /// Returns a vector of types that are thrown in the `p` program but are not subtypes of `java.lang.Throwable`.
+        ///
+        pub def illegalNonThrowable(p: Program, throws: Vector[String]): Vector[String] =
+            let ths = inject throws into Throws;
+            let rule = #{
+                IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
+            };
+            query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
 
 
     /////////////////////////////////////////////////
