@@ -60,13 +60,6 @@ mod Subtyping {
         let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
         not Vector.isEmpty(res)
 
-    ///
-    /// Returns a vector of distinct subtypes from the given program.
-    ///
-    pub def distinctSubtypes(p: Program): Vector[(String, String)] =
-        let v = query classHierarchyAnalysis(p) select (x, y) from Subtype(x, y);
-        Vector.filter(match (x, y) -> x != y, v)
-
     pub def illegalFinalClasses(p: Program, finalClasses: Vector[String]): Vector[String] =
         let fcs  = inject finalClasses into FinalClass;
         let rule = #{
@@ -93,17 +86,6 @@ mod Subtyping {
     /////////////////////////////////////////////////
 
     mod Test {
-
-        @Test
-        def testSubtypes01(): Bool =
-            let result = Subtyping.distinctSubtypes(emptyFacts());
-            Assert.eq(Vector#{}, result)
-
-        @Test
-        def testSubtypes02(): Bool =
-            let result = Subtyping.distinctSubtypes(facts());
-            let expected = Vector#{("au.content.Marker", "java.lang.Object"), ("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
-            Assert.eq(expected, result)
 
         @Test
         def testSubtype01(): Bool =
