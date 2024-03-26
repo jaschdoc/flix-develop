@@ -4,24 +4,24 @@ mod Subtyping {
         classes = Vector[String],
         finalClasses = Vector[String],
         interfaces = Vector[String],
-        implementations = Vector[(String, String)],
+        classImplements = Vector[(String, String)],
         classExtends = Vector[(String, String)],
         interfaceExtends = Vector[(String, String)],
         methods = Vector[(String, String)]
     }
 
     def classHierarchyAnalysis(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
-        let cs    = inject program.classes          into Class;
-        let fcs   = inject program.finalClasses     into FinalClass;
-        let is    = inject program.interfaces       into Interface;
-        let impls = inject program.implementations  into Implementation;
-        let ce    = inject program.classExtends     into ClassExtends;
-        let ies   = inject program.interfaceExtends into InterfaceExtends;
-        let ms    = inject program.methods          into Method;
+        let cs    = inject program.classes               into Class;
+        let fcs   = inject program.finalClasses          into FinalClass;
+        let is    = inject program.interfaces            into Interface;
+        let impls = inject program.classImplements  into ClassImplements;
+        let ce    = inject program.classExtends          into ClassExtends;
+        let ies   = inject program.interfaceExtends      into InterfaceExtends;
+        let ms    = inject program.methods               into Method;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
-            Subtype(sub, super) :- Class(sub), Interface(super), Implementation(sub, super).
+            Subtype(sub, super) :- Class(sub), Interface(super), ClassImplements(sub, super).
             Subtype(sub, super) :- Class(sub), Class(super), ClassExtends(sub, super).
             Subtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
@@ -127,7 +127,7 @@ mod Subtyping {
             classes = Vector#{},
             finalClasses = Vector#{},
             interfaces = Vector#{},
-            implementations = Vector#{},
+            classImplements = Vector#{},
             classExtends = Vector#{},
             interfaceExtends = Vector#{},
             methods = Vector#{}
@@ -149,7 +149,7 @@ mod Subtyping {
                 "java.util.List",
                 "java.util.Collection"
             },
-            implementations = Vector#{
+            classImplements = Vector#{
                 ("java.lang.String", "java.io.Serializable"),
                 ("java.util.ArrayList", "java.util.List")
             },
