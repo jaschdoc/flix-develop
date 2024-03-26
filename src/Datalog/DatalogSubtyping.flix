@@ -87,7 +87,7 @@ mod Subtyping {
     pub def hasMethod(p: Program, method: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
-    pub def nonSupertypes(p: Program): Vector[String] =
+    pub def leafTypes(p: Program): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from NonSupertype(tpe)
 
 
