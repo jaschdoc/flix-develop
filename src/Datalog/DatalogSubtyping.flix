@@ -37,13 +37,14 @@ mod Subtyping {
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
     def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String) | r } =
-        let cs    = inject p.classes          into Class;
-        let is    = inject p.interfaces       into Interface;
-        let impls = inject p.classImplements  into ClassImplements;
-        let ce    = inject p.classExtends     into ClassExtends;
-        let ies   = inject p.interfaceExtends into InterfaceExtends;
-        let fs    = inject p.fields           into Field;
-        let ms    = inject p.classMethods     into ClassMethod;
+        let cs    = inject p.classes             into Class;
+        let is    = inject p.interfaces          into Interface;
+        let impls = inject p.classImplements     into ClassImplements;
+        let ce    = inject p.classExtends        into ClassExtends;
+        let ies   = inject p.interfaceExtends    into InterfaceExtends;
+        let fs    = inject p.fields              into Field;
+        let ms    = inject p.classMethods        into ClassMethod;
+        let iss   = inject p.interfaceSignatures into InterfaceSignature;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
@@ -56,7 +57,7 @@ mod Subtyping {
             AvailableMethod(class, method) :- ClassMethod(t, method), Subtype(class, t).
             AvailableMethod(class, method) :- InterfaceSignature(t, method), Subtype(class, t).
         };
-        #(Subtype, AvailableField, AvailableMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms
+        #(Subtype, AvailableField, AvailableMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
     pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
         let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
