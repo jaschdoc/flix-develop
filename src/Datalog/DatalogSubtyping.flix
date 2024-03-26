@@ -36,7 +36,7 @@ mod Subtyping {
     ///
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
-    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String) | r } =
+    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String), NonImplementedMethod(String, String) | r } =
         let cs    = inject p.classes             into Class;
         let is    = inject p.interfaces          into Interface;
         let impls = inject p.classImplements     into ClassImplements;
@@ -53,17 +53,20 @@ mod Subtyping {
             Subtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
 
-            AvailableField(class, field)   :- Field(t, field), Subtype(class, t).
-            AvailableMethod(class, method) :- ClassMethod(t, method), Subtype(class, t).
-            AvailableMethod(class, method) :- InterfaceSignature(t, method), Subtype(class, t).
+            AvailableField(class, field)        :- Field(t, field), Subtype(class, t).
+            AvailableMethod(class, method)      :- ClassMethod(t, method), Subtype(class, t).
+            NonImplementedMethod(class, method) :- InterfaceSignature(t, method), Subtype(class, t), not ClassMethod(class, method).
         };
-        #(Subtype, AvailableField, AvailableMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
+        #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
     pub def hasField(p: Program, field: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
 
     pub def hasMethod(p: Program, method: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
+
+    pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
+        query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
 
     pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
         let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
@@ -91,37 +94,37 @@ mod Subtyping {
     mod Test {
 
         @Test
-        def testSubtype01(): Bool =
+        def testIsSubtype01(): Bool =
             let result = Subtyping.isSubtype(emptyFacts(), "java.lang.String", "java.lang.Object");
             Assert.eq(false, result)
 
         @Test
-        def testSubtype02(): Bool =
+        def testIsSubtype02(): Bool =
             let result = Subtyping.isSubtype(facts(), "java.lang.String", "java.lang.Object");
             Assert.eq(true, result)
 
         @Test
-        def testSubtype03(): Bool =
+        def testIsSubtype03(): Bool =
             let result = Subtyping.isSubtype(facts(), "java.lang.Object", "java.lang.Object");
             Assert.eq(true, result)
 
         @Test
-        def testSubtype04(): Bool =
+        def testIsSubtype04(): Bool =
             let result = Subtyping.isSubtype(facts(), "java.lang.Object", "java.lang.String");
             Assert.eq(false, result)
 
         @Test
-        def testSubtype05(): Bool =
+        def testIsSubtype05(): Bool =
             let result = Subtyping.isSubtype(facts(), "java.util.ArrayList", "java.util.Collection");
             Assert.eq(true, result)
 
         @Test
-        def testSubtype06(): Bool =
+        def testIsSubtype06(): Bool =
             let result = Subtyping.isSubtype(facts(), "au.content.SpecialArrayList", "java.util.Collection");
             Assert.eq(true, result)
 
         @Test
-        def testSubtype07(): Bool =
+        def testIsSubtype07(): Bool =
             let result = Subtyping.isSubtype(facts(), "java.util.List", "java.util.List");
             Assert.eq(true, result)
 
@@ -191,12 +194,14 @@ mod Subtyping {
                 ("au.content.Marker", "markerField")
             },
             classMethods = Vector#{
+                ("java.util.ArrayList", "add"),
                 ("java.lang.Object", "toString"),
                 ("java.lang.String", "contains"),
                 ("java.lang.String", "isEmpty")
             },
             interfaceSignatures = Vector#{
-                ("java.util.List", "add")
+                ("java.util.List", "add"),
+                ("java.util.Collection", "isEmpty")
             }
         }
     }
