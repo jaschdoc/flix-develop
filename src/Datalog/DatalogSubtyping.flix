@@ -55,7 +55,7 @@ mod Subtyping {
 
             AvailableField(class, field)        :- Field(t, field), Subtype(class, t).
             AvailableMethod(class, method)      :- ClassMethod(t, method), Subtype(class, t).
-            NonImplementedMethod(class, method) :- InterfaceSignature(t, method), Subtype(class, t), not ClassMethod(class, method).
+            NonImplementedMethod(class, method) :- InterfaceSignature(t, method), Class(class), Subtype(class, t), not AvailableMethod(class, method).
         };
         #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
