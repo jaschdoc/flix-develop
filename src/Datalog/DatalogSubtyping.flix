@@ -43,9 +43,6 @@ mod Subtyping {
         let res = query fcs, rule, classHierarchyAnalysis(types) select tpe from ExtendsFinalClass(tpe, _);
         not Vector.isEmpty(res)
 
-    pub def methodsOf(tpe: String, types: Program): Vector[String] =
-        query classHierarchyAnalysis(types) select m from AvailableMethod(tpe, m)
-
     pub def nonSupertypes(types: Program): Vector[String] =
         query classHierarchyAnalysis(types) select tpe from NonSupertype(tpe)
 
@@ -53,11 +50,12 @@ mod Subtyping {
         query classHierarchyAnalysis(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Program): Bool =
-        let v = query classHierarchyAnalysis(types) select subtype from Subtype(subtype, possibleSupertype);
-        not Vector.isEmpty(v)
+        let res = query classHierarchyAnalysis(types) select subtype from Subtype(subtype, possibleSupertype);
+        not Vector.isEmpty(res)
 
     pub def hasMethod(tpe: String, method: String, types: Program): Bool =
-        not (methodsOf(tpe, types) |> Vector.filter(Eq.eq(method)) |> Vector.isEmpty)
+        let res = query classHierarchyAnalysis(types) select tpe from AvailableMethod(tpe, method);
+        not Vector.isEmpty(res)
 
     pub def isNonSupertype(tpe: String, types: Program): Bool =
         not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
@@ -115,16 +113,14 @@ mod Subtyping {
             Assert.eq(true, result)
 
         @Test
-        def testMethodsOf01(): Bool =
-            let result = Subtyping.methodsOf("java.lang.String", facts());
-            let expected = Vector#{"toString", "contains", "isEmpty"} |> Vector.sort;
-            Assert.eq(expected, result)
+        def testHasMethod01(): Bool =
+            let result = Subtyping.hasMethod("java.lang.String", "toString", facts());
+            Assert.eq(true, result)
 
         @Test
-        def testMethodsOf02(): Bool =
-            let result = Subtyping.methodsOf("java.util.ArrayList", facts());
-            let expected = Vector#{"toString", "add"} |> Vector.sort;
-            Assert.eq(expected, result)
+        def testHasMethod02(): Bool =
+            let result = Subtyping.hasMethod("java.util.ArrayList", "add", facts());
+            Assert.eq(true, result)
 
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
