@@ -67,13 +67,12 @@ mod Subtyping {
         let v = query classHierarchyAnalysis(p) select (x, y) from Subtype(x, y);
         Vector.filter(match (x, y) -> x != y, v)
 
-    pub def extendsFinalClass(tpe: String, finalClasses: Vector[String], p: Program): Bool =
+    pub def illegalFinalClasses(p: Program, finalClasses: Vector[String]): Vector[String] =
         let fcs  = inject finalClasses into FinalClass;
         let rule = #{
             ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
         };
-        let res = query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _);
-        not Vector.isEmpty(res)
+        query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
 
     pub def finalClassExtensions(p: Program): Vector[(String, String)] =
         query classHierarchyAnalysis(p) select (sub, sup) from ExtendsFinalClass(sub, sup)
