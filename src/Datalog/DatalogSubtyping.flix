@@ -1,5 +1,8 @@
 mod Subtyping {
 
+    ///
+    /// Represents the entities in a Java program.
+    ///
     type alias Program = {
         classes = Vector[String],
         interfaces = Vector[String],
