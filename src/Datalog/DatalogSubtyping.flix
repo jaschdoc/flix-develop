@@ -56,6 +56,10 @@ mod Subtyping {
         };
         #(Subtype, AvailableField, AvailableMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms
 
+    pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
+        let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
+        not Vector.isEmpty(res)
+
     ///
     /// Returns a vector of distinct subtypes from the given program.
     ///
@@ -76,10 +80,6 @@ mod Subtyping {
             IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
         };
         query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
-
-    pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
-        let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
-        not Vector.isEmpty(res)
 
     pub def hasField(p: Program, field: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
