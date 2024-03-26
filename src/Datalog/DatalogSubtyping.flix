@@ -10,7 +10,7 @@ mod Subtyping {
         classExtends = Vector[(String, String)],
         interfaceExtends = Vector[(String, String)],
         fields = Vector[(String, String)],
-        methods = Vector[(String, String)]
+        classMethods = Vector[(String, String)]
     }
 
     ///
@@ -151,7 +151,7 @@ mod Subtyping {
             classExtends = Vector#{},
             interfaceExtends = Vector#{},
             fields = Vector#{},
-            methods = Vector#{}
+            classMethods = Vector#{}
         }
 
         def facts(): Subtyping.Program = {
@@ -186,7 +186,7 @@ mod Subtyping {
                 ("au.content.SpecialArrayList", "specialField"),
                 ("au.content.Marker", "markerField")
             },
-            methods = Vector#{
+            classMethods = Vector#{
                 ("java.lang.Object", "toString"),
                 ("java.util.List", "add"),
                 ("java.lang.String", "contains"),
