@@ -53,34 +53,38 @@ mod Subtyping {
         };
         #(Subtype, AvailableMethod, NonSupertype) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> ms
 
-    pub def subtypesDistinct(types: Program): Vector[(String, String)] =
-        let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
+    ///
+    /// Returns a vector of distinct subtypes from the given program.
+    ///
+    pub def distinctSubtypes(p: Program): Vector[(String, String)] =
+        let v = query classHierarchyAnalysis(p) select (x, y) from Subtype(x, y);
         Vector.filter(match (x, y) -> x != y, v)
 
-    pub def extendsFinalClass(tpe: String, finalClasses: Vector[String], types: Program): Bool =
+    pub def extendsFinalClass(tpe: String, finalClasses: Vector[String], p: Program): Bool =
         let fcs  = inject finalClasses into FinalClass;
         let rule = #{
             ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
         };
-        let res = query fcs, rule, classHierarchyAnalysis(types) select tpe from ExtendsFinalClass(tpe, _);
+        let res = query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _);
         not Vector.isEmpty(res)
 
-    pub def nonSupertypes(types: Program): Vector[String] =
-        query classHierarchyAnalysis(types) select tpe from NonSupertype(tpe)
+    pub def nonSupertypes(p: Program): Vector[String] =
+        query classHierarchyAnalysis(p) select tpe from NonSupertype(tpe)
 
-    pub def finalClassExtensions(types: Program): Vector[(String, String)] =
-        query classHierarchyAnalysis(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
+    pub def finalClassExtensions(p: Program): Vector[(String, String)] =
+        query classHierarchyAnalysis(p) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
-    pub def isSubtype(subtype: String, possibleSupertype: String, types: Program): Bool =
-        let res = query classHierarchyAnalysis(types) select subtype from Subtype(subtype, possibleSupertype);
+    pub def isSubtype(subtype: String, possibleSupertype: String, p: Program): Bool =
+        let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
         not Vector.isEmpty(res)
 
-    pub def hasMethod(tpe: String, method: String, types: Program): Bool =
-        let res = query classHierarchyAnalysis(types) select tpe from AvailableMethod(tpe, method);
+    pub def hasMethod(tpe: String, method: String, p: Program): Bool =
+        let res = query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method);
         not Vector.isEmpty(res)
 
-    pub def isNonSupertype(tpe: String, types: Program): Bool =
-        not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
+    pub def isNonSupertype(tpe: String, p: Program): Bool =
+        not (nonSupertypes(p) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
+
 
     /////////////////////////////////////////////////
     // Tests                                       //
@@ -90,12 +94,12 @@ mod Subtyping {
 
         @Test
         def testSubtypes01(): Bool =
-            let result = Subtyping.subtypesDistinct(emptyFacts());
+            let result = Subtyping.distinctSubtypes(emptyFacts());
             Assert.eq(Vector#{}, result)
 
         @Test
         def testSubtypes02(): Bool =
-            let result = Subtyping.subtypesDistinct(facts());
+            let result = Subtyping.distinctSubtypes(facts());
             let expected = Vector#{("au.content.Marker", "java.lang.Object"), ("java.lang.String", "java.io.Serializable"), ("java.lang.String", "java.lang.Object"), ("java.util.ArrayList", "java.lang.Object"), ("java.util.ArrayList", "java.util.List"), ("java.util.ArrayList", "java.util.Collection"), ("java.util.List", "java.util.Collection"), ("au.content.SpecialArrayList", "java.util.ArrayList"), ("au.content.SpecialArrayList", "java.lang.Object"), ("au.content.SpecialArrayList", "java.util.List"), ("au.content.SpecialArrayList", "java.util.Collection")} |> Vector.sort;
             Assert.eq(expected, result)
 
