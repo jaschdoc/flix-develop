@@ -9,6 +9,7 @@ mod Subtyping {
         classImplements = Vector[(String, String)],
         classExtends = Vector[(String, String)],
         interfaceExtends = Vector[(String, String)],
+        fields = Vector[(String, String)],
         methods = Vector[(String, String)]
     }
 
@@ -17,7 +18,7 @@ mod Subtyping {
     ///
     /// The function takes a `Program` as input and returns a set of relations
     /// representing the class hierarchy analysis results. The relations include
-    /// `Subtype`, `AvailableMethod`, and `NonSupertype`.
+    /// `Subtype`, `AvailableMethod`, `AvailableField`, and `NonSupertype`.
     ///
     /// The `Subtype` relation represents the subtyping relationship between classes
     /// and interfaces. It includes rules for direct subtyping, class implementing
@@ -28,17 +29,22 @@ mod Subtyping {
     /// class. It includes methods defined in the class itself and methods inherited
     /// from its supertypes.
     ///
+    /// The `AvailableField` relation represents the available fields for a given
+    /// class. It includes fields defined in the class itself and fields inherited
+    /// from its supertypes.
+    ///
     /// The `NonSupertype` relation represents classes that are not supertypes of any
     /// other class in the program, i.e., the types at the bottom of the type hierarchy.
     ///
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
-    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String) | r } =
+    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String), NonSupertype(String) | r } =
         let cs    = inject p.classes          into Class;
         let is    = inject p.interfaces       into Interface;
         let impls = inject p.classImplements  into ClassImplements;
         let ce    = inject p.classExtends     into ClassExtends;
         let ies   = inject p.interfaceExtends into InterfaceExtends;
+        let fs    = inject p.fields           into Field;
         let ms    = inject p.methods          into Method;
         let rules = #{
             Subtype(x, x)       :- Class(x).
@@ -48,10 +54,11 @@ mod Subtyping {
             Subtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
 
+            AvailableField(class, field)   :- Field(t, field), Subtype(class, t).
             AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
             NonSupertype(class)            :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
         };
-        #(Subtype, AvailableMethod, NonSupertype) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> ms
+        #(Subtype, AvailableField, AvailableMethod, NonSupertype) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms
 
     ///
     /// Returns a vector of distinct subtypes from the given program.
@@ -162,6 +169,7 @@ mod Subtyping {
             classImplements = Vector#{},
             classExtends = Vector#{},
             interfaceExtends = Vector#{},
+            fields = Vector#{},
             methods = Vector#{}
         }
 
@@ -190,6 +198,12 @@ mod Subtyping {
             },
             interfaceExtends = Vector#{
                 ("java.util.List", "java.util.Collection")
+            },
+            fields = Vector#{
+                ("java.util.ArrayList", "elementData"),
+                ("java.util.ArrayList", "size"),
+                ("au.content.SpecialArrayList", "specialField"),
+                ("au.content.Marker", "markerField")
             },
             methods = Vector#{
                 ("java.lang.Object", "toString"),
