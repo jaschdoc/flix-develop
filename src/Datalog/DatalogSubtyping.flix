@@ -200,6 +200,18 @@ mod Subtyping {
             } |> Vector.sort;
             Assert.eq(expected, result)
 
+        @Test
+        def testIllegalFinalClasses01(): Bool =
+            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.lang.String"});
+            let expected = Vector#{} |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
+        def testIllegalFinalClasses02(): Bool =
+            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.util.ArrayList"});
+            let expected = Vector#{"au.content.SpecialArrayList"} |> Vector.sort;
+            Assert.eq(expected, result)
+
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
             interfaces = Vector#{},
