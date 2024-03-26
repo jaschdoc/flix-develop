@@ -11,6 +11,13 @@ mod Subtyping {
     }
 
     def subtypes(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
+        let cs    = inject program.classes          into Class;
+        let fcs   = inject program.finalClasses     into FinalClass;
+        let is    = inject program.interfaces       into Interface;
+        let impls = inject program.implementations  into Implementation;
+        let ce    = inject program.classExtends     into ClassExtends;
+        let ies   = inject program.interfaceExtends into InterfaceExtends;
+        let ms    = inject program.methods          into Method;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
@@ -23,17 +30,7 @@ mod Subtyping {
             NonSupertype(class)            :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
             ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
         };
-        #(Subtype, AvailableMethod, NonSupertype, ExtendsFinalClass) -> rules <+> toPredicates(program)
-
-    def toPredicates(program: Program): #{ Class(String), FinalClass(String), Interface(String), ClassExtends(String, String),  InterfaceExtends(String, String), Implementation(String, String), Method(String, String) | r } =
-        let cs    = inject program.classes          into Class;
-        let fcs   = inject program.finalClasses     into FinalClass;
-        let is    = inject program.interfaces       into Interface;
-        let impls = inject program.implementations  into Implementation;
-        let ce    = inject program.classExtends     into ClassExtends;
-        let ies   = inject program.interfaceExtends into InterfaceExtends;
-        let ms    = inject program.methods          into Method;
-        cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
+        #(Subtype, AvailableMethod, NonSupertype, ExtendsFinalClass) -> rules <+> cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: Program): Vector[(String, String)] =
         let v = query subtypes(types) select (x, y) from Subtype(x, y);
