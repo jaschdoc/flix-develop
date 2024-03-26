@@ -74,6 +74,13 @@ mod Subtyping {
         };
         query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
 
+    pub def illegalNonThrowable(p: Program, throws: Vector[String]): Vector[String] =
+        let ths = inject throws into Throws;
+        let rule = #{
+            IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
+        };
+        query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
+
     pub def finalClassExtensions(p: Program): Vector[(String, String)] =
         query classHierarchyAnalysis(p) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
