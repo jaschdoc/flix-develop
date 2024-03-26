@@ -9,6 +9,27 @@ mod Subtyping {
         methods = Vector[(String, String)]
     }
 
+    ///
+    /// Performs class hierarchy analysis on the given program.
+    ///
+    /// The function takes a `Program` as input and returns a set of relations
+    /// representing the class hierarchy analysis results. The relations include
+    /// `Subtype`, `AvailableMethod`, and `NonSupertype`.
+    ///
+    /// The `Subtype` relation represents the subtyping relationship between classes
+    /// and interfaces. It includes rules for direct subtyping, class implementing
+    /// an interface, class extending another class, and interface extending another
+    /// interface. It also includes transitive subtyping rules.
+    ///
+    /// The `AvailableMethod` relation represents the available methods for a given
+    /// class. It includes methods defined in the class itself and methods inherited
+    /// from its supertypes.
+    ///
+    /// The `NonSupertype` relation represents classes that are not supertypes of any
+    /// other class in the program, i.e., the types at the bottom of the type hierarchy.
+    ///
+    /// Returns a set of relations representing the class hierarchy analysis results.
+    ///
     def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String) | r } =
         let cs    = inject p.classes          into Class;
         let is    = inject p.interfaces       into Interface;
