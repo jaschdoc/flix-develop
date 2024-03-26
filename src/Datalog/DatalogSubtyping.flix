@@ -15,7 +15,7 @@ mod Subtyping {
     }
 
     ///
-    /// Performs class hierarchy analysis on the given program.
+    /// Performs class hierarchy analysis on the given program `p`.
     ///
     /// The function takes a `Program` as input and returns a set of relations
     /// representing the class hierarchy analysis results. The relations include
