@@ -2,7 +2,6 @@ mod Subtyping {
 
     type alias Program = {
         classes = Vector[String],
-        finalClasses = Vector[String],
         interfaces = Vector[String],
         classImplements = Vector[(String, String)],
         classExtends = Vector[(String, String)],
@@ -12,7 +11,6 @@ mod Subtyping {
 
     def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String) | r } =
         let cs    = inject p.classes          into Class;
-        let fcs   = inject p.finalClasses     into FinalClass;
         let is    = inject p.interfaces       into Interface;
         let impls = inject p.classImplements  into ClassImplements;
         let ce    = inject p.classExtends     into ClassExtends;
@@ -29,7 +27,7 @@ mod Subtyping {
             AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
             NonSupertype(class)            :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
         };
-        #(Subtype, AvailableMethod, NonSupertype) -> rules <+> cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
+        #(Subtype, AvailableMethod, NonSupertype) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: Program): Vector[(String, String)] =
         let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
@@ -124,7 +122,6 @@ mod Subtyping {
 
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
-            finalClasses = Vector#{},
             interfaces = Vector#{},
             classImplements = Vector#{},
             classExtends = Vector#{},
@@ -139,9 +136,6 @@ mod Subtyping {
                 "java.util.ArrayList",
                 "au.content.Marker",
                 "au.content.SpecialArrayList"
-            },
-            finalClasses = Vector#{
-                "java.lang.String"
             },
             interfaces = Vector#{
                 "java.io.Serializable",
