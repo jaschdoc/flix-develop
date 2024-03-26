@@ -149,6 +149,14 @@ mod Subtyping {
             } |> Vector.sort;
             Assert.eq(expected, result)
 
+        @Test
+        def testHasMethod03(): Bool =
+            let result = Subtyping.hasMethod(facts(), "contains");
+            let expected = Vector#{
+                "java.lang.String"
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
             interfaces = Vector#{},
