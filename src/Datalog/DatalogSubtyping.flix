@@ -10,7 +10,7 @@ mod Subtyping {
         methods = Vector[(String, String)]
     }
 
-    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
+    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String) | r } =
         let cs    = inject p.classes          into Class;
         let fcs   = inject p.finalClasses     into FinalClass;
         let is    = inject p.interfaces       into Interface;
@@ -28,13 +28,20 @@ mod Subtyping {
 
             AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
             NonSupertype(class)            :- Class(class), Class(otherClass), not Subtype(otherClass, class), if class != otherClass.
-            ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
         };
-        #(Subtype, AvailableMethod, NonSupertype, ExtendsFinalClass) -> rules <+> cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
+        #(Subtype, AvailableMethod, NonSupertype) -> rules <+> cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: Program): Vector[(String, String)] =
         let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
         Vector.filter(match (x, y) -> x != y, v)
+
+    pub def extendsFinalClass(tpe: String, finalClasses: Vector[String], types: Program): Bool =
+        let fcs  = inject finalClasses into FinalClass;
+        let rule = #{
+            ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
+        };
+        let res = query fcs, rule, classHierarchyAnalysis(types) select tpe from ExtendsFinalClass(tpe, _);
+        not Vector.isEmpty(res)
 
     pub def methodsOf(tpe: String, types: Program): Vector[String] =
         query classHierarchyAnalysis(types) select m from AvailableMethod(tpe, m)
@@ -54,10 +61,6 @@ mod Subtyping {
 
     pub def isNonSupertype(tpe: String, types: Program): Bool =
         not (nonSupertypes(types) |> Vector.filter(Eq.eq(tpe)) |> Vector.isEmpty)
-
-    pub def extendsFinalClass(tpe: String, types: Program): Bool =
-        not (finalClassExtensions(types) |> Vector.filter(match (sub, _) -> sub == tpe) |> Vector.isEmpty)
-
 
     /////////////////////////////////////////////////
     // Tests                                       //
