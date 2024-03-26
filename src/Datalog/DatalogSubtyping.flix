@@ -19,7 +19,7 @@ mod Subtyping {
     ///
     /// The function takes a `Program` as input and returns a set of relations
     /// representing the class hierarchy analysis results. The relations include
-    /// `Subtype`, `AvailableMethod`, and `AvailableField`.
+    /// `Subtype`, `AvailableMethod`, `AvailableField`, and `NonImplementedMethod`.
     ///
     /// The `Subtype` relation represents the subtyping relationship between classes
     /// and interfaces. It includes rules for direct subtyping, class implementing
@@ -33,6 +33,9 @@ mod Subtyping {
     /// The `AvailableField` relation represents the available fields for a given
     /// class. It includes fields defined in the class itself and fields inherited
     /// from its supertypes.
+    ///
+    /// The `NonImplementedMethod` relation represents the methods declared in an
+    /// interface that are not implemented by a class.
     ///
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
