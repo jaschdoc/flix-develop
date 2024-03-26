@@ -145,8 +145,7 @@ mod Subtyping {
             let result = Subtyping.hasMethod(facts(), "add");
             let expected = Vector#{
                 "java.util.ArrayList",
-                "au.content.SpecialArrayList",
-                "java.util.List"
+                "au.content.SpecialArrayList"
             } |> Vector.sort;
             Assert.eq(expected, result)
 
