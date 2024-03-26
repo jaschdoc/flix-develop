@@ -82,6 +82,9 @@ mod Subtyping {
         let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
         not Vector.isEmpty(res)
 
+    pub def hasField(p: Program, field: String): Vector[String] =
+        query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
+
     pub def hasMethod(p: Program, method: String): Vector[String] =
         query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
