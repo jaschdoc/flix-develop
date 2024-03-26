@@ -10,7 +10,7 @@ mod Subtyping {
         methods = Vector[(String, String)]
     }
 
-    def subtypes(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
+    def classHierarchyAnalysis(program: Program): #{ Subtype(String, String), AvailableMethod(String, String), NonSupertype(String), ExtendsFinalClass(String, String) | r } =
         let cs    = inject program.classes          into Class;
         let fcs   = inject program.finalClasses     into FinalClass;
         let is    = inject program.interfaces       into Interface;
@@ -33,20 +33,20 @@ mod Subtyping {
         #(Subtype, AvailableMethod, NonSupertype, ExtendsFinalClass) -> rules <+> cs <+> fcs <+> is <+> ce <+> impls <+> ies <+> ms
 
     pub def subtypesDistinct(types: Program): Vector[(String, String)] =
-        let v = query subtypes(types) select (x, y) from Subtype(x, y);
+        let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
         Vector.filter(match (x, y) -> x != y, v)
 
     pub def methodsOf(tpe: String, types: Program): Vector[String] =
-        query subtypes(types) select m from AvailableMethod(tpe, m)
+        query classHierarchyAnalysis(types) select m from AvailableMethod(tpe, m)
 
     pub def nonSupertypes(types: Program): Vector[String] =
-        query subtypes(types) select tpe from NonSupertype(tpe)
+        query classHierarchyAnalysis(types) select tpe from NonSupertype(tpe)
 
     pub def finalClassExtensions(types: Program): Vector[(String, String)] =
-        query subtypes(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
+        query classHierarchyAnalysis(types) select (sub, sup) from ExtendsFinalClass(sub, sup)
 
     pub def isSubtype(subtype: String, possibleSupertype: String, types: Program): Bool =
-        let v = query subtypes(types) select (x, y) from Subtype(x, y);
+        let v = query classHierarchyAnalysis(types) select (x, y) from Subtype(x, y);
         not (Vector.filter(Eq.eq((subtype, possibleSupertype)), v) |> Vector.isEmpty)
 
     pub def hasMethod(tpe: String, method: String, types: Program): Bool =
