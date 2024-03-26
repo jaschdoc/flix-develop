@@ -10,7 +10,8 @@ mod Subtyping {
         classExtends = Vector[(String, String)],
         interfaceExtends = Vector[(String, String)],
         fields = Vector[(String, String)],
-        classMethods = Vector[(String, String)]
+        classMethods = Vector[(String, String)],
+        interfaceSignatures = Vector[(String, String)]
     }
 
     ///
@@ -42,7 +43,7 @@ mod Subtyping {
         let ce    = inject p.classExtends     into ClassExtends;
         let ies   = inject p.interfaceExtends into InterfaceExtends;
         let fs    = inject p.fields           into Field;
-        let ms    = inject p.methods          into Method;
+        let ms    = inject p.classMethods     into ClassMethod;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
@@ -52,7 +53,8 @@ mod Subtyping {
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
 
             AvailableField(class, field)   :- Field(t, field), Subtype(class, t).
-            AvailableMethod(class, method) :- Method(t, method), Subtype(class, t).
+            AvailableMethod(class, method) :- ClassMethod(t, method), Subtype(class, t).
+            AvailableMethod(class, method) :- InterfaceSignature(t, method), Subtype(class, t).
         };
         #(Subtype, AvailableField, AvailableMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms
 
@@ -151,7 +153,8 @@ mod Subtyping {
             classExtends = Vector#{},
             interfaceExtends = Vector#{},
             fields = Vector#{},
-            classMethods = Vector#{}
+            classMethods = Vector#{},
+            interfaceSignatures = Vector#{}
         }
 
         def facts(): Subtyping.Program = {
@@ -188,9 +191,11 @@ mod Subtyping {
             },
             classMethods = Vector#{
                 ("java.lang.Object", "toString"),
-                ("java.util.List", "add"),
                 ("java.lang.String", "contains"),
                 ("java.lang.String", "isEmpty")
+            },
+            interfaceSignatures = Vector#{
+                ("java.util.List", "add")
             }
         }
     }
