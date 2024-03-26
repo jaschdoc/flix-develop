@@ -157,6 +157,15 @@ mod Subtyping {
             } |> Vector.sort;
             Assert.eq(expected, result)
 
+        @Test
+        def testNonImplementedMethods01(): Bool =
+            let result = Subtyping.nonImplementedMethods(facts());
+            let expected = Vector#{
+                ("java.util.ArrayList", "isEmpty"),
+                ("au.content.SpecialArrayList", "isEmpty")
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
             interfaces = Vector#{},
