@@ -129,6 +129,40 @@ mod Subtyping {
             Assert.eq(true, result)
 
         @Test
+        def testHasField01(): Bool =
+            let result = Subtyping.hasField(facts(), "elementData");
+            let expected = Vector#{
+                "java.util.ArrayList",
+                "au.content.SpecialArrayList"
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
+        def testHasField02(): Bool =
+            let result = Subtyping.hasField(facts(), "size");
+            let expected = Vector#{
+                "java.util.ArrayList",
+                "au.content.SpecialArrayList"
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
+        def testHasField03(): Bool =
+            let result = Subtyping.hasField(facts(), "specialField");
+            let expected = Vector#{
+                "au.content.SpecialArrayList"
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
+        def testHasField04(): Bool =
+            let result = Subtyping.hasField(facts(), "markerField");
+            let expected = Vector#{
+                "au.content.Marker"
+            } |> Vector.sort;
+            Assert.eq(expected, result)
+
+        @Test
         def testHasMethod01(): Bool =
             let result = Subtyping.hasMethod(facts(), "toString");
             let expected = Vector#{
