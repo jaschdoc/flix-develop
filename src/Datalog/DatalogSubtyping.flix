@@ -126,7 +126,7 @@ mod ClassHierarchyAnalysis {
     pub def illegalMultipleInheritance(p: Program): Vector[(String, String, String)] =
         let cs   = inject p.classes into Class;
         let rule = #{
-            IllegalMultipleInheritance(class, super1, super2) :- Class(super1), Class(super2), Subtype(class, super1), Subtype(class, super2), if super1 != super2.
+            IllegalMultipleInheritance(class, super1, super2) :- Class(class), Class(super1), Class(super2), Subtype(class, super1), Subtype(class, super2), if super1 != super2.
         };
         query cs, rule, classHierarchyAnalysis(p) select (class, super1, super2) from IllegalMultipleInheritance(class, super1, super2)
 
@@ -209,15 +209,7 @@ mod ClassHierarchyAnalysis {
         @Test
         def testHasMethod01(): Bool =
             let result = ClassHierarchyAnalysis.hasMethod(facts(), "toString");
-            let expected = Vector#{
-                "java.lang.Object",
-                "java.lang.String",
-                "java.lang.Throwable",
-                "java.lang.Exception",
-                "java.util.ArrayList",
-                "au.content.Marker",
-                "au.content.SpecialArrayList"
-            } |> Vector.sort;
+            let expected = facts().classes |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
@@ -260,28 +252,14 @@ mod ClassHierarchyAnalysis {
 
         @Test
         def testIllegalFinalClassExtension03(): Bool =
-            let result = ClassHierarchyAnalysis.illegalFinalClassExtension({finalClasses = Vector#{"java.lang.Object"} | facts() });
-            let expected = Vector#{
-                "java.lang.String",
-                "java.util.ArrayList",
-                "java.lang.Throwable",
-                "java.lang.Exception",
-                "au.content.Marker",
-                "au.content.SpecialArrayList"
-            } |> Vector.sort;
+            let result = ClassHierarchyAnalysis.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.Object"} | facts() });
+            let expected = facts().classes |> Vector.filter(x -> x != "java.lang.Object") |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
         def testIllegalFinalClassExtension04(): Bool =
             let result = ClassHierarchyAnalysis.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.Object", "java.util.ArrayList"} | facts() } );
-            let expected = Vector#{
-                "java.lang.String",
-                "java.util.ArrayList",
-                "java.lang.Throwable",
-                "java.lang.Exception",
-                "au.content.Marker",
-                "au.content.SpecialArrayList"
-            } |> Vector.sort;
+            let expected = facts().classes |> Vector.filter(x -> x != "java.lang.Object") |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
@@ -308,6 +286,12 @@ mod ClassHierarchyAnalysis {
             let expected = Vector#{"java.lang.String", "java.util.ArrayList"} |> Vector.sort;
             Assert.eq(expected, result)
 
+        @Test
+        def testIllegalMulitpleInheritance01(): Bool =
+            let result = ClassHierarchyAnalysis.illegalMultipleInheritance(facts());
+            let expected = Vector#{("au.content.MultipleInheritance", "au.content.Super1", "au.content.Super2")} |> Vector.sort;
+            Assert.eq(expected, result)
+
         def emptyFacts(): ClassHierarchyAnalysis.Program = {
             classes = Vector#{},
             finalClasses = Vector#{},
@@ -329,7 +313,10 @@ mod ClassHierarchyAnalysis {
                 "java.lang.Exception",
                 "java.util.ArrayList",
                 "au.content.Marker",
-                "au.content.SpecialArrayList"
+                "au.content.SpecialArrayList",
+                "au.content.Super1",
+                "au.content.Super2",
+                "au.content.MultipleInheritance"
             },
             finalClasses = Vector#{},
             interfaces = Vector#{
@@ -347,7 +334,11 @@ mod ClassHierarchyAnalysis {
                 ("java.lang.Throwable", "java.lang.Object"),
                 ("java.lang.Exception", "java.lang.Throwable"),
                 ("au.content.SpecialArrayList", "java.util.ArrayList"),
-                ("au.content.Marker", "java.lang.Object")
+                ("au.content.Marker", "java.lang.Object"),
+                ("au.content.Super1", "java.lang.Object"),
+                ("au.content.Super2", "java.lang.Object"),
+                ("au.content.MultipleInheritance", "au.content.Super1"),
+                ("au.content.MultipleInheritance", "au.content.Super2")
             },
             interfaceExtends = Vector#{
                 ("java.util.List", "java.util.Collection")
