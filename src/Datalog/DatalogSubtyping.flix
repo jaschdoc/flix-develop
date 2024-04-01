@@ -93,7 +93,8 @@ mod ClassHierarchyAnalysis {
         not Vector.isEmpty(res)
 
     ///
-    ///
+    /// Returns a vector of pairs where each pair `(class, method)`
+    /// represents that `method` is missing from `class` in the program `p`.
     ///
     pub def missingMethods(p: Program): Vector[(String, String)] =
         let is   = inject p.interfaces into Interface;
