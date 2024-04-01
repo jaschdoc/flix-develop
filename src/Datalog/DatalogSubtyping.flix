@@ -21,7 +21,7 @@ mod ClassHierarchyAnalysis {
     ///
     /// The function takes a `Program` as input and returns a set of relations
     /// representing the class hierarchy analysis results. The relations include
-    /// `Subtype`, `AvailableMethod`, `AvailableField`, and `NonImplementedMethod`.
+    /// `Subtype`, `AvailableMethod`, `AvailableField`, and `ConcreteMethod`.
     ///
     /// The `Subtype` relation represents the subtyping relationship between classes
     /// and interfaces. It includes rules for direct subtyping, class implementing
@@ -36,8 +36,8 @@ mod ClassHierarchyAnalysis {
     /// class. It includes fields defined in the class itself and fields inherited
     /// from its supertypes.
     ///
-    /// The `NonImplementedMethod` relation represents the methods declared in an
-    /// interface that are not implemented by a class.
+    /// The `ConcreteMethod` relation represents the methods that are implemented
+    /// on a class or by a super class.
     ///
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
@@ -49,7 +49,7 @@ mod ClassHierarchyAnalysis {
         let ies   = inject p.interfaceExtends into InterfaceExtends;
         let fs    = inject p.fields           into Field;
         let ms    = inject p.classMethods     into ClassMethod;
-        let iss   = inject p.abstractMethods  into AbstractMethod;
+        let ams   = inject p.abstractMethods  into AbstractMethod;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
@@ -59,11 +59,14 @@ mod ClassHierarchyAnalysis {
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
 
             AvailableField(class, field)   :- Field(super, field), Subtype(class, super).
-            AvailableMethod(class, method) :- ClassMethod(super, method), Subtype(class, super).
+
+            AvailableMethod(class, method) :- ClassMethod(super, method)   , Subtype(class, super).
+            AvailableMethod(class, method) :- AbstractMethod(super, method), Subtype(class, super), not Interface(class).
+
             ConcreteMethod(class, method)  :- Class(class), ClassMethod(class, method).
             ConcreteMethod(sub, method)    :- Class(sub), Subtype(sub, super), ConcreteMethod(super, method).
         };
-        #(Subtype, AvailableField, AvailableMethod, ConcreteMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
+        #(Subtype, AvailableField, AvailableMethod, ConcreteMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> ams
 
     ///
     /// Returns a vector of types that have the specified field `field`.
@@ -78,13 +81,6 @@ mod ClassHierarchyAnalysis {
         query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
     ///
-    /// Returns a vector of pairs representing non-implemented methods in the program.
-    /// Each pair contains the class and method name.
-    ///
-    pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
-        query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
-
-    ///
     /// Checks if a type is a subtype of another type in the program.
     /// Returns `true` if the `subtype` is a subtype of the `possibleSupertype`, `false` otherwise.
     ///
@@ -94,7 +90,8 @@ mod ClassHierarchyAnalysis {
 
     ///
     /// Returns a vector of pairs where each pair `(class, method)`
-    /// represents that `method` is missing from `class` in the program `p`.
+    /// represents that an implementation of `method` is missing from
+    /// `class` in the program `p`.
     ///
     pub def missingMethods(p: Program): Vector[(String, String)] =
         let is   = inject p.interfaces into Interface;
@@ -231,8 +228,8 @@ mod ClassHierarchyAnalysis {
             Assert.eq(expected, result)
 
         @Test
-        def testNonImplementedMethods01(): Bool =
-            let result = ClassHierarchyAnalysis.nonImplementedMethods(facts());
+        def testmissingMethodss01(): Bool =
+            let result = ClassHierarchyAnalysis.missingMethods(facts());
             let expected = Vector#{
                 ("java.util.ArrayList", "isEmpty"),
                 ("au.content.SpecialArrayList", "isEmpty")
@@ -240,19 +237,19 @@ mod ClassHierarchyAnalysis {
             Assert.eq(expected, result)
 
         @Test
-        def testIllegalFinalClasses01(): Bool =
+        def testIllegalFinalClassExtension01(): Bool =
             let result = ClassHierarchyAnalysis.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.String"} | facts() });
             let expected = Vector#{} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
-        def testIllegalFinalClasses02(): Bool =
+        def testIllegalFinalClassExtension02(): Bool =
             let result = ClassHierarchyAnalysis.illegalFinalClassExtension({ finalClasses = Vector#{"java.util.ArrayList"} | facts() });
             let expected = Vector#{"au.content.SpecialArrayList"} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
-        def testIllegalFinalClasses03(): Bool =
+        def testIllegalFinalClassExtension03(): Bool =
             let result = ClassHierarchyAnalysis.illegalFinalClassExtension({finalClasses = Vector#{"java.lang.Object"} | facts() });
             let expected = Vector#{
                 "java.lang.String",
@@ -265,7 +262,7 @@ mod ClassHierarchyAnalysis {
             Assert.eq(expected, result)
 
         @Test
-        def testIllegalFinalClasses04(): Bool =
+        def testIllegalFinalClassExtension04(): Bool =
             let result = ClassHierarchyAnalysis.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.Object", "java.util.ArrayList"} | facts() } );
             let expected = Vector#{
                 "java.lang.String",
