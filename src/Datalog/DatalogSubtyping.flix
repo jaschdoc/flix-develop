@@ -92,7 +92,7 @@ mod Subtyping {
         not Vector.isEmpty(res)
 
     ///
-    /// Returns a vector of types that extend the final classes in `finalClasses`.
+    /// Returns a vector of types that extend the final classes in the program `p`.
     ///
     pub def illegalFinalClasses(p: Program): Vector[String] =
         let fcs  = inject p.finalClasses into Final;
