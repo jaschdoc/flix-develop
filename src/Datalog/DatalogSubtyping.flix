@@ -101,9 +101,6 @@ mod ClassHierarchyAnalysis {
         };
         query is, rule, classHierarchyAnalysis(p) select (class, method) from MissingMethod(class, method)
 
-    pub def concretes(p: Program): Vector[(String, String, String)] =
-        query classHierarchyAnalysis(p) select (class, method, source) from ConcreteMethod(class, method, source)
-
     ///
     /// Returns a vector of types that extend the final classes in the program `p`.
     ///
