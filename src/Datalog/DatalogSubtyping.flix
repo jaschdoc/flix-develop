@@ -291,6 +291,21 @@ mod ClassHierarchyAnalysis {
             let result = ClassHierarchyAnalysis.illegalMultipleInheritance(facts()) |> Vector.memberOf(("au.content.MultipleInheritance", "au.content.Super1", "au.content.Super2"));
             Assert.eq(true, result)
 
+        @Test
+        def testIllegalMulitpleInheritance02(): Bool =
+            let result = ClassHierarchyAnalysis.illegalMultipleInheritance(facts()) |> Vector.memberOf(("au.content.MultipleInheritance", "au.content.Super2", "au.content.Super1"));
+            Assert.eq(true, result)
+
+        @Test
+        def testIllegalMulitpleInheritance03(): Bool =
+            let result = ClassHierarchyAnalysis.illegalMultipleInheritance(facts()) |> Vector.map(match (x, _, _) -> x) |> Vector.memberOf("java.util.ArrayList");
+            Assert.eq(false, result)
+
+        @Test
+        def testIllegalMulitpleInheritance04(): Bool =
+            let result = ClassHierarchyAnalysis.illegalMultipleInheritance(facts()) |> Vector.map(match (x, _, _) -> x) |> Vector.memberOf("java.lang.Object");
+            Assert.eq(false, result)
+
         def emptyFacts(): ClassHierarchyAnalysis.Program = {
             classes = Vector#{},
             finalClasses = Vector#{},
