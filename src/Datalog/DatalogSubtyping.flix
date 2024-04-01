@@ -120,6 +120,12 @@ mod ClassHierarchyAnalysis {
         };
         query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
 
+    pub def illegalMultipleInheritance(p: Program): Vector[(String, String, String)] =
+        let cs   = inject p.classes into Class;
+        let rule = #{
+            IllegalMultipleInheritance(class, super1, super2) :- Class(super1), Class(super2), Subtype(class, super1), Subtype(class, super2), if super1 != super2.
+        };
+        query cs, rule, classHierarchyAnalysis(p) select (class, super1, super2) from IllegalMultipleInheritance(class, super1, super2)
 
     /////////////////////////////////////////////////
     // Tests                                       //
