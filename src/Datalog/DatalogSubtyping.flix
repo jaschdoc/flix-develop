@@ -12,7 +12,7 @@ mod ClassHierarchyAnalysis {
         interfaceExtends = Vector[(String, String)],
         fields = Vector[(String, String)],
         classMethods = Vector[(String, String)],
-        interfaceSignatures = Vector[(String, String)],
+        abstractMethods = Vector[(String, String)],
         throws = Vector[String]
     }
 
@@ -42,14 +42,14 @@ mod ClassHierarchyAnalysis {
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
     def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String), NonImplementedMethod(String, String) | r } =
-        let cs    = inject p.classes             into Class;
-        let is    = inject p.interfaces          into Interface;
-        let impls = inject p.classImplements     into ClassImplements;
-        let ce    = inject p.classExtends        into ClassExtends;
-        let ies   = inject p.interfaceExtends    into InterfaceExtends;
-        let fs    = inject p.fields              into Field;
-        let ms    = inject p.classMethods        into ClassMethod;
-        let iss   = inject p.interfaceSignatures into InterfaceSignature;
+        let cs    = inject p.classes          into Class;
+        let is    = inject p.interfaces       into Interface;
+        let impls = inject p.classImplements  into ClassImplements;
+        let ce    = inject p.classExtends     into ClassExtends;
+        let ies   = inject p.interfaceExtends into InterfaceExtends;
+        let fs    = inject p.fields           into Field;
+        let ms    = inject p.classMethods     into ClassMethod;
+        let iss   = inject p.abstractMethods  into AbstractMethod;
         let rules = #{
             Subtype(x, x)       :- Class(x).
             Subtype(x, x)       :- Interface(x).
@@ -60,7 +60,7 @@ mod ClassHierarchyAnalysis {
 
             AvailableField(class, field)        :- Field(t, field), Subtype(class, t).
             AvailableMethod(class, method)      :- ClassMethod(t, method), Subtype(class, t).
-            NonImplementedMethod(class, method) :- InterfaceSignature(t, method), Class(class), Subtype(class, t), not AvailableMethod(class, method).
+            NonImplementedMethod(class, method) :- AbstractMethod(t, method), Class(class), Subtype(class, t), not AvailableMethod(class, method).
         };
         #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
@@ -298,7 +298,7 @@ mod ClassHierarchyAnalysis {
             interfaceExtends = Vector#{},
             fields = Vector#{},
             classMethods = Vector#{},
-            interfaceSignatures = Vector#{},
+            abstractMethods = Vector#{},
             throws = Vector#{}
         }
 
@@ -345,7 +345,7 @@ mod ClassHierarchyAnalysis {
                 ("java.lang.String", "contains"),
                 ("java.lang.String", "isEmpty")
             },
-            interfaceSignatures = Vector#{
+            abstractMethods = Vector#{
                 ("java.util.List", "add"),
                 ("java.util.Collection", "isEmpty")
             },
