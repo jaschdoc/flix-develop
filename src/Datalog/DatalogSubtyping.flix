@@ -5,6 +5,7 @@ mod Subtyping {
     ///
     type alias Program = {
         classes = Vector[String],
+        finalClasses = Vector[String],
         interfaces = Vector[String],
         classImplements = Vector[(String, String)],
         classExtends = Vector[(String, String)],
@@ -62,52 +63,52 @@ mod Subtyping {
         };
         #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
-        ///
-        /// Returns a vector of types that have the specified field `field`.
-        ///
-        pub def hasField(p: Program, field: String): Vector[String] =
-            query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
+    ///
+    /// Returns a vector of types that have the specified field `field`.
+    ///
+    pub def hasField(p: Program, field: String): Vector[String] =
+        query classHierarchyAnalysis(p) select tpe from AvailableField(tpe, field)
 
-        ///
-        /// Returns a vector of types that have the specified method `method`.
-        ///
-        pub def hasMethod(p: Program, method: String): Vector[String] =
-            query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
+    ///
+    /// Returns a vector of types that have the specified method `method`.
+    ///
+    pub def hasMethod(p: Program, method: String): Vector[String] =
+        query classHierarchyAnalysis(p) select tpe from AvailableMethod(tpe, method)
 
-        ///
-        /// Returns a vector of pairs representing non-implemented methods in the program.
-        /// Each pair contains the class and method name.
-        ///
-        pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
-            query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
+    ///
+    /// Returns a vector of pairs representing non-implemented methods in the program.
+    /// Each pair contains the class and method name.
+    ///
+    pub def nonImplementedMethods(p: Program): Vector[(String, String)] =
+        query classHierarchyAnalysis(p) select (tpe, method) from NonImplementedMethod(tpe, method)
 
-        ///
-        /// Checks if a type is a subtype of another type in the program.
-        /// Returns `true` if the `subtype` is a subtype of the `possibleSupertype`, `false` otherwise.
-        ///
-        pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
-            let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
-            not Vector.isEmpty(res)
+    ///
+    /// Checks if a type is a subtype of another type in the program.
+    /// Returns `true` if the `subtype` is a subtype of the `possibleSupertype`, `false` otherwise.
+    ///
+    pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
+        let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
+        not Vector.isEmpty(res)
 
-        ///
-        /// Returns a vector of types that extend the final classes in `finalClasses`.
-        ///
-        pub def illegalFinalClasses(p: Program, finalClasses: Vector[String]): Vector[String] =
-            let fcs  = inject finalClasses into FinalClass;
-            let rule = #{
-                ExtendsFinalClass(sub, super)  :- FinalClass(super), Subtype(sub, super), if sub != super.
-            };
-            query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
+    ///
+    /// Returns a vector of types that extend the final classes in `finalClasses`.
+    ///
+    pub def illegalFinalClasses(p: Program): Vector[String] =
+        let fcs  = inject p.finalClasses into Final;
+        let rule = #{
+            ExtendsFinalClass(sub, super)  :- Final(super), Subtype(sub, super), if sub != super.
+        };
+        query fcs, rule, classHierarchyAnalysis(p) select tpe from ExtendsFinalClass(tpe, _)
 
-        ///
-        /// Returns a vector of types that are thrown in the `p` program but are not subtypes of `java.lang.Throwable`.
-        ///
-        pub def illegalNonThrowable(p: Program, throws: Vector[String]): Vector[String] =
-            let ths = inject throws into Throws;
-            let rule = #{
-                IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
-            };
-            query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
+    ///
+    /// Returns a vector of types that are thrown in the `p` program but are not subtypes of `java.lang.Throwable`.
+    ///
+    pub def illegalNonThrowable(p: Program, throws: Vector[String]): Vector[String] =
+        let ths = inject throws into Throws;
+        let rule = #{
+            IllegalThrowable(t) :- Throws(t), not Subtype(t, "java.lang.Throwable").
+        };
+        query ths, rule, classHierarchyAnalysis(p) select tpe from IllegalThrowable(tpe)
 
 
     /////////////////////////////////////////////////
@@ -227,19 +228,19 @@ mod Subtyping {
 
         @Test
         def testIllegalFinalClasses01(): Bool =
-            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.lang.String"});
+            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.lang.String"} | facts() });
             let expected = Vector#{} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
         def testIllegalFinalClasses02(): Bool =
-            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.util.ArrayList"});
+            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.util.ArrayList"} | facts() });
             let expected = Vector#{"au.content.SpecialArrayList"} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
         def testIllegalFinalClasses03(): Bool =
-            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.lang.Object"});
+            let result = Subtyping.illegalFinalClasses({finalClasses = Vector#{"java.lang.Object"} | facts() });
             let expected = Vector#{
                 "java.lang.String",
                 "java.util.ArrayList",
@@ -252,7 +253,7 @@ mod Subtyping {
 
         @Test
         def testIllegalFinalClasses04(): Bool =
-            let result = Subtyping.illegalFinalClasses(facts(), Vector#{"java.lang.Object", "java.util.ArrayList"});
+            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.lang.Object", "java.util.ArrayList"} | facts() } );
             let expected = Vector#{
                 "java.lang.String",
                 "java.util.ArrayList",
@@ -289,6 +290,7 @@ mod Subtyping {
 
         def emptyFacts(): Subtyping.Program = {
             classes = Vector#{},
+            finalClasses = Vector#{},
             interfaces = Vector#{},
             classImplements = Vector#{},
             classExtends = Vector#{},
@@ -308,6 +310,7 @@ mod Subtyping {
                 "au.content.Marker",
                 "au.content.SpecialArrayList"
             },
+            finalClasses = Vector#{},
             interfaces = Vector#{
                 "java.io.Serializable",
                 "java.util.List",
