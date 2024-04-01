@@ -41,7 +41,7 @@ mod ClassHierarchyAnalysis {
     ///
     /// Returns a set of relations representing the class hierarchy analysis results.
     ///
-    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String), NonImplementedMethod(String, String) | r } =
+    def classHierarchyAnalysis(p: Program): #{ Subtype(String, String), AvailableField(String, String), AvailableMethod(String, String), ConcreteMethod(String, String) | r } =
         let cs    = inject p.classes          into Class;
         let is    = inject p.interfaces       into Interface;
         let impls = inject p.classImplements  into ClassImplements;
@@ -58,11 +58,12 @@ mod ClassHierarchyAnalysis {
             Subtype(sub, super) :- Interface(sub), Interface(super), InterfaceExtends(sub, super).
             Subtype(sub, super) :- Subtype(sub, a), Subtype(a, super).
 
-            AvailableField(class, field)        :- Field(t, field), Subtype(class, t).
-            AvailableMethod(class, method)      :- ClassMethod(t, method), Subtype(class, t).
-            NonImplementedMethod(class, method) :- AbstractMethod(t, method), Class(class), Subtype(class, t), not AvailableMethod(class, method).
+            AvailableField(class, field)   :- Field(super, field), Subtype(class, super).
+            AvailableMethod(class, method) :- ClassMethod(super, method), Subtype(class, super).
+            ConcreteMethod(class, method)  :- Class(class), ClassMethod(class, method).
+            ConcreteMethod(sub, method)    :- Class(sub), Subtype(sub, super), ConcreteMethod(super, method).
         };
-        #(Subtype, AvailableField, AvailableMethod, NonImplementedMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
+        #(Subtype, AvailableField, AvailableMethod, ConcreteMethod) -> rules <+> cs <+> is <+> ce <+> impls <+> ies <+> fs <+> ms <+> iss
 
     ///
     /// Returns a vector of types that have the specified field `field`.
@@ -90,6 +91,16 @@ mod ClassHierarchyAnalysis {
     pub def isSubtype(p: Program, subtype: String, possibleSupertype: String): Bool =
         let res = query classHierarchyAnalysis(p) select subtype from Subtype(subtype, possibleSupertype);
         not Vector.isEmpty(res)
+
+    ///
+    ///
+    ///
+    pub def missingMethods(p: Program): Vector[(String, String)] =
+        let is   = inject p.interfaces into Interface;
+        let rule = #{
+            MissingMethod(class, method) :- AvailableMethod(class, method), not ConcreteMethod(class, method), not Interface(class).
+        };
+        query is, rule, classHierarchyAnalysis(p) select (class, method) from MissingMethod(class, method)
 
     ///
     /// Returns a vector of types that extend the final classes in the program `p`.
