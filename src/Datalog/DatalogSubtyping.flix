@@ -94,7 +94,7 @@ mod Subtyping {
     ///
     /// Returns a vector of types that extend the final classes in the program `p`.
     ///
-    pub def illegalFinalClasses(p: Program): Vector[String] =
+    pub def illegalFinalClassExtension(p: Program): Vector[String] =
         let fcs  = inject p.finalClasses into Final;
         let rule = #{
             ExtendsFinalClass(sub, super)  :- Final(super), Subtype(sub, super), if sub != super.
@@ -229,19 +229,19 @@ mod Subtyping {
 
         @Test
         def testIllegalFinalClasses01(): Bool =
-            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.lang.String"} | facts() });
+            let result = Subtyping.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.String"} | facts() });
             let expected = Vector#{} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
         def testIllegalFinalClasses02(): Bool =
-            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.util.ArrayList"} | facts() });
+            let result = Subtyping.illegalFinalClassExtension({ finalClasses = Vector#{"java.util.ArrayList"} | facts() });
             let expected = Vector#{"au.content.SpecialArrayList"} |> Vector.sort;
             Assert.eq(expected, result)
 
         @Test
         def testIllegalFinalClasses03(): Bool =
-            let result = Subtyping.illegalFinalClasses({finalClasses = Vector#{"java.lang.Object"} | facts() });
+            let result = Subtyping.illegalFinalClassExtension({finalClasses = Vector#{"java.lang.Object"} | facts() });
             let expected = Vector#{
                 "java.lang.String",
                 "java.util.ArrayList",
@@ -254,7 +254,7 @@ mod Subtyping {
 
         @Test
         def testIllegalFinalClasses04(): Bool =
-            let result = Subtyping.illegalFinalClasses({ finalClasses = Vector#{"java.lang.Object", "java.util.ArrayList"} | facts() } );
+            let result = Subtyping.illegalFinalClassExtension({ finalClasses = Vector#{"java.lang.Object", "java.util.ArrayList"} | facts() } );
             let expected = Vector#{
                 "java.lang.String",
                 "java.util.ArrayList",
