@@ -1,8 +1,18 @@
 mod Test.Dec.Assoc.Type.Negative {
 
-
-
 /*
+trait C[a] {
+    type S : Type
+    type T : Type -> Type
+    pub def f(x: a): C.T[a][C.S[a]]
+}
+
+instance C[Int32] {
+    type S = Int32
+    type T = Option
+    pub def f(x: Int32): Option[Int64] = Some(x)
+}
+
 trait A[a] {
     type A : Type -> Type -> Type
     type B : Type -> Type
@@ -23,16 +33,16 @@ trait C[a] with B[a] {
     type T : Type -> Type
     pub def f(x: a): C.T[a][B.Q[a][C.T[a][C.S[a]]]]
 }
-    instance C[Int32] {
-        type S = Int32
-        type T = Option
-        pub def f(x: Int32): Option[Int64] = x
-    }
+instance C[Int32] {
+    type S = Int32
+    type T = Option
+    pub def f(x: Int32): Option[Int64] = x
+}
 
-    trait Foo[t] {
-        type K: Type
-        type E: Type
-        pub def f(x: t): Foo.K[t][Foo.E[t]]
-    }
+trait Foo[t] {
+    type K: Type
+    type E: Type
+    pub def f(x: t): Foo.K[t][Foo.E[t]]
+}
 */
 }
