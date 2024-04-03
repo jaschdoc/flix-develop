@@ -1,6 +1,14 @@
 mod Test.Dec.Assoc.Type.Negative {
-
 /*
+
+
+trait C[a] {
+    type T : Type -> Eff
+    type S : Eff
+    pub def f(x: C.T[a][a]): a
+}
+
+
 trait C[a] {
     type S : Type
     type T : Type -> Type
