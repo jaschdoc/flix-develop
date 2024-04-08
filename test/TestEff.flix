@@ -255,16 +255,16 @@ mod Test.Dec.Assoc.Type.Eff {
 
     @Test
     pub def testVectorInt3209(): Bool =
-        let l = List.range(0, 100);
-        let left = handleWithListInt32(runOnceVectorInt3201, Foldable.toVector(l));
-        let right = handleWithListInt32(runOnceVectorInt3202, Foldable.toVector(l));
+        let v = Vector.range(0, 100);
+        let left = handleWithListInt32(runOnceVectorInt3201, v);
+        let right = handleWithListInt32(runOnceVectorInt3202, v);
         left == right
 
     @Test
     pub def testVectorInt3210(): Bool =
-        let l = List.range(0, 100);
-        let left = handleWithListInt32(runTwiceVectorInt3201, Foldable.toVector(l));
-        let right = handleWithListInt32(runTwiceVectorInt3202, Foldable.toVector(l));
+        let v = Vector.range(0, 100);
+        let left = handleWithListInt32(runTwiceVectorInt3201, v);
+        let right = handleWithListInt32(runTwiceVectorInt3202, v);
         left == right
 
 
@@ -304,16 +304,16 @@ mod Test.Dec.Assoc.Type.Eff {
 
     @Test
     pub def testVectorString09(): Bool =
-        let l = List.range(0, 100) |> List.map(Int32.toString);
-        let left = handleWithListString(runOnceVectorString01, Foldable.toVector(l));
-        let right = handleWithListString(runOnceVectorString02, Foldable.toVector(l));
+        let v = Vector.range(0, 100) |> Vector.map(Int32.toString);
+        let left = handleWithListString(runOnceVectorString01, v);
+        let right = handleWithListString(runOnceVectorString02, v);
         left == right
 
     @Test
     pub def testVectorString10(): Bool =
-        let l = List.range(0, 100) |> List.map(Int32.toString);
-        let left = handleWithListString(runTwiceVectorString01, Foldable.toVector(l));
-        let right = handleWithListString(runTwiceVectorString02, Foldable.toVector(l));
+        let v = Vector.range(0, 100) |> Vector.map(Int32.toString);
+        let left = handleWithListString(runTwiceVectorString01, v);
+        let right = handleWithListString(runTwiceVectorString02, v);
         left == right
 
     // Vector[Vector[Int32]]
