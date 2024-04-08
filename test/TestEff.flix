@@ -316,4 +316,52 @@ mod Test.Dec.Assoc.Type.Eff {
         let right = handleWithListString(runTwiceVectorString02, Foldable.toVector(l));
         left == right
 
+    // Vector[Vector[Int32]]
+
+    @Test
+    pub def testVectorVectorInt3201(): Bool =
+        handleWithListInt32(runOnceVectorVectorInt3201, Vector#{Vector#{1, 2}, Vector#{3, 4}}) == 1 :: 2 :: 3 :: 4 :: Nil
+
+    @Test
+    pub def testVectorVectorInt3202(): Bool =
+        handleWithListInt32(runOnceVectorVectorInt3202, Vector#{Vector#{1, 2}, Vector#{3, 4}}) == 1 :: 2 :: 3 :: 4 :: Nil
+
+    @Test
+    pub def testVectorVectorInt3203(): Bool =
+        handleWithListInt32(runTwiceVectorVectorInt3201, Vector#{Vector#{1, 2}, Vector#{3, 4}}) == 1 :: 2 :: 3 :: 4 :: 1 :: 2 :: 3 :: 4 :: Nil
+
+    @Test
+    pub def testVectorVectorInt3204(): Bool =
+        handleWithListInt32(runTwiceVectorVectorInt3202, Vector#{Vector#{1, 2}, Vector#{3, 4}}) == 1 :: 2 :: 3 :: 4 :: 1 :: 2 :: 3 :: 4 :: Nil
+
+    @Test
+    pub def testVectorVectorInt3205(): Bool =
+        handleWithListInt32(runOnceVectorVectorInt3201, Vector#{}) == Nil
+
+    @Test
+    pub def testVectorVectorInt3206(): Bool =
+        handleWithListInt32(runOnceVectorVectorInt3202, Vector#{}) == Nil
+
+    @Test
+    pub def testVectorVectorInt3207(): Bool =
+        handleWithListInt32(runTwiceVectorVectorInt3201, Vector#{}) == Nil
+
+    @Test
+    pub def testVectorVectorInt3208(): Bool =
+        handleWithListInt32(runTwiceVectorVectorInt3202, Vector#{}) == Nil
+
+    @Test
+    pub def testVectorVectorInt3209(): Bool =
+        let v = Vector.repeat(100, Vector.range(0, 100));
+        let left = handleWithListInt32(runOnceVectorVectorInt3201, v);
+        let right = handleWithListInt32(runOnceVectorVectorInt3202, v);
+        left == right
+
+    @Test
+    pub def testVectorVectorInt3210(): Bool =
+        let v = Vector.repeat(100, Vector.range(0, 100));
+        let left = handleWithListInt32(runTwiceVectorVectorInt3201, v);
+        let right = handleWithListInt32(runTwiceVectorVectorInt3202, v);
+        left == right
+
 }
