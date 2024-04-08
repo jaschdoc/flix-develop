@@ -1,5 +1,9 @@
 mod Test.Dec.Assoc.Type.Eff.Multiple {
 
+    ////////////////////////////////////////////////////////
+    // Type Definitions                                   //
+    ////////////////////////////////////////////////////////
+
     eff Observe {
         pub def capture(x: Int32): Unit
     }
