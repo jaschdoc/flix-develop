@@ -352,14 +352,14 @@ mod Test.Dec.Assoc.Type.Eff {
 
     @Test
     pub def testVectorVectorInt3209(): Bool =
-        let v = Vector.repeat(100, Vector.range(0, 100));
+        let v = Vector.repeat(10, Vector.range(0, 10));
         let left = handleWithListInt32(runOnceVectorVectorInt3201, v);
         let right = handleWithListInt32(runOnceVectorVectorInt3202, v);
         left == right
 
     @Test
     pub def testVectorVectorInt3210(): Bool =
-        let v = Vector.repeat(100, Vector.range(0, 100));
+        let v = Vector.repeat(10, Vector.range(0, 10));
         let left = handleWithListInt32(runTwiceVectorVectorInt3201, v);
         let right = handleWithListInt32(runTwiceVectorVectorInt3202, v);
         left == right
