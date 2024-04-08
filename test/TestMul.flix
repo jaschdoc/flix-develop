@@ -41,7 +41,7 @@ mod Test.Dec.Assoc.Type.Mult {
 
 
     ////////////////////////////////////////////////////////
-    // Monomorphic functions using Mult                    //
+    // Monomorphic functions using Mult                   //
     ////////////////////////////////////////////////////////
 
     // Int32
