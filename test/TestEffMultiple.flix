@@ -97,21 +97,16 @@ mod Test.Dec.Assoc.Type.Eff.Multiple {
 
     instance Composable[Vector[a]] with Composable[a] {
         pub type E = Composable.E[a]
-        pub type B = Maybe
+        pub type B = Vector
         pub type C = Split
 
-        pub def compose(f: Vector[a] -> Unit \ Composable.E[a], x: Vector[a]): Split[Composable.E[a], Maybe[Vector[a]]] =
-            let g = y -> match y {
-                case Maybe.Nothing  => ()
-                case Maybe.Just(v)  => f(v)
-            };
-            Split.Pending(g, Maybe.Just(x))
+        pub def compose(f: Vector[a] -> Unit \ Composable.E[a], x: Vector[a]): Split[Composable.E[a], Vector[a]] =
+            Split.Pending(f, x)
 
-        pub def reduce(x: Split[Composable.E[a], Maybe[Vector[a]]]): Maybe[Vector[a]] \ Composable.E[a] = match x {
-            case Split.Nothing              => Maybe.Nothing
-            case Split.Value(Maybe.Just(v)) => Maybe.Just(v)
-            case Split.Value(Maybe.Nothing) => Maybe.Nothing
-            case Split.Pending(f, v)        => f(v); v
+        pub def reduce(x: Split[Composable.E[a], Vector[a]]): Vector[a] \ Composable.E[a] = match x {
+            case Split.Nothing       => Vector.empty()
+            case Split.Value(v)      => v
+            case Split.Pending(f, v) => f(v); v
         }
     }
 }
