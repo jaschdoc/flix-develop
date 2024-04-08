@@ -25,6 +25,7 @@ mod Test.Dec.Assoc.Type.Eff.Multiple {
         pub type E: Eff
         pub type B: Eff -> Type
         pub type C: Type -> Type
+        pub def compose(x: a): T1.C[a][T1.B[a][T1.E[a]]]
     }
 
 }
